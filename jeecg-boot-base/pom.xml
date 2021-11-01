@@ -15,7 +15,7 @@
     <modules>
         <module>jeecg-boot-base-api</module>
         <module>jeecg-boot-base-core</module>
-        <module>jeecg-boot-base-tools</module>
+    <module>jeecg-boot-base-tools</module>
     </modules>
 
 

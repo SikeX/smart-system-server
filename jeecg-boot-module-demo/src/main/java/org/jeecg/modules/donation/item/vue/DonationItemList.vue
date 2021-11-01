@@ -124,7 +124,8 @@
           {
             title:'项目图片',
             align:"center",
-            dataIndex: 'donationPic'
+            dataIndex: 'donationPic',
+            scopedSlots: {customRender: 'imgSlot'}
           },
           {
             title:'捐赠项目名称',
@@ -147,9 +148,22 @@
             dataIndex: 'status'
           },
           {
+            title:'项目分类',
+            align:"center",
+            dataIndex: 'donationClass_dictText'
+          },
+          {
             title:'所属部门',
             align:"center",
             dataIndex: 'sysOrgCode'
+          },
+          {
+            title:'截止日期',
+            align:"center",
+            dataIndex: 'endTime',
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            }
           },
           {
             title:'目标金额',
@@ -160,14 +174,6 @@
             title:'已筹金额',
             align:"center",
             dataIndex: 'rasiedMoney'
-          },
-          {
-            title:'截止日期',
-            align:"center",
-            dataIndex: 'endTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
           },
           {
             title: '操作',
@@ -208,11 +214,13 @@
         fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
         fieldList.push({type:'datetime',value:'createTime',text:'创建日期'})
         fieldList.push({type:'int',value:'status',text:'项目状态',dictCode:''})
+        fieldList.push({type:'string',value:'donationClass',text:'项目分类',dictCode:''})
         fieldList.push({type:'string',value:'sysOrgCode',text:'所属部门',dictCode:''})
-        fieldList.push({type:'string',value:'donationItemDesc',text:'捐赠项目描述',dictCode:''})
+        fieldList.push({type:'Text',value:'donationItemDesc',text:'捐赠项目描述',dictCode:''})
+        fieldList.push({type:'Text',value:'donationItemStory',text:'捐赠故事',dictCode:''})
+        fieldList.push({type:'date',value:'endTime',text:'截止日期'})
         fieldList.push({type:'string',value:'targetMoney',text:'目标金额',dictCode:''})
         fieldList.push({type:'string',value:'rasiedMoney',text:'已筹金额',dictCode:''})
-        fieldList.push({type:'date',value:'endTime',text:'截止日期'})
         this.superFieldList = fieldList
       }
     }

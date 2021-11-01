@@ -65,6 +65,12 @@
 			<version>2.4.6</version>
 		</dependency>
 
+<!--		<dependency>-->
+<!--			<groupId>org.jeecgframework.boot</groupId>-->
+<!--			<artifactId>system-flowable</artifactId>-->
+<!--			<version>2.4.6</version>-->
+<!--		</dependency>-->
+
 	</dependencies>
 
 	<build>

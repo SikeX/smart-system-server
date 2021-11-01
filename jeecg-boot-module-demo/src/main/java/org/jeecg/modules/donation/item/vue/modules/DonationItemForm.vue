@@ -5,7 +5,7 @@
         <a-row>
           <a-col :span="24">
             <a-form-model-item label="项目图片" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="donationPic">
-              <a-input v-model="model.donationPic" placeholder="请输入项目图片"  ></a-input>
+              <j-image-upload isMultiple  v-model="model.donationPic" ></j-image-upload>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -14,38 +14,28 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="创建日期" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="createTime">
-              <j-date placeholder="请选择创建日期"  v-model="model.createTime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24">
-            <a-form-model-item label="项目状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
-              <a-input-number v-model="model.status" placeholder="请输入项目状态" style="width: 100%" />
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24">
-            <a-form-model-item label="所属部门" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="sysOrgCode">
-              <a-input v-model="model.sysOrgCode" placeholder="请输入所属部门"  ></a-input>
+            <a-form-model-item label="项目分类" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="donationClass">
+              <j-dict-select-tag type="list" v-model="model.donationClass" dictCode="" placeholder="请选择项目分类" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="捐赠项目描述" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="donationItemDesc">
-              <a-input v-model="model.donationItemDesc" placeholder="请输入捐赠项目描述"  ></a-input>
+              <j-editor v-model="model.donationItemDesc" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="目标金额" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="targetMoney">
-              <a-input v-model="model.targetMoney" placeholder="请输入目标金额"  ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24">
-            <a-form-model-item label="已筹金额" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="rasiedMoney">
-              <a-input v-model="model.rasiedMoney" placeholder="请输入已筹金额"  ></a-input>
+            <a-form-model-item label="捐赠故事" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="donationItemStory">
+              <j-editor v-model="model.donationItemStory" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="截止日期" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="endTime">
               <j-date placeholder="请选择截止日期" v-model="model.endTime"  style="width: 100%" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="目标金额" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="targetMoney">
+              <a-input v-model="model.targetMoney" placeholder="请输入目标金额"  ></a-input>
             </a-form-model-item>
           </a-col>
         </a-row>
