@@ -1,4 +1,4 @@
-smart-system-server 捐赠服务端
+smart-system-server 智慧村务服务端
 ===============
 
 ## 框架
