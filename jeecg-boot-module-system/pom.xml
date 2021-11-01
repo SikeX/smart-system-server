@@ -65,6 +65,13 @@
 			<version>2.4.6</version>
 		</dependency>
 
+		<!--智慧村务模块-->
+		<dependency>
+			<groupId>org.jeecgframework.boot</groupId>
+			<artifactId>smart-system-core</artifactId>
+			<version>2.4.6</version>
+		</dependency>
+
 <!--		<dependency>-->
 <!--			<groupId>org.jeecgframework.boot</groupId>-->
 <!--			<artifactId>system-flowable</artifactId>-->
