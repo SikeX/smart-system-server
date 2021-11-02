@@ -31,10 +31,6 @@ public class SmartPremaritalFilingPage {
 	@Excel(name = "人员工号", width = 15)
 	@ApiModelProperty(value = "人员工号")
     private java.lang.String peopleNo;
-	/**人员年龄*/
-	@Excel(name = "人员年龄", width = 15)
-	@ApiModelProperty(value = "人员年龄")
-    private java.lang.String peopleAge;
 	/**人员姓名*/
 	@Excel(name = "人员姓名", width = 15)
 	@ApiModelProperty(value = "人员姓名")
@@ -43,6 +39,10 @@ public class SmartPremaritalFilingPage {
 	@Excel(name = "人员性别", width = 15)
 	@ApiModelProperty(value = "人员性别")
     private java.lang.String peopleSex;
+	/**人员年龄*/
+	@Excel(name = "人员年龄", width = 15)
+	@ApiModelProperty(value = "人员年龄")
+    private java.lang.String peopleAge;
 	/**政治面貌*/
 	@Excel(name = "政治面貌", width = 15)
 	@ApiModelProperty(value = "政治面貌")
