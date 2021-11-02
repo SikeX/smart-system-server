@@ -32,10 +32,6 @@ public class SmartPremaritalFilingApp implements Serializable {
 	/**主表id*/
     @ApiModelProperty(value = "主表id")
     private java.lang.String parentId;
-	/**序号*/
-	@Excel(name = "序号", width = 15)
-    @ApiModelProperty(value = "序号")
-    private java.lang.String serialNumber;
 	/**附件说明*/
 	@Excel(name = "附件说明", width = 15)
     @ApiModelProperty(value = "附件说明")
@@ -45,11 +41,13 @@ public class SmartPremaritalFilingApp implements Serializable {
     @ApiModelProperty(value = "附件文件路径")
     private java.lang.String appFilePath;
 	/**上传时间*/
-	@Excel(name = "上传时间", width = 15)
+	@Excel(name = "上传时间", width = 15, format = "yyyy-MM-dd")
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     @ApiModelProperty(value = "上传时间")
-    private java.lang.String uploadTime;
+    private java.util.Date uploadTime;
 	/**下载次数*/
 	@Excel(name = "下载次数", width = 15)
     @ApiModelProperty(value = "下载次数")
-    private java.lang.String downloadNum;
+    private java.lang.Integer downloadNum;
 }
