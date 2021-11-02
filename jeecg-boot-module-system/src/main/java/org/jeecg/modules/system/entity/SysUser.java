@@ -5,6 +5,7 @@ import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModelProperty;
 import org.jeecg.common.aspect.annotation.Dict;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -175,6 +176,21 @@ public class SysUser implements Serializable {
     @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
     private String departIds;
 
+    /**
+     * 民族
+     */
+    @Excel(name = "民族", width = 15,dicCode="ethnicity")
+    @ApiModelProperty(value = "民族")
+    @Dict(dicCode = "ethnicity")
+    private java.lang.String ethnicity;
+
+    /**
+     * 政治面貌
+     */
+    @Excel(name = "政治面貌", width = 15,dicCode="political_status")
+    @ApiModelProperty(value = "政治面貌")
+    @Dict(dicCode = "political_status")
+    private java.lang.String politicalStatus;
     /**
      * 多租户id配置，编辑用户的时候设置
      */
