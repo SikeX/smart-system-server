@@ -53,7 +53,7 @@ public class SmartPremaritalFiling implements Serializable {
 	/**工作单位*/
 	@Excel(name = "工作单位", width = 15)
     @ApiModelProperty(value = "工作单位")
-    private java.lang.String workUint;
+    private java.lang.String workUnit;
 	/**职务*/
 	@Excel(name = "职务", width = 15)
     @ApiModelProperty(value = "职务")
@@ -101,7 +101,7 @@ public class SmartPremaritalFiling implements Serializable {
 	/**拟宴请人数*/
 	@Excel(name = "拟宴请人数", width = 15)
     @ApiModelProperty(value = "拟宴请人数")
-    private java.lang.String guestsNumber;
+    private java.lang.Integer guestsNumber;
 	/**婚宴场所名称*/
 	@Excel(name = "婚宴场所名称", width = 15)
     @ApiModelProperty(value = "婚宴场所名称")
