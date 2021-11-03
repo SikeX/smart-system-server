@@ -18,7 +18,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 述责述廉表
  * @Author: jeecg-boot
- * @Date:   2021-11-02
+ * @Date:   2021-11-03
  * @Version: V1.0
  */
 @Data
@@ -28,6 +28,24 @@ public class SmartEvaluateMeetingPage {
 	/**主键*/
 	@ApiModelProperty(value = "主键")
     private java.lang.String id;
+	/**会议名称*/
+	@Excel(name = "会议名称", width = 15)
+	@ApiModelProperty(value = "会议名称")
+    private java.lang.String meetingName;
+	/**地址*/
+	@Excel(name = "地址", width = 15)
+	@ApiModelProperty(value = "地址")
+    private java.lang.String meetingPlace;
+	/**检查时间*/
+	@Excel(name = "检查时间", width = 15, format = "yyyy-MM-dd")
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+	@ApiModelProperty(value = "检查时间")
+    private java.util.Date checkTime;
+	/**对象类型*/
+	@Excel(name = "对象类型", width = 15)
+	@ApiModelProperty(value = "对象类型")
+    private java.lang.String peopleType;
 	/**创建人*/
 	@ApiModelProperty(value = "创建人")
     private java.lang.String createBy;
@@ -51,24 +69,6 @@ public class SmartEvaluateMeetingPage {
 	@Excel(name = "单位ID", width = 15)
 	@ApiModelProperty(value = "单位ID")
     private java.lang.String departId;
-	/**检查时间*/
-	@Excel(name = "检查时间", width = 15, format = "yyyy-MM-dd")
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
-	@ApiModelProperty(value = "检查时间")
-    private java.util.Date checkTime;
-	/**地址*/
-	@Excel(name = "地址", width = 15)
-	@ApiModelProperty(value = "地址")
-    private java.lang.String meetingPlace;
-	/**会议名称*/
-	@Excel(name = "会议名称", width = 15)
-	@ApiModelProperty(value = "会议名称")
-    private java.lang.String meetingName;
-	/**对象类型*/
-	@Excel(name = "对象类型", width = 15)
-	@ApiModelProperty(value = "对象类型")
-    private java.lang.String peopleType;
 	/**备注*/
 	@Excel(name = "备注", width = 15)
 	@ApiModelProperty(value = "备注")

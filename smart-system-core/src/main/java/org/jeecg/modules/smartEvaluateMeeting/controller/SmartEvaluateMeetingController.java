@@ -47,7 +47,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
  /**
  * @Description: 述责述廉表
  * @Author: jeecg-boot
- * @Date:   2021-11-02
+ * @Date:   2021-11-03
  * @Version: V1.0
  */
 @Api(tags="述责述廉表")
