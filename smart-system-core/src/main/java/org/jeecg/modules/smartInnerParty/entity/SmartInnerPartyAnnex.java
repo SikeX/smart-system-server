@@ -1,4 +1,4 @@
-package org.jeecg.modules.smartPremaritalFiling.entity;
+package org.jeecg.modules.smartInnerParty.entity;
 
 import java.io.Serializable;
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -14,32 +14,36 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.UnsupportedEncodingException;
 
 /**
- * @Description: 8项规定婚前报备表附表
+ * @Description: 党内谈话附件表
  * @Author: jeecg-boot
  * @Date:   2021-11-02
  * @Version: V1.0
  */
-@ApiModel(value="smart_premarital_filing_app对象", description="8项规定婚前报备表附表")
+@ApiModel(value="smart_inner_party_annex对象", description="党内谈话附件表")
 @Data
-@TableName("smart_premarital_filing_app")
-public class SmartPremaritalFilingApp implements Serializable {
+@TableName("smart_inner_party_annex")
+public class SmartInnerPartyAnnex implements Serializable {
     private static final long serialVersionUID = 1L;
 
-	/**主键*/
+	/**id*/
 	@TableId(type = IdType.ASSIGN_ID)
-    @ApiModelProperty(value = "主键")
+    @ApiModelProperty(value = "id")
     private java.lang.String id;
-	/**主表id*/
-    @ApiModelProperty(value = "主表id")
-    private java.lang.String parentId;
+	/**党内谈话表ID*/
+    @ApiModelProperty(value = "党内谈话表ID")
+    private java.lang.String innerPartyId;
+	/**序号*/
+	@Excel(name = "序号", width = 15)
+    @ApiModelProperty(value = "序号")
+    private java.lang.Integer index;
 	/**附件说明*/
 	@Excel(name = "附件说明", width = 15)
     @ApiModelProperty(value = "附件说明")
-    private java.lang.String appExplain;
+    private java.lang.String annexEpl;
 	/**附件文件路径*/
 	@Excel(name = "附件文件路径", width = 15)
     @ApiModelProperty(value = "附件文件路径")
-    private java.lang.String appFilePath;
+    private java.lang.String annexPath;
 	/**上传时间*/
 	@Excel(name = "上传时间", width = 15, format = "yyyy-MM-dd")
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
@@ -49,5 +53,5 @@ public class SmartPremaritalFilingApp implements Serializable {
 	/**下载次数*/
 	@Excel(name = "下载次数", width = 15)
     @ApiModelProperty(value = "下载次数")
-    private java.lang.Integer downloadNum;
+    private java.lang.Integer downloadCount;
 }
