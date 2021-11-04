@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 /**
  * @Description: 8项规定婚前报备表
  * @Author: jeecg-boot
- * @Date:   2021-11-02
+ * @Date:   2021-11-04
  * @Version: V1.0
  */
 public interface SmartPremaritalFilingMapper extends BaseMapper<SmartPremaritalFiling> {
