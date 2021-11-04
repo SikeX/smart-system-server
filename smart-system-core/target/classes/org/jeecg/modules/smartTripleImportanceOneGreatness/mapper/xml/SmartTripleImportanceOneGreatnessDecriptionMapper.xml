@@ -6,13 +6,11 @@
 		DELETE 
 		FROM  smart_triple_importance_one_greatness_decription 
 		WHERE
-			 meeting_id = #{mainId} 
-	</delete>
+			 meeting_id = #{mainId} 	</delete>
 	
 	<select id="selectByMainId" parameterType="java.lang.String" resultType="org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatnessDecription">
 		SELECT * 
 		FROM  smart_triple_importance_one_greatness_decription
 		WHERE
-			 meeting_id = #{mainId} 
-	</select>
+			 meeting_id = #{mainId} 	</select>
 </mapper>
