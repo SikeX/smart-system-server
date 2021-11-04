@@ -28,8 +28,9 @@ public class SmartTripleImportanceOneGreatnessPage {
 	@ApiModelProperty(value = "主键")
     private java.lang.String id;
 	/**单位ID*/
+	@Excel(name = "单位ID", width = 15)
 	@ApiModelProperty(value = "单位ID")
-    private java.lang.String sysOrgCode;
+    private java.lang.String documentid;
 	/**名称*/
 	@Excel(name = "名称", width = 15)
 	@ApiModelProperty(value = "名称")
