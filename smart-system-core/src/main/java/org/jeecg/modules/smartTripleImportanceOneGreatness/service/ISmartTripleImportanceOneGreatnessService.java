@@ -3,7 +3,6 @@ package org.jeecg.modules.smartTripleImportanceOneGreatness.service;
 import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatnessDecription;
 import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatness;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.beans.factory.annotation.Autowired;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -17,6 +16,18 @@ import java.util.List;
 public interface ISmartTripleImportanceOneGreatnessService extends IService<SmartTripleImportanceOneGreatness> {
 
 	/**
+	 * 添加一对多
+	 * 
+	 */
+	public void saveMain(SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness,List<SmartTripleImportanceOneGreatnessDecription> smartTripleImportanceOneGreatnessDecriptionList) ;
+	
+	/**
+	 * 修改一对多
+	 * 
+	 */
+	public void updateMain(SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness,List<SmartTripleImportanceOneGreatnessDecription> smartTripleImportanceOneGreatnessDecriptionList);
+	
+	/**
 	 * 删除一对多
 	 */
 	public void delMain (String id);
@@ -25,6 +36,5 @@ public interface ISmartTripleImportanceOneGreatnessService extends IService<Smar
 	 * 批量删除一对多
 	 */
 	public void delBatchMain (Collection<? extends Serializable> idList);
-
-
+	
 }
