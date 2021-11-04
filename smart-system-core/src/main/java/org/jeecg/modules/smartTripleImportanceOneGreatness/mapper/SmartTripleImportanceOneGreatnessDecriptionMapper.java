@@ -16,4 +16,5 @@ public interface SmartTripleImportanceOneGreatnessDecriptionMapper extends BaseM
 	public boolean deleteByMainId(@Param("mainId") String mainId);
     
 	public List<SmartTripleImportanceOneGreatnessDecription> selectByMainId(@Param("mainId") String mainId);
+
 }
