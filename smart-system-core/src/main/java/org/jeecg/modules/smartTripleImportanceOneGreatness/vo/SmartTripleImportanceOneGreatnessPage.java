@@ -17,7 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 三重一大表
  * @Author: jeecg-boot
- * @Date:   2021-11-03
+ * @Date:   2021-11-04
  * @Version: V1.0
  */
 @Data
@@ -28,9 +28,8 @@ public class SmartTripleImportanceOneGreatnessPage {
 	@ApiModelProperty(value = "主键")
     private java.lang.String id;
 	/**单位ID*/
-	@Excel(name = "单位ID", width = 15)
 	@ApiModelProperty(value = "单位ID")
-    private java.lang.String docementid;
+    private java.lang.String sysOrgCode;
 	/**名称*/
 	@Excel(name = "名称", width = 15)
 	@ApiModelProperty(value = "名称")
