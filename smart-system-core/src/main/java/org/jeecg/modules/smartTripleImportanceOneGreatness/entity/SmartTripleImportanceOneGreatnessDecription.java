@@ -4,6 +4,7 @@ import java.io.Serializable;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import org.jeecg.common.aspect.annotation.Dict;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -16,12 +17,12 @@ import java.io.UnsupportedEncodingException;
 /**
  * @Description: 三重一大附件表
  * @Author: jeecg-boot
- * @Date:   2021-11-03
+ * @Date:   2021-11-04
  * @Version: V1.0
  */
-@ApiModel(value="smart_triple_importance_one_greatness_decription对象", description="三重一大附件表")
 @Data
 @TableName("smart_triple_importance_one_greatness_decription")
+@ApiModel(value="smart_triple_importance_one_greatness_decription对象", description="三重一大附件表")
 public class SmartTripleImportanceOneGreatnessDecription implements Serializable {
     private static final long serialVersionUID = 1L;
 
