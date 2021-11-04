@@ -29,37 +29,6 @@ public class SmartTripleImportanceOneGreatnessServiceImpl extends ServiceImpl<Sm
 	
 	@Override
 	@Transactional
-	public void saveMain(SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness, List<SmartTripleImportanceOneGreatnessDecription> smartTripleImportanceOneGreatnessDecriptionList) {
-		smartTripleImportanceOneGreatnessMapper.insert(smartTripleImportanceOneGreatness);
-		if(smartTripleImportanceOneGreatnessDecriptionList!=null && smartTripleImportanceOneGreatnessDecriptionList.size()>0) {
-			for(SmartTripleImportanceOneGreatnessDecription entity:smartTripleImportanceOneGreatnessDecriptionList) {
-				//外键设置
-				entity.setMeetingId(smartTripleImportanceOneGreatness.getId());
-				smartTripleImportanceOneGreatnessDecriptionMapper.insert(entity);
-			}
-		}
-	}
-
-	@Override
-	@Transactional
-	public void updateMain(SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness,List<SmartTripleImportanceOneGreatnessDecription> smartTripleImportanceOneGreatnessDecriptionList) {
-		smartTripleImportanceOneGreatnessMapper.updateById(smartTripleImportanceOneGreatness);
-		
-		//1.先删除子表数据
-		smartTripleImportanceOneGreatnessDecriptionMapper.deleteByMainId(smartTripleImportanceOneGreatness.getId());
-		
-		//2.子表数据重新插入
-		if(smartTripleImportanceOneGreatnessDecriptionList!=null && smartTripleImportanceOneGreatnessDecriptionList.size()>0) {
-			for(SmartTripleImportanceOneGreatnessDecription entity:smartTripleImportanceOneGreatnessDecriptionList) {
-				//外键设置
-				entity.setMeetingId(smartTripleImportanceOneGreatness.getId());
-				smartTripleImportanceOneGreatnessDecriptionMapper.insert(entity);
-			}
-		}
-	}
-
-	@Override
-	@Transactional
 	public void delMain(String id) {
 		smartTripleImportanceOneGreatnessDecriptionMapper.deleteByMainId(id);
 		smartTripleImportanceOneGreatnessMapper.deleteById(id);
