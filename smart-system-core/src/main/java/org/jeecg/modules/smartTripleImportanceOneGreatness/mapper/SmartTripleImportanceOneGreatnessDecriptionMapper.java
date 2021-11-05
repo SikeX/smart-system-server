@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 /**
  * @Description: 三重一大附件表
  * @Author: jeecg-boot
- * @Date:   2021-11-01
+ * @Date:   2021-11-04
  * @Version: V1.0
  */
 public interface SmartTripleImportanceOneGreatnessDecriptionMapper extends BaseMapper<SmartTripleImportanceOneGreatnessDecription> {
@@ -16,4 +16,5 @@ public interface SmartTripleImportanceOneGreatnessDecriptionMapper extends BaseM
 	public boolean deleteByMainId(@Param("mainId") String mainId);
     
 	public List<SmartTripleImportanceOneGreatnessDecription> selectByMainId(@Param("mainId") String mainId);
+
 }

@@ -126,6 +126,7 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 			sysDepart.setOrgType(String.valueOf(orgType));
 			sysDepart.setCreateTime(new Date());
 			sysDepart.setDelFlag(CommonConstant.DEL_FLAG_0.toString());
+//			sysDepart.setWorkParentId(sysDepart.getWorkParentId());
 			this.save(sysDepart);
 		}
 
