@@ -17,7 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 三重一大表
  * @Author: jeecg-boot
- * @Date:   2021-11-04
+ * @Date:   2021-11-05
  * @Version: V1.0
  */
 @ApiModel(value="smart_triple_importance_one_greatness对象", description="三重一大表")
