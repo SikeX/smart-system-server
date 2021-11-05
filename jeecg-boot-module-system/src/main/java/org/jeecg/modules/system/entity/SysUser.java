@@ -106,7 +106,6 @@ public class SysUser implements Serializable {
     /**部门名称--将不需要序列化的属性前添加关键字transient，序列化对象的时候，这个属性就不会被序列化*/
     private transient String orgCodeTxt;
 
-    private String departId;
 
     /**
      * 状态(1：正常  2：冻结 ）
