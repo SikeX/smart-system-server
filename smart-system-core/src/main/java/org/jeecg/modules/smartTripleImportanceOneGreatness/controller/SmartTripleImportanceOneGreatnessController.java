@@ -3,10 +3,7 @@ package org.jeecg.modules.smartTripleImportanceOneGreatness.controller;
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,7 +54,7 @@ public class SmartTripleImportanceOneGreatnessController {
 	private ISmartTripleImportanceOneGreatnessService smartTripleImportanceOneGreatnessService;
 	@Autowired
 	private ISmartTripleImportanceOneGreatnessDecriptionService smartTripleImportanceOneGreatnessDecriptionService;
-	
+
 	/**
 	 * 分页列表查询
 	 *
@@ -74,12 +71,29 @@ public class SmartTripleImportanceOneGreatnessController {
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
-		QueryWrapper<SmartTripleImportanceOneGreatness> queryWrapper = QueryGenerator.initQueryWrapper(smartTripleImportanceOneGreatness, req.getParameterMap());
+		// TODO：1. 规则，下面是 以＊*开始
+		String rule = "right_like";
+    // TODO：2. 查询字段
+		String field = "documentid";
+        // 获取登录用户信息，可以用来查询单位部门信息
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		System.out.println(sysUser.getOrgCode());
+
+// 添加查询参数，下面的参数是查询以用户所在部门编码开头的的所有单位数据，即用户所在单位和子单位的信息
+// superQueryParams=[{"rule":"right_like","type":"string","dictCode":"","val":"用户所在的部门","field":"departId"}]
+		HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+		String[] params = {"%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+				+ sysUser.getOrgCode()
+				+ "%22,%22field%22:%22" + field + "%22%7D%5D"};
+		map.put("superQueryParams", params);
+		params = new String[]{"and"};
+		map.put("superQueryMatchType", params);
+		QueryWrapper<SmartTripleImportanceOneGreatness> queryWrapper = QueryGenerator.initQueryWrapper(smartTripleImportanceOneGreatness, map);
 		Page<SmartTripleImportanceOneGreatness> page = new Page<SmartTripleImportanceOneGreatness>(pageNo, pageSize);
 		IPage<SmartTripleImportanceOneGreatness> pageList = smartTripleImportanceOneGreatnessService.page(page, queryWrapper);
 		return Result.OK(pageList);
 	}
-	
+
 	/**
 	 *   添加
 	 *
@@ -95,7 +109,7 @@ public class SmartTripleImportanceOneGreatnessController {
 		smartTripleImportanceOneGreatnessService.saveMain(smartTripleImportanceOneGreatness, smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessDecriptionList());
 		return Result.OK("添加成功！");
 	}
-	
+
 	/**
 	 *  编辑
 	 *
@@ -115,7 +129,7 @@ public class SmartTripleImportanceOneGreatnessController {
 		smartTripleImportanceOneGreatnessService.updateMain(smartTripleImportanceOneGreatness, smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessDecriptionList());
 		return Result.OK("编辑成功!");
 	}
-	
+
 	/**
 	 *   通过id删除
 	 *
@@ -129,7 +143,7 @@ public class SmartTripleImportanceOneGreatnessController {
 		smartTripleImportanceOneGreatnessService.delMain(id);
 		return Result.OK("删除成功!");
 	}
-	
+
 	/**
 	 *  批量删除
 	 *
@@ -143,7 +157,7 @@ public class SmartTripleImportanceOneGreatnessController {
 		this.smartTripleImportanceOneGreatnessService.delBatchMain(Arrays.asList(ids.split(",")));
 		return Result.OK("批量删除成功！");
 	}
-	
+
 	/**
 	 * 通过id查询
 	 *
@@ -161,7 +175,7 @@ public class SmartTripleImportanceOneGreatnessController {
 		return Result.OK(smartTripleImportanceOneGreatness);
 
 	}
-	
+
 	/**
 	 * 通过id查询
 	 *
