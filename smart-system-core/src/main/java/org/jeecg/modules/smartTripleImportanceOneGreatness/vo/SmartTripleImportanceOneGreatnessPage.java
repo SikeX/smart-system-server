@@ -17,7 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 三重一大表
  * @Author: jeecg-boot
- * @Date:   2021-11-04
+ * @Date:   2021-11-05
  * @Version: V1.0
  */
 @Data
@@ -75,15 +75,13 @@ public class SmartTripleImportanceOneGreatnessPage {
 	@ApiModelProperty(value = "备注")
     private java.lang.String meetingRemarks;
 	/**创建人*/
-	@Excel(name = "创建人", width = 15)
 	@ApiModelProperty(value = "创建人")
-    private java.lang.String creatBy;
+    private java.lang.String createBy;
 	/**创建时间*/
-	@Excel(name = "创建时间", width = 20, format = "yyyy-MM-dd HH:mm:ss")
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@ApiModelProperty(value = "创建时间")
-    private java.util.Date creatTime;
+    private java.util.Date createTime;
 
 	@ExcelCollection(name="三重一大附件表")
 	@ApiModelProperty(value = "三重一大附件表")
