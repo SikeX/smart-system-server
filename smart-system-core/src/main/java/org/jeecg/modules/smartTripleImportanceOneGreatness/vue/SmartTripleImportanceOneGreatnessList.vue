@@ -124,7 +124,7 @@
           {
             title:'单位ID',
             align:"center",
-            dataIndex: 'docementid'
+            dataIndex: 'documentid'
           },
           {
             title:'名称',
@@ -179,15 +179,12 @@
           {
             title:'创建人',
             align:"center",
-            dataIndex: 'creatBy'
+            dataIndex: 'createBy'
           },
           {
             title:'创建时间',
             align:"center",
-            dataIndex: 'creatTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
+            dataIndex: 'createTime'
           },
           {
             title: '操作',
@@ -223,7 +220,7 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'docementid',text:'单位ID',dictCode:''})
+         fieldList.push({type:'string',value:'documentid',text:'单位ID',dictCode:''})
          fieldList.push({type:'string',value:'meetingName',text:'名称',dictCode:''})
          fieldList.push({type:'string',value:'meetingPlace',text:'地点',dictCode:''})
          fieldList.push({type:'datetime',value:'meetingStarttime',text:'时间'})
@@ -234,8 +231,8 @@
          fieldList.push({type:'string',value:'meetingRecorer',text:'记录人',dictCode:''})
          fieldList.push({type:'string',value:'meetingAbstract',text:'会议内容摘要',dictCode:''})
          fieldList.push({type:'string',value:'meetingRemarks',text:'备注',dictCode:''})
-         fieldList.push({type:'string',value:'creatBy',text:'创建人',dictCode:''})
-         fieldList.push({type:'date',value:'creatTime',text:'创建时间'})
+         fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
+         fieldList.push({type:'datetime',value:'createTime',text:'创建时间'})
         this.superFieldList = fieldList
       }
     }

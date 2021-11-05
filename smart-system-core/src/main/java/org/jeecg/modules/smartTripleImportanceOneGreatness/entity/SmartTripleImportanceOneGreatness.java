@@ -17,7 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 三重一大表
  * @Author: jeecg-boot
- * @Date:   2021-11-01
+ * @Date:   2021-11-05
  * @Version: V1.0
  */
 @ApiModel(value="smart_triple_importance_one_greatness对象", description="三重一大表")
@@ -33,7 +33,7 @@ public class SmartTripleImportanceOneGreatness implements Serializable {
 	/**单位ID*/
 	@Excel(name = "单位ID", width = 15)
     @ApiModelProperty(value = "单位ID")
-    private java.lang.String docementid;
+    private java.lang.String documentid;
 	/**名称*/
 	@Excel(name = "名称", width = 15)
     @ApiModelProperty(value = "名称")
@@ -78,13 +78,11 @@ public class SmartTripleImportanceOneGreatness implements Serializable {
     @ApiModelProperty(value = "备注")
     private java.lang.String meetingRemarks;
 	/**创建人*/
-	@Excel(name = "创建人", width = 15)
     @ApiModelProperty(value = "创建人")
-    private java.lang.String creatBy;
+    private java.lang.String createBy;
 	/**创建时间*/
-	@Excel(name = "创建时间", width = 15, format = "yyyy-MM-dd")
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "创建时间")
-    private java.util.Date creatTime;
+    private java.util.Date createTime;
 }
