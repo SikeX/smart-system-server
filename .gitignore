@@ -4,3 +4,5 @@
 /.idea/
 *.iml
 rebel.xml
+*/target
+*/.DS_Store
