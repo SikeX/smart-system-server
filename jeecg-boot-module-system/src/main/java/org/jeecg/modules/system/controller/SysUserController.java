@@ -1378,4 +1378,32 @@ public class SysUserController {
         return ls;
     }
 
+
+    /**
+     *  查询当前用户所在部门ID，所在部门名称，上级业务部门，下级业务部门
+     * @return
+     */
+    @RequestMapping(value = "/getCurrentUserDeptWorkMessage", method = RequestMethod.GET)
+    public Result<Map<String,Object>> getCurrentUserDeptWorkMessage() {
+        Result<Map<String,Object>> result = new Result<Map<String,Object>>();
+        try {
+            LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
+            SysDepart currentUserDepart = this.sysDepartService.queryCurrentUserDepart(sysUser.getId());
+            SysDepart currentUserParentDepart = this.sysDepartService.queryDeptByDepartId(currentUserDepart.getWorkParentId());
+            List<SysDepart> currentUserChildrenDeparts = this.sysDepartService.queryWorkChildrenDeparts(currentUserDepart.getId());
+            Map<String,Object> map = new HashMap<String,Object>();
+            map.put("currentUser", sysUser);
+            map.put("currentUserDepart", currentUserDepart);
+            map.put("currentUserParentDepart", currentUserParentDepart);
+            map.put("currentUserChildrenDeparts", currentUserChildrenDeparts);
+            result.setSuccess(true);
+            result.setResult(map);
+        }catch(Exception e) {
+            log.error(e.getMessage(), e);
+            result.error500("查询失败！");
+        }
+        return result;
+    }
+
+
 }
