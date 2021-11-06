@@ -25,4 +25,17 @@ public class SysMessageTemplateServiceImpl extends JeecgServiceImpl<SysMessageTe
     public List<SysMessageTemplate> selectByCode(String code) {
         return sysMessageTemplateMapper.selectByCode(code);
     }
+
+    @Override
+    public void notNull(SysMessageTemplate sysMessageTemplate) {
+        if(sysMessageTemplate.getTemplateType().equals("系统")){
+            sysMessageTemplate.setTemplateType("4");
+        }else if(sysMessageTemplate.getTemplateType().equals("微信")){
+            sysMessageTemplate.setTemplateType("3");
+        }else if(sysMessageTemplate.getTemplateType().equals("邮件")){
+            sysMessageTemplate.setTemplateType("2");
+        }else if(sysMessageTemplate.getTemplateType().equals("短信")){
+            sysMessageTemplate.setTemplateType("1");
+        }
+    }
 }

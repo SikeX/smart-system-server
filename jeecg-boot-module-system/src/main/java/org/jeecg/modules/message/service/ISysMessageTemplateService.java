@@ -13,4 +13,5 @@ import org.jeecg.modules.message.entity.SysMessageTemplate;
  */
 public interface ISysMessageTemplateService extends JeecgService<SysMessageTemplate> {
     List<SysMessageTemplate> selectByCode(String code);
+    public void notNull(SysMessageTemplate sysMessageTemplate);
 }
