@@ -137,4 +137,20 @@ public interface ISysDepartService extends IService<SysDepart>{
      * @return
      */
     List<SysDepart> queryDeptByPid(String pid);
+    /**
+     * 获取业务下级部门
+     * @return
+     */
+    List<SysDepart> queryWorkChildrenDeparts(String deptId);
+    /**
+     * 根据用户id获取用户所在部门
+     * @return
+     */
+    SysDepart queryCurrentUserDepart(String userId);
+    /**
+     * 根据部门id获取部门信息
+     * @return
+     */
+    SysDepart queryDeptByDepartId(String deptId);
+
 }

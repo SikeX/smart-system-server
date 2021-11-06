@@ -550,6 +550,33 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 		return this.baseMapper.queryDeptByPid(pid);
 	}
 	/**
+	 * 获取业务下级部门
+	 * @param deptId
+	 * @return
+	 */
+	@Override
+	public List<SysDepart> queryWorkChildrenDeparts(String deptId){
+		return this.baseMapper.queryWorkChildrenDeparts(deptId);
+	}
+	/**
+	 * 根据部门id获取部门信息
+	 * @param deptId
+	 * @return
+	 */
+	@Override
+	public SysDepart queryDeptByDepartId(String deptId){
+		return this.baseMapper.queryDeptByDepartId(deptId);
+	};
+	/**
+	 * 根据用户id获取用户所在部门
+	 * @param userId
+	 * @return
+	 */
+	@Override
+	public SysDepart queryCurrentUserDepart(String userId){
+		return this.baseMapper.queryCurrentUserDepart(userId);
+	};
+	/**
      * 根据关键字筛选部门信息
      * @param keyWord
      * @return
