@@ -20,14 +20,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @Description: banner的app接口
  * @Author: CabbSir cabbsir@gmail.com
- * @Date:   2021-11-06
+ * @Date: 2021-11-06
  * @Version: V1.0
  */
-@Api(tags="app banner接口")
+@Api(tags = "app banner接口")
 @RestController
 @RequestMapping("/api/client")
 @Slf4j
@@ -37,18 +38,21 @@ public class ApiBannerController extends ApiBaseController {
 
     /**
      * 分页列表查询
-     *
+     * <p>
      * 没必要记录日志的接口
+     *
      * @param banner
      * @param req
      * @return
      */
-    @ApiOperation(value="客户端-获取banner列表", notes="客户端-获取banner列表")
+    @ApiOperation(value = "客户端-获取banner列表", notes = "客户端-获取banner列表")
     @GetMapping(value = "/banner")
-    public Result<?> queryPageList(Banner banner, @RequestParam Map<String, Object> params, HttpServletRequest req) {
+    public Result<?> queryPageList(Banner banner, @RequestParam Map<String, String> params,
+                                   HttpServletRequest req) {
         if (!super.checkSign(params)) {
             return Result.error("签名错误");
         }
+        System.out.println(banner.toString());
         QueryWrapper<Banner> queryWrapper = QueryGenerator.initQueryWrapper(banner, req.getParameterMap());
         Page<Banner> page = new Page<Banner>(1, 1000);
         IPage<Banner> pageList = bannerService.page(page, queryWrapper);
