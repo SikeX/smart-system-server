@@ -1,5 +1,6 @@
 package org.jeecg.modules.message.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.jeecg.common.system.base.entity.JeecgEntity;
 import org.jeecgframework.poi.excel.annotation.Excel;
 
@@ -8,6 +9,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * @Description: 消息模板
@@ -35,4 +37,32 @@ public class SysMessageTemplate extends JeecgEntity{
 	/**模板类型*/
 	@Excel(name = "模板类型", width = 15)
 	private java.lang.String templateType;
+
+	/**创建时间*/
+	@Excel(name = "创建时间", width = 20, format = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private java.util.Date createTime;
+
+	/**修改时间*/
+	@Excel(name = "修改时间", width = 20, format = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private java.util.Date updateTime;
+
+	/**创建人*/
+	@Excel(name = "创建人", width = 50)
+	private java.lang.String createBy;
+
+	/**修改人*/
+	@Excel(name = "修改人", width = 50)
+	private java.lang.String updateBy;
+
+	public String getTemplateType() {
+		return templateType;
+	}
+
+	public void setTemplateType(String templateType) {
+		this.templateType = templateType;
+	}
 }
