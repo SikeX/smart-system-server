@@ -102,9 +102,10 @@ public class SysUser implements Serializable {
      * 部门code(当前选择登录部门)
      */
     private String orgCode;
-
-    /**部门名称*/
+    @Excel(name = "单位", width = 15)
+    /**部门名称--将不需要序列化的属性前添加关键字transient，序列化对象的时候，这个属性就不会被序列化*/
     private transient String orgCodeTxt;
+
 
     /**
      * 状态(1：正常  2：冻结 ）
@@ -177,6 +178,14 @@ public class SysUser implements Serializable {
     private String departIds;
 
     /**
+     * 职级
+     */
+    @Excel(name = "职级", width = 15,dicCode="position_rank")
+    @ApiModelProperty(value = "职级")
+    @Dict(dicCode = "position_rank")
+    private java.lang.String positionRank;
+
+    /**
      * 民族
      */
     @Excel(name = "民族", width = 15,dicCode="ethnicity")
@@ -191,6 +200,15 @@ public class SysUser implements Serializable {
     @ApiModelProperty(value = "政治面貌")
     @Dict(dicCode = "political_status")
     private java.lang.String politicalStatus;
+
+    /**
+     * 入党日期
+     */
+    @Excel(name = "入党日期", width = 15, format = "yyyy-MM-dd")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date joinPartyDate;
+
     /**
      * 多租户id配置，编辑用户的时候设置
      */
