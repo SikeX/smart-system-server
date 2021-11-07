@@ -7,9 +7,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.api.vo.Result;
-import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.system.query.QueryGenerator;
-import org.jeecg.modules.app.entity.ApiParam;
 import org.jeecg.modules.app.entity.Banner;
 import org.jeecg.modules.app.service.IBannerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * @Description: banner的app接口
@@ -52,10 +49,10 @@ public class ApiBannerController extends ApiBaseController {
         if (!super.checkSign(params)) {
             return Result.error("签名错误");
         }
-        System.out.println(banner.toString());
         QueryWrapper<Banner> queryWrapper = QueryGenerator.initQueryWrapper(banner, req.getParameterMap());
-        Page<Banner> page = new Page<Banner>(1, 1000);
+        Page<Banner> page = new Page<>(1, 1000);
         IPage<Banner> pageList = bannerService.page(page, queryWrapper);
+        System.out.println(pageList.toString());
         return Result.OK(pageList);
     }
 }
