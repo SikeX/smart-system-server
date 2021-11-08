@@ -41,8 +41,8 @@ public class ApiMessageController extends ApiBaseController {
                                                    @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                                                    @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
         Result<IPage<MessageModel>> result = new Result<>();
-        // @TODO 这里暂定用admin用户登录，上线之后如何更改再商讨
-        String userId = "e9ca23d68d884d4ebb19d07889727dae"; // admin用户当前id
+        // @TODO 这里暂定共用一个普通用户登录，上线之后如何更改再商讨
+        String userId = "1457591503827329026"; // client用户当前id
         announcementSendModel.setUserId(userId);
         announcementSendModel.setPageNo((pageNo - 1) * pageSize);
         announcementSendModel.setPageSize(pageSize);
