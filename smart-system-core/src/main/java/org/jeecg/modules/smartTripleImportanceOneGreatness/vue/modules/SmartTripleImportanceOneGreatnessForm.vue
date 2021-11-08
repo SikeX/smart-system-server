@@ -5,8 +5,8 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24" >
-            <a-form-model-item label="单位ID" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="docementid">
-              <a-input v-model="model.docementid" placeholder="请输入单位ID" ></a-input>
+            <a-form-model-item label="单位ID" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="documentid">
+              <a-input v-model="model.documentid" placeholder="请输入单位ID" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -60,13 +60,13 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="创建人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="creatBy">
-              <a-input v-model="model.creatBy" placeholder="请输入创建人" ></a-input>
+            <a-form-model-item label="创建人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="createBy">
+              <a-input v-model="model.createBy" placeholder="请输入创建人" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="创建时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="creatTime">
-              <j-date placeholder="请选择创建时间" v-model="model.creatTime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
+            <a-form-model-item label="创建时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="createTime">
+              <j-date placeholder="请选择创建时间" v-model="model.createTime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -125,7 +125,7 @@
         // 新增时子表默认添加几行空数据
         addDefaultRowNum: 1,
         validatorRules: {
-           docementid: [
+           documentid: [
               { required: true, message: '请输入单位ID!'},
            ],
            meetingStarttime: [
@@ -137,7 +137,7 @@
            meetingNumber: [
               { required: true, message: '请输入参会人数!'},
            ],
-           creatTime: [
+           createTime: [
               { required: true, message: '请输入创建时间!'},
            ],
         },
