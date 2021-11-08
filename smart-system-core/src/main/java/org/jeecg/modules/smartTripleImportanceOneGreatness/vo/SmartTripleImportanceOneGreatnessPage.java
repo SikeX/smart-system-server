@@ -17,7 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 三重一大表
  * @Author: jeecg-boot
- * @Date:   2021-11-05
+ * @Date:   2021-11-08
  * @Version: V1.0
  */
 @Data
@@ -82,6 +82,10 @@ public class SmartTripleImportanceOneGreatnessPage {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@ApiModelProperty(value = "创建时间")
     private java.util.Date createTime;
+	/**删除标志*/
+	@Excel(name = "删除标志", width = 15)
+	@ApiModelProperty(value = "删除标志")
+    private java.lang.Integer delFlag;
 
 	@ExcelCollection(name="三重一大附件表")
 	@ApiModelProperty(value = "三重一大附件表")

@@ -57,7 +57,7 @@ public class SmartPremaritalFilingController {
 	private ISmartPremaritalFilingService smartPremaritalFilingService;
 	@Autowired
 	private ISmartPremaritalFilingAppService smartPremaritalFilingAppService;
-	
+
 	/**
 	 * 分页列表查询
 	 *
@@ -74,12 +74,12 @@ public class SmartPremaritalFilingController {
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
-		QueryWrapper<SmartPremaritalFiling> queryWrapper = QueryGenerator.initQueryWrapper(smartPremaritalFiling, req.g	etParameterMap());
+		QueryWrapper<SmartPremaritalFiling> queryWrapper = QueryGenerator.initQueryWrapper(smartPremaritalFiling, req.getParameterMap());
 		Page<SmartPremaritalFiling> page = new Page<SmartPremaritalFiling>(pageNo, pageSize);
 		IPage<SmartPremaritalFiling> pageList = smartPremaritalFilingService.page(page, queryWrapper);
 		return Result.OK(pageList);
 	}
-	
+
 	/**
 	 *   添加
 	 *
@@ -95,7 +95,7 @@ public class SmartPremaritalFilingController {
 		smartPremaritalFilingService.saveMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
 		return Result.OK("添加成功！");
 	}
-	
+
 	/**
 	 *  编辑
 	 *
@@ -115,7 +115,7 @@ public class SmartPremaritalFilingController {
 		smartPremaritalFilingService.updateMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
 		return Result.OK("编辑成功!");
 	}
-	
+
 	/**
 	 *   通过id删除
 	 *
@@ -129,7 +129,7 @@ public class SmartPremaritalFilingController {
 		smartPremaritalFilingService.delMain(id);
 		return Result.OK("删除成功!");
 	}
-	
+
 	/**
 	 *  批量删除
 	 *
@@ -143,7 +143,7 @@ public class SmartPremaritalFilingController {
 		this.smartPremaritalFilingService.delBatchMain(Arrays.asList(ids.split(",")));
 		return Result.OK("批量删除成功！");
 	}
-	
+
 	/**
 	 * 通过id查询
 	 *
@@ -161,7 +161,7 @@ public class SmartPremaritalFilingController {
 		return Result.OK(smartPremaritalFiling);
 
 	}
-	
+
 	/**
 	 * 通过id查询
 	 *

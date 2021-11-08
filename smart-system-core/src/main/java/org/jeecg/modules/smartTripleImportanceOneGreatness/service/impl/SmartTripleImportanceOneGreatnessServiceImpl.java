@@ -16,17 +16,17 @@ import java.util.Collection;
 /**
  * @Description: 三重一大表
  * @Author: jeecg-boot
- * @Date:   2021-11-05
+ * @Date:   2021-11-08
  * @Version: V1.0
  */
 @Service
 public class SmartTripleImportanceOneGreatnessServiceImpl extends ServiceImpl<SmartTripleImportanceOneGreatnessMapper, SmartTripleImportanceOneGreatness> implements ISmartTripleImportanceOneGreatnessService {
 
-	@Autowired
+	@Autowired(required = false)
 	private SmartTripleImportanceOneGreatnessMapper smartTripleImportanceOneGreatnessMapper;
-	@Autowired
+	@Autowired(required = false)
 	private SmartTripleImportanceOneGreatnessDecriptionMapper smartTripleImportanceOneGreatnessDecriptionMapper;
-	
+
 	@Override
 	@Transactional
 	public void saveMain(SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness, List<SmartTripleImportanceOneGreatnessDecription> smartTripleImportanceOneGreatnessDecriptionList) {
@@ -44,10 +44,10 @@ public class SmartTripleImportanceOneGreatnessServiceImpl extends ServiceImpl<Sm
 	@Transactional
 	public void updateMain(SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness,List<SmartTripleImportanceOneGreatnessDecription> smartTripleImportanceOneGreatnessDecriptionList) {
 		smartTripleImportanceOneGreatnessMapper.updateById(smartTripleImportanceOneGreatness);
-		
+
 		//1.先删除子表数据
 		smartTripleImportanceOneGreatnessDecriptionMapper.deleteByMainId(smartTripleImportanceOneGreatness.getId());
-		
+
 		//2.子表数据重新插入
 		if(smartTripleImportanceOneGreatnessDecriptionList!=null && smartTripleImportanceOneGreatnessDecriptionList.size()>0) {
 			for(SmartTripleImportanceOneGreatnessDecription entity:smartTripleImportanceOneGreatnessDecriptionList) {
@@ -73,5 +73,14 @@ public class SmartTripleImportanceOneGreatnessServiceImpl extends ServiceImpl<Sm
 			smartTripleImportanceOneGreatnessMapper.deleteById(id);
 		}
 	}
-	
+	@Override
+	public String getDepartIdByOrgCode(String orgCode) {
+		return smartTripleImportanceOneGreatnessMapper.getDepartIdByOrgCode(orgCode);
+	}
+
+	@Override
+	public List<String> getChildrenIdByOrgCode(String orgCode) {
+		return smartTripleImportanceOneGreatnessMapper.getChildrenIdByOrgCode(orgCode);
+	}
+
 }

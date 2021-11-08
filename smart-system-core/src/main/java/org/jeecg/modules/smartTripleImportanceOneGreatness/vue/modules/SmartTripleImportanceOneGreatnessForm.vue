@@ -5,11 +5,6 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24" >
-            <a-form-model-item label="单位ID" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="documentid">
-              <a-input v-model="model.documentid" placeholder="请输入单位ID" ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
             <a-form-model-item label="名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingName">
               <a-input v-model="model.meetingName" placeholder="请输入名称" ></a-input>
             </a-form-model-item>
@@ -69,6 +64,11 @@
               <j-date placeholder="请选择创建时间" v-model="model.createTime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
             </a-form-model-item>
           </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="删除标志" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="delFlag">
+              <a-input-number v-model="model.delFlag" placeholder="请输入删除标志" style="width: 100%" />
+            </a-form-model-item>
+          </a-col>
         </a-row>
       </a-form-model>
     </j-form-container>
@@ -125,9 +125,6 @@
         // 新增时子表默认添加几行空数据
         addDefaultRowNum: 1,
         validatorRules: {
-           documentid: [
-              { required: true, message: '请输入单位ID!'},
-           ],
            meetingStarttime: [
               { required: true, message: '请输入时间!'},
            ],
@@ -163,6 +160,7 @@
               type: FormTypes.file,
               token:true,
               responseName:"message",
+              disabled:true,
               width:"200px",
               placeholder: '请选择文件',
               defaultValue:'',
