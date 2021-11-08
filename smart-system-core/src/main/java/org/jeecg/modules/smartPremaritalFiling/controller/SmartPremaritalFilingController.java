@@ -45,7 +45,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
  /**
  * @Description: 8项规定婚前报备表
  * @Author: jeecg-boot
- * @Date:   2021-11-04
+ * @Date:   2021-11-08
  * @Version: V1.0
  */
 @Api(tags="8项规定婚前报备表")
@@ -57,9 +57,11 @@ public class SmartPremaritalFilingController {
 	private ISmartPremaritalFilingService smartPremaritalFilingService;
 	@Autowired
 	private ISmartPremaritalFilingAppService smartPremaritalFilingAppService;
-	
-	/**
-	 * 分页列表查询
+
+
+
+     /**
+      * 分页列表查询
 	 *
 	 * @param smartPremaritalFiling
 	 * @param pageNo
@@ -79,7 +81,7 @@ public class SmartPremaritalFilingController {
 		IPage<SmartPremaritalFiling> pageList = smartPremaritalFilingService.page(page, queryWrapper);
 		return Result.OK(pageList);
 	}
-	
+
 	/**
 	 *   添加
 	 *
@@ -95,7 +97,7 @@ public class SmartPremaritalFilingController {
 		smartPremaritalFilingService.saveMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
 		return Result.OK("添加成功！");
 	}
-	
+
 	/**
 	 *  编辑
 	 *
@@ -115,7 +117,7 @@ public class SmartPremaritalFilingController {
 		smartPremaritalFilingService.updateMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
 		return Result.OK("编辑成功!");
 	}
-	
+
 	/**
 	 *   通过id删除
 	 *
@@ -129,7 +131,7 @@ public class SmartPremaritalFilingController {
 		smartPremaritalFilingService.delMain(id);
 		return Result.OK("删除成功!");
 	}
-	
+
 	/**
 	 *  批量删除
 	 *
@@ -143,7 +145,7 @@ public class SmartPremaritalFilingController {
 		this.smartPremaritalFilingService.delBatchMain(Arrays.asList(ids.split(",")));
 		return Result.OK("批量删除成功！");
 	}
-	
+
 	/**
 	 * 通过id查询
 	 *
@@ -161,7 +163,7 @@ public class SmartPremaritalFilingController {
 		return Result.OK(smartPremaritalFiling);
 
 	}
-	
+
 	/**
 	 * 通过id查询
 	 *
@@ -258,4 +260,19 @@ public class SmartPremaritalFilingController {
       return Result.OK("文件导入失败！");
     }
 
-}
+
+     /**
+      * 文件下载数加一
+      */
+     @AutoLog(value = "更新文件下载次数")
+     @ApiOperation(value = "更新文件下载次数", notes = "更新文件下载次数")
+     @PutMapping(value = "/downloadCount")
+     public Result<?> edit(@RequestBody SmartPremaritalFilingApp smartPremaritalFilingApp) {
+         SmartPremaritalFilingApp newSmartPremaritalFilingApp = smartPremaritalFilingAppService.getById(smartPremaritalFilingApp.getId());
+         int currentCount = newSmartPremaritalFilingApp.getDownloadCount();
+         newSmartPremaritalFilingApp.setDownloadCount(currentCount + 1);
+         smartPremaritalFilingAppService.updateById(newSmartPremaritalFilingApp);
+         return Result.OK("更新成功!");
+     }
+
+ }

@@ -16,7 +16,7 @@ import java.io.UnsupportedEncodingException;
 /**
  * @Description: 8项规定婚前报备表附表
  * @Author: jeecg-boot
- * @Date:   2021-11-04
+ * @Date:   2021-11-08
  * @Version: V1.0
  */
 @ApiModel(value="smart_premarital_filing_app对象", description="8项规定婚前报备表附表")
@@ -49,7 +49,7 @@ public class SmartPremaritalFilingApp implements Serializable {
 	/**下载次数*/
 	@Excel(name = "下载次数", width = 15)
     @ApiModelProperty(value = "下载次数")
-    private java.lang.Integer downloadNum;
+    private java.lang.Integer downloadCount;
 	/**创建时间*/
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern="yyyy-MM-dd")
