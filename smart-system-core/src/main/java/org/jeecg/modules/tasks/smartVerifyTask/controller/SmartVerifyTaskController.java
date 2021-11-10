@@ -73,7 +73,7 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 				.select(SmartVerifyDetail::getFlowNo,SmartVerifyDetail::getAuditDepart,SmartVerifyDetail::getAuditPerson,
 						SmartVerifyDetail::getAuditStatus, SmartVerifyDetail::getAuditTime, SmartVerifyDetail::getRemark)
 				.innerJoin(SmartVerifyDetail.class, SmartVerifyDetail::getFlowNo, SmartVerifyTask::getFlowNo)
-				.eq(SmartVerifyDetail::getAuditStatus, 1);
+				.eq(SmartVerifyDetail::getAuditStatus, 2);
 
 		Page<VerifyTaskListPage> page = new Page<VerifyTaskListPage>(pageNo, pageSize);
 		IPage<VerifyTaskListPage> pageList = smartVerifyTaskMapper.selectJoinPage(page, VerifyTaskListPage.class,
