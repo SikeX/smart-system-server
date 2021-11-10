@@ -5,19 +5,24 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="会议地点">
-              <a-input placeholder="请输入会议地点" v-model="queryParam.location"></a-input>
+            <a-form-item label="单位ID">
+              <j-select-depart placeholder="请选择单位ID" v-model="queryParam.departId"/>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="会议名称">
-              <a-input placeholder="请输入会议名称" v-model="queryParam.name"></a-input>
+            <a-form-item label="会议时间">
+              <j-date placeholder="请选择会议时间" v-model="queryParam.meetTime"></j-date>
             </a-form-item>
           </a-col>
           <template v-if="toggleSearchStatus">
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-item label="单位名称">
-                <a-input placeholder="请输入单位名称" v-model="queryParam.departName"></a-input>
+              <a-form-item label="会议地点">
+                <a-input placeholder="请输入会议地点" v-model="queryParam.meetLocation"></a-input>
+              </a-form-item>
+            </a-col>
+            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+              <a-form-item label="会议名称">
+                <a-input placeholder="请输入会议名称" v-model="queryParam.meetName"></a-input>
               </a-form-item>
             </a-col>
           </template>
@@ -148,54 +153,52 @@
             }
           },
           {
+            title:'单位ID',
+            align:"center",
+            dataIndex: 'departId_dictText'
+          },
+          {
+            title:'会议时间',
+            align:"center",
+            dataIndex: 'meetTime',
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            }
+          },
+          {
             title:'会议地点',
             align:"center",
-            dataIndex: 'location'
+            dataIndex: 'meetLocation'
           },
           {
             title:'会议名称',
             align:"center",
-            dataIndex: 'name'
+            dataIndex: 'meetName'
           },
           {
             title:'主持人工号',
             align:"center",
-            dataIndex: 'hostNo'
+            dataIndex: 'hostNo_dictText'
           },
           {
             title:'受约谈函询人工号',
             align:"center",
-            dataIndex: 'inquirePersonNo'
+            dataIndex: 'talkedNo_dictText'
           },
           {
             title:'受诫勉谈话人工号',
             align:"center",
-            dataIndex: 'admonishPersonNo'
+            dataIndex: 'inquirerNo_dictText'
           },
           {
             title:'受党纪处分人工号',
             align:"center",
-            dataIndex: 'punishPersonNo'
-          },
-          {
-            title:'会议摘要',
-            align:"center",
-            dataIndex: 'abs'
+            dataIndex: 'punisherNo_dictText'
           },
           {
             title:'记录人工号',
             align:"center",
-            dataIndex: 'recorderNo'
-          },
-          {
-            title:'创建人工号',
-            align:"center",
-            dataIndex: 'createrNo'
-          },
-          {
-            title:'单位名称',
-            align:"center",
-            dataIndex: 'departName'
+            dataIndex: 'recorderNo_dictText'
           },
           {
             title: '操作',
@@ -207,11 +210,11 @@
           }
         ],
         url: {
-          list: "/inner_party_talk/smartInnerPartyTalk/list",
-          delete: "/inner_party_talk/smartInnerPartyTalk/delete",
-          deleteBatch: "/inner_party_talk/smartInnerPartyTalk/deleteBatch",
-          exportXlsUrl: "/inner_party_talk/smartInnerPartyTalk/exportXls",
-          importExcelUrl: "inner_party_talk/smartInnerPartyTalk/importExcel",
+          list: "/SmartInnerPartyTalk/smartInnerPartyTalk/list",
+          delete: "/SmartInnerPartyTalk/smartInnerPartyTalk/delete",
+          deleteBatch: "/SmartInnerPartyTalk/smartInnerPartyTalk/deleteBatch",
+          exportXlsUrl: "/SmartInnerPartyTalk/smartInnerPartyTalk/exportXls",
+          importExcelUrl: "SmartInnerPartyTalk/smartInnerPartyTalk/importExcel",
           
         },
         dictOptions:{},
@@ -231,16 +234,16 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'location',text:'会议地点',dictCode:''})
-         fieldList.push({type:'string',value:'name',text:'会议名称',dictCode:''})
-         fieldList.push({type:'string',value:'hostNo',text:'主持人工号',dictCode:''})
-         fieldList.push({type:'string',value:'inquirePersonNo',text:'受约谈函询人工号',dictCode:''})
-         fieldList.push({type:'string',value:'admonishPersonNo',text:'受诫勉谈话人工号',dictCode:''})
-         fieldList.push({type:'string',value:'punishPersonNo',text:'受党纪处分人工号',dictCode:''})
+         fieldList.push({type:'sel_depart',value:'departId',text:'单位ID'})
+         fieldList.push({type:'date',value:'meetTime',text:'会议时间'})
+         fieldList.push({type:'string',value:'meetLocation',text:'会议地点',dictCode:''})
+         fieldList.push({type:'string',value:'meetName',text:'会议名称',dictCode:''})
+         fieldList.push({type:'sel_user',value:'hostNo',text:'主持人工号'})
+         fieldList.push({type:'sel_user',value:'talkedNo',text:'受约谈函询人工号'})
+         fieldList.push({type:'sel_user',value:'inquirerNo',text:'受诫勉谈话人工号'})
+         fieldList.push({type:'sel_user',value:'punisherNo',text:'受党纪处分人工号'})
          fieldList.push({type:'string',value:'abs',text:'会议摘要',dictCode:''})
-         fieldList.push({type:'string',value:'recorderNo',text:'记录人工号',dictCode:''})
-         fieldList.push({type:'string',value:'createrNo',text:'创建人工号',dictCode:''})
-         fieldList.push({type:'string',value:'departName',text:'单位名称',dictCode:''})
+         fieldList.push({type:'sel_user',value:'recorderNo',text:'记录人工号'})
         this.superFieldList = fieldList
       }
     }

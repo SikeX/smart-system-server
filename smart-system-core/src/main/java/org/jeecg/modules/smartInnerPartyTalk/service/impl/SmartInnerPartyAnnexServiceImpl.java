@@ -1,8 +1,8 @@
-package org.jeecg.modules.smartInnerPartyTalk.service.impl;
+package org.jeecg.modules.SmartInnerPartyTalk.service.impl;
 
-import org.jeecg.modules.smartInnerPartyTalk.entity.SmartInnerPartyAnnex;
-import org.jeecg.modules.smartInnerPartyTalk.mapper.SmartInnerPartyAnnexMapper;
-import org.jeecg.modules.smartInnerPartyTalk.service.ISmartInnerPartyAnnexService;
+import org.jeecg.modules.SmartInnerPartyTalk.entity.SmartInnerPartyAnnex;
+import org.jeecg.modules.SmartInnerPartyTalk.mapper.SmartInnerPartyAnnexMapper;
+import org.jeecg.modules.SmartInnerPartyTalk.service.ISmartInnerPartyAnnexService;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * @Description: 党内谈话附件表
  * @Author: jeecg-boot
- * @Date:   2021-11-01
+ * @Date:   2021-11-10
  * @Version: V1.0
  */
 @Service

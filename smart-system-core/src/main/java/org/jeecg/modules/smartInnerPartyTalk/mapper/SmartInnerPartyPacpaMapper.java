@@ -1,14 +1,14 @@
-package org.jeecg.modules.smartInnerPartyTalk.mapper;
+package org.jeecg.modules.SmartInnerPartyTalk.mapper;
 
 import java.util.List;
-import org.jeecg.modules.smartInnerPartyTalk.entity.SmartInnerPartyPacpa;
+import org.jeecg.modules.SmartInnerPartyTalk.entity.SmartInnerPartyPacpa;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
 /**
  * @Description: 党内谈话参与人表
  * @Author: jeecg-boot
- * @Date:   2021-11-01
+ * @Date:   2021-11-10
  * @Version: V1.0
  */
 public interface SmartInnerPartyPacpaMapper extends BaseMapper<SmartInnerPartyPacpa> {

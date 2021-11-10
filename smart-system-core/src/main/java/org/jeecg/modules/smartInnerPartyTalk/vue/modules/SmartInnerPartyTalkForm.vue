@@ -5,53 +5,53 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24" >
-            <a-form-model-item label="会议地点" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="location">
-              <a-input v-model="model.location" placeholder="请输入会议地点" ></a-input>
+            <a-form-model-item label="单位ID" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="departId">
+              <j-select-depart v-model="model.departId" multi />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="会议名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="name">
-              <a-input v-model="model.name" placeholder="请输入会议名称" ></a-input>
+            <a-form-model-item label="会议时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetTime">
+              <j-date placeholder="请选择会议时间" v-model="model.meetTime" style="width: 100%" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="会议地点" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetLocation">
+              <a-input v-model="model.meetLocation" placeholder="请输入会议地点" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="会议名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetName">
+              <a-input v-model="model.meetName" placeholder="请输入会议名称" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="主持人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="hostNo">
-              <a-input v-model="model.hostNo" placeholder="请输入主持人工号" ></a-input>
+              <j-select-user-by-dep v-model="model.hostNo" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="受约谈函询人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="inquirePersonNo">
-              <a-input v-model="model.inquirePersonNo" placeholder="请输入受约谈函询人工号" ></a-input>
+            <a-form-model-item label="受约谈函询人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="talkedNo">
+              <j-select-user-by-dep v-model="model.talkedNo" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="受诫勉谈话人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="admonishPersonNo">
-              <a-input v-model="model.admonishPersonNo" placeholder="请输入受诫勉谈话人工号" ></a-input>
+            <a-form-model-item label="受诫勉谈话人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="inquirerNo">
+              <j-select-user-by-dep v-model="model.inquirerNo" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="受党纪处分人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="punishPersonNo">
-              <a-input v-model="model.punishPersonNo" placeholder="请输入受党纪处分人工号" ></a-input>
+            <a-form-model-item label="受党纪处分人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="punisherNo">
+              <j-select-user-by-dep v-model="model.punisherNo" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="会议摘要" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="abs">
-              <a-input v-model="model.abs" placeholder="请输入会议摘要" ></a-input>
+              <j-editor v-model="model.abs" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="记录人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="recorderNo">
-              <a-input v-model="model.recorderNo" placeholder="请输入记录人工号" ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
-            <a-form-model-item label="创建人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="createrNo">
-              <a-input v-model="model.createrNo" placeholder="请输入创建人工号" ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
-            <a-form-model-item label="单位名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="departName">
-              <a-input v-model="model.departName" placeholder="请输入单位名称" ></a-input>
+              <j-select-user-by-dep v-model="model.recorderNo" />
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -59,24 +59,24 @@
     </j-form-container>
       <!-- 子表单区域 -->
     <a-tabs v-model="activeKey" @change="handleChangeTabs">
-      <a-tab-pane tab="党内谈话附件表" :key="refKeys[0]" :forceRender="true">
+      <a-tab-pane tab="党内谈话参与人表" :key="refKeys[0]" :forceRender="true">
         <j-editable-table
           :ref="refKeys[0]"
-          :loading="smartInnerPartyAnnexTable.loading"
-          :columns="smartInnerPartyAnnexTable.columns"
-          :dataSource="smartInnerPartyAnnexTable.dataSource"
+          :loading="smartInnerPartyPacpaTable.loading"
+          :columns="smartInnerPartyPacpaTable.columns"
+          :dataSource="smartInnerPartyPacpaTable.dataSource"
           :maxHeight="300"
           :disabled="formDisabled"
           :rowNumber="true"
           :rowSelection="true"
           :actionButton="true"/>
       </a-tab-pane>
-      <a-tab-pane tab="党内谈话参与人表" :key="refKeys[1]" :forceRender="true">
+      <a-tab-pane tab="党内谈话附件表" :key="refKeys[1]" :forceRender="true">
         <j-editable-table
           :ref="refKeys[1]"
-          :loading="smartInnerPartyPacpaTable.loading"
-          :columns="smartInnerPartyPacpaTable.columns"
-          :dataSource="smartInnerPartyPacpaTable.dataSource"
+          :loading="smartInnerPartyAnnexTable.loading"
+          :columns="smartInnerPartyAnnexTable.columns"
+          :dataSource="smartInnerPartyAnnexTable.dataSource"
           :maxHeight="300"
           :disabled="formDisabled"
           :rowNumber="true"
@@ -123,56 +123,9 @@
         addDefaultRowNum: 1,
         validatorRules: {
         },
-        refKeys: ['smartInnerPartyAnnex', 'smartInnerPartyPacpa', ],
-        tableKeys:['smartInnerPartyAnnex', 'smartInnerPartyPacpa', ],
-        activeKey: 'smartInnerPartyAnnex',
-        // 党内谈话附件表
-        smartInnerPartyAnnexTable: {
-          loading: false,
-          dataSource: [],
-          columns: [
-            {
-              title: '序号',
-              key: 'index',
-              type: FormTypes.inputNumber,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-            },
-            {
-              title: '附件说明',
-              key: 'annexEpl',
-              type: FormTypes.input,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-            },
-            {
-              title: '附件文件路径',
-              key: 'annexPath',
-              type: FormTypes.input,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-            },
-            {
-              title: '上传时间',
-              key: 'uploadTime',
-              type: FormTypes.date,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-            },
-            {
-              title: '下载次数',
-              key: 'downloadCount',
-              type: FormTypes.inputNumber,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-            },
-          ]
-        },
+        refKeys: ['smartInnerPartyPacpa', 'smartInnerPartyAnnex', ],
+        tableKeys:['smartInnerPartyPacpa', 'smartInnerPartyAnnex', ],
+        activeKey: 'smartInnerPartyPacpa',
         // 党内谈话参与人表
         smartInnerPartyPacpaTable: {
           loading: false,
@@ -180,7 +133,7 @@
           columns: [
             {
               title: '参会人员工号',
-              key: 'participantNo',
+              key: 'papcNo',
               type: FormTypes.input,
               width:"200px",
               placeholder: '请输入${title}',
@@ -188,15 +141,58 @@
             },
           ]
         },
+        // 党内谈话附件表
+        smartInnerPartyAnnexTable: {
+          loading: false,
+          dataSource: [],
+          columns: [
+            {
+              title: '上传时间',
+              key: 'createTime',
+              type: FormTypes.datetime,
+              disabled:true,
+              width:"200px",
+              placeholder: '请输入${title}',
+              defaultValue:'',
+            },
+            {
+              title: '附件说明',
+              key: 'supplement',
+              type: FormTypes.input,
+              width:"200px",
+              placeholder: '请输入${title}',
+              defaultValue:'',
+            },
+            {
+              title: '附件文件路径',
+              key: 'annex',
+              type: FormTypes.file,
+              token:true,
+              responseName:"message",
+              width:"200px",
+              placeholder: '请选择文件',
+              defaultValue:'',
+            },
+            {
+              title: '下载次数',
+              key: 'downloadCount',
+              type: FormTypes.inputNumber,
+              disabled:true,
+              width:"200px",
+              placeholder: '请输入${title}',
+              defaultValue:'',
+            },
+          ]
+        },
         url: {
-          add: "/inner_party_talk/smartInnerPartyTalk/add",
-          edit: "/inner_party_talk/smartInnerPartyTalk/edit",
-          queryById: "/inner_party_talk/smartInnerPartyTalk/queryById",
-          smartInnerPartyAnnex: {
-            list: '/inner_party_talk/smartInnerPartyTalk/querySmartInnerPartyAnnexByMainId'
-          },
+          add: "/SmartInnerPartyTalk/smartInnerPartyTalk/add",
+          edit: "/SmartInnerPartyTalk/smartInnerPartyTalk/edit",
+          queryById: "/SmartInnerPartyTalk/smartInnerPartyTalk/queryById",
           smartInnerPartyPacpa: {
-            list: '/inner_party_talk/smartInnerPartyTalk/querySmartInnerPartyPacpaByMainId'
+            list: '/SmartInnerPartyTalk/smartInnerPartyTalk/querySmartInnerPartyPacpaByMainId'
+          },
+          smartInnerPartyAnnex: {
+            list: '/SmartInnerPartyTalk/smartInnerPartyTalk/querySmartInnerPartyAnnexByMainId'
           },
         }
       }
@@ -218,8 +214,8 @@
     },
     methods: {
       addBefore(){
-        this.smartInnerPartyAnnexTable.dataSource=[]
         this.smartInnerPartyPacpaTable.dataSource=[]
+        this.smartInnerPartyAnnexTable.dataSource=[]
       },
       getAllTable() {
         let values = this.tableKeys.map(key => getRefPromise(this, key))
@@ -232,8 +228,8 @@
         // 加载子表数据
         if (this.model.id) {
           let params = { id: this.model.id }
-          this.requestSubTableData(this.url.smartInnerPartyAnnex.list, params, this.smartInnerPartyAnnexTable)
           this.requestSubTableData(this.url.smartInnerPartyPacpa.list, params, this.smartInnerPartyPacpaTable)
+          this.requestSubTableData(this.url.smartInnerPartyAnnex.list, params, this.smartInnerPartyAnnexTable)
         }
       },
       //校验所有一对一子表表单
@@ -257,8 +253,8 @@
         let main = Object.assign(this.model, allValues.formValue)
         return {
           ...main, // 展开
-          smartInnerPartyAnnexList: allValues.tablesValue[0].values,
-          smartInnerPartyPacpaList: allValues.tablesValue[1].values,
+          smartInnerPartyPacpaList: allValues.tablesValue[0].values,
+          smartInnerPartyAnnexList: allValues.tablesValue[1].values,
         }
       },
       validateError(msg){

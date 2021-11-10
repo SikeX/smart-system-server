@@ -1,23 +1,20 @@
 package org.jeecg.modules.system.entity;
 
-import java.util.Date;
-
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 import org.jeecg.common.aspect.annotation.Dict;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.io.Serializable;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
+import java.util.Date;
 
 /**
  * <p>
@@ -102,8 +99,11 @@ public class SysUser implements Serializable {
      */
     private String orgCode;
 
-    /**部门名称*/
+    //private String departId;
+    @Excel(name = "单位", width = 15)
+    /**部门名称--将不需要序列化的属性前添加关键字transient，序列化对象的时候，这个属性就不会被序列化*/
     private transient String orgCodeTxt;
+
 
     /**
      * 状态(1：正常  2：冻结 ）
@@ -174,6 +174,38 @@ public class SysUser implements Serializable {
     @Excel(name="负责部门",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
     @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
     private String departIds;
+
+    /**
+     * 职级
+     */
+    @Excel(name = "职级", width = 15,dicCode="position_rank")
+    @ApiModelProperty(value = "职级")
+    @Dict(dicCode = "position_rank")
+    private java.lang.String positionRank;
+
+    /**
+     * 民族
+     */
+    @Excel(name = "民族", width = 15,dicCode="ethnicity")
+    @ApiModelProperty(value = "民族")
+    @Dict(dicCode = "ethnicity")
+    private java.lang.String ethnicity;
+
+    /**
+     * 政治面貌
+     */
+    @Excel(name = "政治面貌", width = 15,dicCode="political_status")
+    @ApiModelProperty(value = "政治面貌")
+    @Dict(dicCode = "political_status")
+    private java.lang.String politicalStatus;
+
+    /**
+     * 入党日期
+     */
+    @Excel(name = "入党日期", width = 15, format = "yyyy-MM-dd")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date joinPartyDate;
 
     /**
      * 多租户id配置，编辑用户的时候设置
