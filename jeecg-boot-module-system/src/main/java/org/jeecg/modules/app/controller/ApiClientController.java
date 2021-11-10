@@ -6,8 +6,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
+import org.jeecg.common.constant.CacheConstant;
 import org.jeecg.common.constant.CommonConstant;
+import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.system.util.JwtUtil;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.*;
@@ -48,6 +51,8 @@ public class ApiClientController extends ApiBaseController {
     private RedisUtil redisUtil;
     @Resource
     private BaseCommonService baseCommonService;
+    @Autowired
+    private ISysBaseAPI sysBaseAPI;
 
     /**
      * 激活设备接口
@@ -201,7 +206,6 @@ public class ApiClientController extends ApiBaseController {
         return result;
     }
 
-
     /**
      * app进入自动登录
      * @param sysUser
@@ -228,5 +232,46 @@ public class ApiClientController extends ApiBaseController {
         //token 信息
         baseCommonService.addLog("用户名: " + username + ",登录成功[移动端]！", CommonConstant.LOG_TYPE_1, null);
         return Result.OK(token);
+    }
+
+    /**
+     * app端登出
+     * @param params
+     * @return
+     */
+    @ApiOperation(value = "客户端-登出接口", notes = "客户端-登出")
+    @PostMapping(value = "/logout")
+    public Result<?> logout(@RequestParam Map<String, String> params) {
+        // 首先校验参数是否都存在
+        String paramList = "clientIp|androidId|appVersion|mac|sign|brand|model|clientId|token";
+        if (!super.checkParams(params, paramList)) {
+            return Result.error("参数列表错误");
+        }
+        // 校验签名
+        if (!super.checkSign(params)) {
+            return Result.error("签名错误");
+        }
+        //用户退出逻辑
+        String token = params.get("token").replace(CommonConstant.PREFIX_USER_TOKEN, "");
+        if(oConvertUtils.isEmpty(token)) {
+            return Result.error("退出登录失败");
+        }
+        String username = JwtUtil.getUsername(token);
+        LoginUser sysUser = sysBaseAPI.getUserByName(username);
+        if(sysUser!=null) {
+            baseCommonService.addLog("用户名: "+sysUser.getRealname()+",退出成功！", CommonConstant.LOG_TYPE_1, null,sysUser);
+            log.info(" 用户名:  "+sysUser.getRealname()+",退出成功！ ");
+            //清空用户登录Token缓存
+            redisUtil.del(CommonConstant.PREFIX_USER_TOKEN + token);
+            //清空用户登录Shiro权限缓存
+            redisUtil.del(CommonConstant.PREFIX_USER_SHIRO_CACHE + sysUser.getId());
+            //清空用户的缓存信息（包括部门信息），例如sys:cache:user::<username>
+            redisUtil.del(String.format("%s::%s", CacheConstant.SYS_USERS_CACHE, sysUser.getUsername()));
+            //调用shiro的logout
+            SecurityUtils.getSubject().logout();
+            return Result.OK("退出登录成功");
+        }else {
+            return Result.error("Token无效");
+        }
     }
 }
