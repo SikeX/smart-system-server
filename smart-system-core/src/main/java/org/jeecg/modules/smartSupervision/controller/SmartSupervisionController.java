@@ -3,15 +3,13 @@ package org.jeecg.modules.smartSupervision.controller;
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -45,7 +43,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
  /**
  * @Description: 八项规定监督检查表
  * @Author: jeecg-boot
- * @Date:   2021-11-08
+ * @Date:   2021-11-10
  * @Version: V1.0
  */
 @Api(tags="八项规定监督检查表")
@@ -57,6 +55,8 @@ public class SmartSupervisionController {
 	private ISmartSupervisionService smartSupervisionService;
 	@Autowired
 	private ISmartSupervisionAnnexService smartSupervisionAnnexService;
+	@Autowired
+	private ISysBaseAPI sysBaseAPI;
 	
 	/**
 	 * 分页列表查询
@@ -74,7 +74,23 @@ public class SmartSupervisionController {
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
-		QueryWrapper<SmartSupervision> queryWrapper = QueryGenerator.initQueryWrapper(smartSupervision, req.getParameterMap());
+		// TODO：1. 规则，下面是 以＊*开始
+		String rule = "right_like";
+		// TODO：2. 查询字段
+		String field = "sysOrgCode";
+		// 获取登录用户信息，可以用来查询单位部门信息
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+//		System.out.println(sysUser.getOrgCode());
+
+		// 添加查询参数，下面的参数是查询以用户所在部门编码开头的的所有单位数据，即用户所在单位和子单位的信息
+		// superQueryParams=[{"rule":"right_like","type":"string","dictCode":"","val":"用户所在的部门","field":"departId"}]
+		HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+		String[] params = {"%5B%7B%22rule%22%3A%22" + rule + "%22%2C%22type%22%3A%22input%22%2C%22dictCode%22" +
+				"%3A%22%22%2C%22val%22%3A%22"+ sysUser.getOrgCode() +"%22%2C%22field%22%3A%22"+ field +"%22%7D%5D"};
+		map.put("superQueryParams", params);
+		params = new String[]{"and"};
+		map.put("superQueryMatchType", params);
+		QueryWrapper<SmartSupervision> queryWrapper = QueryGenerator.initQueryWrapper(smartSupervision, map);
 		Page<SmartSupervision> page = new Page<SmartSupervision>(pageNo, pageSize);
 		IPage<SmartSupervision> pageList = smartSupervisionService.page(page, queryWrapper);
 		return Result.OK(pageList);
@@ -90,6 +106,17 @@ public class SmartSupervisionController {
 	@ApiOperation(value="八项规定监督检查表-添加", notes="八项规定监督检查表-添加")
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody SmartSupervisionPage smartSupervisionPage) {
+
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		String orgCode = sysUser.getOrgCode();
+		log.info(orgCode);
+		if("".equals(orgCode)) {
+			return Result.error("本用户没有操作权限");
+		}
+
+		String id = sysBaseAPI.getDepartIdsByOrgCode(orgCode);
+		log.info(id);
+		smartSupervisionPage.setDepartId(id);
 		SmartSupervision smartSupervision = new SmartSupervision();
 		BeanUtils.copyProperties(smartSupervisionPage, smartSupervision);
 		smartSupervisionService.saveMain(smartSupervision, smartSupervisionPage.getSmartSupervisionAnnexList());
@@ -257,16 +284,5 @@ public class SmartSupervisionController {
       }
       return Result.OK("文件导入失败！");
     }
-
-	 @AutoLog(value = "更新文件下载次数")
-	 @ApiOperation(value="更新文件下载次数", notes="更新文件下载次数")
-	 @PutMapping(value = "/downloadCount")
-	 public Result<?> edit(@RequestBody SmartSupervisionAnnex smartSupervisionAnnex) {
-		 SmartSupervisionAnnex newSmartSupervisionAnnex = smartSupervisionAnnexService.getById(smartSupervisionAnnex.getId());
-		 int currentCount = newSmartSupervisionAnnex.getDownloadCount();
-		 newSmartSupervisionAnnex.setDownloadCount(currentCount+1);
-		 smartSupervisionAnnexService.updateById(newSmartSupervisionAnnex);
-		 return Result.OK("更新成功!");
-	 }
 
 }

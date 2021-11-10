@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -17,7 +18,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 八项规定监督检查表
  * @Author: jeecg-boot
- * @Date:   2021-11-08
+ * @Date:   2021-11-10
  * @Version: V1.0
  */
 @ApiModel(value="smart_supervision对象", description="八项规定监督检查表")
@@ -47,8 +48,9 @@ public class SmartSupervision implements Serializable {
     @ApiModelProperty(value = "更新日期")
     private java.util.Date updateTime;
 	/**所属部门*/
+	@Excel(name = "部门ID", width = 15)
     @ApiModelProperty(value = "所属部门")
-    private java.lang.String sysOrgCode;
+    private java.lang.String departId;
 	/**标题*/
 	@Excel(name = "标题", width = 15)
     @ApiModelProperty(value = "标题")
@@ -63,8 +65,17 @@ public class SmartSupervision implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @ApiModelProperty(value = "监督检查时间")
     private java.util.Date supervisionTime;
-	/**创建人工号*/
-	@Excel(name = "创建人工号", width = 15)
-    @ApiModelProperty(value = "创建人工号")
+	/**创建人员工号*/
+	@Excel(name = "创建人员工号", width = 15)
+    @ApiModelProperty(value = "创建人员工号")
     private java.lang.String creatorNo;
+    /**创建人员工号*/
+    @Excel(name = "所属部门", width = 15)
+    @ApiModelProperty(value = "所属部门")
+    private java.lang.String sysOrgCode;
+	/**删除标志位*/
+	@Excel(name = "删除标志位", width = 15)
+    @TableLogic
+    @ApiModelProperty(value = "删除标志位")
+    private java.lang.Integer delFlag;
 }
