@@ -1,0 +1,10 @@
+org\jeecg\common\bpm\api\factory\BpmBaseExtAPIFallbackFactory.class
+org\jeecg\common\bpm\api\fallback\BpmBaseExtAPIFallback.class
+org\jeecg\common\bpm\api\IBpmBaseExtAPI.class
+org\jeecg\common\online\api\IOnlineBaseExtAPI.class
+org\jeecg\config\FeignConfig.class
+org\jeecg\common\online\api\fallback\OnlineBaseExtAPIFallback.class
+org\jeecg\common\system\api\fallback\SysBaseAPIFallback.class
+org\jeecg\common\online\api\factory\OnlineBaseExtAPIFallbackFactory.class
+org\jeecg\common\system\api\factory\SysBaseAPIFallbackFactory.class
+org\jeecg\common\system\api\ISysBaseAPI.class
