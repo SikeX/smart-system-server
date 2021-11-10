@@ -88,7 +88,7 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 		List<SysDepart> list = this.list(query);
 		// 调用wrapTreeDataToTreeList方法生成树状数据
 		List<SysDepartTreeModel> listResult = FindsDepartsChildrenUtil.wrapTreeDataToTreeList(list);
-		log.debug("service层业务树"+listResult);
+//		log.debug("service层业务树"+listResult);
 		return listResult;
 	}
 
@@ -104,7 +104,7 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 		List<SysDepart> list = this.list(query);
 		// 调用wrapTreeDataToTreeList方法生成树状数据
 		List<SysDepartTreeModel> listResult = FindsNaturalDepartsChildrenUtil.wrapNaturalTreeDataToTreeList(list);
-		System.out.println("service层自然树"+listResult);
+//		System.out.println("service层自然树"+listResult);
 		return listResult;
 	}
 
