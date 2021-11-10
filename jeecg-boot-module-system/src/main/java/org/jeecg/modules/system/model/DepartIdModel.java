@@ -15,7 +15,7 @@ import org.jeecg.modules.system.entity.SysDepart;
  * @Since 2019-01-22 
  *
  */
-public class DepartIdModel implements Serializable {
+public class  DepartIdModel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

@@ -1,12 +1,8 @@
 package org.jeecg.modules.system.util;
 
-import org.jeecg.common.constant.CommonConstant;
-import org.jeecg.common.util.RedisUtil;
-import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.system.entity.SysDepart;
 import org.jeecg.modules.system.model.DepartIdModel;
 import org.jeecg.modules.system.model.SysDepartTreeModel;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +15,7 @@ import java.util.List;
  * @Author: Steve
  * @Date: 2019-01-22
  */
-public class FindsDepartsChildrenUtil {
+public class FindsNaturalDepartsChildrenUtil {
 
 	//部门树信息-树结构
 	//private static List<SysDepartTreeModel> sysDepartTreeList = new ArrayList<SysDepartTreeModel>();
@@ -111,7 +107,7 @@ public class FindsDepartsChildrenUtil {
         List<SysDepartTreeModel> treeList = new ArrayList<>();
         for (int i = 0; i < recordList.size(); i++) {
             SysDepartTreeModel branch = recordList.get(i);
-            if(oConvertUtils.isEmpty(branch.getParentId()) && branch.getDepartName().equals("哈尔滨道里区纪委")){
+            if(branch.getDepartName().equals("哈尔滨道里区纪委")){
                 treeList.add(branch);
                 DepartIdModel departIdModel = new DepartIdModel().convert(branch);
                 departIdList.add(departIdModel);
