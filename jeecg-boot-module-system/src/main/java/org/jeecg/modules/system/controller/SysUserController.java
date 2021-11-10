@@ -1389,7 +1389,7 @@ public class SysUserController {
         try {
             LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
             SysDepart currentUserDepart = this.sysDepartService.queryCurrentUserDepart(sysUser.getId());
-            SysDepart currentUserParentDepart = this.sysDepartService.queryDeptByDepartId(currentUserDepart.getWorkParentId());
+            SysDepart currentUserParentDepart = this.sysDepartService.queryDeptByDepartId(currentUserDepart.getBusinessParentId());
             List<SysDepart> currentUserChildrenDeparts = this.sysDepartService.queryWorkChildrenDeparts(currentUserDepart.getId());
             Map<String,Object> map = new HashMap<String,Object>();
             map.put("currentUser", sysUser);

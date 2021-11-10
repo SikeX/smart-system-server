@@ -30,10 +30,22 @@ public interface ISysDepartService extends IService<SysDepart>{
     List<SysDepartTreeModel> queryTreeList();
 
     /**
+     * 查询所有部门信息,并分节点进行显示,自然层级
+     * @return
+     */
+    List<SysDepartTreeModel> queryNaturalTreeList();
+
+    /**
      * 查询所有部门DepartId信息,并分节点进行显示
      * @return
      */
     public List<DepartIdModel> queryDepartIdTreeList();
+
+    /**
+     * 查询所有自然层级部门DepartId信息,并分节点进行显示
+     * @return
+     */
+    public List<DepartIdModel> queryNaturalDepartIdTreeList();
 
     /**
      * 保存部门数据
