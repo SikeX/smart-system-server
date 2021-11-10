@@ -1,5 +1,6 @@
 package org.jeecg.modules.app.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.annotations.Api;
@@ -12,6 +13,7 @@ import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.*;
 import org.jeecg.modules.app.entity.AppUser;
 import org.jeecg.modules.app.service.IApiClientService;
+import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.system.entity.SysDepart;
 import org.jeecg.modules.system.entity.SysTenant;
 import org.jeecg.modules.system.entity.SysUser;
@@ -24,9 +26,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.Resource;
+import java.util.*;
 
 /**
  * @Description: 客户端的一些功能接口
@@ -42,15 +43,11 @@ public class ApiClientController extends ApiBaseController {
     @Autowired
     private IApiClientService apiClientService;
     @Autowired
-    private RedisUtil redisUtil;
-    @Autowired
     private ISysUserService sysUserService;
     @Autowired
-    private ISysDepartService sysDepartService;
-    @Autowired
-    private ISysTenantService sysTenantService;
-    @Autowired
-    private ISysDictService sysDictService;
+    private RedisUtil redisUtil;
+    @Resource
+    private BaseCommonService baseCommonService;
 
     /**
      * 激活设备接口
@@ -81,7 +78,6 @@ public class ApiClientController extends ApiBaseController {
                     params.get("appVersion"), params.get("brand"), params.get("model"), now,
                     ACCOUNT_ACTIVE_STATUS, now, now);
             apiClientService.updateById(newData);
-
         } else {
             appUser = new AppUser(params.get("androidId"), params.get("clientIp"), params.get("mac"),
                     params.get("appVersion"), params.get("brand"), params.get("model"), now,
@@ -90,73 +86,147 @@ public class ApiClientController extends ApiBaseController {
             id = apiClientService.insert(appUser);
         }
         appUser = apiClientService.queryById(id);
-        appUser.setToken("");
-        autoLogin();
-        System.out.println(autoLogin());
-        return Result.OK(appUser);
-    }
-
-    public Result<JSONObject> autoLogin(){
-        Result<JSONObject> result = new Result<JSONObject>();
-        String username = "client_common";
-        //1. 校验用户是否有效
-        LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SysUser::getUsername,username);
-        SysUser sysUser = sysUserService.getOne(queryWrapper);
-
-        //用户登录信息
-        userInfo(sysUser, result);
-        LoginUser loginUser = new LoginUser();
-        BeanUtils.copyProperties(sysUser, loginUser);
-        return result;
-    }
-
-    private Result<JSONObject> userInfo(SysUser sysUser, Result<JSONObject> result) {
-        String syspassword = sysUser.getPassword();
-        String username = sysUser.getUsername();
-        // 获取用户部门信息
-        JSONObject obj = new JSONObject();
-        List<SysDepart> departs = sysDepartService.queryUserDeparts(sysUser.getId());
-        obj.put("departs", departs);
-        if (departs == null || departs.size() == 0) {
-            obj.put("multi_depart", 0);
-        } else if (departs.size() == 1) {
-            sysUserService.updateUserDepart(username, departs.get(0).getOrgCode());
-            obj.put("multi_depart", 1);
+        SysUser sysUser = null;
+        if (appUser.getSysUserId() == null) {
+            // 如果没有关联系统用户，那么注册
+            sysUser = register(appUser);
+            if (sysUser == null) {
+                log.error("注册新用户失败，客户端用户数据如下 " + appUser);
+                return Result.OK(appUser); // 由于token和sys_user_id为空，客户端根据这个字段判断是否注册成功，并且返回提示
+            }
+            appUser.setSysUserId(sysUser.getId());
         } else {
-            //查询当前是否有登录部门
-            // update-begin--Author:wangshuai Date:20200805 for：如果用戶为选择部门，数据库为存在上一次登录部门，则取一条存进去
-            SysUser sysUserById = sysUserService.getById(sysUser.getId());
-            if(oConvertUtils.isEmpty(sysUserById.getOrgCode())){
-                sysUserService.updateUserDepart(username, departs.get(0).getOrgCode());
-            }
-            // update-end--Author:wangshuai Date:20200805 for：如果用戶为选择部门，数据库为存在上一次登录部门，则取一条存进去
-            obj.put("multi_depart", 2);
+            sysUser = sysUserService.queryById(appUser.getSysUserId());
         }
-        // update-begin--Author:sunjianlei Date:20210802 for：获取用户租户信息
-        String tenantIds = sysUser.getRelTenantIds();
-        if (oConvertUtils.isNotEmpty(tenantIds)) {
-            List<String> tenantIdList = Arrays.asList(tenantIds.split(","));
-            // 该方法仅查询有效的租户，如果返回0个就说明所有的租户均无效。
-            List<SysTenant> tenantList = sysTenantService.queryEffectiveTenant(tenantIdList);
-            if (tenantList.size() == 0) {
-                result.error500("与该用户关联的租户均已被冻结，无法登录！");
-                return result;
-            } else {
-                obj.put("tenantList", tenantList);
-            }
+        // 自动登录并且返回token
+        Result<?> loginResult = autoLogin(sysUser);
+        if (loginResult.isSuccess()) {
+            appUser.setToken(loginResult.getResult().toString());
         }
-        // update-end--Author:sunjianlei Date:20210802 for：获取用户租户信息
+        return Result.OK(loginResult.getMessage(), appUser);
+    }
+
+    /**
+     * 设置默认用户名 android_user_ + id
+     * 设置默认密码 123456
+     */
+    public SysUser register(AppUser appUser) {
+        // 激活成功之后自动在平台注册用户
+        try {
+            SysUser sysUser = new SysUser();
+            sysUser.setId(UUIDGenerator.generate());
+            sysUser.setUsername("android_user_" + appUser.getId());
+            sysUser.setRealname("安卓用户_" + appUser.getId());
+            sysUser.setClientId(appUser.getClientId());
+            sysUser.setCreateTime(new Date());//设置创建时间
+            sysUser.setUpdateTime(new Date());//设置更新时间
+            String salt = oConvertUtils.randomGen(8);
+            sysUser.setSalt(salt);
+            String passwordEncode = PasswordUtil.encrypt(sysUser.getUsername(), "123456", salt);
+            sysUser.setPassword(passwordEncode);
+            sysUser.setStatus(1);
+            sysUser.setDelFlag(CommonConstant.DEL_FLAG_0);
+            // 保存用户走一个service 保证事务
+            sysUserService.saveUserFromClient(sysUser, "mw7vfrjgbj2e8tdhaulnvz6e1oz4dgws", appUser.getId());
+            return sysUser;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    /**
+     * app端输入用户名密码登录，同时更换绑定用户操作也在这里
+     * @param params
+     * @return
+     */
+    @ApiOperation(value = "客户端-登录接口", notes = "客户端-登录")
+    @PostMapping(value = "/login")
+    public Result<?> login(@RequestParam Map<String, String> params) {
+        // 首先校验参数是否都存在
+        String paramList = "clientIp|androidId|appVersion|mac|sign|brand|model|clientId|username|password";
+        if (!super.checkParams(params, paramList)) {
+            return Result.error("参数列表错误");
+        }
+        // 校验签名
+        if (!super.checkSign(params)) {
+            return Result.error("签名错误");
+        }
+        String username = params.get("username");
+        String password = params.get("password");
+
+        //校验用户有效性，首先根据androidId查询出关联的平台用户id，然后根据username查平台用户id，相同直接登录，不同则修改关联id
+        AppUser appUser = apiClientService.queryByAndroidId(params.get("androidId"));
+
+        // 先验证是否能登陆成功
+        //1. 校验用户是否有效
+        Result<JSONObject> result = new Result<JSONObject>();
+        SysUser sysUser = sysUserService.getUserByName(username);
+        result = sysUserService.checkUserIsEffective(sysUser);
+        if(!result.isSuccess()) {
+            return result;
+        }
+
+        //2. 校验用户名或密码是否正确
+        String userpassword = PasswordUtil.encrypt(username, password, sysUser.getSalt());
+        String syspassword = sysUser.getPassword();
+        if (!syspassword.equals(userpassword)) {
+            result.error500("用户名或密码错误");
+            return result;
+        }
+
+        // 未关联或者关联用户不同，默认视作换绑账户
+        if (appUser.getSysUserId() == null || !Objects.equals(appUser.getSysUserId(), sysUser.getId())) {
+            appUser.setSysUserId(sysUser.getId());
+            appUser.setMtime((int) System.currentTimeMillis());
+            apiClientService.updateById(appUser);
+        }
+
+        JSONObject obj = new JSONObject();
+        //用户登录信息
+        obj.put("userInfo", sysUser);
+
         // 生成token
         String token = JwtUtil.sign(username, syspassword);
-        // 设置token缓存有效时间
+        // 设置超时时间
         redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, token);
-        redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME * 2 / 1000);
+        redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, 24 * 60 * 60);
+
+        //token 信息
         obj.put("token", token);
-        obj.put("userInfo", sysUser);
-        obj.put("sysAllDictItems", sysDictService.queryAllDictItems());
         result.setResult(obj);
-        result.success("登录成功");
+        result.setSuccess(true);
+        result.setCode(200);
+        baseCommonService.addLog("用户名: " + username + ",登录成功[移动端]！", CommonConstant.LOG_TYPE_1, null);
         return result;
+    }
+
+
+    /**
+     * app进入自动登录
+     * @param sysUser
+     * @return 返回值是token
+     */
+    public Result<?> autoLogin(SysUser sysUser) {
+        Result<JSONObject> result;
+        String username = sysUser.getUsername();
+        String password = sysUser.getPassword();
+
+        //1. 校验用户是否有效
+        SysUser databaseUser = sysUserService.getUserByName(username);
+        result = sysUserService.checkUserIsEffective(databaseUser);
+        if(!result.isSuccess()) {
+            return result;
+        }
+
+        // 生成token
+        String token = JwtUtil.sign(username, password);
+        // 设置超时时间为一天
+        redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, token);
+        redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, 24 * 60 * 60);
+
+        //token 信息
+        baseCommonService.addLog("用户名: " + username + ",登录成功[移动端]！", CommonConstant.LOG_TYPE_1, null);
+        return Result.OK(token);
     }
 }
