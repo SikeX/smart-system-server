@@ -1,4 +1,4 @@
-package org.jeecg.modules.smartReportingInformationDetails.controller;
+package org.jeecg.modules.smartReportingInformationDetail.controller;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,14 +14,15 @@ import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.smartReportingInformation.entity.SmartReportingInformation;
 import org.jeecg.modules.smartReportingInformation.service.ISmartReportingInformationService;
-import org.jeecg.modules.smartReportingInformationDetails.entity.SmartReportingInformationDetails;
-import org.jeecg.modules.smartReportingInformationDetails.service.ISmartReportingInformationDetailsService;
+import org.jeecg.modules.smartReportingInformationDetail.entity.SmartReportingInformationDetail;
+import org.jeecg.modules.smartReportingInformationDetail.service.ISmartReportingInformationDetailService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
+import org.jeecg.modules.smartReportingInformationDetail.service.ISmartReportingInformationDetailService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -41,22 +42,23 @@ import org.jeecg.common.aspect.annotation.AutoLog;
  /**
  * @Description: 举报信息详情表
  * @Author: jeecg-boot
- * @Date:   2021-11-07
+ * @Date:   2021-11-09
  * @Version: V1.0
  */
 @Api(tags="举报信息详情表")
 @RestController
-@RequestMapping("/smartReportingInformationDetails/smartReportingInformationDetails")
+@RequestMapping("/smartReportingInformationDetail/smartReportingInformationDetail")
 @Slf4j
-public class SmartReportingInformationDetailsController extends JeecgController<SmartReportingInformationDetails, ISmartReportingInformationDetailsService> {
+public class SmartReportingInformationDetailController extends JeecgController<SmartReportingInformationDetail, ISmartReportingInformationDetailService> {
 	@Autowired
-	private ISmartReportingInformationDetailsService smartReportingInformationDetailsService;
+	private ISmartReportingInformationDetailService smartReportingInformationDetailService;
 	@Autowired
 	private ISmartReportingInformationService smartReportingInformationService;
+
 	/**
 	 * 分页列表查询
 	 *
-	 * @param smartReportingInformationDetails
+	 * @param smartReportingInformationDetail
 	 * @param pageNo
 	 * @param pageSize
 	 * @param req
@@ -65,50 +67,51 @@ public class SmartReportingInformationDetailsController extends JeecgController<
 	@AutoLog(value = "举报信息详情表-分页列表查询")
 	@ApiOperation(value="举报信息详情表-分页列表查询", notes="举报信息详情表-分页列表查询")
 	@GetMapping(value = "/list")
-	public Result<?> queryPageList(SmartReportingInformationDetails smartReportingInformationDetails,
+	public Result<?> queryPageList(SmartReportingInformationDetail smartReportingInformationDetail,
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
-		QueryWrapper<SmartReportingInformationDetails> queryWrapper = QueryGenerator.initQueryWrapper(smartReportingInformationDetails, req.getParameterMap());
-		Page<SmartReportingInformationDetails> page = new Page<SmartReportingInformationDetails>(pageNo, pageSize);
-		IPage<SmartReportingInformationDetails> pageList = smartReportingInformationDetailsService.page(page, queryWrapper);
+		QueryWrapper<SmartReportingInformationDetail> queryWrapper = QueryGenerator.initQueryWrapper(smartReportingInformationDetail, req.getParameterMap());
+		Page<SmartReportingInformationDetail> page = new Page<SmartReportingInformationDetail>(pageNo, pageSize);
+		IPage<SmartReportingInformationDetail> pageList = smartReportingInformationDetailService.page(page, queryWrapper);
 		return Result.OK(pageList);
 	}
 
 	/**
 	 *   添加
 	 *
-	 * @param smartReportingInformationDetails
+	 * @param smartReportingInformationDetail
 	 * @return
 	 */
 	@AutoLog(value = "举报信息详情表-添加")
 	@ApiOperation(value="举报信息详情表-添加", notes="举报信息详情表-添加")
 	@PostMapping(value = "/add")
-	public Result<?> add(@RequestBody SmartReportingInformationDetails smartReportingInformationDetails) {
+	public Result<?> add(@RequestBody SmartReportingInformationDetail smartReportingInformationDetail) {
 		SmartReportingInformation smartReportingInformation = new SmartReportingInformation();
         //举报信息详情表的被反映人姓名对应举报信息表的被反映人信息
-		smartReportingInformation.setReflectedInformation(smartReportingInformationDetails.getReflectedName());
-        //举报信息详情表的被反映人单位对应举报信息表的被反映人单位
-		smartReportingInformation.setReflectedDocumentid(smartReportingInformationDetails.getReflectedDocumentid());
+		smartReportingInformation.setReflectedInformation(smartReportingInformationDetail.getReflectedName());
+		//举报信息详情表的被反映人单位对应举报信息表的被反映人单位
+		smartReportingInformation.setReflectedDocumentid(smartReportingInformationDetail.getReflectedDocumentid());
         //举报信息详情表的举报时间对应举报信息表的举报时间
-		smartReportingInformation.setReportingTime(smartReportingInformationDetails.getReportingTime());
+		smartReportingInformation.setReportingTime(smartReportingInformationDetail.getReportingTime());
 
-		smartReportingInformationDetailsService.save(smartReportingInformationDetails);
+		smartReportingInformationDetailService.save(smartReportingInformationDetail);
 		smartReportingInformationService.save(smartReportingInformation);
 		return Result.OK("添加成功！");
+
 	}
 
 	/**
 	 *  编辑
 	 *
-	 * @param smartReportingInformationDetails
+	 * @param smartReportingInformationDetail
 	 * @return
 	 */
 	@AutoLog(value = "举报信息详情表-编辑")
 	@ApiOperation(value="举报信息详情表-编辑", notes="举报信息详情表-编辑")
 	@PutMapping(value = "/edit")
-	public Result<?> edit(@RequestBody SmartReportingInformationDetails smartReportingInformationDetails) {
-		smartReportingInformationDetailsService.updateById(smartReportingInformationDetails);
+	public Result<?> edit(@RequestBody SmartReportingInformationDetail smartReportingInformationDetail) {
+		smartReportingInformationDetailService.updateById(smartReportingInformationDetail);
 		return Result.OK("编辑成功!");
 	}
 
@@ -122,7 +125,7 @@ public class SmartReportingInformationDetailsController extends JeecgController<
 	@ApiOperation(value="举报信息详情表-通过id删除", notes="举报信息详情表-通过id删除")
 	@DeleteMapping(value = "/delete")
 	public Result<?> delete(@RequestParam(name="id",required=true) String id) {
-		smartReportingInformationDetailsService.removeById(id);
+		smartReportingInformationDetailService.removeById(id);
 		return Result.OK("删除成功!");
 	}
 
@@ -136,7 +139,7 @@ public class SmartReportingInformationDetailsController extends JeecgController<
 	@ApiOperation(value="举报信息详情表-批量删除", notes="举报信息详情表-批量删除")
 	@DeleteMapping(value = "/deleteBatch")
 	public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
-		this.smartReportingInformationDetailsService.removeByIds(Arrays.asList(ids.split(",")));
+		this.smartReportingInformationDetailService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.OK("批量删除成功!");
 	}
 
@@ -150,22 +153,22 @@ public class SmartReportingInformationDetailsController extends JeecgController<
 	@ApiOperation(value="举报信息详情表-通过id查询", notes="举报信息详情表-通过id查询")
 	@GetMapping(value = "/queryById")
 	public Result<?> queryById(@RequestParam(name="id",required=true) String id) {
-		SmartReportingInformationDetails smartReportingInformationDetails = smartReportingInformationDetailsService.getById(id);
-		if(smartReportingInformationDetails==null) {
+		SmartReportingInformationDetail smartReportingInformationDetail = smartReportingInformationDetailService.getById(id);
+		if(smartReportingInformationDetail==null) {
 			return Result.error("未找到对应数据");
 		}
-		return Result.OK(smartReportingInformationDetails);
+		return Result.OK(smartReportingInformationDetail);
 	}
 
     /**
     * 导出excel
     *
     * @param request
-    * @param smartReportingInformationDetails
+    * @param smartReportingInformationDetail
     */
     @RequestMapping(value = "/exportXls")
-    public ModelAndView exportXls(HttpServletRequest request, SmartReportingInformationDetails smartReportingInformationDetails) {
-        return super.exportXls(request, smartReportingInformationDetails, SmartReportingInformationDetails.class, "举报信息详情表");
+    public ModelAndView exportXls(HttpServletRequest request, SmartReportingInformationDetail smartReportingInformationDetail) {
+        return super.exportXls(request, smartReportingInformationDetail, SmartReportingInformationDetail.class, "举报信息详情表");
     }
 
     /**
@@ -177,7 +180,7 @@ public class SmartReportingInformationDetailsController extends JeecgController<
     */
     @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
-        return super.importExcel(request, response, SmartReportingInformationDetails.class);
+        return super.importExcel(request, response, SmartReportingInformationDetail.class);
     }
 
 }
