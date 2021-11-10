@@ -16,7 +16,7 @@ import java.io.UnsupportedEncodingException;
 /**
  * @Description: 三重一大附件表
  * @Author: jeecg-boot
- * @Date:   2021-11-01
+ * @Date:   2021-11-05
  * @Version: V1.0
  */
 @ApiModel(value="smart_triple_importance_one_greatness_decription对象", description="三重一大附件表")
@@ -53,5 +53,5 @@ public class SmartTripleImportanceOneGreatnessDecription implements Serializable
 	/**下载次数*/
 	@Excel(name = "下载次数", width = 15)
     @ApiModelProperty(value = "下载次数")
-    private java.lang.Integer dowmloadTimes;
+    private java.lang.Integer downloadTimes;
 }
