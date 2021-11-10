@@ -1,4 +1,4 @@
-package org.jeecg.modules.smartReportingInformationDetails.entity;
+package org.jeecg.modules.smartReportingInformationDetail.entity;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
@@ -20,15 +20,15 @@ import lombok.experimental.Accessors;
 /**
  * @Description: 举报信息详情表
  * @Author: jeecg-boot
- * @Date:   2021-11-07
+ * @Date:   2021-11-09
  * @Version: V1.0
  */
 @Data
-@TableName("smart_reporting_information_details")
+@TableName("smart_reporting_information_detail")
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="smart_reporting_information_details对象", description="举报信息详情表")
-public class SmartReportingInformationDetails implements Serializable {
+@ApiModel(value="smart_reporting_information_detail对象", description="举报信息详情表")
+public class SmartReportingInformationDetail implements Serializable {
     private static final long serialVersionUID = 1L;
 
 	/**主键*/

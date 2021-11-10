@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @Description: 三重一大表
  * @Author: jeecg-boot
- * @Date:   2021-11-08
+ * @Date:   2021-11-10
  * @Version: V1.0
  */
 public interface ISmartTripleImportanceOneGreatnessService extends IService<SmartTripleImportanceOneGreatness> {
@@ -50,4 +50,5 @@ public interface ISmartTripleImportanceOneGreatnessService extends IService<Smar
 	 * @return 子部门ID列表
 	 */
 	List<String> getChildrenIdByOrgCode(String orgCode);
+
 }

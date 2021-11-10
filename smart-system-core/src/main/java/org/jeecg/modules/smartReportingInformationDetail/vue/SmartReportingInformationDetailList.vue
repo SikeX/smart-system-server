@@ -89,7 +89,7 @@
       </a-table>
     </div>
 
-    <smart-reporting-information-details-modal ref="modalForm" @ok="modalFormOk"></smart-reporting-information-details-modal>
+    <smart-reporting-information-detail-modal ref="modalForm" @ok="modalFormOk"></smart-reporting-information-detail-modal>
   </a-card>
 </template>
 
@@ -98,13 +98,13 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartReportingInformationDetailsModal from './modules/SmartReportingInformationDetailsModal'
+  import SmartReportingInformationDetailModal from './modules/SmartReportingInformationDetailModal'
 
   export default {
-    name: 'SmartReportingInformationDetailsList',
+    name: 'SmartReportingInformationDetailList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartReportingInformationDetailsModal
+      SmartReportingInformationDetailModal
     },
     data () {
       return {
@@ -167,11 +167,11 @@
           }
         ],
         url: {
-          list: "/smartReportingInformationDetails/smartReportingInformationDetails/list",
-          delete: "/smartReportingInformationDetails/smartReportingInformationDetails/delete",
-          deleteBatch: "/smartReportingInformationDetails/smartReportingInformationDetails/deleteBatch",
-          exportXlsUrl: "/smartReportingInformationDetails/smartReportingInformationDetails/exportXls",
-          importExcelUrl: "smartReportingInformationDetails/smartReportingInformationDetails/importExcel",
+          list: "/smartReportingInformationDetail/smartReportingInformationDetail/list",
+          delete: "/smartReportingInformationDetail/smartReportingInformationDetail/delete",
+          deleteBatch: "/smartReportingInformationDetail/smartReportingInformationDetail/deleteBatch",
+          exportXlsUrl: "/smartReportingInformationDetail/smartReportingInformationDetail/exportXls",
+          importExcelUrl: "smartReportingInformationDetail/smartReportingInformationDetail/importExcel",
           
         },
         dictOptions:{},

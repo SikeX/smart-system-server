@@ -42,7 +42,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
  /**
  * @Description: 三重一大表
  * @Author: jeecg-boot
- * @Date:   2021-11-08
+ * @Date:   2021-11-10
  * @Version: V1.0
  */
 @Api(tags="三重一大表")
@@ -73,14 +73,14 @@ public class SmartTripleImportanceOneGreatnessController {
 								   HttpServletRequest req) {
 		// TODO：1. 规则，下面是 以＊*开始
 		String rule = "right_like";
-        // TODO：2. 查询字段
+		// TODO：2. 查询字段
 		String field = "documentId";
-       // 获取登录用户信息，可以用来查询单位部门信息
+		// 获取登录用户信息，可以用来查询单位部门信息
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 		System.out.println(sysUser.getOrgCode());
 
-        // 添加查询参数，下面的参数是查询以用户所在部门编码开头的的所有单位数据，即用户所在单位和子单位的信息
-        // superQueryParams=[{"rule":"right_like","type":"string","dictCode":"","val":"用户所在的部门","field":"departId"}]
+		// 添加查询参数，下面的参数是查询以用户所在部门编码开头的的所有单位数据，即用户所在单位和子单位的信息
+		// superQueryParams=[{"rule":"right_like","type":"string","dictCode":"","val":"用户所在的部门","field":"departId"}]
 		HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
 		String[] params = {"%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
 				+ sysUser.getOrgCode()
@@ -89,6 +89,7 @@ public class SmartTripleImportanceOneGreatnessController {
 		params = new String[]{"and"};
 		map.put("superQueryMatchType", params);
 		QueryWrapper<SmartTripleImportanceOneGreatness> queryWrapper = QueryGenerator.initQueryWrapper(smartTripleImportanceOneGreatness, map);
+
 		Page<SmartTripleImportanceOneGreatness> page = new Page<SmartTripleImportanceOneGreatness>(pageNo, pageSize);
 		IPage<SmartTripleImportanceOneGreatness> pageList = smartTripleImportanceOneGreatnessService.page(page, queryWrapper);
 		return Result.OK(pageList);
@@ -104,11 +105,20 @@ public class SmartTripleImportanceOneGreatnessController {
 	@ApiOperation(value="三重一大表-添加", notes="三重一大表-添加")
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody SmartTripleImportanceOneGreatnessPage smartTripleImportanceOneGreatnessPage) {
-
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		String orgCode = sysUser.getOrgCode();
+		if ("".equals(orgCode)) {
+			return Result.error("本用户没有操作权限！");
+		}
+		String id = smartTripleImportanceOneGreatnessService.getDepartIdByOrgCode(orgCode);
+		smartTripleImportanceOneGreatnessPage.setDocumentid(id);
 		SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness = new SmartTripleImportanceOneGreatness();
 		BeanUtils.copyProperties(smartTripleImportanceOneGreatnessPage, smartTripleImportanceOneGreatness);
-		smartTripleImportanceOneGreatnessService.saveMain(smartTripleImportanceOneGreatness, smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessDecriptionList());
+		smartTripleImportanceOneGreatnessService.saveMain(smartTripleImportanceOneGreatness,
+				smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessDecriptionList());
 		return Result.OK("添加成功！");
+
+
 	}
 
 	/**
@@ -131,18 +141,6 @@ public class SmartTripleImportanceOneGreatnessController {
 		return Result.OK("编辑成功!");
 	}
 
-	@AutoLog(value = "更新文件下载次数")
-	@ApiOperation(value="更新文件下载次数", notes="更新文件下载次数")
-	@PutMapping(value = "/downloadTimes")
-	public Result<?> edit(@RequestBody SmartTripleImportanceOneGreatnessDecription smartTripleImportanceOneGreatnessDecription) {
-		SmartTripleImportanceOneGreatnessDecription newSmartTripleImportanceOneGreatnessDecription=
-				smartTripleImportanceOneGreatnessDecriptionService.getById(smartTripleImportanceOneGreatnessDecription.getId());
-		int currentCount = newSmartTripleImportanceOneGreatnessDecription.getDownloadTimes();
-		newSmartTripleImportanceOneGreatnessDecription.setDownloadTimes(currentCount+1);
-		smartTripleImportanceOneGreatnessDecriptionService.updateById(newSmartTripleImportanceOneGreatnessDecription);
-
-		return Result.OK("更新成功!");
-	}
 	/**
 	 *   通过id删除
 	 *

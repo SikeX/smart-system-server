@@ -7,7 +7,7 @@
     @close="close"
     destroyOnClose
     :visible="visible">
-    <smart-reporting-information-details-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit" normal></smart-reporting-information-details-form>
+    <smart-reporting-information-detail-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit" normal></smart-reporting-information-detail-form>
     <div class="drawer-footer">
       <a-button @click="handleCancel" style="margin-bottom: 0;">关闭</a-button>
       <a-button v-if="!disableSubmit"  @click="handleOk" type="primary" style="margin-bottom: 0;">提交</a-button>
@@ -17,12 +17,12 @@
 
 <script>
 
-  import SmartReportingInformationDetailsForm from './SmartReportingInformationDetailsForm'
+  import SmartReportingInformationDetailForm from './SmartReportingInformationDetailForm'
 
   export default {
-    name: 'SmartReportingInformationDetailsModal',
+    name: 'SmartReportingInformationDetailModal',
     components: {
-      SmartReportingInformationDetailsForm
+      SmartReportingInformationDetailForm
     },
     data () {
       return {
