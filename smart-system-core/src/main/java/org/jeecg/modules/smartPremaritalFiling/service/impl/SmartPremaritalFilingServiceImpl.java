@@ -16,7 +16,7 @@ import java.util.Collection;
 /**
  * @Description: 8项规定婚前报备表
  * @Author: jeecg-boot
- * @Date:   2021-11-10
+ * @Date:   2021-11-11
  * @Version: V1.0
  */
 @Service
@@ -72,6 +72,7 @@ public class SmartPremaritalFilingServiceImpl extends ServiceImpl<SmartPremarita
 			smartPremaritalFilingAppMapper.deleteByMainId(id.toString());
 			smartPremaritalFilingMapper.deleteById(id);
 		}
+
 	}
 
 	@Override
@@ -83,5 +84,6 @@ public class SmartPremaritalFilingServiceImpl extends ServiceImpl<SmartPremarita
 	public List<String> getChildrenIdByOrgCode(String orgCode) {
 		return smartPremaritalFilingMapper.getChildrenIdByOrgCode(orgCode);
 	}
+
 
 }

@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @Description: 8项规定婚前报备表
  * @Author: jeecg-boot
- * @Date:   2021-11-10
+ * @Date:   2021-11-11
  * @Version: V1.0
  */
 public interface ISmartPremaritalFilingService extends IService<SmartPremaritalFiling> {
@@ -37,7 +37,6 @@ public interface ISmartPremaritalFilingService extends IService<SmartPremaritalF
 	 */
 	public void delBatchMain (Collection<? extends Serializable> idList);
 
-
 	/**
 	 * 根据部门编码查询部门ID
 	 *
@@ -52,4 +51,5 @@ public interface ISmartPremaritalFilingService extends IService<SmartPremaritalF
 	 * @return 子部门ID列表
 	 */
 	List<String> getChildrenIdByOrgCode(String orgCode);
+
 }
