@@ -101,7 +101,7 @@ public class SmartTripleImportanceOneGreatnessController {
 
 		QueryWrapper<SmartTripleImportanceOneGreatness> queryWrapper = QueryGenerator.initQueryWrapper(smartTripleImportanceOneGreatness, map);
 		Page<SmartTripleImportanceOneGreatness> page = new Page<SmartTripleImportanceOneGreatness>(pageNo, pageSize);
-		IPage<SmartTripleImportanceOneGreatness> pageList = smartTripleImportanceOneGreatness.page(page,queryWrapper);
+		IPage<SmartTripleImportanceOneGreatness> pageList = smartTripleImportanceOneGreatnessService.page(page,queryWrapper);
 		// 请同步修改edit函数中，将documentid变为null，不然会更新成名称
 		List<String> documentIds = pageList.getRecords().stream().map(SmartTripleImportanceOneGreatness::getDocumentid).collect(Collectors.toList());
 		if (documentIds != null && documentIds.size() > 0) {
