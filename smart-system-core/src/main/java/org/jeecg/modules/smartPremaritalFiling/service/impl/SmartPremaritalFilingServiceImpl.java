@@ -16,7 +16,7 @@ import java.util.Collection;
 /**
  * @Description: 8项规定婚前报备表
  * @Author: jeecg-boot
- * @Date:   2021-11-08
+ * @Date:   2021-11-10
  * @Version: V1.0
  */
 @Service
@@ -26,7 +26,7 @@ public class SmartPremaritalFilingServiceImpl extends ServiceImpl<SmartPremarita
 	private SmartPremaritalFilingMapper smartPremaritalFilingMapper;
 	@Autowired
 	private SmartPremaritalFilingAppMapper smartPremaritalFilingAppMapper;
-	
+
 	@Override
 	@Transactional
 	public void saveMain(SmartPremaritalFiling smartPremaritalFiling, List<SmartPremaritalFilingApp> smartPremaritalFilingAppList) {
@@ -44,10 +44,10 @@ public class SmartPremaritalFilingServiceImpl extends ServiceImpl<SmartPremarita
 	@Transactional
 	public void updateMain(SmartPremaritalFiling smartPremaritalFiling,List<SmartPremaritalFilingApp> smartPremaritalFilingAppList) {
 		smartPremaritalFilingMapper.updateById(smartPremaritalFiling);
-		
+
 		//1.先删除子表数据
 		smartPremaritalFilingAppMapper.deleteByMainId(smartPremaritalFiling.getId());
-		
+
 		//2.子表数据重新插入
 		if(smartPremaritalFilingAppList!=null && smartPremaritalFilingAppList.size()>0) {
 			for(SmartPremaritalFilingApp entity:smartPremaritalFilingAppList) {
@@ -73,5 +73,15 @@ public class SmartPremaritalFilingServiceImpl extends ServiceImpl<SmartPremarita
 			smartPremaritalFilingMapper.deleteById(id);
 		}
 	}
-	
+
+	@Override
+	public String getDepartIdByOrgCode(String orgCode) {
+		return smartPremaritalFilingMapper.getDepartIdByOrgCode(orgCode);
+	}
+
+	@Override
+	public List<String> getChildrenIdByOrgCode(String orgCode) {
+		return smartPremaritalFilingMapper.getChildrenIdByOrgCode(orgCode);
+	}
+
 }

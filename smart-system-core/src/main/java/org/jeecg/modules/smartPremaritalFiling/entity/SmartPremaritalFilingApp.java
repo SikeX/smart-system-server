@@ -16,7 +16,7 @@ import java.io.UnsupportedEncodingException;
 /**
  * @Description: 8项规定婚前报备表附表
  * @Author: jeecg-boot
- * @Date:   2021-11-08
+ * @Date:   2021-11-10
  * @Version: V1.0
  */
 @ApiModel(value="smart_premarital_filing_app对象", description="8项规定婚前报备表附表")

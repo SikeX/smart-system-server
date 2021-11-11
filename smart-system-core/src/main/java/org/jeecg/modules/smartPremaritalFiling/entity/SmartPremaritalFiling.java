@@ -17,7 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 8项规定婚前报备表
  * @Author: jeecg-boot
- * @Date:   2021-11-08
+ * @Date:   2021-11-10
  * @Version: V1.0
  */
 @ApiModel(value="smart_premarital_filing对象", description="8项规定婚前报备表")
@@ -52,10 +52,10 @@ public class SmartPremaritalFiling implements Serializable {
     @Dict(dicCode = "political_status")
     @ApiModelProperty(value = "政治面貌")
     private java.lang.String politicCou;
-	/**工作单位*/
-	@Excel(name = "工作单位", width = 15)
-    @ApiModelProperty(value = "工作单位")
-    private java.lang.String workUnit;
+	/**单位ID*/
+	@Excel(name = "单位ID", width = 15)
+    @ApiModelProperty(value = "单位ID")
+    private java.lang.String departId;
 	/**职务*/
 	@Excel(name = "职务", width = 15, dictTable = "sys_position", dicText = "name", dicCode = "code")
     @Dict(dictTable = "sys_position", dicText = "name", dicCode = "code")
@@ -168,5 +168,8 @@ public class SmartPremaritalFiling implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @ApiModelProperty(value = "创建时间")
     private java.util.Date createTime;
-
+	/**删除状态*/
+	@Excel(name = "删除状态", width = 15)
+    @ApiModelProperty(value = "删除状态")
+    private java.lang.Integer delFlag;
 }

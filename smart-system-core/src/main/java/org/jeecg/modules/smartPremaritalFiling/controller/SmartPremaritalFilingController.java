@@ -3,10 +3,7 @@ package org.jeecg.modules.smartPremaritalFiling.controller;
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,7 +42,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
  /**
  * @Description: 8项规定婚前报备表
  * @Author: jeecg-boot
- * @Date:   2021-11-08
+ * @Date:   2021-11-10
  * @Version: V1.0
  */
 @Api(tags="8项规定婚前报备表")
@@ -59,9 +56,18 @@ public class SmartPremaritalFilingController {
 	private ISmartPremaritalFilingAppService smartPremaritalFilingAppService;
 
 
-
-     /**
-      * 分页列表查询
+	 @AutoLog(value = "更新文件下载次数")
+	 @ApiOperation(value = "更新文件下载次数", notes = "更新文件下载次数")
+	 @PutMapping(value = "/downloadCount")
+	 public Result<?> edit(@RequestBody SmartPremaritalFilingApp smartPremaritalFilingApp) {
+		 SmartPremaritalFilingApp newSmartPremaritalFilingApp = smartPremaritalFilingAppService.getById(smartPremaritalFilingApp.getId());
+		 int currentCount = newSmartPremaritalFilingApp.getDownloadCount();
+		 newSmartPremaritalFilingApp.setDownloadCount(currentCount + 1);
+		 smartPremaritalFilingAppService.updateById(newSmartPremaritalFilingApp);
+		 return Result.OK("更新成功!");
+	 }
+	/**
+	 * 分页列表查询
 	 *
 	 * @param smartPremaritalFiling
 	 * @param pageNo
@@ -76,7 +82,25 @@ public class SmartPremaritalFilingController {
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
-		QueryWrapper<SmartPremaritalFiling> queryWrapper = QueryGenerator.initQueryWrapper(smartPremaritalFiling, req.getParameterMap());
+		// TODO：1. 规则，下面是 以＊*开始
+		String rule = "right_like";
+		// TODO：2. 查询字段
+		String field = "departId";
+		// 获取登录用户信息，可以用来查询单位部门信息
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		System.out.println(sysUser.getOrgCode());
+
+		// 添加查询参数，下面的参数是查询以用户所在部门编码开头的的所有单位数据，即用户所在单位和子单位的信息
+		// superQueryParams=[{"rule":"right_like","type":"string","dictCode":"","val":"用户所在的部门","field":"departId"}]
+		HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+		String[] params = {"%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+				+ sysUser.getOrgCode()
+				+ "%22,%22field%22:%22" + field + "%22%7D%5D"};
+		map.put("superQueryParams", params);
+		params = new String[]{"and"};
+		map.put("superQueryMatchType", params);
+		QueryWrapper<SmartPremaritalFiling> queryWrapper = QueryGenerator.initQueryWrapper(smartPremaritalFiling, map);
+
 		Page<SmartPremaritalFiling> page = new Page<SmartPremaritalFiling>(pageNo, pageSize);
 		IPage<SmartPremaritalFiling> pageList = smartPremaritalFilingService.page(page, queryWrapper);
 		return Result.OK(pageList);
@@ -92,6 +116,14 @@ public class SmartPremaritalFilingController {
 	@ApiOperation(value="8项规定婚前报备表-添加", notes="8项规定婚前报备表-添加")
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody SmartPremaritalFilingPage smartPremaritalFilingPage) {
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		String orgCode = sysUser.getOrgCode();
+		if ("".equals(orgCode)) {
+			return Result.error("本用户没有操作权限！");
+		}
+		String id = smartPremaritalFilingService.getDepartIdByOrgCode(orgCode);
+		smartPremaritalFilingPage.setDepartId(id);
+
 		SmartPremaritalFiling smartPremaritalFiling = new SmartPremaritalFiling();
 		BeanUtils.copyProperties(smartPremaritalFilingPage, smartPremaritalFiling);
 		smartPremaritalFilingService.saveMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
@@ -260,19 +292,4 @@ public class SmartPremaritalFilingController {
       return Result.OK("文件导入失败！");
     }
 
-
-     /**
-      * 文件下载数加一
-      */
-     @AutoLog(value = "更新文件下载次数")
-     @ApiOperation(value = "更新文件下载次数", notes = "更新文件下载次数")
-     @PutMapping(value = "/downloadCount")
-     public Result<?> edit(@RequestBody SmartPremaritalFilingApp smartPremaritalFilingApp) {
-         SmartPremaritalFilingApp newSmartPremaritalFilingApp = smartPremaritalFilingAppService.getById(smartPremaritalFilingApp.getId());
-         int currentCount = newSmartPremaritalFilingApp.getDownloadCount();
-         newSmartPremaritalFilingApp.setDownloadCount(currentCount + 1);
-         smartPremaritalFilingAppService.updateById(newSmartPremaritalFilingApp);
-         return Result.OK("更新成功!");
-     }
-
- }
+}
