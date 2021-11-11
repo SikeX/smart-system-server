@@ -47,6 +47,11 @@ public class ApiBannerController extends ApiBaseController {
     public Result<?> queryPageList(Banner banner, @RequestParam Map<String, String> params,
                                    HttpServletRequest req) {
         // 检查参数列表
+        String paramList = "column|order|androidId|appVersion|mac|clientId|clientIp|sign";
+        if (!super.checkParams(params, paramList)) {
+            log.info("参数列表错误");
+            return null;
+        }
         if (!super.checkSign(params)) {
             return Result.error("签名错误");
         }
