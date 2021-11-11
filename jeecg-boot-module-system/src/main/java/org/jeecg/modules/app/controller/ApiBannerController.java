@@ -46,6 +46,7 @@ public class ApiBannerController extends ApiBaseController {
     @GetMapping(value = "/banner")
     public Result<?> queryPageList(Banner banner, @RequestParam Map<String, String> params,
                                    HttpServletRequest req) {
+        // 检查参数列表
         if (!super.checkSign(params)) {
             return Result.error("签名错误");
         }
