@@ -37,7 +37,11 @@ public class SysDepartTreeModel implements Serializable{
 
     private String parentId;
 
+    private String businessParentId;
+
     private String departName;
+
+    private String departType;
 
     private String departNameEn;
 
@@ -88,7 +92,9 @@ public class SysDepartTreeModel implements Serializable{
         this.title = sysDepart.getDepartName();
         this.id = sysDepart.getId();
         this.parentId = sysDepart.getParentId();
+        this.businessParentId = sysDepart.getBusinessParentId();
         this.departName = sysDepart.getDepartName();
+        this.departType = sysDepart.getDepartType();
         this.departNameEn = sysDepart.getDepartNameEn();
         this.departNameAbbr = sysDepart.getDepartNameAbbr();
         this.departOrder = sysDepart.getDepartOrder();
@@ -174,6 +180,14 @@ public class SysDepartTreeModel implements Serializable{
         this.parentId = parentId;
     }
 
+    public String getBusinessParentId() {
+        return businessParentId;
+    }
+
+    public void setBusinessParentId(String parentId) {
+        this.businessParentId = businessParentId;
+    }
+
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }
@@ -184,6 +198,14 @@ public class SysDepartTreeModel implements Serializable{
 
     public void setDepartName(String departName) {
         this.departName = departName;
+    }
+
+    public String getDepartType() {
+        return departType;
+    }
+
+    public void setDepartType(String departType) {
+        this.departType = departType;
     }
     
     public String getOrgCategory() {
@@ -347,6 +369,7 @@ public class SysDepartTreeModel implements Serializable{
         return Objects.equals(id, model.id) &&
                 Objects.equals(parentId, model.parentId) &&
                 Objects.equals(departName, model.departName) &&
+                Objects.equals(departType, model.departType) &&
                 Objects.equals(departNameEn, model.departNameEn) &&
                 Objects.equals(departNameAbbr, model.departNameAbbr) &&
                 Objects.equals(departOrder, model.departOrder) &&
@@ -374,7 +397,7 @@ public class SysDepartTreeModel implements Serializable{
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, parentId, departName, departNameEn, departNameAbbr,
+        return Objects.hash(id, parentId, departName, departType, departNameEn, departNameAbbr,
         		departOrder, description, orgCategory, orgType, orgCode, mobile, fax, address, 
         		memo, status, delFlag, qywxIdentifier, createBy, createTime, updateBy, updateTime,
         		children);

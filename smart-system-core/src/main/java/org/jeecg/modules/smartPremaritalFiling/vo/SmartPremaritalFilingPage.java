@@ -42,7 +42,7 @@ public class SmartPremaritalFilingPage {
 	/**人员年龄*/
 	@Excel(name = "人员年龄", width = 15)
 	@ApiModelProperty(value = "人员年龄")
-    private java.lang.String peopleAge;
+    private java.lang.Integer peopleAge;
 	/**政治面貌*/
 	@Excel(name = "政治面貌", width = 15)
 	@ApiModelProperty(value = "政治面貌")
@@ -50,7 +50,7 @@ public class SmartPremaritalFilingPage {
 	/**工作单位*/
 	@Excel(name = "工作单位", width = 15)
 	@ApiModelProperty(value = "工作单位")
-    private java.lang.String workUint;
+    private java.lang.String workUnit;
 	/**职务*/
 	@Excel(name = "职务", width = 15)
 	@ApiModelProperty(value = "职务")
@@ -80,13 +80,17 @@ public class SmartPremaritalFilingPage {
 	@ApiModelProperty(value = "与本人关系")
     private java.lang.String relationWithMyself;
 	/**婚姻登记时间*/
-	@Excel(name = "婚姻登记时间", width = 15)
+	@Excel(name = "婚姻登记时间", width = 15, format = "yyyy-MM-dd")
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
 	@ApiModelProperty(value = "婚姻登记时间")
-    private java.lang.String marryRegistTime;
+    private java.util.Date marryRegistTime;
 	/**婚礼时间*/
-	@Excel(name = "婚礼时间", width = 15)
+	@Excel(name = "婚礼时间", width = 15, format = "yyyy-MM-dd")
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
 	@ApiModelProperty(value = "婚礼时间")
-    private java.lang.String weddingTime;
+    private java.util.Date weddingTime;
 	/**是否同城同地合办*/
 	@Excel(name = "是否同城同地合办", width = 15)
 	@ApiModelProperty(value = "是否同城同地合办")
@@ -94,7 +98,7 @@ public class SmartPremaritalFilingPage {
 	/**拟宴请人数*/
 	@Excel(name = "拟宴请人数", width = 15)
 	@ApiModelProperty(value = "拟宴请人数")
-    private java.lang.String guestsNumber;
+    private java.lang.Integer guestsNumber;
 	/**婚宴场所名称*/
 	@Excel(name = "婚宴场所名称", width = 15)
 	@ApiModelProperty(value = "婚宴场所名称")
@@ -140,9 +144,11 @@ public class SmartPremaritalFilingPage {
 	@ApiModelProperty(value = "其他需要说明的事情")
     private java.lang.String otherMattersExp;
 	/**报告时间*/
-	@Excel(name = "报告时间", width = 15)
+	@Excel(name = "报告时间", width = 15, format = "yyyy-MM-dd")
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
 	@ApiModelProperty(value = "报告时间")
-    private java.lang.String reportTime;
+    private java.util.Date reportTime;
 	/**联系电话*/
 	@Excel(name = "联系电话", width = 15)
 	@ApiModelProperty(value = "联系电话")

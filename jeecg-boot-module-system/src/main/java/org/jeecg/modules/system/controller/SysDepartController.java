@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.constant.CacheConstant;
 import org.jeecg.common.constant.CommonConstant;
@@ -98,7 +97,7 @@ public class SysDepartController {
 	 */
 	@RequestMapping(value = "/queryTreeList", method = RequestMethod.GET)
 	public Result<List<SysDepartTreeModel>> queryTreeList() {
-		Result<List<SysDepartTreeModel>> result = new Result<>();
+		Result<List<SysDepartTreeModel>> res = new Result<>();
 		try {
 			// 从内存中读取
 //			List<SysDepartTreeModel> list =FindsDepartsChildrenUtil.getSysDepartTreeList();
@@ -106,11 +105,36 @@ public class SysDepartController {
 //				list = sysDepartService.queryTreeList();
 //			}
 			List<SysDepartTreeModel> list = sysDepartService.queryTreeList();
+			res.setResult(list);
+			res.setSuccess(true);
+		} catch (Exception e) {
+			log.error(e.getMessage(),e);
+		}
+		System.out.println("业务结构"+res.getResult());
+		return res;
+	}
+
+	/**
+	 * 查询数据 查出所有部门,并以自然层级树结构数据格式响应给前端
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "/queryNaturalTreeList", method = RequestMethod.GET)
+	public Result<List<SysDepartTreeModel>> queryNaturalTreeList() {
+		Result<List<SysDepartTreeModel>> result = new Result<>();
+		try {
+			// 从内存中读取
+//			List<SysDepartTreeModel> list =FindsDepartsChildrenUtil.getSysDepartTreeList();
+//			if (CollectionUtils.isEmpty(list)) {
+//				list = sysDepartService.queryTreeList();
+//			}
+			List<SysDepartTreeModel> list = sysDepartService.queryNaturalTreeList();
 			result.setResult(list);
 			result.setSuccess(true);
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);
 		}
+		System.out.println("自然结构"+result.getResult());
 		return result;
 	}
 
@@ -291,6 +315,24 @@ public class SysDepartController {
 		Result<List<DepartIdModel>> result = new Result<>();
 		try {
 			List<DepartIdModel> list = sysDepartService.queryDepartIdTreeList();
+			result.setResult(list);
+			result.setSuccess(true);
+		} catch (Exception e) {
+			log.error(e.getMessage(),e);
+		}
+		return result;
+	}
+
+	/**
+	 * 查询数据 添加或编辑页面对该方法发起请求,以自然树结构形式加载所有部门的名称,方便用户的操作
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "/queryNaturalIdTree", method = RequestMethod.GET)
+	public Result<List<DepartIdModel>> queryNaturalIdTree() {
+		Result<List<DepartIdModel>> result = new Result<>();
+		try {
+			List<DepartIdModel> list = sysDepartService.queryNaturalDepartIdTreeList();
 			result.setResult(list);
 			result.setSuccess(true);
 		} catch (Exception e) {
