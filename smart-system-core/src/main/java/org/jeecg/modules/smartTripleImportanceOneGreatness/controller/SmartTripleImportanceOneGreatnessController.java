@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jeecg.modules.common.service.CommonService;
+import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -54,6 +56,8 @@ public class SmartTripleImportanceOneGreatnessController {
 	private ISmartTripleImportanceOneGreatnessService smartTripleImportanceOneGreatnessService;
 	@Autowired
 	private ISmartTripleImportanceOneGreatnessDescriptionService smartTripleImportanceOneGreatnessDescriptionService;
+	@Autowired
+	 CommonService commonService;
 
 	/**
 	 * 分页列表查询
@@ -71,29 +75,44 @@ public class SmartTripleImportanceOneGreatnessController {
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
-		// TODO：1. 规则，下面是 以＊*开始
-		String rule = "right_like";
-		// TODO：2. 查询字段
+		// 1. 规则，下面是 以**开始
+		String rule = "in";
+		// 2. 查询字段
 		String field = "documentId";
 		// 获取登录用户信息，可以用来查询单位部门信息
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-		System.out.println(sysUser.getOrgCode());
 
-		// 添加查询参数，下面的参数是查询以用户所在部门编码开头的的所有单位数据，即用户所在单位和子单位的信息
-		// superQueryParams=[{"rule":"right_like","type":"string","dictCode":"","val":"用户所在的部门","field":"departId"}]
+		// 获取子单位ID
+		String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
+
 		HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
-		String[] params = {"%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
-				+ sysUser.getOrgCode()
-				+ "%22,%22field%22:%22" + field + "%22%7D%5D"};
+		// 获取请求参数中的superQueryParams
+		List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+
+		// 添加额外查询条件，用于权限控制
+		paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+				+ childrenIdString
+				+ "%22,%22field%22:%22" + field + "%22%7D%5D");
+		String[] params = new String[paramsList.size()];
+		paramsList.toArray(params);
 		map.put("superQueryParams", params);
 		params = new String[]{"and"};
 		map.put("superQueryMatchType", params);
-		QueryWrapper<SmartTripleImportanceOneGreatness> queryWrapper = QueryGenerator.initQueryWrapper(smartTripleImportanceOneGreatness, map);
 
+		QueryWrapper<SmartTripleImportanceOneGreatness> queryWrapper = QueryGenerator.initQueryWrapper(smartTripleImportanceOneGreatness, map);
 		Page<SmartTripleImportanceOneGreatness> page = new Page<SmartTripleImportanceOneGreatness>(pageNo, pageSize);
-		IPage<SmartTripleImportanceOneGreatness> pageList = smartTripleImportanceOneGreatnessService.page(page, queryWrapper);
+		IPage<SmartTripleImportanceOneGreatness> pageList = smartTripleImportanceOneGreatness.page(page,queryWrapper);
+		// 请同步修改edit函数中，将documentid变为null，不然会更新成名称
+		List<String> documentIds = pageList.getRecords().stream().map(SmartTripleImportanceOneGreatness::getDocumentid).collect(Collectors.toList());
+		if (documentIds != null && documentIds.size() > 0) {
+			Map<String, String> useDepNames = commonService.getDepNamesByIds(documentIds);
+			pageList.getRecords().forEach(item -> {
+				item.setDocumentid(useDepNames.get(item.getDocumentid()));
+			});
+		}
 		return Result.OK(pageList);
 	}
+
 
 	/**
 	 *   添加
@@ -130,6 +149,8 @@ public class SmartTripleImportanceOneGreatnessController {
 	@PutMapping(value = "/edit")
 	public Result<?> edit(@RequestBody SmartTripleImportanceOneGreatnessPage smartTripleImportanceOneGreatnessPage) {
 		SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness = new SmartTripleImportanceOneGreatness();
+		smartTripleImportanceOneGreatness.setDocumentid(null);
+		smartTripleImportanceOneGreatness.setCreateTime(null);
 		BeanUtils.copyProperties(smartTripleImportanceOneGreatnessPage, smartTripleImportanceOneGreatness);
 		SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatnessEntity = smartTripleImportanceOneGreatnessService.getById(smartTripleImportanceOneGreatness.getId());
 		if(smartTripleImportanceOneGreatnessEntity==null) {
