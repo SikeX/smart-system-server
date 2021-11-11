@@ -86,7 +86,7 @@ public class SmartTripleImportanceOneGreatness implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "创建时间")
     private java.util.Date createTime;
-
+    //entity实体层
     /**
      * 删除状态（0，正常，1已删除）
      */

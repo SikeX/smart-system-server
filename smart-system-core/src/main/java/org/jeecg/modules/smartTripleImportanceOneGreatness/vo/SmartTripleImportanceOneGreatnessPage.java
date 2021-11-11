@@ -2,7 +2,7 @@ package org.jeecg.modules.smartTripleImportanceOneGreatness.vo;
 
 import java.util.List;
 import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatness;
-import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatnessDecription;
+import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatnessDescription;
 import lombok.Data;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.jeecgframework.poi.excel.annotation.ExcelEntity;
@@ -89,6 +89,6 @@ public class SmartTripleImportanceOneGreatnessPage {
 
 	@ExcelCollection(name="三重一大附件表")
 	@ApiModelProperty(value = "三重一大附件表")
-	private List<SmartTripleImportanceOneGreatnessDecription> smartTripleImportanceOneGreatnessDecriptionList;
+	private List<SmartTripleImportanceOneGreatnessDescription> smartTripleImportanceOneGreatnessDescriptionList;
 
 }

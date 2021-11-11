@@ -1,6 +1,6 @@
 package org.jeecg.modules.smartTripleImportanceOneGreatness.service;
 
-import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatnessDecription;
+import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatnessDescription;
 import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatness;
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.io.Serializable;
@@ -19,13 +19,13 @@ public interface ISmartTripleImportanceOneGreatnessService extends IService<Smar
 	 * 添加一对多
 	 *
 	 */
-	public void saveMain(SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness,List<SmartTripleImportanceOneGreatnessDecription> smartTripleImportanceOneGreatnessDecriptionList) ;
+	public void saveMain(SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness,List<SmartTripleImportanceOneGreatnessDescription> smartTripleImportanceOneGreatnessDescriptionList) ;
 
 	/**
 	 * 修改一对多
 	 *
 	 */
-	public void updateMain(SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness,List<SmartTripleImportanceOneGreatnessDecription> smartTripleImportanceOneGreatnessDecriptionList);
+	public void updateMain(SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness,List<SmartTripleImportanceOneGreatnessDescription> smartTripleImportanceOneGreatnessDescriptionList);
 
 	/**
 	 * 删除一对多
@@ -36,6 +36,7 @@ public interface ISmartTripleImportanceOneGreatnessService extends IService<Smar
 	 * 批量删除一对多
 	 */
 	public void delBatchMain (Collection<? extends Serializable> idList);
+
 	/**
 	 * 根据部门编码查询部门ID
 	 *
@@ -50,5 +51,4 @@ public interface ISmartTripleImportanceOneGreatnessService extends IService<Smar
 	 * @return 子部门ID列表
 	 */
 	List<String> getChildrenIdByOrgCode(String orgCode);
-
 }

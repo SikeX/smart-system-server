@@ -27,5 +27,4 @@ public interface SmartTripleImportanceOneGreatnessMapper extends BaseMapper<Smar
      * @return 子部门ID列表
      */
     List<String> getChildrenIdByOrgCode(String orgCode);
-
 }

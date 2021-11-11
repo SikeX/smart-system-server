@@ -19,10 +19,10 @@ import java.io.UnsupportedEncodingException;
  * @Date:   2021-11-10
  * @Version: V1.0
  */
-@ApiModel(value="smart_triple_importance_one_greatness_decription对象", description="三重一大附件表")
+@ApiModel(value="smart_triple_importance_one_greatness_description对象", description="三重一大附件表")
 @Data
-@TableName("smart_triple_importance_one_greatness_decription")
-public class SmartTripleImportanceOneGreatnessDecription implements Serializable {
+@TableName("smart_triple_importance_one_greatness_description")
+public class SmartTripleImportanceOneGreatnessDescription implements Serializable {
     private static final long serialVersionUID = 1L;
 
 	/**主键*/
@@ -36,6 +36,11 @@ public class SmartTripleImportanceOneGreatnessDecription implements Serializable
 	@Excel(name = "序号", width = 15)
     @ApiModelProperty(value = "序号")
     private java.lang.String serialNumber;
+	/**创建时间*/
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(value = "创建时间")
+    private java.util.Date createTime;
 	/**附件说明*/
 	@Excel(name = "附件说明", width = 15)
     @ApiModelProperty(value = "附件说明")
