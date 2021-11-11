@@ -67,6 +67,14 @@ public class VerifyTaskListPage {
     @ApiModelProperty(value = "审核人审核状态")
     private Integer auditStatus;
 
+    @Excel(name = "所属部门", width = 15)
+    @ApiModelProperty(value = "所属部门")
+    private java.lang.String sysOrgCode;
+
+    @Excel(name = "单位类型", width = 15)
+    @ApiModelProperty(value = "单位类型")
+    private java.lang.String departType;
+
     /**说明*/
     @Excel(name = "备注", width = 15)
     @ApiModelProperty(value = "说明")

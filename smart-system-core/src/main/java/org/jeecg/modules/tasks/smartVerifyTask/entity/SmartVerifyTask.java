@@ -67,4 +67,8 @@ public class SmartVerifyTask implements Serializable {
 	@Excel(name = "审核状态", width = 15)
     @ApiModelProperty(value = "审核状态")
     private java.lang.Integer flowStatus;
+
+    @Excel(name = "单位类型", width = 15)
+    @ApiModelProperty(value = "单位类型")
+    private java.lang.String departType;
 }

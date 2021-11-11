@@ -75,19 +75,23 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
 
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		String userDepartId = sysBaseAPI.getDepartIdsByOrgCode(sysUser.getOrgCode());
+		log.info(sysBaseAPI.getDepartIdsByOrgCode(sysUser.getOrgCode()));
+
 		MPJLambdaWrapper<VerifyTaskListPage> mpjLambdaWrapper = new MPJLambdaWrapper<VerifyTaskListPage>();
 		mpjLambdaWrapper.selectAll(SmartVerifyTask.class)
 				.select(SmartVerifyDetail::getFlowNo,SmartVerifyDetail::getAuditDepart,SmartVerifyDetail::getAuditPerson,
 						SmartVerifyDetail::getAuditStatus, SmartVerifyDetail::getAuditTime, SmartVerifyDetail::getRemark)
 				.innerJoin(SmartVerifyDetail.class, SmartVerifyDetail::getFlowNo, SmartVerifyTask::getFlowNo)
-				.eq(SmartVerifyDetail::getAuditStatus, 1);
+				.eq(SmartVerifyDetail::getAuditStatus, 2)
+				.eq(SmartVerifyDetail::getAuditDepart,userDepartId);
 
 		Page<VerifyTaskListPage> page = new Page<VerifyTaskListPage>(pageNo, pageSize);
 		IPage<VerifyTaskListPage> pageList = smartVerifyTaskMapper.selectJoinPage(page, VerifyTaskListPage.class,
 				mpjLambdaWrapper);
 
-		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-		log.info(sysUser.getDepartIds());
+
 		// log.info(sysBaseAPI.getDepartIdsByOrgCode(sysUser.getOrgCode()));
 
 		return Result.OK(pageList);
@@ -96,11 +100,14 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 	@AutoLog(value = "审核任务表-编辑")
 	@ApiOperation(value="审核任务表-编辑", notes="审核任务表-编辑")
 	@PutMapping(value = "/updateStatus")
-	public Result<?> updateStatus(SmartVerifyDetail smartVerifyDetail) {
+	public Result<?> updateStatus(@RequestBody SmartVerifyDetail smartVerifyDetail) {
+		log.info(String.valueOf(smartVerifyDetail));
 		// 获取用户id及部门
 		LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
 		String userName = sysUser.getUsername();
-		String userDepartId = sysBaseAPI.getDepartIdsByUsername(userName).get(0);
+		String orgCode = sysUser.getOrgCode();
+		String userDepartId = sysBaseAPI.getDepartIdsByOrgCode(orgCode);
+		log.info(userDepartId);
 		// 根据flowNo和depart查询到此记录
 		QueryWrapper<SmartVerifyDetail> queryWrapper = new QueryWrapper<>();
 		queryWrapper.eq("flow_no",smartVerifyDetail.getFlowNo())
