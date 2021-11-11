@@ -3,6 +3,7 @@ package org.jeecg.modules.smartOrgMeeting.entity;
 import java.io.Serializable;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -75,6 +76,7 @@ public class SmartOrgMeetingAnnex implements Serializable {
     private java.lang.Integer downloadCount;
 	/**删除状态（0，正常，1已删除）*/
 	@Excel(name = "删除状态（0，正常，1已删除）", width = 15)
+    @TableLogic
     @ApiModelProperty(value = "删除状态（0，正常，1已删除）")
     private java.lang.Integer delFlag;
 }
