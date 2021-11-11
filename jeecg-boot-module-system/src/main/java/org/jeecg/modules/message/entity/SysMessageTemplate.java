@@ -1,5 +1,6 @@
 package org.jeecg.modules.message.entity;
 
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.jeecg.common.system.base.entity.JeecgEntity;
 import org.jeecgframework.poi.excel.annotation.Excel;
@@ -57,6 +58,14 @@ public class SysMessageTemplate extends JeecgEntity{
 	/**修改人*/
 	@Excel(name = "修改人", width = 50)
 	private java.lang.String updateBy;
+
+	/**
+	 * 删除状态（0正常，1已删除）
+	 */
+	@Excel(name = "删除状态", width = 15, dicCode = "del_flag")
+	@TableLogic
+	private String delFlag;
+
 
 	public String getTemplateType() {
 		return templateType;

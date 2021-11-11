@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.message.mapper.SysMessageTemplateMapper">
+    <select id="getBirthList" resultType="org.jeecg.modules.message.entity.PersonInfo">
+        SELECT realname,phone
+            from sys_user
+        WHERE
+            join_party_date is not null
+            and MONTH(join_party_date) = MONTH(NOW())
+            and DAY(join_party_date) = DAY(NOW())
+    </select>
+
+    <select id="getTaskDetail" resultType="org.jeecg.modules.message.entity.SmartTaskManage">
+        SELECT *
+            from smart_task_manage
+    </select>
+
+    <select id="getPunishList" resultType="org.jeecg.modules.message.entity.PunishPerson">
+        SELECT punish_no,punish_name,phone
+            from smart_punish_people
+        WHERE
+            remove_time is not null
+            and MONTH(remove_time) = MONTH(NOW())
+            and DAY(remove_time) = DAY(NOW())
+    </select>
 
 </mapper>

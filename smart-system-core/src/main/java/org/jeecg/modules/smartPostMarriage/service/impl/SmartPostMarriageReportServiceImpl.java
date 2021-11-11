@@ -16,7 +16,7 @@ import java.util.Collection;
 /**
  * @Description: 8项规定婚后报备表
  * @Author: jeecg-boot
- * @Date:   2021-11-05
+ * @Date:   2021-11-10
  * @Version: V1.0
  */
 @Service
@@ -72,6 +72,16 @@ public class SmartPostMarriageReportServiceImpl extends ServiceImpl<SmartPostMar
 			smartPostMarriageReportFileMapper.deleteByMainId(id.toString());
 			smartPostMarriageReportMapper.deleteById(id);
 		}
+	}
+
+	@Override
+	public String getDepartIdByOrgCode(String orgCode) {
+		return smartPostMarriageReportMapper.getDepartIdByOrgCode(orgCode);
+	}
+
+	@Override
+	public List<String> getChildrenIdByOrgCode(String orgCode) {
+		return smartPostMarriageReportMapper.getChildrenIdByOrgCode(orgCode);
 	}
 	
 }
