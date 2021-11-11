@@ -3,10 +3,7 @@ package org.jeecg.modules.smartPostMarriage.controller;
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,7 +42,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
  /**
  * @Description: 8项规定婚后报备表
  * @Author: jeecg-boot
- * @Date:   2021-11-05
+ * @Date:   2021-11-10
  * @Version: V1.0
  */
 @Api(tags="8项规定婚后报备表")
@@ -74,7 +71,28 @@ public class SmartPostMarriageReportController {
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
-		QueryWrapper<SmartPostMarriageReport> queryWrapper = QueryGenerator.initQueryWrapper(smartPostMarriageReport, req.getParameterMap());
+
+		// TODO：规则，下面是 以＊*开始
+		String rule = "in";
+		// TODO：查询字段
+		String field = "workDepartment";
+		// 获取登录用户信息，可以用来查询单位部门信息
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		System.out.println(sysUser.getOrgCode() + "此用户的部门");
+
+
+		// 添加查询参数，下面的参数是查询以用户所在部门编码开头的的所有单位数据，即用户所在单位和子单位的信息
+		// superQueryParams=[{"rule":"right_like","type":"string","dictCode":"","val":"用户所在的部门","field":"departId"}]
+		HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+		String[] params = {"%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+				+ sysUser.getOrgCode()
+				+ "%22,%22field%22:%22" + field + "%22%7D%5D"};
+		map.put("superQueryParams", params);
+		params = new String[]{"and"};
+		map.put("superQueryMatchType", params);
+		System.out.println(map.toString());
+
+		QueryWrapper<SmartPostMarriageReport> queryWrapper = QueryGenerator.initQueryWrapper(smartPostMarriageReport, map);
 		Page<SmartPostMarriageReport> page = new Page<SmartPostMarriageReport>(pageNo, pageSize);
 		IPage<SmartPostMarriageReport> pageList = smartPostMarriageReportService.page(page, queryWrapper);
 		return Result.OK(pageList);
@@ -90,6 +108,17 @@ public class SmartPostMarriageReportController {
 	@ApiOperation(value="8项规定婚后报备表-添加", notes="8项规定婚后报备表-添加")
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody SmartPostMarriageReportPage smartPostMarriageReportPage) {
+
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		String orgCode = sysUser.getOrgCode();
+		if ("".equals(orgCode)) {
+			return Result.error("本用户没有操作权限！");
+		}
+		System.out.println(orgCode + "此用户的orgcode");
+		String id = smartPostMarriageReportService.getDepartIdByOrgCode(orgCode);
+		smartPostMarriageReportPage.setWorkDepartment(id);
+		System.out.println(id + "id等于");
+
 		SmartPostMarriageReport smartPostMarriageReport = new SmartPostMarriageReport();
 		BeanUtils.copyProperties(smartPostMarriageReportPage, smartPostMarriageReport);
 		smartPostMarriageReportService.saveMain(smartPostMarriageReport, smartPostMarriageReportPage.getSmartPostMarriageReportFileList());
