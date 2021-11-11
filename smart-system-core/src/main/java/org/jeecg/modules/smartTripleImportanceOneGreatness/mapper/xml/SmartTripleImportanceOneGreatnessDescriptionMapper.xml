@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.jeecg.modules.smartTripleImportanceOneGreatness.mapper.SmartTripleImportanceOneGreatnessDecriptionMapper">
+<mapper namespace="org.jeecg.modules.smartTripleImportanceOneGreatness.mapper.SmartTripleImportanceOneGreatnessDescriptionMapper">
 
 	<delete id="deleteByMainId" parameterType="java.lang.String">
 		DELETE 
-		FROM  smart_triple_importance_one_greatness_decription 
+		FROM  smart_triple_importance_one_greatness_description 
 		WHERE
 			 meeting_id = #{mainId} 	</delete>
 	
-	<select id="selectByMainId" parameterType="java.lang.String" resultType="org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatnessDecription">
+	<select id="selectByMainId" parameterType="java.lang.String" resultType="org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatnessDescription">
 		SELECT * 
-		FROM  smart_triple_importance_one_greatness_decription
+		FROM  smart_triple_importance_one_greatness_description
 		WHERE
 			 meeting_id = #{mainId} 	</select>
 </mapper>
