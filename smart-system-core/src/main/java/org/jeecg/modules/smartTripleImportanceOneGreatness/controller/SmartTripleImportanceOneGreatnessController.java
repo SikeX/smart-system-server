@@ -1,14 +1,11 @@
 package org.jeecg.modules.smartTripleImportanceOneGreatness.controller;
-
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.*;
 import java.util.stream.Collectors;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
@@ -149,8 +146,10 @@ public class SmartTripleImportanceOneGreatnessController {
 	@PutMapping(value = "/edit")
 	public Result<?> edit(@RequestBody SmartTripleImportanceOneGreatnessPage smartTripleImportanceOneGreatnessPage) {
 		SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness = new SmartTripleImportanceOneGreatness();
+
 		smartTripleImportanceOneGreatness.setDocumentid(null);
 		smartTripleImportanceOneGreatness.setCreateTime(null);
+
 		BeanUtils.copyProperties(smartTripleImportanceOneGreatnessPage, smartTripleImportanceOneGreatness);
 		SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatnessEntity = smartTripleImportanceOneGreatnessService.getById(smartTripleImportanceOneGreatness.getId());
 		if(smartTripleImportanceOneGreatnessEntity==null) {
