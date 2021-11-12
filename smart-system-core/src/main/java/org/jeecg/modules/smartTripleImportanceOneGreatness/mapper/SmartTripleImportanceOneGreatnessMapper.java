@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 /**
  * @Description: 三重一大表
  * @Author: jeecg-boot
- * @Date:   2021-11-10
+ * @Date:   2021-11-12
  * @Version: V1.0
  */
 public interface SmartTripleImportanceOneGreatnessMapper extends BaseMapper<SmartTripleImportanceOneGreatness> {
@@ -27,4 +27,5 @@ public interface SmartTripleImportanceOneGreatnessMapper extends BaseMapper<Smar
      * @return 子部门ID列表
      */
     List<String> getChildrenIdByOrgCode(String orgCode);
+
 }

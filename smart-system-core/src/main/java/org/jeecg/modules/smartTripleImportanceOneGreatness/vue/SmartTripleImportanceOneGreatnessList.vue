@@ -5,8 +5,8 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="单位ID">
-              <a-input placeholder="请输入单位ID" v-model="queryParam.documentid"></a-input>
+            <a-form-item label="单位">
+              <j-multi-select-tag placeholder="请选择单位" dictCode="" v-model="queryParam.documentid"/>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -137,6 +137,11 @@
             }
           },
           {
+            title:'单位',
+            align:"center",
+            dataIndex: 'documentid_dictText'
+          },
+          {
             title:'名称',
             align:"center",
             dataIndex: 'meetingName'
@@ -230,7 +235,7 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'documentid',text:'单位ID',dictCode:''})
+         fieldList.push({type:'list_multi',value:'documentid',text:'单位',dictTable:'', dictText:'', dictCode:''})
          fieldList.push({type:'string',value:'meetingName',text:'名称',dictCode:''})
          fieldList.push({type:'string',value:'meetingPlace',text:'地点',dictCode:''})
          fieldList.push({type:'datetime',value:'meetingStarttime',text:'时间'})
