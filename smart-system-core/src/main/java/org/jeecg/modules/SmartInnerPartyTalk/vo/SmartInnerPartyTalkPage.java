@@ -52,9 +52,9 @@ public class SmartInnerPartyTalkPage {
 	@ApiModelProperty(value = "单位ID")
     private java.lang.String departId;
 	/**会议时间*/
-	@Excel(name = "会议时间", width = 15, format = "yyyy-MM-dd")
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+	@Excel(name = "会议时间", width = 15, format = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@ApiModelProperty(value = "会议时间")
     private java.util.Date meetTime;
 	/**会议地点*/

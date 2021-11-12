@@ -95,13 +95,4 @@ public class SmartInnerPartyTalkServiceImpl extends ServiceImpl<SmartInnerPartyT
 		}
 	}
 
-	@Override
-	public String getDepartIdByOrgCode(String orgCode) {
-		return smartInnerPartyTalkMapper.getDepartIdByOrgCode(orgCode);
-	}
-
-	@Override
-	public List<String> getChildrenIdByOrgCode(String orgCode) {
-		return smartInnerPartyTalkMapper.getChildrenIdByOrgCode(orgCode);
-	}
 }
