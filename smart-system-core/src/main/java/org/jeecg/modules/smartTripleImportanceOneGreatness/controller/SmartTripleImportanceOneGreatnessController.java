@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -55,6 +56,9 @@ public class SmartTripleImportanceOneGreatnessController {
 	private ISmartTripleImportanceOneGreatnessDescriptionService smartTripleImportanceOneGreatnessDescriptionService;
 	@Autowired
 	 CommonService commonService;
+	@Autowired
+	private SmartVerify smartVerify;
+	public String verifyType="三重一大";
 
 	/**
 	 * 分页列表查询
@@ -75,7 +79,7 @@ public class SmartTripleImportanceOneGreatnessController {
 		// 1. 规则，下面是 以**开始
 		String rule = "in";
 		// 2. 查询字段
-		String field = "documentId";
+		String field = "documentid";
 		// 获取登录用户信息，可以用来查询单位部门信息
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
@@ -98,11 +102,11 @@ public class SmartTripleImportanceOneGreatnessController {
 
 		QueryWrapper<SmartTripleImportanceOneGreatness> queryWrapper = QueryGenerator.initQueryWrapper(smartTripleImportanceOneGreatness, map);
 		Page<SmartTripleImportanceOneGreatness> page = new Page<SmartTripleImportanceOneGreatness>(pageNo, pageSize);
-		IPage<SmartTripleImportanceOneGreatness> pageList = smartTripleImportanceOneGreatnessService.page(page,queryWrapper);
-		// 请同步修改edit函数中，将documentid变为null，不然会更新成名称
-		List<String> documentIds = pageList.getRecords().stream().map(SmartTripleImportanceOneGreatness::getDocumentid).collect(Collectors.toList());
-		if (documentIds != null && documentIds.size() > 0) {
-			Map<String, String> useDepNames = commonService.getDepNamesByIds(documentIds);
+		IPage<SmartTripleImportanceOneGreatness> pageList = smartTripleImportanceOneGreatnessService.page(page, queryWrapper);
+		// 请同步修改edit函数中，将departId变为null，不然会更新成名称
+		List<String> departIds = pageList.getRecords().stream().map(SmartTripleImportanceOneGreatness::getDocumentid).collect(Collectors.toList());
+		if (departIds != null && departIds.size() > 0) {
+			Map<String, String> useDepNames = commonService.getDepNamesByIds(departIds);
 			pageList.getRecords().forEach(item -> {
 				item.setDocumentid(useDepNames.get(item.getDocumentid()));
 			});
@@ -132,6 +136,9 @@ public class SmartTripleImportanceOneGreatnessController {
 		BeanUtils.copyProperties(smartTripleImportanceOneGreatnessPage, smartTripleImportanceOneGreatness);
 		smartTripleImportanceOneGreatnessService.saveMain(smartTripleImportanceOneGreatness,
 				smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessDescriptionList());
+
+		smartVerify.addVerifyRecord(smartTripleImportanceOneGreatness.getId(),verifyType);
+
 		return Result.OK("添加成功！");
 	}
 
@@ -146,15 +153,13 @@ public class SmartTripleImportanceOneGreatnessController {
 	@PutMapping(value = "/edit")
 	public Result<?> edit(@RequestBody SmartTripleImportanceOneGreatnessPage smartTripleImportanceOneGreatnessPage) {
 		SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness = new SmartTripleImportanceOneGreatness();
-
-		smartTripleImportanceOneGreatness.setDocumentid(null);
-		smartTripleImportanceOneGreatness.setCreateTime(null);
-
 		BeanUtils.copyProperties(smartTripleImportanceOneGreatnessPage, smartTripleImportanceOneGreatness);
 		SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatnessEntity = smartTripleImportanceOneGreatnessService.getById(smartTripleImportanceOneGreatness.getId());
 		if(smartTripleImportanceOneGreatnessEntity==null) {
 			return Result.error("未找到对应数据");
 		}
+		smartTripleImportanceOneGreatness.setDocumentid(null);
+		smartTripleImportanceOneGreatness.setCreateTime(null);
 		smartTripleImportanceOneGreatnessService.updateMain(smartTripleImportanceOneGreatness, smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessDescriptionList());
 		return Result.OK("编辑成功!");
 	}
