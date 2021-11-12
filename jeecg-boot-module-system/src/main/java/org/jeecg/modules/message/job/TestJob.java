@@ -49,10 +49,10 @@ public class TestJob {
      * 每隔十秒进行一次
      *
      */
-    @Scheduled(cron = "*/10 * * * * *")
-    public void reportCurrentTime() throws InterruptedException {
-        System.out.println("任务执行！！！" + "count = " + (count0++));
-    }
+//    @Scheduled(cron = "*/10 * * * * *")
+//    public void reportCurrentTime() throws InterruptedException {
+//        System.out.println("任务执行！！！" + "count = " + (count0++));
+//    }
 
     //cron测试
     @Scheduled(cron = "0 51 13 * * ?")
@@ -65,7 +65,7 @@ public class TestJob {
      * 每天早上八点执行
      */
 //    @Scheduled(cron = "0 0 8 * * ?")
-    @Scheduled(cron = "*/20 * * * * *")
+    @Scheduled(cron = "0 0 20 * * ?")
     public void anniversaryRe(){
 
         List<SmartTaskManage> smartTaskManage = sysMessageTemplateService.getTaskDetail();
@@ -105,7 +105,7 @@ public class TestJob {
      * 每天早上八点执行
      */
 //    @Scheduled(cron = "0 0 8 * * ?")
-    @Scheduled(cron = "*/50 * * * * *")
+    @Scheduled(cron = "0 0 8 * * ?")
     public void punishRe(){
 
         List<SmartTaskManage> smartTaskManage = sysMessageTemplateService.getTaskDetail();

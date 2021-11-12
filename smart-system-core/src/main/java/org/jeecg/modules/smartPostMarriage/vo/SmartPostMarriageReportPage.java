@@ -17,7 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 8项规定婚后报备表
  * @Author: jeecg-boot
- * @Date:   2021-11-11
+ * @Date:   2021-11-12
  * @Version: V1.0
  */
 @Data
@@ -27,6 +27,10 @@ public class SmartPostMarriageReportPage {
 	/**主键*/
 	@ApiModelProperty(value = "主键")
 	private java.lang.String id;
+	/**单位*/
+	@Excel(name = "单位", width = 15)
+	@ApiModelProperty(value = "单位")
+	private java.lang.String workDepartment;
 	/**人员工号*/
 	@Excel(name = "人员工号", width = 15)
 	@ApiModelProperty(value = "人员工号")
@@ -49,10 +53,6 @@ public class SmartPostMarriageReportPage {
 	@Dict(dicCode = "political_status")
 	@ApiModelProperty(value = "政治面貌")
 	private java.lang.String politicsStatus;
-	/**单位id*/
-	@Excel(name = "单位id", width = 15)
-	@ApiModelProperty(value = "单位id")
-	private java.lang.String workDepartment;
 	/**职务*/
 	@Excel(name = "职务", width = 15, dictTable = "sys_position", dicText = "name", dicCode = "code")
 	@Dict(dictTable = "sys_position", dicText = "name", dicCode = "code")
