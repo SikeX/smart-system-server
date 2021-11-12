@@ -23,6 +23,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.modules.smartReportingInformationDetail.service.ISmartReportingInformationDetailService;
+import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -54,6 +55,9 @@ public class SmartReportingInformationDetailController extends JeecgController<S
 	private ISmartReportingInformationDetailService smartReportingInformationDetailService;
 	@Autowired
 	private ISmartReportingInformationService smartReportingInformationService;
+	@Autowired
+	private SmartVerify smartVerify;
+	public String verifyType="纠治四风举报详细信息";
 
 	/**
 	 * 分页列表查询
@@ -97,6 +101,7 @@ public class SmartReportingInformationDetailController extends JeecgController<S
 
 		smartReportingInformationDetailService.save(smartReportingInformationDetail);
 		smartReportingInformationService.save(smartReportingInformation);
+		smartVerify.addVerifyRecord(smartReportingInformationDetail.getId(),verifyType);
 		return Result.OK("添加成功！");
 
 	}

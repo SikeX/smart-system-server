@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @Description: 三重一大表
  * @Author: jeecg-boot
- * @Date:   2021-11-10
+ * @Date:   2021-11-12
  * @Version: V1.0
  */
 public interface ISmartTripleImportanceOneGreatnessService extends IService<SmartTripleImportanceOneGreatness> {
@@ -36,7 +36,6 @@ public interface ISmartTripleImportanceOneGreatnessService extends IService<Smar
 	 * 批量删除一对多
 	 */
 	public void delBatchMain (Collection<? extends Serializable> idList);
-
 	/**
 	 * 根据部门编码查询部门ID
 	 *

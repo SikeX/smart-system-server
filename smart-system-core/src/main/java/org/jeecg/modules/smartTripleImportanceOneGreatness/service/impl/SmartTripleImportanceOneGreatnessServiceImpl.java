@@ -16,7 +16,7 @@ import java.util.Collection;
 /**
  * @Description: 三重一大表
  * @Author: jeecg-boot
- * @Date:   2021-11-10
+ * @Date:   2021-11-12
  * @Version: V1.0
  */
 @Service
@@ -82,4 +82,5 @@ public class SmartTripleImportanceOneGreatnessServiceImpl extends ServiceImpl<Sm
 	public List<String> getChildrenIdByOrgCode(String orgCode) {
 		return smartTripleImportanceOneGreatnessMapper.getChildrenIdByOrgCode(orgCode);
 	}
+
 }

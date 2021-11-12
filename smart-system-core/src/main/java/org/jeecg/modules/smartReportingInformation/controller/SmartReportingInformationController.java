@@ -20,6 +20,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
+import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -39,7 +40,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
  /**
  * @Description: 举报信息表
  * @Author: jeecg-boot
- * @Date:   2021-11-07
+ * @Date:   2021-11-12
  * @Version: V1.0
  */
 @Api(tags="举报信息表")
@@ -49,7 +50,9 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 public class SmartReportingInformationController extends JeecgController<SmartReportingInformation, ISmartReportingInformationService> {
 	@Autowired
 	private ISmartReportingInformationService smartReportingInformationService;
-	
+	 @Autowired
+	 private SmartVerify smartVerify;
+	 public String verifyType="纠治四风举报信息";
 	/**
 	 * 分页列表查询
 	 *
@@ -71,7 +74,7 @@ public class SmartReportingInformationController extends JeecgController<SmartRe
 		IPage<SmartReportingInformation> pageList = smartReportingInformationService.page(page, queryWrapper);
 		return Result.OK(pageList);
 	}
-	
+
 	/**
 	 *   添加
 	 *
@@ -83,9 +86,10 @@ public class SmartReportingInformationController extends JeecgController<SmartRe
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody SmartReportingInformation smartReportingInformation) {
 		smartReportingInformationService.save(smartReportingInformation);
+		smartVerify.addVerifyRecord(smartReportingInformation.getId(),verifyType);
 		return Result.OK("添加成功！");
 	}
-	
+
 	/**
 	 *  编辑
 	 *
@@ -99,7 +103,7 @@ public class SmartReportingInformationController extends JeecgController<SmartRe
 		smartReportingInformationService.updateById(smartReportingInformation);
 		return Result.OK("编辑成功!");
 	}
-	
+
 	/**
 	 *   通过id删除
 	 *
@@ -113,7 +117,7 @@ public class SmartReportingInformationController extends JeecgController<SmartRe
 		smartReportingInformationService.removeById(id);
 		return Result.OK("删除成功!");
 	}
-	
+
 	/**
 	 *  批量删除
 	 *
@@ -127,7 +131,7 @@ public class SmartReportingInformationController extends JeecgController<SmartRe
 		this.smartReportingInformationService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.OK("批量删除成功!");
 	}
-	
+
 	/**
 	 * 通过id查询
 	 *
