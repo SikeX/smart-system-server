@@ -1,0 +1,78 @@
+package org.jeecg.modules.smart_window_unit.entity;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.math.BigDecimal;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.jeecgframework.poi.excel.annotation.Excel;
+import org.jeecg.common.aspect.annotation.Dict;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import java.io.UnsupportedEncodingException;
+
+/**
+ * @Description: 窗口单位
+ * @Author: jeecg-boot
+ * @Date:   2021-11-11
+ * @Version: V1.0
+ */
+@Data
+@TableName("smart_window_unit")
+@ApiModel(value="smart_window_unit对象", description="窗口单位")
+public class SmartWindowUnit implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+	/**主键*/
+	@TableId(type = IdType.ASSIGN_ID)
+    @ApiModelProperty(value = "主键")
+    private java.lang.String id;
+	/**删除状态*/
+	@Excel(name = "删除状态", width = 15,dicCode = "del_flag")
+	@TableLogic
+	private  InterruptedException delFlag;
+	/**单位ID*/
+	@Excel(name = "单位ID", width = 15)
+    @ApiModelProperty(value = "单位ID")
+    private java.lang.String departmentid;
+	/**单位名称*/
+	@Excel(name = "单位名称", width = 15)
+    @ApiModelProperty(value = "单位名称")
+    private java.lang.String name;
+	/**主管单位*/
+	@Excel(name = "主管单位", width = 15, dictTable = "sys_depart", dicText = "depart_name", dicCode = "id")
+	@Dict(dictTable = "sys_depart", dicText = "depart_name", dicCode = "id")
+    @ApiModelProperty(value = "主管单位")
+    private java.lang.String pid;
+	/**负责人*/
+	@Excel(name = "负责人", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
+	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
+    @ApiModelProperty(value = "负责人")
+    private java.lang.String principal;
+	/**联系电话*/
+	@Excel(name = "联系电话", width = 15)
+    @ApiModelProperty(value = "联系电话")
+    private java.lang.String phone;
+	/**工作人员*/
+	@Excel(name = "工作人员", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
+	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
+    @ApiModelProperty(value = "工作人员")
+    private java.lang.String people;
+	/**二维码*/
+	@Excel(name = "二维码", width = 15)
+    @ApiModelProperty(value = "二维码")
+    private java.lang.String qrcode;
+	/**是否有子节点*/
+	@Excel(name = "是否有子节点", width = 15, dicCode = "yn")
+	@Dict(dicCode = "yn")
+    @ApiModelProperty(value = "是否有子节点")
+    private java.lang.String hasChild;
+	/**创建时间*/
+    @ApiModelProperty(value = "创建时间")
+    private java.lang.String createTime;
+}
