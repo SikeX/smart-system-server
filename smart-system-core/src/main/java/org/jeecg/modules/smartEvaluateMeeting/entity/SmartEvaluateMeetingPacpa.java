@@ -3,6 +3,7 @@ package org.jeecg.modules.smartEvaluateMeeting.entity;
 import java.io.Serializable;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -16,7 +17,7 @@ import java.io.UnsupportedEncodingException;
 /**
  * @Description: 述责述廉参与人表
  * @Author: jeecg-boot
- * @Date:   2021-11-03
+ * @Date:   2021-11-11
  * @Version: V1.0
  */
 @ApiModel(value="smart_evaluate_meeting_pacpa对象", description="述责述廉参与人表")
@@ -55,4 +56,9 @@ public class SmartEvaluateMeetingPacpa implements Serializable {
 	@Excel(name = "参与人员工号", width = 15)
     @ApiModelProperty(value = "参与人员工号")
     private java.lang.String pacpaId;
+	/**删除状态（0，正常，1已删除）*/
+	@Excel(name = "删除状态（0，正常，1已删除）", width = 15)
+    @TableLogic
+    @ApiModelProperty(value = "删除状态（0，正常，1已删除）")
+    private java.lang.Integer delFlag;
 }

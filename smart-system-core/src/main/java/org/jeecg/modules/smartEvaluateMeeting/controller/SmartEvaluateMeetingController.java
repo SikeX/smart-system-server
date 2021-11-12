@@ -3,15 +3,15 @@ package org.jeecg.modules.smartEvaluateMeeting.controller;
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jeecg.modules.common.service.CommonService;
+import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -47,7 +47,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
  /**
  * @Description: 述责述廉表
  * @Author: jeecg-boot
- * @Date:   2021-11-03
+ * @Date:   2021-11-11
  * @Version: V1.0
  */
 @Api(tags="述责述廉表")
@@ -61,7 +61,13 @@ public class SmartEvaluateMeetingController {
 	private ISmartEvaluateMeetingPacpaService smartEvaluateMeetingPacpaService;
 	@Autowired
 	private ISmartEvaluateMeetingAnnexService smartEvaluateMeetingAnnexService;
-	
+	@Autowired
+	CommonService commonService;
+	@Autowired
+	private SmartVerify smartVerify;
+
+	public String verifyType = "述责述廉";
+
 	/**
 	 * 分页列表查询
 	 *
@@ -78,9 +84,41 @@ public class SmartEvaluateMeetingController {
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
-		QueryWrapper<SmartEvaluateMeeting> queryWrapper = QueryGenerator.initQueryWrapper(smartEvaluateMeeting, req.getParameterMap());
-		Page<SmartEvaluateMeeting> page = new Page<SmartEvaluateMeeting>(pageNo, pageSize);
-		IPage<SmartEvaluateMeeting> pageList = smartEvaluateMeetingService.page(page, queryWrapper);
+		// 1. 规则，下面是 以**开始
+		String rule = "in";
+		// 2. 查询字段
+		String field = "departId";
+		// 获取登录用户信息，可以用来查询单位部门信息
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+		// 获取子单位ID
+		String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
+
+		HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+		// 获取请求参数中的superQueryParams
+		List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+
+		// 添加额外查询条件，用于权限控制
+		paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+				+ childrenIdString
+				+ "%22,%22field%22:%22" + field + "%22%7D%5D");
+		String[] params = new String[paramsList.size()];
+		paramsList.toArray(params);
+		map.put("superQueryParams", params);
+		params = new String[]{"and"};
+		map.put("superQueryMatchType", params);
+
+		QueryWrapper<org.jeecg.modules.smartEvaluateMeeting.entity.SmartEvaluateMeeting> queryWrapper = QueryGenerator.initQueryWrapper(smartEvaluateMeeting, map);
+		Page<org.jeecg.modules.smartEvaluateMeeting.entity.SmartEvaluateMeeting> page = new Page<org.jeecg.modules.smartEvaluateMeeting.entity.SmartEvaluateMeeting>(pageNo, pageSize);
+		IPage<org.jeecg.modules.smartEvaluateMeeting.entity.SmartEvaluateMeeting> pageList = smartEvaluateMeetingService.page(page, queryWrapper);
+		// 请同步修改edit函数中，将departId变为null，不然会更新成名称
+		List<String> departIds = pageList.getRecords().stream().map(org.jeecg.modules.smartEvaluateMeeting.entity.SmartEvaluateMeeting::getDepartId).collect(Collectors.toList());
+		if (departIds != null && departIds.size() > 0) {
+			Map<String, String> useDepNames = commonService.getDepNamesByIds(departIds);
+			pageList.getRecords().forEach(item -> {
+				item.setDepartId(useDepNames.get(item.getDepartId()));
+			});
+		}
 		return Result.OK(pageList);
 	}
 	
@@ -96,7 +134,18 @@ public class SmartEvaluateMeetingController {
 	public Result<?> add(@RequestBody SmartEvaluateMeetingPage smartEvaluateMeetingPage) {
 		SmartEvaluateMeeting smartEvaluateMeeting = new SmartEvaluateMeeting();
 		BeanUtils.copyProperties(smartEvaluateMeetingPage, smartEvaluateMeeting);
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		String orgCode = sysUser.getOrgCode();
+		if ("".equals(orgCode)) {
+			return Result.error("本用户没有操作权限！");
+		}
+		String id = commonService.getDepartIdByOrgCode(orgCode);
+		if (id == null) {
+			return Result.error("没有找到部门！");
+		}
+		smartEvaluateMeeting.setDepartId(id);
 		smartEvaluateMeetingService.saveMain(smartEvaluateMeeting, smartEvaluateMeetingPage.getSmartEvaluateMeetingPacpaList(),smartEvaluateMeetingPage.getSmartEvaluateMeetingAnnexList());
+		smartVerify.addVerifyRecord(smartEvaluateMeeting.getId(),verifyType);
 		return Result.OK("添加成功！");
 	}
 	
@@ -116,6 +165,8 @@ public class SmartEvaluateMeetingController {
 		if(smartEvaluateMeetingEntity==null) {
 			return Result.error("未找到对应数据");
 		}
+		smartEvaluateMeeting.setDepartId(null);
+		smartEvaluateMeeting.setCreateTime(null);
 		smartEvaluateMeetingService.updateMain(smartEvaluateMeeting, smartEvaluateMeetingPage.getSmartEvaluateMeetingPacpaList(),smartEvaluateMeetingPage.getSmartEvaluateMeetingAnnexList());
 		return Result.OK("编辑成功!");
 	}
