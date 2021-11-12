@@ -17,21 +17,21 @@ public interface ISmartPostMarriageReportService extends IService<SmartPostMarri
 
 	/**
 	 * 添加一对多
-	 * 
+	 *
 	 */
 	public void saveMain(SmartPostMarriageReport smartPostMarriageReport,List<SmartPostMarriageReportFile> smartPostMarriageReportFileList) ;
-	
+
 	/**
 	 * 修改一对多
-	 * 
+	 *
 	 */
 	public void updateMain(SmartPostMarriageReport smartPostMarriageReport,List<SmartPostMarriageReportFile> smartPostMarriageReportFileList);
-	
+
 	/**
 	 * 删除一对多
 	 */
 	public void delMain (String id);
-	
+
 	/**
 	 * 批量删除一对多
 	 */
@@ -52,5 +52,5 @@ public interface ISmartPostMarriageReportService extends IService<SmartPostMarri
 	 * @return 子部门ID列表
 	 */
 	List<String> getChildrenIdByOrgCode(String orgCode);
-	
+
 }
