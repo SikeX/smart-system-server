@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -29,6 +30,7 @@ import org.jeecg.modules.smartSupervision.service.ISmartSupervisionService;
 import org.jeecg.modules.smartSupervision.service.ISmartSupervisionAnnexService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,6 +63,10 @@ public class SmartSupervisionController {
 	private ISysBaseAPI sysBaseAPI;
 	@Autowired
 	private CommonService commonService;
+	@Autowired
+	private SmartVerify smartVerify;
+
+	public String verifyType = "监督检查";
 	
 	/**
 	 * 分页列表查询
@@ -127,6 +133,7 @@ public class SmartSupervisionController {
 	 */
 	@AutoLog(value = "八项规定监督检查表-添加")
 	@ApiOperation(value="八项规定监督检查表-添加", notes="八项规定监督检查表-添加")
+	@Transactional
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody SmartSupervisionPage smartSupervisionPage) {
 
@@ -142,7 +149,9 @@ public class SmartSupervisionController {
 		smartSupervisionPage.setDepartId(id);
 		SmartSupervision smartSupervision = new SmartSupervision();
 		BeanUtils.copyProperties(smartSupervisionPage, smartSupervision);
+		log.info(smartSupervision.getId());
 		smartSupervisionService.saveMain(smartSupervision, smartSupervisionPage.getSmartSupervisionAnnexList());
+		smartVerify.addVerifyRecord(smartSupervision.getId(),verifyType);
 		return Result.OK("添加成功！");
 	}
 	
@@ -309,5 +318,16 @@ public class SmartSupervisionController {
       }
       return Result.OK("文件导入失败！");
     }
+
+	 @AutoLog(value = "更新文件下载次数")
+	 @ApiOperation(value="更新文件下载次数", notes="更新文件下载次数")
+	 @PutMapping(value = "/downloadCount")
+	 public Result<?> edit(@RequestBody SmartSupervisionAnnex smartSupervisionAnnex) {
+		 SmartSupervisionAnnex newSmartSupervisionAnnex = smartSupervisionAnnexService.getById(smartSupervisionAnnex.getId());
+		 int currentCount = newSmartSupervisionAnnex.getDownloadCount();
+		 newSmartSupervisionAnnex.setDownloadCount(currentCount+1);
+		 smartSupervisionAnnexService.updateById(newSmartSupervisionAnnex);
+		 return Result.OK("更新成功!");
+	 }
 
 }

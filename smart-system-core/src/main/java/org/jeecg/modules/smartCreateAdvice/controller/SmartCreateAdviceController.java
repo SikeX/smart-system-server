@@ -131,6 +131,15 @@ public class SmartCreateAdviceController {
 		SmartCreateAdvice smartCreateAdvice = new SmartCreateAdvice();
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 		BeanUtils.copyProperties(smartCreateAdvicePage, smartCreateAdvice);
+		String orgCode = sysUser.getOrgCode();
+		if ("".equals(orgCode)) {
+			return Result.error("本用户没有操作权限！");
+		}
+		String id = commonService.getDepartIdByOrgCode(orgCode);
+		if (id == null) {
+			return Result.error("没有找到部门！");
+		}
+		smartCreateAdvice.setDepartId(id);
 		smartCreateAdviceService.saveMain(smartCreateAdvice, smartCreateAdvicePage.getSmartCreateAdviceAnnexList());
 		smartVerify.addVerifyRecord(smartCreateAdvice.getId(), verifyType);
 		return Result.OK("添加成功！");
