@@ -16,7 +16,7 @@ import java.io.UnsupportedEncodingException;
 /**
  * @Description: 8项规定婚后报备宴请发票与附件表
  * @Author: jeecg-boot
- * @Date:   2021-11-10
+ * @Date:   2021-11-11
  * @Version: V1.0
  */
 @ApiModel(value="smart_post_marriage_report_file对象", description="8项规定婚后报备宴请发票与附件表")
@@ -25,33 +25,38 @@ import java.io.UnsupportedEncodingException;
 public class SmartPostMarriageReportFile implements Serializable {
     private static final long serialVersionUID = 1L;
 
-	/**主键*/
-	@TableId(type = IdType.ASSIGN_ID)
+    /**主键*/
+    @TableId(type = IdType.ASSIGN_ID)
     @ApiModelProperty(value = "主键")
-    private String id;
-	/**主表ID*/
+    private java.lang.String id;
+    /**主表ID*/
     @ApiModelProperty(value = "主表ID")
-    private String mainTableId;
-	/**序号*/
-	@Excel(name = "序号", width = 15)
+    private java.lang.String mainTableId;
+    /**序号*/
+    @Excel(name = "序号", width = 15)
     @ApiModelProperty(value = "序号")
-    private Integer serialNumber;
-	/**附件说明*/
-	@Excel(name = "附件说明", width = 15)
+    private java.lang.Integer serialNumber;
+    /**附件说明*/
+    @Excel(name = "附件说明", width = 15)
     @ApiModelProperty(value = "附件说明")
-    private String fileDescription;
-	/**附件文件路径*/
-	@Excel(name = "附件文件路径", width = 15)
+    private java.lang.String fileDescription;
+    /**附件文件路径*/
+    @Excel(name = "附件文件路径", width = 15)
     @ApiModelProperty(value = "附件文件路径")
-    private String filePath;
-	/**上传时间*/
-	@Excel(name = "上传时间", width = 15, format = "yyyy-MM-dd")
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
+    private java.lang.String filePath;
+    /**上传时间*/
+    @Excel(name = "上传时间", width = 15, format = "yyyy-MM-dd")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @ApiModelProperty(value = "上传时间")
-    private Date uploadTime;
-	/**下载次数*/
-	@Excel(name = "下载次数", width = 15)
+    private java.util.Date uploadTime;
+    /**下载次数*/
+    @Excel(name = "下载次数", width = 15)
     @ApiModelProperty(value = "下载次数")
-    private Integer downloadCount;
+    private java.lang.Integer downloadCount;
+    /**创建时间*/
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @ApiModelProperty(value = "创建时间")
+    private java.util.Date createTime;
 }

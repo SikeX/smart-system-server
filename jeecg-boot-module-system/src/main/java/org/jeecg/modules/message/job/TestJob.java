@@ -1,15 +1,20 @@
 package org.jeecg.modules.message.job;
 
+import com.alibaba.fastjson.JSONObject;
 import org.jeecg.common.api.dto.message.MessageDTO;
+import org.jeecg.common.constant.WebsocketConst;
 import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.modules.message.entity.PersonInfo;
 import org.jeecg.modules.message.entity.PunishPerson;
 import org.jeecg.modules.message.entity.SmartTaskManage;
 import org.jeecg.modules.message.service.ISysMessageTemplateService;
+import org.jeecg.modules.message.websocket.WebSocket;
 import org.jeecg.modules.system.service.ISysAnnouncementSendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,6 +38,9 @@ public class TestJob {
 
     @Autowired
     ISysBaseAPI iSysBaseAPI;
+
+    @Resource
+    private WebSocket webSocket;
 
 
     /**
@@ -66,10 +74,9 @@ public class TestJob {
         String type = "1"; //smartTaskManage.get(1).getSendType();
         String content = smartTaskManage.get(1).getTemplateContent();
 
-        System.out.println("解除处分通知");
-
         if(status.equals("开启")){
             List<PunishPerson> punishPersonList = sysMessageTemplateService.getPunishList();
+            System.out.println("解除处分通知");
 
             for(PunishPerson p : punishPersonList){
                 if(type.equals("1")){
@@ -77,12 +84,17 @@ public class TestJob {
                     System.out.println(p.toString() + content);
                     System.out.println(smartTaskManage.get(0).getTaskName());
                 }else{
-                    //调用app接口
+                    //调用消息接口
                     System.out.println(p.toString() + content);
 
-                    MessageDTO messageDTO = new MessageDTO("admin", "lord1", "入党纪念日提醒", "入党纪念日快乐");
-
+                    //系统消息
+                    //MessageDTO messageDTO = new MessageDTO("admin", "lord1", "入党纪念日提醒", "入党纪念日快乐");
                     //iSysBaseAPI.sendSysAnnouncement(messageDTO);
+
+                    //通知
+
+
+
                 }
             }
         }
@@ -93,16 +105,17 @@ public class TestJob {
      * 每天早上八点执行
      */
 //    @Scheduled(cron = "0 0 8 * * ?")
-    @Scheduled(cron = "*/10 * * * * *")
+    @Scheduled(cron = "*/50 * * * * *")
     public void punishRe(){
 
         List<SmartTaskManage> smartTaskManage = sysMessageTemplateService.getTaskDetail();
         String status = smartTaskManage.get(0).getStatus();
-        String type = "1"; //smartTaskManage.get(0).getSendType();
+        String type = "2"; //smartTaskManage.get(0).getSendType();
         String content = smartTaskManage.get(0).getTemplateContent();
 
         if(status.equals("开启")){
             List<PersonInfo> personInfoList = sysMessageTemplateService.getBirthList();
+            System.out.println("入党纪念日通知");
 
             for(PersonInfo p : personInfoList){
                 if(type.equals("1")){
@@ -116,6 +129,16 @@ public class TestJob {
                 }else{
                     //调用app接口
                     System.out.println(p.toString() + content);
+
+                    //调用消息接口
+//                    String userId = "lord1"; //p.getUserName();
+                    //String anntId = sysAnnouncement.getId();
+                    //Date refDate = new Date();
+//                    JSONObject obj = new JSONObject();
+//                    obj.put(WebsocketConst.MSG_CMD, WebsocketConst.CMD_USER);
+                    //obj.put(WebsocketConst.MSG_ID, sysAnnouncement.getId());
+//                    obj.put(WebsocketConst.MSG_TXT, "入党纪念日通知");
+//                    webSocket.sendMessage(userId, obj.toJSONString());
 
                 }
             }
