@@ -328,4 +328,19 @@ public class SmartEvaluateMeetingController {
       return Result.OK("文件导入失败！");
     }
 
-}
+	 @AutoLog(value = "更新文件下载次数")
+	 @ApiOperation(value = "更新文件下载次数", notes = "更新文件下载次数")
+	 @PutMapping(value = "/downloadCount")
+	 public Result<?> downloadCount(@RequestBody org.jeecg.modules.smartEvaluateMeeting.entity.SmartEvaluateMeetingAnnex smartEvaluateMeetingAnnex) {
+		 org.jeecg.modules.smartEvaluateMeeting.entity.SmartEvaluateMeetingAnnex newSmartEvaluateMeetingAnnex = smartEvaluateMeetingAnnexService.getById(smartEvaluateMeetingAnnex.getId());
+		 if (newSmartEvaluateMeetingAnnex == null) {
+			 return Result.error("未找到对应数据");
+		 }
+		 Integer downloadCount = newSmartEvaluateMeetingAnnex.getDownloadTimes();
+		 newSmartEvaluateMeetingAnnex.setDownloadTimes(downloadCount + 1);
+		 smartEvaluateMeetingAnnexService.updateById(newSmartEvaluateMeetingAnnex);
+		 return Result.OK("更新成功!");
+	 }
+
+
+ }
