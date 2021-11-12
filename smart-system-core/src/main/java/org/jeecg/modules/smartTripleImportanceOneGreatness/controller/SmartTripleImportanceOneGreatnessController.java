@@ -1,11 +1,14 @@
 package org.jeecg.modules.smartTripleImportanceOneGreatness.controller;
+
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.*;
 import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
@@ -42,7 +45,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
  /**
  * @Description: 三重一大表
  * @Author: jeecg-boot
- * @Date:   2021-11-10
+ * @Date:   2021-11-12
  * @Version: V1.0
  */
 @Api(tags="三重一大表")
@@ -55,10 +58,10 @@ public class SmartTripleImportanceOneGreatnessController {
 	@Autowired
 	private ISmartTripleImportanceOneGreatnessDescriptionService smartTripleImportanceOneGreatnessDescriptionService;
 	@Autowired
-	 CommonService commonService;
+	private CommonService commonService;
 	@Autowired
 	private SmartVerify smartVerify;
-	public String verifyType="三重一大";
+	private String verifyType="三重一大";
 
 	/**
 	 * 分页列表查询
@@ -76,7 +79,7 @@ public class SmartTripleImportanceOneGreatnessController {
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
-		// 1. 规则，下面是 以**开始
+		// 1. 规则，下面是以**开始
 		String rule = "in";
 		// 2. 查询字段
 		String field = "documentid";
@@ -131,6 +134,7 @@ public class SmartTripleImportanceOneGreatnessController {
 			return Result.error("本用户没有操作权限！");
 		}
 		String id = smartTripleImportanceOneGreatnessService.getDepartIdByOrgCode(orgCode);
+
 		smartTripleImportanceOneGreatnessPage.setDocumentid(id);
 		SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness = new SmartTripleImportanceOneGreatness();
 		BeanUtils.copyProperties(smartTripleImportanceOneGreatnessPage, smartTripleImportanceOneGreatness);
@@ -140,6 +144,7 @@ public class SmartTripleImportanceOneGreatnessController {
 		smartVerify.addVerifyRecord(smartTripleImportanceOneGreatness.getId(),verifyType);
 
 		return Result.OK("添加成功！");
+
 	}
 
 	/**
@@ -152,30 +157,29 @@ public class SmartTripleImportanceOneGreatnessController {
 	@ApiOperation(value="三重一大表-编辑", notes="三重一大表-编辑")
 	@PutMapping(value = "/edit")
 	public Result<?> edit(@RequestBody SmartTripleImportanceOneGreatnessPage smartTripleImportanceOneGreatnessPage) {
+
 		SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness = new SmartTripleImportanceOneGreatness();
 		BeanUtils.copyProperties(smartTripleImportanceOneGreatnessPage, smartTripleImportanceOneGreatness);
 		SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatnessEntity = smartTripleImportanceOneGreatnessService.getById(smartTripleImportanceOneGreatness.getId());
 		if(smartTripleImportanceOneGreatnessEntity==null) {
 			return Result.error("未找到对应数据");
 		}
+
+		smartTripleImportanceOneGreatnessService.updateMain(smartTripleImportanceOneGreatness, smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessDescriptionList());
 		smartTripleImportanceOneGreatness.setDocumentid(null);
 		smartTripleImportanceOneGreatness.setCreateTime(null);
-		smartTripleImportanceOneGreatnessService.updateMain(smartTripleImportanceOneGreatness, smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessDescriptionList());
 		return Result.OK("编辑成功!");
 	}
 
 	@AutoLog(value = "更新文件下载次数")
-	@ApiOperation(value="更新文件下载次数", notes="更新文件下载次数")
-	@PutMapping(value = "/downloadTimes")
-	public Result<?> edit(@RequestBody SmartTripleImportanceOneGreatnessDescription
-									  smartTripleImportanceOneGreatnessDescription) {
-		SmartTripleImportanceOneGreatnessDescription
-				newSmartTripleImportanceOneGreatnessDescription
-				=smartTripleImportanceOneGreatnessDescriptionService.getById(smartTripleImportanceOneGreatnessDescription.getId());
+	 @ApiOperation(value="更新文件下载次数", notes="更新文件下载次数")
+	 @PutMapping(value = "/downloadTimes")
+	 public Result<?> edit(@RequestBody SmartTripleImportanceOneGreatnessDescription smartTripleImportanceOneGreatnessDescription) {
+		 SmartTripleImportanceOneGreatnessDescription newSmartTripleImportanceOneGreatnessDescription =
+				 smartTripleImportanceOneGreatnessDescriptionService.getById(smartTripleImportanceOneGreatnessDescription.getId());
 		int currentCount = newSmartTripleImportanceOneGreatnessDescription.getDownloadTimes();
 		newSmartTripleImportanceOneGreatnessDescription.setDownloadTimes(currentCount+1);
 		smartTripleImportanceOneGreatnessDescriptionService.updateById(newSmartTripleImportanceOneGreatnessDescription);
-
 		return Result.OK("更新成功!");
 	}
 

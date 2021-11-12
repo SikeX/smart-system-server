@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 /**
  * @Description: 举报信息表
  * @Author: jeecg-boot
- * @Date:   2021-11-07
+ * @Date:   2021-11-12
  * @Version: V1.0
  */
 public interface SmartReportingInformationMapper extends BaseMapper<SmartReportingInformation> {

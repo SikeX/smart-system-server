@@ -6,6 +6,7 @@ import java.util.Date;
 import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -20,7 +21,7 @@ import lombok.experimental.Accessors;
 /**
  * @Description: 举报信息表
  * @Author: jeecg-boot
- * @Date:   2021-11-07
+ * @Date:   2021-11-12
  * @Version: V1.0
  */
 @Data
@@ -59,4 +60,11 @@ public class SmartReportingInformation implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "创建时间")
     private java.util.Date createTime;
+    //entity实体层
+    /**
+     * 删除状态（0，正常，1已删除）
+     */
+    @Excel(name = "删除状态", width = 15,dicCode="del_flag")
+    @TableLogic
+    private Integer delFlag;
 }

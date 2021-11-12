@@ -18,7 +18,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 三重一大表
  * @Author: jeecg-boot
- * @Date:   2021-11-10
+ * @Date:   2021-11-12
  * @Version: V1.0
  */
 @ApiModel(value="smart_triple_importance_one_greatness对象", description="三重一大表")
@@ -31,9 +31,9 @@ public class SmartTripleImportanceOneGreatness implements Serializable {
 	@TableId(type = IdType.ASSIGN_ID)
     @ApiModelProperty(value = "主键")
     private java.lang.String id;
-	/**单位ID*/
-	@Excel(name = "单位ID", width = 15)
-    @ApiModelProperty(value = "单位ID")
+	/**单位*/
+	@Excel(name = "单位", width = 15)
+    @ApiModelProperty(value = "单位")
     private java.lang.String documentid;
 	/**名称*/
 	@Excel(name = "名称", width = 15)
