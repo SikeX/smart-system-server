@@ -48,6 +48,12 @@
             <groupId>org.jeecgframework.boot</groupId>
             <artifactId>jeecg-system-local-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.3.1</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>
