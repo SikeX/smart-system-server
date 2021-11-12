@@ -49,8 +49,7 @@ public class ApiBannerController extends ApiBaseController {
         // 检查参数列表
         String paramList = "column|order|androidId|appVersion|mac|clientId|clientIp|sign";
         if (!super.checkParams(params, paramList)) {
-            log.info("参数列表错误");
-            return null;
+            return Result.error("参数列表错误");
         }
         if (!super.checkSign(params)) {
             return Result.error("签名错误");

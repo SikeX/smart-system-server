@@ -149,7 +149,7 @@ public class ApiClientController extends ApiBaseController {
     @PostMapping(value = "/login")
     public Result<?> login(@RequestParam Map<String, String> params) {
         // 首先校验参数是否都存在
-        String paramList = "clientIp|androidId|appVersion|mac|sign|brand|model|clientId|username|password";
+        String paramList = "clientIp|androidId|appVersion|mac|sign|clientId|username|password";
         if (!super.checkParams(params, paramList)) {
             return Result.error("参数列表错误");
         }

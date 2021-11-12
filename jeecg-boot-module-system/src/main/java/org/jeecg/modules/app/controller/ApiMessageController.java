@@ -1,28 +1,38 @@
 package org.jeecg.modules.app.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.SecurityUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.constant.CommonConstant;
-import org.jeecg.common.system.vo.LoginUser;
-import org.jeecg.modules.app.model.MessageModel;
-import org.jeecg.modules.app.service.IApiMessageService;
+import org.jeecg.common.constant.WebsocketConst;
+import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.message.websocket.WebSocket;
 import org.jeecg.modules.system.entity.SysAnnouncement;
 import org.jeecg.modules.system.entity.SysAnnouncementSend;
 import org.jeecg.modules.system.entity.SysUser;
+import org.jeecg.modules.system.model.AnnouncementSendModel;
 import org.jeecg.modules.system.service.ISysAnnouncementSendService;
 import org.jeecg.modules.system.service.ISysAnnouncementService;
 import org.jeecg.modules.system.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.Resource;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.jeecg.common.constant.CommonConstant.ANNOUNCEMENT_SEND_STATUS_1;
 
 /**
  * @Description: 消息提醒的app接口
@@ -36,34 +46,46 @@ import java.util.Map;
 @Slf4j
 public class ApiMessageController extends ApiBaseController {
     @Autowired
-    private IApiMessageService apiMessageService;
-    @Autowired
     private ISysAnnouncementSendService sysAnnouncementSendService;
     @Autowired
     private ISysAnnouncementService sysAnnouncementService;
     @Autowired
     private ISysUserService sysUserService;
+    @Resource
+    private WebSocket webSocket;
 
     /**
      * 功能 获取我的消息
-     *
-     * @param
-     * @param pageNo
-     * @param pageSize
+     * @param params
      * @return
      */
     @GetMapping(value = "/messages")
-    public Result<IPage<MessageModel>> showMessage(MessageModel announcementSendModel,
-                                                   @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
-                                                   @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
-        Result<IPage<MessageModel>> result = new Result<>();
-        // @TODO 这里暂定共用一个普通用户登录，上线之后如何更改再商讨
-        String userId = "1457591503827329026"; // client用户当前id
+    public Result<IPage<AnnouncementSendModel>> showMessage(@RequestParam Map<String, String> params) {
+        Result<IPage<AnnouncementSendModel>> result = new Result<>();
+
+        // 首先校验参数是否都存在
+        String paramList = "clientIp|androidId|appVersion|mac|clientId|token|_t|column|order|field|pageNo|pageSize|sign";
+        if (!super.checkParams(params, paramList)) {
+            log.info("参数列表错误");
+            return null;
+        }
+        // 校验签名
+        if (!super.checkSign(params)) {
+            log.info("签名错误");
+            return null;
+        }
+
+        // 用自己的用户登录, 直接根据clientId查询
+        String userId = params.get("clientId");
+        log.info("————————————获取到的clientId是： " + userId);
+        int pageNo = Integer.parseInt(params.get("pageNo"));
+        int pageSize = Integer.parseInt(params.get("pageSize"));
+        AnnouncementSendModel announcementSendModel = new AnnouncementSendModel();
         announcementSendModel.setUserId(userId);
         announcementSendModel.setPageNo((pageNo - 1) * pageSize);
         announcementSendModel.setPageSize(pageSize);
-        Page<MessageModel> pageList = new Page<>(pageNo, pageSize);
-        pageList = apiMessageService.getMyAnnouncementSendPage(pageList, announcementSendModel);
+        Page<AnnouncementSendModel> pageList = new Page<>(pageNo, pageSize);
+        pageList = sysAnnouncementSendService.getMyAnnouncementSendPage(pageList, announcementSendModel);
         result.setResult(pageList);
         result.setSuccess(true);
         return result;
@@ -76,7 +98,7 @@ public class ApiMessageController extends ApiBaseController {
      */
     @RequestMapping(value = "/messages/sync", method = RequestMethod.GET)
     public Result<Map<String, Object>> asyncMessage(@RequestParam Map<String, String> params) {
-        Result<Map<String, Object>> result = new Result<Map<String, Object>>();
+        Result<Map<String, Object>> result = new Result<>();
         // 首先校验参数是否都存在
         String paramList = "clientIp|androidId|appVersion|mac|clientId|token|sign";
         if (!super.checkParams(params, paramList)) {
@@ -93,7 +115,7 @@ public class ApiMessageController extends ApiBaseController {
         SysUser sysUser = sysUserService.queryById(userId);
 
         // 1.将系统消息补充到用户通告阅读标记表中
-        LambdaQueryWrapper<SysAnnouncement> querySaWrapper = new LambdaQueryWrapper<SysAnnouncement>();
+        LambdaQueryWrapper<SysAnnouncement> querySaWrapper = new LambdaQueryWrapper<>();
         querySaWrapper.eq(SysAnnouncement::getMsgType, CommonConstant.MSG_TYPE_ALL); // 全部人员
         querySaWrapper.eq(SysAnnouncement::getDelFlag, CommonConstant.DEL_FLAG_0.toString());  // 未删除
         querySaWrapper.eq(SysAnnouncement::getSendStatus, CommonConstant.HAS_SEND); //已发布
@@ -123,11 +145,11 @@ public class ApiMessageController extends ApiBaseController {
             }
         }
         // 2.查询用户未读的系统消息
-        Page<SysAnnouncement> anntMsgList = new Page<SysAnnouncement>(0, 5);
+        Page<SysAnnouncement> anntMsgList = new Page<>(0, 5);
         anntMsgList = sysAnnouncementService.querySysCementPageByUserId(anntMsgList,userId,"1");//通知公告消息
-        Page<SysAnnouncement> sysMsgList = new Page<SysAnnouncement>(0, 5);
+        Page<SysAnnouncement> sysMsgList = new Page<>(0, 5);
         sysMsgList = sysAnnouncementService.querySysCementPageByUserId(sysMsgList,userId,"2");//系统消息
-        Map<String, Object> sysMsgMap = new HashMap<String, Object>();
+        Map<String, Object> sysMsgMap = new HashMap<>();
         // 不需要传过去具体的列表
 //        sysMsgMap.put("sysMsgList", sysMsgList.getRecords());
         sysMsgMap.put("alertNum", sysMsgList.getTotal());
@@ -136,5 +158,100 @@ public class ApiMessageController extends ApiBaseController {
         result.setSuccess(true);
         result.setResult(sysMsgMap);
         return result;
+    }
+
+    /**
+     * 更新用户系统消息阅读状态
+     * @param params
+     * @return
+     */
+    @PostMapping(value = "/messages/read")
+    public Result<SysAnnouncementSend> editMessageReadStatusByAnnId(@RequestParam Map<String, String> params) {
+        Result<SysAnnouncementSend> result = new Result<>();
+        // 首先校验参数是否都存在
+        String paramList = "clientIp|androidId|appVersion|mac|clientId|token|sign|anntId";
+        if (!super.checkParams(params, paramList)) {
+            log.info("参数列表错误");
+            return null;
+        }
+        // 校验签名
+        if (!super.checkSign(params)) {
+            log.info("签名错误");
+            return null;
+        }
+        String anntId = params.get("anntId");
+        // 直接使用传过来的id
+        String userId = params.get("clientId");
+        LambdaUpdateWrapper<SysAnnouncementSend> updateWrapper = new UpdateWrapper().lambda();
+        updateWrapper.set(SysAnnouncementSend::getReadFlag, CommonConstant.HAS_READ_FLAG);
+        updateWrapper.set(SysAnnouncementSend::getReadTime, new Date());
+        updateWrapper.last("where annt_id ='"+anntId+"' and user_id ='"+userId+"'");
+        SysAnnouncementSend announcementSend = new SysAnnouncementSend();
+        sysAnnouncementSendService.update(announcementSend, updateWrapper);
+        result.setSuccess(true);
+
+        // 进行前端会进行的同步消息，目前不知道用处，后期研究
+        syncNotice(anntId);
+        return result;
+    }
+
+
+    /**
+     * 同步消息
+     * @link SysAnnouncementController/syncNotic()
+     * @param anntId
+     * @return
+     */
+    public Result<SysAnnouncement> syncNotice(String anntId) {
+        Result<SysAnnouncement> result = new Result<>();
+        JSONObject obj = new JSONObject();
+        if(StringUtils.isNotBlank(anntId)){
+            SysAnnouncement sysAnnouncement = sysAnnouncementService.getById(anntId);
+            if(sysAnnouncement==null) {
+                result.error500("未找到对应实体");
+            }else {
+                if(sysAnnouncement.getMsgType().equals(CommonConstant.MSG_TYPE_ALL)) {
+                    obj.put(WebsocketConst.MSG_CMD, WebsocketConst.CMD_TOPIC);
+                    obj.put(WebsocketConst.MSG_ID, sysAnnouncement.getId());
+                    obj.put(WebsocketConst.MSG_TXT, sysAnnouncement.getTitile());
+                    webSocket.sendMessage(obj.toJSONString());
+                }else {
+                    // 2.插入用户通告阅读标记表记录
+                    String userId = sysAnnouncement.getUserIds();
+                    if(oConvertUtils.isNotEmpty(userId)){
+                        String[] userIds = userId.substring(0, (userId.length()-1)).split(",");
+                        obj.put(WebsocketConst.MSG_CMD, WebsocketConst.CMD_USER);
+                        obj.put(WebsocketConst.MSG_ID, sysAnnouncement.getId());
+                        obj.put(WebsocketConst.MSG_TXT, sysAnnouncement.getTitile());
+                        webSocket.sendMessage(userIds, obj.toJSONString());
+                    }
+                }
+            }
+        }else{
+            obj.put(WebsocketConst.MSG_CMD, WebsocketConst.CMD_TOPIC);
+            obj.put(WebsocketConst.MSG_TXT, "批量设置已读");
+            webSocket.sendMessage(obj.toJSONString());
+        }
+        return result;
+    }
+
+    /**
+     * 通告查看详情页面 返回web页面
+     * @param anntId
+     * @return
+     */
+    @GetMapping("/message/detail/{anntId}")
+    public ModelAndView showContent(ModelAndView modelAndView, @PathVariable("anntId") String anntId) {
+        SysAnnouncement announcement = sysAnnouncementService.getById(anntId);
+        if (announcement != null) {
+            // 这里在我的消息中只能查看已发布的
+            if (ANNOUNCEMENT_SEND_STATUS_1.equals(announcement.getSendStatus())) {
+                modelAndView.addObject("data", announcement);
+                modelAndView.setViewName("announcement/showContent");
+                return modelAndView;
+            }
+        }
+        modelAndView.setStatus(HttpStatus.NOT_FOUND);
+        return modelAndView;
     }
 }
