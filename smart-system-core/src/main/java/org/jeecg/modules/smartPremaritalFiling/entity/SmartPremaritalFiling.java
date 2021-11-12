@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -17,7 +18,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 8项规定婚前报备表
  * @Author: jeecg-boot
- * @Date:   2021-11-02
+ * @Date:   2021-11-11
  * @Version: V1.0
  */
 @ApiModel(value="smart_premarital_filing对象", description="8项规定婚前报备表")
@@ -39,7 +40,8 @@ public class SmartPremaritalFiling implements Serializable {
     @ApiModelProperty(value = "人员姓名")
     private java.lang.String peopleName;
 	/**人员性别*/
-	@Excel(name = "人员性别", width = 15)
+	@Excel(name = "人员性别", width = 15, dicCode = "	sex")
+    @Dict(dicCode = "	sex")
     @ApiModelProperty(value = "人员性别")
     private java.lang.String peopleSex;
 	/**人员年龄*/
@@ -47,19 +49,22 @@ public class SmartPremaritalFiling implements Serializable {
     @ApiModelProperty(value = "人员年龄")
     private java.lang.Integer peopleAge;
 	/**政治面貌*/
-	@Excel(name = "政治面貌", width = 15)
+	@Excel(name = "政治面貌", width = 15, dicCode = "political_status")
+    @Dict(dicCode = "political_status")
     @ApiModelProperty(value = "政治面貌")
     private java.lang.String politicCou;
-	/**工作单位*/
-	@Excel(name = "工作单位", width = 15)
-    @ApiModelProperty(value = "工作单位")
-    private java.lang.String workUnit;
+	/**单位ID*/
+	@Excel(name = "单位ID", width = 15)
+    @ApiModelProperty(value = "单位ID")
+    private java.lang.String departId;
 	/**职务*/
-	@Excel(name = "职务", width = 15)
+	@Excel(name = "职务", width = 15, dictTable = "sys_position", dicText = "name", dicCode = "code")
+    @Dict(dictTable = "sys_position", dicText = "name", dicCode = "code")
     @ApiModelProperty(value = "职务")
     private java.lang.String post;
 	/**职级*/
-	@Excel(name = "职级", width = 15)
+	@Excel(name = "职级", width = 15, dicCode = "position_rank")
+    @Dict(dicCode = "position_rank")
     @ApiModelProperty(value = "职级")
     private java.lang.String postRank;
 	/**配偶姓名*/
@@ -67,7 +72,8 @@ public class SmartPremaritalFiling implements Serializable {
     @ApiModelProperty(value = "配偶姓名")
     private java.lang.String spoName;
 	/**配偶单位职务*/
-	@Excel(name = "配偶单位职务", width = 15)
+	@Excel(name = "配偶单位职务", width = 15, dictTable = "sys_position", dicText = "name", dicCode = "code")
+    @Dict(dictTable = "sys_position", dicText = "name", dicCode = "code")
     @ApiModelProperty(value = "配偶单位职务")
     private java.lang.String spoUnitPos;
 	/**配偶政治面貌*/
@@ -131,7 +137,8 @@ public class SmartPremaritalFiling implements Serializable {
     @ApiModelProperty(value = "结婚人配偶单位")
     private java.lang.String marrySpoUnit;
 	/**结婚人配偶单位职务*/
-	@Excel(name = "结婚人配偶单位职务", width = 15)
+	@Excel(name = "结婚人配偶单位职务", width = 15, dictTable = "sys_position", dicText = "name", dicCode = "code")
+    @Dict(dictTable = "sys_position", dicText = "name", dicCode = "code")
     @ApiModelProperty(value = "结婚人配偶单位职务")
     private java.lang.String marrySpoUnitPos;
 	/**结婚人配偶父母姓名*/
@@ -139,7 +146,8 @@ public class SmartPremaritalFiling implements Serializable {
     @ApiModelProperty(value = "结婚人配偶父母姓名")
     private java.lang.String marrySpoParName;
 	/**结婚人配偶父母单位职务*/
-	@Excel(name = "结婚人配偶父母单位职务", width = 15)
+	@Excel(name = "结婚人配偶父母单位职务", width = 15, dictTable = "sys_position", dicText = "name", dicCode = "code")
+    @Dict(dictTable = "sys_position", dicText = "name", dicCode = "code")
     @ApiModelProperty(value = "结婚人配偶父母单位职务")
     private java.lang.String marrySpoParUnitPos;
 	/**其他需要说明的事情*/
@@ -156,4 +164,17 @@ public class SmartPremaritalFiling implements Serializable {
 	@Excel(name = "联系电话", width = 15)
     @ApiModelProperty(value = "联系电话")
     private java.lang.String contactNumber;
+	/**创建时间*/
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @ApiModelProperty(value = "创建时间")
+    private java.util.Date createTime;
+
+    //entity实体层
+    /**
+     * 删除状态（0，正常，1已删除）
+     */
+    @Excel(name = "删除状态", width = 15,dicCode="del_flag")
+    @TableLogic
+    private Integer delFlag;
 }
