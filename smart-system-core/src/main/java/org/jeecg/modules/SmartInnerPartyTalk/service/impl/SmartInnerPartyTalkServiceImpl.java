@@ -18,7 +18,7 @@ import java.util.Collection;
 /**
  * @Description: 党内谈话表
  * @Author: jeecg-boot
- * @Date:   2021-11-05
+ * @Date:   2021-11-10
  * @Version: V1.0
  */
 @Service
@@ -38,14 +38,14 @@ public class SmartInnerPartyTalkServiceImpl extends ServiceImpl<SmartInnerPartyT
 		if(smartInnerPartyPacpaList!=null && smartInnerPartyPacpaList.size()>0) {
 			for(SmartInnerPartyPacpa entity:smartInnerPartyPacpaList) {
 				//外键设置
-				entity.setParentId(smartInnerPartyTalk.getId());
+				entity.setMainId(smartInnerPartyTalk.getId());
 				smartInnerPartyPacpaMapper.insert(entity);
 			}
 		}
 		if(smartInnerPartyAnnexList!=null && smartInnerPartyAnnexList.size()>0) {
 			for(SmartInnerPartyAnnex entity:smartInnerPartyAnnexList) {
 				//外键设置
-				entity.setParentId(smartInnerPartyTalk.getId());
+				entity.setMainId(smartInnerPartyTalk.getId());
 				smartInnerPartyAnnexMapper.insert(entity);
 			}
 		}
@@ -64,14 +64,14 @@ public class SmartInnerPartyTalkServiceImpl extends ServiceImpl<SmartInnerPartyT
 		if(smartInnerPartyPacpaList!=null && smartInnerPartyPacpaList.size()>0) {
 			for(SmartInnerPartyPacpa entity:smartInnerPartyPacpaList) {
 				//外键设置
-				entity.setParentId(smartInnerPartyTalk.getId());
+				entity.setMainId(smartInnerPartyTalk.getId());
 				smartInnerPartyPacpaMapper.insert(entity);
 			}
 		}
 		if(smartInnerPartyAnnexList!=null && smartInnerPartyAnnexList.size()>0) {
 			for(SmartInnerPartyAnnex entity:smartInnerPartyAnnexList) {
 				//外键设置
-				entity.setParentId(smartInnerPartyTalk.getId());
+				entity.setMainId(smartInnerPartyTalk.getId());
 				smartInnerPartyAnnexMapper.insert(entity);
 			}
 		}
@@ -94,5 +94,14 @@ public class SmartInnerPartyTalkServiceImpl extends ServiceImpl<SmartInnerPartyT
 			smartInnerPartyTalkMapper.deleteById(id);
 		}
 	}
-	
+
+	@Override
+	public String getDepartIdByOrgCode(String orgCode) {
+		return smartInnerPartyTalkMapper.getDepartIdByOrgCode(orgCode);
+	}
+
+	@Override
+	public List<String> getChildrenIdByOrgCode(String orgCode) {
+		return smartInnerPartyTalkMapper.getChildrenIdByOrgCode(orgCode);
+	}
 }
