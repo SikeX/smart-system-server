@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * @Description: 党内谈话附件表
  * @Author: jeecg-boot
- * @Date:   2021-11-05
+ * @Date:   2021-11-10
  * @Version: V1.0
  */
 public interface ISmartInnerPartyAnnexService extends IService<SmartInnerPartyAnnex> {

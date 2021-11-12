@@ -18,7 +18,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 党内谈话表
  * @Author: jeecg-boot
- * @Date:   2021-11-05
+ * @Date:   2021-11-10
  * @Version: V1.0
  */
 @Data
@@ -47,11 +47,10 @@ public class SmartInnerPartyTalkPage {
 	/**所属部门*/
 	@ApiModelProperty(value = "所属部门")
     private java.lang.String sysOrgCode;
-	/**单位*/
-	@Excel(name = "单位", width = 15, dictTable = "sys_depart", dicText = "depart_name", dicCode = "id")
-    @Dict(dictTable = "sys_depart", dicText = "depart_name", dicCode = "id")
-	@ApiModelProperty(value = "单位")
-    private java.lang.String deptId;
+	/**单位ID*/
+	@Excel(name = "单位ID", width = 15)
+	@ApiModelProperty(value = "单位ID")
+    private java.lang.String departId;
 	/**会议时间*/
 	@Excel(name = "会议时间", width = 15, format = "yyyy-MM-dd")
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
@@ -61,39 +60,44 @@ public class SmartInnerPartyTalkPage {
 	/**会议地点*/
 	@Excel(name = "会议地点", width = 15)
 	@ApiModelProperty(value = "会议地点")
-    private java.lang.String location;
+    private java.lang.String meetLocation;
 	/**会议名称*/
 	@Excel(name = "会议名称", width = 15)
 	@ApiModelProperty(value = "会议名称")
-    private java.lang.String name;
+    private java.lang.String meetName;
 	/**主持人工号*/
-	@Excel(name = "主持人工号", width = 15)
+	@Excel(name = "主持人工号", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
+    @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
 	@ApiModelProperty(value = "主持人工号")
     private java.lang.String hostNo;
 	/**受约谈函询人工号*/
-	@Excel(name = "受约谈函询人工号", width = 15)
+	@Excel(name = "受约谈函询人工号", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
+    @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
 	@ApiModelProperty(value = "受约谈函询人工号")
-    private java.lang.String talkNo;
+    private java.lang.String talkedNo;
 	/**受诫勉谈话人工号*/
-	@Excel(name = "受诫勉谈话人工号", width = 15)
+	@Excel(name = "受诫勉谈话人工号", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
+    @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
 	@ApiModelProperty(value = "受诫勉谈话人工号")
-    private java.lang.String inquirNo;
+    private java.lang.String inquirerNo;
 	/**受党纪处分人工号*/
-	@Excel(name = "受党纪处分人工号", width = 15)
+	@Excel(name = "受党纪处分人工号", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
+    @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
 	@ApiModelProperty(value = "受党纪处分人工号")
-    private java.lang.String punishNo;
+    private java.lang.String punisherNo;
 	/**会议摘要*/
 	@Excel(name = "会议摘要", width = 15)
 	@ApiModelProperty(value = "会议摘要")
     private java.lang.String abs;
 	/**记录人工号*/
-	@Excel(name = "记录人工号", width = 15)
+	@Excel(name = "记录人工号", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
+    @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
 	@ApiModelProperty(value = "记录人工号")
     private java.lang.String recorderNo;
-	/**创建人工号*/
-	@Excel(name = "创建人工号", width = 15)
-	@ApiModelProperty(value = "创建人工号")
-    private java.lang.String createrNo;
+	/**删除状态（0，未删除；1，删除）*/
+	@Excel(name = "删除状态（0，未删除；1，删除）", width = 15)
+	@ApiModelProperty(value = "删除状态（0，未删除；1，删除）")
+    private java.lang.Integer delFlag;
 
 	@ExcelCollection(name="党内谈话参与人表")
 	@ApiModelProperty(value = "党内谈话参与人表")

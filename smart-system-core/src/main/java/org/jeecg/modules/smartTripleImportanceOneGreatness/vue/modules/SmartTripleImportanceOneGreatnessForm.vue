@@ -5,11 +5,6 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24" >
-            <a-form-model-item label="单位ID" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="documentid">
-              <a-input v-model="model.documentid" placeholder="请输入单位ID" ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
             <a-form-model-item label="名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingName">
               <a-input v-model="model.meetingName" placeholder="请输入名称" ></a-input>
             </a-form-model-item>
@@ -77,9 +72,9 @@
       <a-tab-pane tab="三重一大附件表" :key="refKeys[0]" :forceRender="true">
         <j-editable-table
           :ref="refKeys[0]"
-          :loading="smartTripleImportanceOneGreatnessDecriptionTable.loading"
-          :columns="smartTripleImportanceOneGreatnessDecriptionTable.columns"
-          :dataSource="smartTripleImportanceOneGreatnessDecriptionTable.dataSource"
+          :loading="smartTripleImportanceOneGreatnessDescriptionTable.loading"
+          :columns="smartTripleImportanceOneGreatnessDescriptionTable.columns"
+          :dataSource="smartTripleImportanceOneGreatnessDescriptionTable.dataSource"
           :maxHeight="300"
           :disabled="formDisabled"
           :rowNumber="true"
@@ -125,9 +120,6 @@
         // 新增时子表默认添加几行空数据
         addDefaultRowNum: 1,
         validatorRules: {
-           documentid: [
-              { required: true, message: '请输入单位ID!'},
-           ],
            meetingStarttime: [
               { required: true, message: '请输入时间!'},
            ],
@@ -141,11 +133,11 @@
               { required: true, message: '请输入创建时间!'},
            ],
         },
-        refKeys: ['smartTripleImportanceOneGreatnessDecription', ],
-        tableKeys:['smartTripleImportanceOneGreatnessDecription', ],
-        activeKey: 'smartTripleImportanceOneGreatnessDecription',
+        refKeys: ['smartTripleImportanceOneGreatnessDescription', ],
+        tableKeys:['smartTripleImportanceOneGreatnessDescription', ],
+        activeKey: 'smartTripleImportanceOneGreatnessDescription',
         // 三重一大附件表
-        smartTripleImportanceOneGreatnessDecriptionTable: {
+        smartTripleImportanceOneGreatnessDescriptionTable: {
           loading: false,
           dataSource: [],
           columns: [
@@ -176,14 +168,23 @@
               defaultValue:'',
               validateRules: [{ required: true, message: '${title}不能为空' }],
             },
+            {
+              title: '下载次数',
+              key: 'downloadTimes',
+              type: FormTypes.inputNumber,
+              disabled:true,
+              width:"200px",
+              placeholder: '请输入${title}',
+              defaultValue:'',
+            },
           ]
         },
         url: {
           add: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/add",
           edit: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/edit",
           queryById: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/queryById",
-          smartTripleImportanceOneGreatnessDecription: {
-            list: '/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/querySmartTripleImportanceOneGreatnessDecriptionByMainId'
+          smartTripleImportanceOneGreatnessDescription: {
+            list: '/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/querySmartTripleImportanceOneGreatnessDescriptionByMainId'
           },
         }
       }
@@ -205,7 +206,7 @@
     },
     methods: {
       addBefore(){
-        this.smartTripleImportanceOneGreatnessDecriptionTable.dataSource=[]
+        this.smartTripleImportanceOneGreatnessDescriptionTable.dataSource=[]
       },
       getAllTable() {
         let values = this.tableKeys.map(key => getRefPromise(this, key))
@@ -218,7 +219,7 @@
         // 加载子表数据
         if (this.model.id) {
           let params = { id: this.model.id }
-          this.requestSubTableData(this.url.smartTripleImportanceOneGreatnessDecription.list, params, this.smartTripleImportanceOneGreatnessDecriptionTable)
+          this.requestSubTableData(this.url.smartTripleImportanceOneGreatnessDescription.list, params, this.smartTripleImportanceOneGreatnessDescriptionTable)
         }
       },
       //校验所有一对一子表表单
@@ -242,7 +243,7 @@
         let main = Object.assign(this.model, allValues.formValue)
         return {
           ...main, // 展开
-          smartTripleImportanceOneGreatnessDecriptionList: allValues.tablesValue[0].values,
+          smartTripleImportanceOneGreatnessDescriptionList: allValues.tablesValue[0].values,
         }
       },
       validateError(msg){

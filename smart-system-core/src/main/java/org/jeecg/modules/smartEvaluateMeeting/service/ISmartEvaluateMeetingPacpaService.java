@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * @Description: 述责述廉参与人表
  * @Author: jeecg-boot
- * @Date:   2021-11-03
+ * @Date:   2021-11-11
  * @Version: V1.0
  */
 public interface ISmartEvaluateMeetingPacpaService extends IService<SmartEvaluateMeetingPacpa> {

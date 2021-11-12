@@ -3,6 +3,7 @@ package org.jeecg.modules.smartEvaluateMeeting.entity;
 import java.io.Serializable;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -16,7 +17,7 @@ import java.io.UnsupportedEncodingException;
 /**
  * @Description: 述责述廉附件表
  * @Author: jeecg-boot
- * @Date:   2021-11-03
+ * @Date:   2021-11-11
  * @Version: V1.0
  */
 @ApiModel(value="smart_evaluate_meeting_annex对象", description="述责述廉附件表")
@@ -65,12 +66,17 @@ public class SmartEvaluateMeetingAnnex implements Serializable {
     private java.lang.String annexPath;
 	/**上传时间*/
 	@Excel(name = "上传时间", width = 15, format = "yyyy-MM-dd")
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "上传时间")
     private java.util.Date uploadTime;
 	/**下载次数*/
 	@Excel(name = "下载次数", width = 15)
     @ApiModelProperty(value = "下载次数")
     private java.lang.Integer downloadTimes;
+	/**删除状态（0，正常，1已删除）*/
+	@Excel(name = "删除状态（0，正常，1已删除）", width = 15)
+    @TableLogic
+    @ApiModelProperty(value = "删除状态（0，正常，1已删除）")
+    private java.lang.Integer delFlag;
 }

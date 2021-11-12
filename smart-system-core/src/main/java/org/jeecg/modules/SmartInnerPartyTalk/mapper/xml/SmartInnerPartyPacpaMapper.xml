@@ -6,11 +6,11 @@
 		DELETE 
 		FROM  smart_inner_party_pacpa 
 		WHERE
-			 parent_id = #{mainId} 	</delete>
+			 main_id = #{mainId} 	</delete>
 	
 	<select id="selectByMainId" parameterType="java.lang.String" resultType="org.jeecg.modules.SmartInnerPartyTalk.entity.SmartInnerPartyPacpa">
 		SELECT * 
 		FROM  smart_inner_party_pacpa
 		WHERE
-			 parent_id = #{mainId} 	</select>
+			 main_id = #{mainId} 	</select>
 </mapper>

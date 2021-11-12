@@ -1,8 +1,8 @@
 package org.jeecg.modules.smartTripleImportanceOneGreatness.service.impl;
 
 import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatness;
-import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatnessDecription;
-import org.jeecg.modules.smartTripleImportanceOneGreatness.mapper.SmartTripleImportanceOneGreatnessDecriptionMapper;
+import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatnessDescription;
+import org.jeecg.modules.smartTripleImportanceOneGreatness.mapper.SmartTripleImportanceOneGreatnessDescriptionMapper;
 import org.jeecg.modules.smartTripleImportanceOneGreatness.mapper.SmartTripleImportanceOneGreatnessMapper;
 import org.jeecg.modules.smartTripleImportanceOneGreatness.service.ISmartTripleImportanceOneGreatnessService;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import java.util.Collection;
 /**
  * @Description: 三重一大表
  * @Author: jeecg-boot
- * @Date:   2021-11-05
+ * @Date:   2021-11-10
  * @Version: V1.0
  */
 @Service
@@ -25,35 +25,35 @@ public class SmartTripleImportanceOneGreatnessServiceImpl extends ServiceImpl<Sm
 	@Autowired
 	private SmartTripleImportanceOneGreatnessMapper smartTripleImportanceOneGreatnessMapper;
 	@Autowired
-	private SmartTripleImportanceOneGreatnessDecriptionMapper smartTripleImportanceOneGreatnessDecriptionMapper;
-	
+	private SmartTripleImportanceOneGreatnessDescriptionMapper smartTripleImportanceOneGreatnessDescriptionMapper;
+
 	@Override
 	@Transactional
-	public void saveMain(SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness, List<SmartTripleImportanceOneGreatnessDecription> smartTripleImportanceOneGreatnessDecriptionList) {
+	public void saveMain(SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness, List<SmartTripleImportanceOneGreatnessDescription> smartTripleImportanceOneGreatnessDescriptionList) {
 		smartTripleImportanceOneGreatnessMapper.insert(smartTripleImportanceOneGreatness);
-		if(smartTripleImportanceOneGreatnessDecriptionList!=null && smartTripleImportanceOneGreatnessDecriptionList.size()>0) {
-			for(SmartTripleImportanceOneGreatnessDecription entity:smartTripleImportanceOneGreatnessDecriptionList) {
+		if(smartTripleImportanceOneGreatnessDescriptionList!=null && smartTripleImportanceOneGreatnessDescriptionList.size()>0) {
+			for(SmartTripleImportanceOneGreatnessDescription entity:smartTripleImportanceOneGreatnessDescriptionList) {
 				//外键设置
 				entity.setMeetingId(smartTripleImportanceOneGreatness.getId());
-				smartTripleImportanceOneGreatnessDecriptionMapper.insert(entity);
+				smartTripleImportanceOneGreatnessDescriptionMapper.insert(entity);
 			}
 		}
 	}
 
 	@Override
 	@Transactional
-	public void updateMain(SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness,List<SmartTripleImportanceOneGreatnessDecription> smartTripleImportanceOneGreatnessDecriptionList) {
+	public void updateMain(SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness,List<SmartTripleImportanceOneGreatnessDescription> smartTripleImportanceOneGreatnessDescriptionList) {
 		smartTripleImportanceOneGreatnessMapper.updateById(smartTripleImportanceOneGreatness);
-		
+
 		//1.先删除子表数据
-		smartTripleImportanceOneGreatnessDecriptionMapper.deleteByMainId(smartTripleImportanceOneGreatness.getId());
-		
+		smartTripleImportanceOneGreatnessDescriptionMapper.deleteByMainId(smartTripleImportanceOneGreatness.getId());
+
 		//2.子表数据重新插入
-		if(smartTripleImportanceOneGreatnessDecriptionList!=null && smartTripleImportanceOneGreatnessDecriptionList.size()>0) {
-			for(SmartTripleImportanceOneGreatnessDecription entity:smartTripleImportanceOneGreatnessDecriptionList) {
+		if(smartTripleImportanceOneGreatnessDescriptionList!=null && smartTripleImportanceOneGreatnessDescriptionList.size()>0) {
+			for(SmartTripleImportanceOneGreatnessDescription entity:smartTripleImportanceOneGreatnessDescriptionList) {
 				//外键设置
 				entity.setMeetingId(smartTripleImportanceOneGreatness.getId());
-				smartTripleImportanceOneGreatnessDecriptionMapper.insert(entity);
+				smartTripleImportanceOneGreatnessDescriptionMapper.insert(entity);
 			}
 		}
 	}
@@ -61,7 +61,7 @@ public class SmartTripleImportanceOneGreatnessServiceImpl extends ServiceImpl<Sm
 	@Override
 	@Transactional
 	public void delMain(String id) {
-		smartTripleImportanceOneGreatnessDecriptionMapper.deleteByMainId(id);
+		smartTripleImportanceOneGreatnessDescriptionMapper.deleteByMainId(id);
 		smartTripleImportanceOneGreatnessMapper.deleteById(id);
 	}
 
@@ -69,9 +69,17 @@ public class SmartTripleImportanceOneGreatnessServiceImpl extends ServiceImpl<Sm
 	@Transactional
 	public void delBatchMain(Collection<? extends Serializable> idList) {
 		for(Serializable id:idList) {
-			smartTripleImportanceOneGreatnessDecriptionMapper.deleteByMainId(id.toString());
+			smartTripleImportanceOneGreatnessDescriptionMapper.deleteByMainId(id.toString());
 			smartTripleImportanceOneGreatnessMapper.deleteById(id);
 		}
 	}
-	
+	@Override
+	public String getDepartIdByOrgCode(String orgCode) {
+		return smartTripleImportanceOneGreatnessMapper.getDepartIdByOrgCode(orgCode);
+	}
+
+	@Override
+	public List<String> getChildrenIdByOrgCode(String orgCode) {
+		return smartTripleImportanceOneGreatnessMapper.getChildrenIdByOrgCode(orgCode);
+	}
 }
