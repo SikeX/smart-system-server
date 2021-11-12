@@ -18,7 +18,7 @@ import java.util.Collection;
 /**
  * @Description: 民主生活会表
  * @Author: jeecg-boot
- * @Date:   2021-11-03
+ * @Date:   2021-11-12
  * @Version: V1.0
  */
 @Service
@@ -31,6 +31,52 @@ public class SmartDemocraticLifeMeetingServiceImpl extends ServiceImpl<SmartDemo
 	@Autowired
 	private SmartDemocraticLifeEnclosureMapper smartDemocraticLifeEnclosureMapper;
 	
+	@Override
+	@Transactional
+	public void saveMain(SmartDemocraticLifeMeeting smartDemocraticLifeMeeting, List<SmartDemocraticLifePeople> smartDemocraticLifePeopleList,List<SmartDemocraticLifeEnclosure> smartDemocraticLifeEnclosureList) {
+		smartDemocraticLifeMeetingMapper.insert(smartDemocraticLifeMeeting);
+		if(smartDemocraticLifePeopleList!=null && smartDemocraticLifePeopleList.size()>0) {
+			for(SmartDemocraticLifePeople entity:smartDemocraticLifePeopleList) {
+				//外键设置
+				entity.setMeetingId(smartDemocraticLifeMeeting.getId());
+				smartDemocraticLifePeopleMapper.insert(entity);
+			}
+		}
+		if(smartDemocraticLifeEnclosureList!=null && smartDemocraticLifeEnclosureList.size()>0) {
+			for(SmartDemocraticLifeEnclosure entity:smartDemocraticLifeEnclosureList) {
+				//外键设置
+				entity.setMeetingId(smartDemocraticLifeMeeting.getId());
+				smartDemocraticLifeEnclosureMapper.insert(entity);
+			}
+		}
+	}
+
+	@Override
+	@Transactional
+	public void updateMain(SmartDemocraticLifeMeeting smartDemocraticLifeMeeting,List<SmartDemocraticLifePeople> smartDemocraticLifePeopleList,List<SmartDemocraticLifeEnclosure> smartDemocraticLifeEnclosureList) {
+		smartDemocraticLifeMeetingMapper.updateById(smartDemocraticLifeMeeting);
+		
+		//1.先删除子表数据
+		smartDemocraticLifePeopleMapper.deleteByMainId(smartDemocraticLifeMeeting.getId());
+		smartDemocraticLifeEnclosureMapper.deleteByMainId(smartDemocraticLifeMeeting.getId());
+		
+		//2.子表数据重新插入
+		if(smartDemocraticLifePeopleList!=null && smartDemocraticLifePeopleList.size()>0) {
+			for(SmartDemocraticLifePeople entity:smartDemocraticLifePeopleList) {
+				//外键设置
+				entity.setMeetingId(smartDemocraticLifeMeeting.getId());
+				smartDemocraticLifePeopleMapper.insert(entity);
+			}
+		}
+		if(smartDemocraticLifeEnclosureList!=null && smartDemocraticLifeEnclosureList.size()>0) {
+			for(SmartDemocraticLifeEnclosure entity:smartDemocraticLifeEnclosureList) {
+				//外键设置
+				entity.setMeetingId(smartDemocraticLifeMeeting.getId());
+				smartDemocraticLifeEnclosureMapper.insert(entity);
+			}
+		}
+	}
+
 	@Override
 	@Transactional
 	public void delMain(String id) {

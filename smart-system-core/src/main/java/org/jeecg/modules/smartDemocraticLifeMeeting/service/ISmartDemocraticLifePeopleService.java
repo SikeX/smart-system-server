@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * @Description: 民主生活参会人员表
  * @Author: jeecg-boot
- * @Date:   2021-11-03
+ * @Date:   2021-11-12
  * @Version: V1.0
  */
 public interface ISmartDemocraticLifePeopleService extends IService<SmartDemocraticLifePeople> {

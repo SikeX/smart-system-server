@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * @Description: 民主生活会附件表
  * @Author: jeecg-boot
- * @Date:   2021-11-03
+ * @Date:   2021-11-12
  * @Version: V1.0
  */
 public interface ISmartDemocraticLifeEnclosureService extends IService<SmartDemocraticLifeEnclosure> {
