@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 /**
  * @Description: 述责述廉表
  * @Author: jeecg-boot
- * @Date:   2021-11-03
+ * @Date:   2021-11-11
  * @Version: V1.0
  */
 public interface SmartEvaluateMeetingMapper extends BaseMapper<SmartEvaluateMeeting> {

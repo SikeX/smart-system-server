@@ -5,43 +5,38 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24" >
-            <a-form-model-item label="单位" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="deptId">
-              <j-select-depart v-model="model.deptId" multi />
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
             <a-form-model-item label="会议时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetTime">
               <j-date placeholder="请选择会议时间" v-model="model.meetTime" style="width: 100%" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="会议地点" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="location">
-              <a-input v-model="model.location" placeholder="请输入会议地点" ></a-input>
+            <a-form-model-item label="会议地点" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetLocation">
+              <a-input v-model="model.meetLocation" placeholder="请输入会议地点" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="会议名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="name">
-              <a-input v-model="model.name" placeholder="请输入会议名称" ></a-input>
+            <a-form-model-item label="会议名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetName">
+              <a-input v-model="model.meetName" placeholder="请输入会议名称" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="主持人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="hostNo">
-              <a-input v-model="model.hostNo" placeholder="请输入主持人工号" ></a-input>
+              <j-select-user-by-dep v-model="model.hostNo" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="受约谈函询人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="talkNo">
-              <a-input v-model="model.talkNo" placeholder="请输入受约谈函询人工号" ></a-input>
+            <a-form-model-item label="受约谈函询人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="talkedNo">
+              <j-select-user-by-dep v-model="model.talkedNo" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="受诫勉谈话人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="inquirNo">
-              <a-input v-model="model.inquirNo" placeholder="请输入受诫勉谈话人工号" ></a-input>
+            <a-form-model-item label="受诫勉谈话人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="inquirerNo">
+              <j-select-user-by-dep v-model="model.inquirerNo" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="受党纪处分人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="punishNo">
-              <a-input v-model="model.punishNo" placeholder="请输入受党纪处分人工号" ></a-input>
+            <a-form-model-item label="受党纪处分人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="punisherNo">
+              <j-select-user-by-dep v-model="model.punisherNo" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -51,12 +46,7 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="记录人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="recorderNo">
-              <a-input v-model="model.recorderNo" placeholder="请输入记录人工号" ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
-            <a-form-model-item label="创建人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="createrNo">
-              <a-input v-model="model.createrNo" placeholder="请输入创建人工号" ></a-input>
+              <j-select-user-by-dep v-model="model.recorderNo" />
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -152,8 +142,17 @@
           dataSource: [],
           columns: [
             {
+              title: '上传时间',
+              key: 'createTime',
+              type: FormTypes.datetime,
+              disabled:true,
+              width:"200px",
+              placeholder: '请输入${title}',
+              defaultValue:'',
+            },
+            {
               title: '附件说明',
-              key: 'explains',
+              key: 'supplement',
               type: FormTypes.input,
               width:"200px",
               placeholder: '请输入${title}',
@@ -161,21 +160,12 @@
             },
             {
               title: '附件文件路径',
-              key: 'file',
+              key: 'annex',
               type: FormTypes.file,
               token:true,
               responseName:"message",
               width:"200px",
               placeholder: '请选择文件',
-              defaultValue:'',
-            },
-            {
-              title: '上传时间',
-              key: 'uploadTime',
-              type: FormTypes.date,
-              disabled:true,
-              width:"200px",
-              placeholder: '请输入${title}',
               defaultValue:'',
             },
             {
