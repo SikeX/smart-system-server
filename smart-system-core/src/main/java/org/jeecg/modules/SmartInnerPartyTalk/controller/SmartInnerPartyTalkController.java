@@ -19,6 +19,8 @@ import org.jeecg.modules.SmartInnerPartyTalk.service.ISmartInnerPartyAnnexServic
 import org.jeecg.modules.SmartInnerPartyTalk.service.ISmartInnerPartyPacpaService;
 import org.jeecg.modules.SmartInnerPartyTalk.service.ISmartInnerPartyTalkService;
 import org.jeecg.modules.SmartInnerPartyTalk.vo.SmartInnerPartyTalkPage;
+import org.jeecg.modules.common.service.CommonService;
+import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -54,6 +56,8 @@ public class SmartInnerPartyTalkController {
 	private ISmartInnerPartyPacpaService smartInnerPartyPacpaService;
 	@Autowired
 	private ISmartInnerPartyAnnexService smartInnerPartyAnnexService;
+	@Autowired
+	private CommonService commonService;
 	
 	/**
 	 * 分页列表查询
