@@ -6,13 +6,11 @@
 		DELETE 
 		FROM  smart_democratic_life_enclosure 
 		WHERE
-			 meeting_id = #{mainId} 
-	</delete>
+			 meeting_id = #{mainId} 	</delete>
 	
 	<select id="selectByMainId" parameterType="java.lang.String" resultType="org.jeecg.modules.smartDemocraticLifeMeeting.entity.SmartDemocraticLifeEnclosure">
 		SELECT * 
 		FROM  smart_democratic_life_enclosure
 		WHERE
-			 meeting_id = #{mainId} 
-	</select>
+			 meeting_id = #{mainId} 	</select>
 </mapper>
