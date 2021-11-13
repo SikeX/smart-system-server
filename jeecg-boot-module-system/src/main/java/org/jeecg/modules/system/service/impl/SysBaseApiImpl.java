@@ -31,6 +31,7 @@ import org.jeecg.modules.message.service.ISysMessageTemplateService;
 import org.jeecg.modules.message.websocket.WebSocket;
 import org.jeecg.modules.system.entity.*;
 import org.jeecg.modules.system.mapper.*;
+import org.jeecg.modules.system.model.DepartIdModel;
 import org.jeecg.modules.system.service.*;
 import org.jeecg.modules.system.util.SecurityUtil;
 import org.springframework.beans.BeanUtils;
@@ -1151,5 +1152,41 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 	public List<DictModel> translateDictFromTableByKeys(String table, String text, String code, String keys) {
 		return sysDictService.queryTableDictTextByKeys(table, text, code, Arrays.asList(keys.split(",")));
 	}
+
+	// 根据用户id查询用户业务机构父id
+	@Override
+	public String getBusDepartIdByUserId(String id) {
+		String departId = sysUserDepartService.queryDepartIdsOfUser(id).get(0).getKey();
+//		QueryWrapper<SysDepart> queryWrapper = new QueryWrapper<>();
+		SysDepart sysDepart = sysDepartService.getById(departId);
+		return sysDepart.getBusinessParentId();
+	}
+
+	@Override
+	public String getParentIdByUserId(String id) {
+		String departId = sysUserDepartService.queryDepartIdsOfUser(id).get(0).getKey();
+//		QueryWrapper<SysDepart> queryWrapper = new QueryWrapper<>();
+		SysDepart sysDepart = sysDepartService.getById(departId);
+		return sysDepart.getParentId();
+	}
+
+	// 根据用户id查询单位信息
+	@Override
+	public String getDepTypeByUserId(String userId) {
+		String departId = sysUserDepartService.queryDepartIdsOfUser(userId).get(0).getKey();
+		SysDepart sysDepart = sysDepartService.getById(departId);
+		return sysDepart.getDepartType();
+	}
+
+	@Override
+	public String getBusParentDepIdByDepartId(String departId){
+		return sysDepartService.getById(departId).getBusinessParentId();
+	}
+
+	@Override
+	public String getParentDepIdByDepartId(String departId){
+		return sysDepartService.getById(departId).getParentId();
+	}
+
 
 }

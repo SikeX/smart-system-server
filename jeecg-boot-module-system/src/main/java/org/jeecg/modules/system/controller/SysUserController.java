@@ -13,17 +13,22 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.PermissionData;
 import org.jeecg.common.constant.CommonConstant;
 import org.jeecg.common.system.api.ISysBaseAPI;
-import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.util.JwtUtil;
 import org.jeecg.common.system.vo.LoginUser;
-import org.jeecg.common.util.*;
+import org.jeecg.common.util.ImportExcelUtil;
+import org.jeecg.common.util.PasswordUtil;
+import org.jeecg.common.util.RedisUtil;
+import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.SmartInnerPartyTalk.entity.SmartInnerPartyTalk;
+import org.jeecg.modules.SmartPunishPeople.entity.SmartPunishPeople;
+import org.jeecg.modules.base.service.BaseCommonService;
+import org.jeecg.modules.common.service.CommonService;
+import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.system.entity.*;
 import org.jeecg.modules.system.model.DepartIdModel;
 import org.jeecg.modules.system.model.SysUserSysDepartModel;
@@ -87,6 +92,8 @@ public class SysUserController {
 
 	@Autowired
 	private RedisUtil redisUtil;
+    @Autowired
+    private CommonService commonService;
 
     @Value("${jeecg.path.upload}")
     private String upLoadPath;
@@ -106,8 +113,31 @@ public class SysUserController {
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public Result<IPage<SysUser>> queryPageList(SysUser user,@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 									  @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,HttpServletRequest req) {
-		Result<IPage<SysUser>> result = new Result<IPage<SysUser>>();
-		QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(user, req.getParameterMap());
+        // 1. 规则，下面是 以**开始
+        String rule = "in";
+        // 2. 查询字段
+        String field = "departId";
+        // 获取登录用户信息，可以用来查询单位部门信息
+        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+        // 获取子单位ID
+        String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
+
+        HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+        // 获取请求参数中的superQueryParams
+        List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+
+        // 添加额外查询条件，用于权限控制
+        paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+                + childrenIdString
+                + "%22,%22field%22:%22" + field + "%22%7D%5D");
+        String[] params = new String[paramsList.size()];
+        paramsList.toArray(params);
+        map.put("superQueryParams", params);
+        params = new String[]{"and"};
+        map.put("superQueryMatchType", params);
+        Result<IPage<SysUser>> result = new Result<IPage<SysUser>>();
+		QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(user, map);
     	//TODO 外部模拟登陆临时账号，列表不显示
         queryWrapper.ne("username","_reserve_user_external");
 		Page<SysUser> page = new Page<SysUser>(pageNo, pageSize);
@@ -126,18 +156,40 @@ public class SysUserController {
 		result.setSuccess(true);
 		result.setResult(pageList);
 		log.info(pageList.toString());
+        // 请同步修改edit函数中，将departId变为null，不然会更新成名称
+        List<String> departIds = pageList.getRecords().stream().map(SysUser::getDepartId).collect(Collectors.toList());
+        if (departIds != null && departIds.size() > 0) {
+            Map<String, String> useDepNames = commonService.getDepNamesByIds(departIds);
+            pageList.getRecords().forEach(item -> {
+                item.setDepartId(useDepNames.get(item.getDepartId()));
+            });
+        }
 		return result;
 	}
+
 
     //@RequiresRoles({"admin"})
     //@RequiresPermissions("user:add")
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public Result<SysUser> add(@RequestBody JSONObject jsonObject) {
 		Result<SysUser> result = new Result<SysUser>();
+        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+        String orgCode = sysUser.getOrgCode();
+        if ("".equals(orgCode)) {
+            return result.error500("本用户没有操作权限！");
+        }
+        String id = commonService.getDepartIdByOrgCode(orgCode);
+        if (id == null) {
+            return result.error500("没有找到部门！");
+        }
 		String selectedRoles = jsonObject.getString("selectedroles");
 		String selectedDeparts = jsonObject.getString("selecteddeparts");
+		//设置部门，只能添加本部门人员
+		//String selectedDepart = id;
 		try {
 			SysUser user = JSON.parseObject(jsonObject.toJSONString(), SysUser.class);
+			user.setDepartId(id);
+			//设置sys_code
 			user.setCreateTime(new Date());//设置创建时间
 			String salt = oConvertUtils.randomGen(8);
 			user.setSalt(salt);
@@ -146,6 +198,7 @@ public class SysUserController {
 			user.setStatus(1);
 			user.setDelFlag(CommonConstant.DEL_FLAG_0);
 			// 保存用户走一个service 保证事务
+            //sysUserService.saveUser(user, selectedRoles, selectedDepart);//只能添加本部门人员
 			sysUserService.saveUser(user, selectedRoles, selectedDeparts);
 			result.success("添加成功！");
 		} catch (Exception e) {
@@ -160,6 +213,7 @@ public class SysUserController {
 	@RequestMapping(value = "/edit", method = RequestMethod.PUT)
 	public Result<SysUser> edit(@RequestBody JSONObject jsonObject) {
 		Result<SysUser> result = new Result<SysUser>();
+
 		try {
 			SysUser sysUser = sysUserService.getById(jsonObject.getString("id"));
 			baseCommonService.addLog("编辑用户，id： " +jsonObject.getString("id") ,CommonConstant.LOG_TYPE_2, 2);
@@ -167,6 +221,8 @@ public class SysUserController {
 				result.error500("未找到对应实体");
 			}else {
 				SysUser user = JSON.parseObject(jsonObject.toJSONString(), SysUser.class);
+                user.setDepartId(null);
+                //user.setCreateTime(null);
 				user.setUpdateTime(new Date());
 				//String passwordEncode = PasswordUtil.encrypt(user.getUsername(), user.getPassword(), sysUser.getSalt());
 				user.setPassword(sysUser.getPassword());
@@ -1377,5 +1433,33 @@ public class SysUserController {
         }
         return ls;
     }
+
+
+    /**
+     *  查询当前用户所在部门ID，所在部门名称，上级业务部门，下级业务部门
+     * @return
+     */
+    @RequestMapping(value = "/getCurrentUserDeptWorkMessage", method = RequestMethod.GET)
+    public Result<Map<String,Object>> getCurrentUserDeptWorkMessage() {
+        Result<Map<String,Object>> result = new Result<Map<String,Object>>();
+        try {
+            LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
+            SysDepart currentUserDepart = this.sysDepartService.queryCurrentUserDepart(sysUser.getId());
+            SysDepart currentUserParentDepart = this.sysDepartService.queryDeptByDepartId(currentUserDepart.getBusinessParentId());
+            List<SysDepart> currentUserChildrenDeparts = this.sysDepartService.queryWorkChildrenDeparts(currentUserDepart.getId());
+            Map<String,Object> map = new HashMap<String,Object>();
+            map.put("currentUser", sysUser);
+            map.put("currentUserDepart", currentUserDepart);
+            map.put("currentUserParentDepart", currentUserParentDepart);
+            map.put("currentUserChildrenDeparts", currentUserChildrenDeparts);
+            result.setSuccess(true);
+            result.setResult(map);
+        }catch(Exception e) {
+            log.error(e.getMessage(), e);
+            result.error500("查询失败！");
+        }
+        return result;
+    }
+
 
 }

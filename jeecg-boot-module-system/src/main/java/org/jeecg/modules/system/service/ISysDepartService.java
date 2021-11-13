@@ -30,10 +30,22 @@ public interface ISysDepartService extends IService<SysDepart>{
     List<SysDepartTreeModel> queryTreeList();
 
     /**
+     * 查询所有部门信息,并分节点进行显示,自然层级
+     * @return
+     */
+    List<SysDepartTreeModel> queryNaturalTreeList();
+
+    /**
      * 查询所有部门DepartId信息,并分节点进行显示
      * @return
      */
     public List<DepartIdModel> queryDepartIdTreeList();
+
+    /**
+     * 查询所有自然层级部门DepartId信息,并分节点进行显示
+     * @return
+     */
+    public List<DepartIdModel> queryNaturalDepartIdTreeList();
 
     /**
      * 保存部门数据
@@ -137,4 +149,20 @@ public interface ISysDepartService extends IService<SysDepart>{
      * @return
      */
     List<SysDepart> queryDeptByPid(String pid);
+    /**
+     * 获取业务下级部门
+     * @return
+     */
+    List<SysDepart> queryWorkChildrenDeparts(String deptId);
+    /**
+     * 根据用户id获取用户所在部门
+     * @return
+     */
+    SysDepart queryCurrentUserDepart(String userId);
+    /**
+     * 根据部门id获取部门信息
+     * @return
+     */
+    SysDepart queryDeptByDepartId(String deptId);
+
 }

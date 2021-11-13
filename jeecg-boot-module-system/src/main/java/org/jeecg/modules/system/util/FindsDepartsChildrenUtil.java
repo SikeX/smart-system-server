@@ -34,7 +34,7 @@ public class FindsDepartsChildrenUtil {
      */
     public static List<SysDepartTreeModel> wrapTreeDataToTreeList(List<SysDepart> recordList) {
         // 在该方法每请求一次,都要对全局list集合进行一次清理
-        //idList.clear();
+//        idList.clear();
     	List<DepartIdModel> idList = new ArrayList<DepartIdModel>();
         List<SysDepartTreeModel> records = new ArrayList<>();
         for (int i = 0; i < recordList.size(); i++) {
@@ -42,6 +42,24 @@ public class FindsDepartsChildrenUtil {
             records.add(new SysDepartTreeModel(depart));
         }
         List<SysDepartTreeModel> tree = findChildren(records, idList);
+        setEmptyChildrenAsNull(tree);
+        return tree;
+    }
+
+    /**
+     * queryTreeList的子方法 ====1=====
+     * 该方法是s将SysDepart类型的list集合转换成SysDepartTreeModel类型的集合,自然层级
+     */
+    public static List<SysDepartTreeModel> wrapNaturalTreeDataToTreeList(List<SysDepart> recordList) {
+        // 在该方法每请求一次,都要对全局list集合进行一次清理
+//        idList.clear();
+        List<DepartIdModel> idList = new ArrayList<DepartIdModel>();
+        List<SysDepartTreeModel> records = new ArrayList<>();
+        for (int i = 0; i < recordList.size(); i++) {
+            SysDepart depart = recordList.get(i);
+            records.add(new SysDepartTreeModel(depart));
+        }
+        List<SysDepartTreeModel> tree = findNaturalChildren(records, idList);
         setEmptyChildrenAsNull(tree);
         return tree;
     }
@@ -65,8 +83,27 @@ public class FindsDepartsChildrenUtil {
     }
 
     /**
+     * 获取 DepartIdModel,自然层级
+     * @param recordList
+     * @return
+     */
+    public static List<DepartIdModel> wrapNaturalTreeDataToDepartIdTreeList(List<SysDepart> recordList) {
+        // 在该方法每请求一次,都要对全局list集合进行一次清理
+        //idList.clear();
+        List<DepartIdModel> idList = new ArrayList<DepartIdModel>();
+        List<SysDepartTreeModel> records = new ArrayList<>();
+        for (int i = 0; i < recordList.size(); i++) {
+            SysDepart depart = recordList.get(i);
+            records.add(new SysDepartTreeModel(depart));
+        }
+        findNaturalChildren(records, idList);
+        return idList;
+    }
+
+
+    /**
      * queryTreeList的子方法 ====2=====
-     * 该方法是找到并封装顶级父类的节点到TreeList集合
+     * 该方法是找到并封装顶级父类的节点到TreeList集合，业务层级
      */
     private static List<SysDepartTreeModel> findChildren(List<SysDepartTreeModel> recordList,
                                                          List<DepartIdModel> departIdList) {
@@ -74,11 +111,16 @@ public class FindsDepartsChildrenUtil {
         List<SysDepartTreeModel> treeList = new ArrayList<>();
         for (int i = 0; i < recordList.size(); i++) {
             SysDepartTreeModel branch = recordList.get(i);
-            if (oConvertUtils.isEmpty(branch.getParentId())) {
+            if(oConvertUtils.isEmpty(branch.getParentId()) && branch.getDepartName().equals("哈尔滨道里区纪委")){
                 treeList.add(branch);
                 DepartIdModel departIdModel = new DepartIdModel().convert(branch);
                 departIdList.add(departIdModel);
             }
+//            if (oConvertUtils.isEmpty(branch.getParentId())) {
+//                treeList.add(branch);
+//                DepartIdModel departIdModel = new DepartIdModel().convert(branch);
+//                departIdList.add(departIdModel);
+//            }
         }
         getGrandChildren(treeList,recordList,departIdList);
         
@@ -87,8 +129,35 @@ public class FindsDepartsChildrenUtil {
     }
 
     /**
+     * queryTreeList的子方法 ====2=====
+     * 该方法是找到并封装顶级父类的节点到TreeList集合,自然层级
+     */
+    private static List<SysDepartTreeModel> findNaturalChildren(List<SysDepartTreeModel> recordList,
+                                                         List<DepartIdModel> departIdList) {
+
+        List<SysDepartTreeModel> treeList = new ArrayList<>();
+        for (int i = 0; i < recordList.size(); i++) {
+            SysDepartTreeModel branch = recordList.get(i);
+            if(branch.getDepartName().equals("部门类型")){
+                treeList.add(branch);
+                DepartIdModel departIdModel = new DepartIdModel().convert(branch);
+                departIdList.add(departIdModel);
+            }
+//            if (oConvertUtils.isEmpty(branch.getParentId())) {
+//                treeList.add(branch);
+//                DepartIdModel departIdModel = new DepartIdModel().convert(branch);
+//                departIdList.add(departIdModel);
+//            }
+        }
+        getNaturalGrandChildren(treeList,recordList,departIdList);
+
+        //idList = departIdList;
+        return treeList;
+    }
+
+    /**
      * queryTreeList的子方法====3====
-     *该方法是找到顶级父类下的所有子节点集合并封装到TreeList集合
+     *该方法是找到顶级父类下的所有子节点集合并封装到TreeList集合,业务层级
      */
     private static void getGrandChildren(List<SysDepartTreeModel> treeList,List<SysDepartTreeModel> recordList,List<DepartIdModel> idList) {
 
@@ -104,6 +173,28 @@ public class FindsDepartsChildrenUtil {
                 }
             }
             getGrandChildren(treeList.get(i).getChildren(), recordList, idList.get(i).getChildren());
+        }
+
+    }
+
+    /**
+     * queryTreeList的子方法====3====
+     *该方法是找到顶级父类下的所有子节点集合并封装到TreeList集合,自然层级
+     */
+    private static void getNaturalGrandChildren(List<SysDepartTreeModel> treeList,List<SysDepartTreeModel> recordList,List<DepartIdModel> idList) {
+
+        for (int i = 0; i < treeList.size(); i++) {
+            SysDepartTreeModel model = treeList.get(i);
+            DepartIdModel idModel = idList.get(i);
+            for (int i1 = 0; i1 < recordList.size(); i1++) {
+                SysDepartTreeModel m = recordList.get(i1);
+                if (m.getBusinessParentId()!=null && m.getBusinessParentId().equals(model.getId())) {
+                    model.getChildren().add(m);
+                    DepartIdModel dim = new DepartIdModel().convert(m);
+                    idModel.getChildren().add(dim);
+                }
+            }
+            getNaturalGrandChildren(treeList.get(i).getChildren(), recordList, idList.get(i).getChildren());
         }
 
     }

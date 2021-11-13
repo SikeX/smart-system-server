@@ -2,7 +2,7 @@ package org.jeecg.modules.smartTripleImportanceOneGreatness.vo;
 
 import java.util.List;
 import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatness;
-import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatnessDecription;
+import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatnessDescription;
 import lombok.Data;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.jeecgframework.poi.excel.annotation.ExcelEntity;
@@ -17,7 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 三重一大表
  * @Author: jeecg-boot
- * @Date:   2021-11-05
+ * @Date:   2021-11-12
  * @Version: V1.0
  */
 @Data
@@ -27,9 +27,9 @@ public class SmartTripleImportanceOneGreatnessPage {
 	/**主键*/
 	@ApiModelProperty(value = "主键")
     private java.lang.String id;
-	/**单位ID*/
-	@Excel(name = "单位ID", width = 15)
-	@ApiModelProperty(value = "单位ID")
+	/**单位*/
+	@Excel(name = "单位", width = 15)
+	@ApiModelProperty(value = "单位")
     private java.lang.String documentid;
 	/**名称*/
 	@Excel(name = "名称", width = 15)
@@ -82,9 +82,13 @@ public class SmartTripleImportanceOneGreatnessPage {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@ApiModelProperty(value = "创建时间")
     private java.util.Date createTime;
+	/**删除状态（0正常，1已删除）*/
+	@Excel(name = "删除状态（0正常，1已删除）", width = 15)
+	@ApiModelProperty(value = "删除状态（0正常，1已删除）")
+    private java.lang.Integer delFlag;
 
 	@ExcelCollection(name="三重一大附件表")
 	@ApiModelProperty(value = "三重一大附件表")
-	private List<SmartTripleImportanceOneGreatnessDecription> smartTripleImportanceOneGreatnessDecriptionList;
+	private List<SmartTripleImportanceOneGreatnessDescription> smartTripleImportanceOneGreatnessDescriptionList;
 
 }

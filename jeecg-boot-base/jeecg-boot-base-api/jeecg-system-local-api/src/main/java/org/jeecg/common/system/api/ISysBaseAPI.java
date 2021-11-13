@@ -327,4 +327,14 @@ public interface ISysBaseAPI extends CommonAPI {
      */
     List<DictModel> loadDictItemByKeyword(String dictCode, String keyword, Integer pageSize);
 
+    // 根据userid查询业务结构父id
+    String getBusDepartIdByUserId(String id);
+
+    String getDepTypeByUserId(String userId);
+
+    String getBusParentDepIdByDepartId(String departId);
+
+    String getParentIdByUserId(String id);
+
+    String getParentDepIdByDepartId(String departId);
 }

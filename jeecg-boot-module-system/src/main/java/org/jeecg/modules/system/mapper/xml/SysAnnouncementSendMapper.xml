@@ -15,6 +15,7 @@
 		<result column="bus_id" property="busId" jdbcType="VARCHAR"/>
 		<result column="open_type" property="openType" jdbcType="VARCHAR"/>
 		<result column="open_page" property="openPage" jdbcType="VARCHAR"/>
+		<result column="file_list" property="fileList" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<select id="queryByUserId" parameterType="String"  resultType="String">
@@ -28,6 +29,7 @@
 	   		sas.annt_id,
 	   		sas.user_id,
 	   		sas.read_flag,
+	        sa.file_list,
 	   		sa.titile as titile,
 	   		sa.msg_content as msg_content,
 	   		sa.sender as sender,

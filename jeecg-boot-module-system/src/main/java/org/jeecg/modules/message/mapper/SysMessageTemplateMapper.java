@@ -2,6 +2,9 @@ package org.jeecg.modules.message.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Select;
+import org.jeecg.modules.message.entity.PersonInfo;
+import org.jeecg.modules.message.entity.PunishPerson;
+import org.jeecg.modules.message.entity.SmartTaskManage;
 import org.jeecg.modules.message.entity.SysMessageTemplate;
 
 import java.util.List;
@@ -15,4 +18,10 @@ import java.util.List;
 public interface SysMessageTemplateMapper extends BaseMapper<SysMessageTemplate> {
     @Select("SELECT * FROM SYS_SMS_TEMPLATE WHERE TEMPLATE_CODE = #{code}")
     List<SysMessageTemplate> selectByCode(String code);
+
+    List<PersonInfo> getBirthList();
+
+    List<SmartTaskManage> getTaskDetail();
+
+    List<PunishPerson> getPunishList();
 }
