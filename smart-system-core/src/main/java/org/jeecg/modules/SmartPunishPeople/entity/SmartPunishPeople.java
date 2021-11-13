@@ -55,11 +55,11 @@ public class SmartPunishPeople implements Serializable {
 	/**所属部门*/
     @ApiModelProperty(value = "所属部门")
     private java.lang.String sysOrgCode;
-	/**处分人工号*/
-	@Excel(name = "处分人工号", width = 15, dictTable = "sys_user", dicText = "work_no", dicCode = "work_no")
-	@Dict(dictTable = "sys_user", dicText = "work_no", dicCode = "work_no")
-    @ApiModelProperty(value = "处分人工号")
-    private java.lang.String punishNo;
+	/**处分人ID*/
+	@Excel(name = "处分人ID", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "id")
+	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "id")
+    @ApiModelProperty(value = "处分人ID")
+    private java.lang.String punishId;
 	/**处分人姓名*/
 	@Excel(name = "处分人姓名", width = 15)
     @ApiModelProperty(value = "处分人姓名")

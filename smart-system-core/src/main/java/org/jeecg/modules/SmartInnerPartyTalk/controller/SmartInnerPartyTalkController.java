@@ -162,8 +162,8 @@ public class SmartInnerPartyTalkController {
 		}
 		smartInnerPartyTalk.setDepartId(null);
 		smartInnerPartyTalk.setCreateTime(null);
-		//System.out.println("############");
-		//System.out.println(smartInnerPartyTalk);
+		System.out.println("##########################");
+		System.out.println(smartInnerPartyTalkPage.getSmartInnerPartyPacpaList());
 		smartInnerPartyTalkService.updateMain(smartInnerPartyTalk, smartInnerPartyTalkPage.getSmartInnerPartyPacpaList(),smartInnerPartyTalkPage.getSmartInnerPartyAnnexList());
 		return Result.OK("编辑成功!");
 	}

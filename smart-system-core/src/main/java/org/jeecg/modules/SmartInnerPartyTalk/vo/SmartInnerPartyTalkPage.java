@@ -66,34 +66,54 @@ public class SmartInnerPartyTalkPage {
 	@ApiModelProperty(value = "会议名称")
     private java.lang.String meetName;
 	/**主持人工号*/
-	@Excel(name = "主持人工号", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
-    @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
-	@ApiModelProperty(value = "主持人工号")
-    private java.lang.String hostNo;
-	/**受约谈函询人工号*/
-	@Excel(name = "受约谈函询人工号", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
-    @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
-	@ApiModelProperty(value = "受约谈函询人工号")
-    private java.lang.String talkedNo;
-	/**受诫勉谈话人工号*/
-	@Excel(name = "受诫勉谈话人工号", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
-    @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
-	@ApiModelProperty(value = "受诫勉谈话人工号")
-    private java.lang.String inquirerNo;
+	@Excel(name = "主持人ID", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "id")
+	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "id")
+	@ApiModelProperty(value = "主持人ID")
+	private java.lang.String hostId;
+	/**主持人姓名*/
+	@Excel(name = "主持人姓名", width = 15)
+	@ApiModelProperty(value = "主持人姓名")
+	private java.lang.String hostName;
+	/**受约谈函询人ID*/
+	@Excel(name = "受约谈函询人ID", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "id")
+	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "id")
+	@ApiModelProperty(value = "受约谈函询人ID")
+	private java.lang.String talkedId;
+	/**受约谈函询人姓名*/
+	@Excel(name = "受约谈函询人姓名", width = 15)
+	@ApiModelProperty(value = "受约谈函询人姓名")
+	private java.lang.String talkedName;
+	/**受诫勉谈话人ID*/
+	@Excel(name = "受诫勉谈话人ID", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "id")
+	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "id")
+	@ApiModelProperty(value = "受诫勉谈话人ID")
+	private java.lang.String inquirerId;
+	/**受诫勉谈话人姓名*/
+	@Excel(name = "受诫勉谈话人ID", width = 15)
+	@ApiModelProperty(value = "受诫勉谈话人姓名")
+	private java.lang.String inquirerName;
 	/**受党纪处分人工号*/
-	@Excel(name = "受党纪处分人工号", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
-    @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
+	@Excel(name = "受党纪处分人工号", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "id")
+	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "id")
 	@ApiModelProperty(value = "受党纪处分人工号")
-    private java.lang.String punisherNo;
+	private java.lang.String punisherId;
+	/**受党纪处分人工姓名*/
+	@Excel(name = "受党纪处分人工姓名", width = 15)
+	@ApiModelProperty(value = "受党纪处分人工姓名")
+	private java.lang.String punisherName;
 	/**会议摘要*/
 	@Excel(name = "会议摘要", width = 15)
 	@ApiModelProperty(value = "会议摘要")
     private java.lang.String abs;
-	/**记录人工号*/
-	@Excel(name = "记录人工号", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
-    @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
-	@ApiModelProperty(value = "记录人工号")
-    private java.lang.String recorderNo;
+	/**记录人ID*/
+	@Excel(name = "记录人ID", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "id")
+	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "id")
+	@ApiModelProperty(value = "记录人ID")
+	private java.lang.String recorderId;
+	/**记录人姓名*/
+	@Excel(name = "记录人姓名", width = 15)
+	@ApiModelProperty(value = "记录人姓名")
+	private java.lang.String recorderName;
 	/**删除状态（0，未删除；1，删除）*/
 	@Excel(name = "删除状态（0，未删除；1，删除）", width = 15)
 	@ApiModelProperty(value = "删除状态（0，未删除；1，删除）")

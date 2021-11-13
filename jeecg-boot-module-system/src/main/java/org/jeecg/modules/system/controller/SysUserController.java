@@ -198,8 +198,8 @@ public class SysUserController {
 			user.setStatus(1);
 			user.setDelFlag(CommonConstant.DEL_FLAG_0);
 			// 保存用户走一个service 保证事务
+            sysUserService.saveUser(user, selectedRoles, selectedDeparts);
             //sysUserService.saveUser(user, selectedRoles, selectedDepart);//只能添加本部门人员
-			sysUserService.saveUser(user, selectedRoles, selectedDeparts);
 			result.success("添加成功！");
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
