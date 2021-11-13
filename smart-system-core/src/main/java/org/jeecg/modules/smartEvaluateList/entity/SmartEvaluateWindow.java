@@ -2,6 +2,7 @@ package org.jeecg.modules.smartEvaluateList.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -84,7 +85,7 @@ public class SmartEvaluateWindow implements Serializable {
     @ApiModelProperty(value = "评价时间")
     private java.util.Date evaluateTime;
 	/**删除状态*/
-	/*@Excel(name = "删除状态", width = 15)*/
-    @ApiModelProperty(value = "删除状态")
+    @Excel(name = "删除状态", width = 15,dicCode="del_flag")
+    @TableLogic
     private java.lang.Integer delFlag;
 }

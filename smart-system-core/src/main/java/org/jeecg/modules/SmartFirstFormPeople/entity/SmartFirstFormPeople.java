@@ -2,6 +2,7 @@ package org.jeecg.modules.SmartFirstFormPeople.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -52,6 +53,10 @@ public class SmartFirstFormPeople implements Serializable {
 	/**所属部门*/
     @ApiModelProperty(value = "所属部门")
     private java.lang.String sysOrgCode;
+    /**单位ID*/
+    @Excel(name = "单位ID", width = 15)
+    @ApiModelProperty(value = "单位ID")
+    private java.lang.String departId;
 	/**案件标题*/
 	@Excel(name = "案件标题", width = 15)
     @ApiModelProperty(value = "案件标题")
@@ -161,9 +166,9 @@ public class SmartFirstFormPeople implements Serializable {
     @ApiModelProperty(value = "情形")
     private java.lang.String situation;
 	/**谈话时间*/
-	@Excel(name = "谈话时间", width = 15, format = "yyyy-MM-dd")
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+	@Excel(name = "谈话时间", width = 15, format = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "谈话时间")
     private java.util.Date talkTime;
 	/**组织措施*/
@@ -178,4 +183,8 @@ public class SmartFirstFormPeople implements Serializable {
 	@Excel(name = "附件", width = 15)
     @ApiModelProperty(value = "附件")
     private java.lang.String annex;
+    /**删除状态*/
+    @Excel(name = "删除状态", width = 15,dicCode="del_flag")
+    @TableLogic
+    private java.lang.Integer delFlag;
 }
