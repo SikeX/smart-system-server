@@ -4,7 +4,6 @@ import java.io.Serializable;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import org.jeecg.common.aspect.annotation.Dict;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,12 +16,12 @@ import java.io.UnsupportedEncodingException;
 /**
  * @Description: 民主生活会附件表
  * @Author: jeecg-boot
- * @Date:   2021-11-03
+ * @Date:   2021-11-12
  * @Version: V1.0
  */
+@ApiModel(value="smart_democratic_life_enclosure对象", description="民主生活会附件表")
 @Data
 @TableName("smart_democratic_life_enclosure")
-@ApiModel(value="smart_democratic_life_enclosure对象", description="民主生活会附件表")
 public class SmartDemocraticLifeEnclosure implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -53,5 +52,5 @@ public class SmartDemocraticLifeEnclosure implements Serializable {
 	/**下载次数*/
 	@Excel(name = "下载次数", width = 15)
     @ApiModelProperty(value = "下载次数")
-    private java.lang.Integer downloadNumber;
+    private java.lang.Integer downloadCount;
 }

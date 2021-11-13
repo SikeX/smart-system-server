@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -17,7 +18,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 三重一大表
  * @Author: jeecg-boot
- * @Date:   2021-11-05
+ * @Date:   2021-11-12
  * @Version: V1.0
  */
 @ApiModel(value="smart_triple_importance_one_greatness对象", description="三重一大表")
@@ -30,9 +31,9 @@ public class SmartTripleImportanceOneGreatness implements Serializable {
 	@TableId(type = IdType.ASSIGN_ID)
     @ApiModelProperty(value = "主键")
     private java.lang.String id;
-	/**单位ID*/
-	@Excel(name = "单位ID", width = 15)
-    @ApiModelProperty(value = "单位ID")
+	/**单位*/
+	@Excel(name = "单位", width = 15)
+    @ApiModelProperty(value = "单位")
     private java.lang.String documentid;
 	/**名称*/
 	@Excel(name = "名称", width = 15)
@@ -85,4 +86,11 @@ public class SmartTripleImportanceOneGreatness implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "创建时间")
     private java.util.Date createTime;
+    //entity实体层
+    /**
+     * 删除状态（0，正常，1已删除）
+     */
+    @Excel(name = "删除状态", width = 15,dicCode="del_flag")
+    @TableLogic
+    private Integer delFlag;
 }

@@ -58,6 +58,11 @@ public class SysMessageTemplateController extends JeecgController<SysMessageTemp
 	@GetMapping(value = "/list")
 	public Result<?> queryPageList(SysMessageTemplate sysMessageTemplate, @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
 			@RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize, HttpServletRequest req) {
+
+		if(sysMessageTemplate.getTemplateType() != null){
+			sysMessageTemplateService.notNull(sysMessageTemplate);
+		}
+
 		QueryWrapper<SysMessageTemplate> queryWrapper = QueryGenerator.initQueryWrapper(sysMessageTemplate, req.getParameterMap());
 		Page<SysMessageTemplate> page = new Page<SysMessageTemplate>(pageNo, pageSize);
 		IPage<SysMessageTemplate> pageList = sysMessageTemplateService.page(page, queryWrapper);

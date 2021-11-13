@@ -4,7 +4,6 @@ import org.jeecg.modules.smartDemocraticLifeMeeting.entity.SmartDemocraticLifePe
 import org.jeecg.modules.smartDemocraticLifeMeeting.entity.SmartDemocraticLifeEnclosure;
 import org.jeecg.modules.smartDemocraticLifeMeeting.entity.SmartDemocraticLifeMeeting;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.beans.factory.annotation.Autowired;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -12,11 +11,23 @@ import java.util.List;
 /**
  * @Description: 民主生活会表
  * @Author: jeecg-boot
- * @Date:   2021-11-03
+ * @Date:   2021-11-12
  * @Version: V1.0
  */
 public interface ISmartDemocraticLifeMeetingService extends IService<SmartDemocraticLifeMeeting> {
 
+	/**
+	 * 添加一对多
+	 * 
+	 */
+	public void saveMain(SmartDemocraticLifeMeeting smartDemocraticLifeMeeting,List<SmartDemocraticLifePeople> smartDemocraticLifePeopleList,List<SmartDemocraticLifeEnclosure> smartDemocraticLifeEnclosureList) ;
+	
+	/**
+	 * 修改一对多
+	 * 
+	 */
+	public void updateMain(SmartDemocraticLifeMeeting smartDemocraticLifeMeeting,List<SmartDemocraticLifePeople> smartDemocraticLifePeopleList,List<SmartDemocraticLifeEnclosure> smartDemocraticLifeEnclosureList);
+	
 	/**
 	 * 删除一对多
 	 */
@@ -26,6 +37,5 @@ public interface ISmartDemocraticLifeMeetingService extends IService<SmartDemocr
 	 * 批量删除一对多
 	 */
 	public void delBatchMain (Collection<? extends Serializable> idList);
-
-
+	
 }

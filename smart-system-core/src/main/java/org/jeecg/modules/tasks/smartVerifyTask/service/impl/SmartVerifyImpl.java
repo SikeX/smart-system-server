@@ -56,9 +56,10 @@ public class SmartVerifyImpl implements SmartVerify {
         smartVerifyTask.setDepartType(departType);
         smartVerifyTaskMapper.insert(smartVerifyTask);
 
-        log.info(parentId);
         String first = parentId;
-        if(first == null){
+        log.info(first);
+
+        if(first == null || first.equals("")){
             String[] userIdList = new String[1];
             userIdList[0] = userId;
             sysBaseAPI.sendWebSocketMsg(userIdList,"申请已通过");
@@ -68,6 +69,13 @@ public class SmartVerifyImpl implements SmartVerify {
             first = sysBaseAPI.getBusDepartIdByUserId("3708dc8170414dde8a069225e0724a65");
         }
         String second = sysBaseAPI.getParentDepIdByDepartId(first);
+
+        if(second == null || first.equals("")){
+            String[] userIdList = new String[1];
+            userIdList[0] = userId;
+            sysBaseAPI.sendWebSocketMsg(userIdList,"申请已通过");
+            return;
+        }
 
 //        QueryWrapper queryWrapper = new QueryWrapper();
 //        queryWrapper.eq("type_name",verifyType);
