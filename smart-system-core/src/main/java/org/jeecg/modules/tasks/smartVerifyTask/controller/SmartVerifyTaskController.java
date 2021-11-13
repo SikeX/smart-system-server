@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
-import io.swagger.models.auth.In;
+import net.sf.saxon.expr.Component;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.dto.message.MessageDTO;
 import org.jeecg.common.api.vo.Result;
@@ -34,7 +34,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 
  /**
  * @Description: 审核任务表
- * @Author: sike
+ * @Author: jeecg-boot
  * @Date:   2021-11-04
  * @Version: V1.0
  */
@@ -50,18 +50,18 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 	private SmartVerifyTaskMapper smartVerifyTaskMapper;
 
 	@Autowired
-	private ISmartVerifyDetailService smartVerifyDetailService;
-
-	@Autowired
 	private ISysBaseAPI sysBaseAPI;
 
 	@Autowired
 	private VerifyTaskListPageMapper verifyTaskListPageMapper;
+
+	@Autowired
+	private ISmartVerifyDetailService smartVerifyDetailService;
 	
 	/**
 	 * 分页列表查询
 	 *
-	 * @param smartVerifyTask
+	 * @param verifyTaskListPage
 	 * @param pageNo
 	 * @param pageSize
 	 * @param req
@@ -76,8 +76,8 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 								   HttpServletRequest req) {
 
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+//		log.info(sysUser.getDepartIds());
 		String userDepartId = sysBaseAPI.getDepartIdsByOrgCode(sysUser.getOrgCode());
-		log.info(sysBaseAPI.getDepartIdsByOrgCode(sysUser.getOrgCode()));
 
 		MPJLambdaWrapper<VerifyTaskListPage> mpjLambdaWrapper = new MPJLambdaWrapper<VerifyTaskListPage>();
 		mpjLambdaWrapper.selectAll(SmartVerifyTask.class)
@@ -85,7 +85,8 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 						SmartVerifyDetail::getAuditStatus, SmartVerifyDetail::getAuditTime, SmartVerifyDetail::getRemark)
 				.innerJoin(SmartVerifyDetail.class, SmartVerifyDetail::getFlowNo, SmartVerifyTask::getFlowNo)
 				.eq(SmartVerifyDetail::getAuditStatus, 2)
-				.eq(SmartVerifyDetail::getAuditDepart,userDepartId);
+				.eq(SmartVerifyDetail::getAuditDepart, userDepartId)
+				.orderByDesc(SmartVerifyTask::getCreateTime);
 
 		Page<VerifyTaskListPage> page = new Page<VerifyTaskListPage>(pageNo, pageSize);
 		IPage<VerifyTaskListPage> pageList = smartVerifyTaskMapper.selectJoinPage(page, VerifyTaskListPage.class,
@@ -95,63 +96,6 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 		// log.info(sysBaseAPI.getDepartIdsByOrgCode(sysUser.getOrgCode()));
 
 		return Result.OK(pageList);
-	}
-
-	@AutoLog(value = "审核任务表-编辑")
-	@ApiOperation(value="审核任务表-编辑", notes="审核任务表-编辑")
-	@PutMapping(value = "/updateStatus")
-	public Result<?> updateStatus(@RequestBody SmartVerifyDetail smartVerifyDetail) {
-		log.info(String.valueOf(smartVerifyDetail));
-		// 获取用户id及部门
-		LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
-		String userName = sysUser.getUsername();
-		String orgCode = sysUser.getOrgCode();
-		String userDepartId = sysBaseAPI.getDepartIdsByOrgCode(orgCode);
-		log.info(userDepartId);
-		// 根据flowNo和depart查询到此记录
-		QueryWrapper<SmartVerifyDetail> queryWrapper = new QueryWrapper<>();
-		queryWrapper.eq("flow_no",smartVerifyDetail.getFlowNo())
-				.eq("audit_depart",userDepartId);
-		// 更新审核人审核状态
-		smartVerifyDetailService.update(smartVerifyDetail,queryWrapper);
-		// 在审核主表中找到记录
-		QueryWrapper<SmartVerifyTask> queryWrapper2 = new QueryWrapper<>();
-		queryWrapper2.eq("flow_no",smartVerifyDetail.getFlowNo());
-		// 如果审核人给了通过
-		if(smartVerifyDetail.getAuditStatus() == 3){
-			// 根据flowNo查询
-			QueryWrapper<SmartVerifyDetail> queryWrapper1 = new QueryWrapper<>();
-			queryWrapper1.eq("flow_no",smartVerifyDetail.getFlowNo())
-					.eq("audit_status",1);
-			// 若没有待审核的记录了，则审核通过
-			if (smartVerifyDetailService.count(queryWrapper1) == 0){
-				SmartVerifyTask smartVerifyTask = new SmartVerifyTask();
-				smartVerifyTask.setFlowStatus(1);
-				smartVerifyTaskService.update(smartVerifyTask,queryWrapper2);
-				// 给填报人发送消息
-
-				String fillPersonName = smartVerifyTaskService.getOne(queryWrapper2).getFillPerson();
-				sysBaseAPI.sendSysAnnouncement(new MessageDTO(userName,fillPersonName,"审核结果","您的审核已经通过"));
-				return Result.OK("更新成功");
-			}
-			// 否则更新下一级管理员的审核状态为2
-			else {
-				SmartVerifyDetail smartVerifyDetail1 = new SmartVerifyDetail();
-				smartVerifyDetail1.setAuditStatus(2);
-				smartVerifyDetailService.update(smartVerifyDetail1,queryWrapper1);
-			}
-		}
-		// 如果设置了驳回
-		else if (smartVerifyDetail.getAuditStatus() == 4) {
-			SmartVerifyTask smartVerifyTask1 = new SmartVerifyTask();
-			smartVerifyTask1.setFlowStatus(0);
-			smartVerifyTaskService.update(smartVerifyTask1,queryWrapper2);
-			// 给填报人发送消息
-			String fillPersonName = smartVerifyTaskService.getOne(queryWrapper2).getFillPerson();
-			sysBaseAPI.sendSysAnnouncement(new MessageDTO(userName,fillPersonName,"审核结果","您的审核未通过"));
-			return Result.OK("更新成功");
-		}
-		return Result.OK("更新成功");
 	}
 	
 	/**
@@ -249,5 +193,76 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
         return super.importExcel(request, response, SmartVerifyTask.class);
     }
+
+	@AutoLog(value = "审核任务表-编辑")
+	@ApiOperation(value="审核任务表-编辑", notes="审核任务表-编辑")
+	@PutMapping(value = "/updateStatus")
+	public Result<?> updateStatus(@RequestBody SmartVerifyDetail smartVerifyDetail) {
+	 log.info(String.valueOf(smartVerifyDetail));
+	 // 获取用户id及部门
+	 LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
+	 String userName = sysUser.getUsername();
+	 String orgCode = sysUser.getOrgCode();
+	 String userDepartId = sysBaseAPI.getDepartIdsByOrgCode(orgCode);
+	 log.info(userDepartId);
+	 // 根据flowNo和depart查询到此记录
+	 QueryWrapper<SmartVerifyDetail> queryWrapper = new QueryWrapper<>();
+	 queryWrapper.eq("flow_no",smartVerifyDetail.getFlowNo())
+			 .eq("audit_depart",userDepartId);
+	 // 更新审核人审核状态
+	 smartVerifyDetailService.update(smartVerifyDetail,queryWrapper);
+	 // 在审核主表中找到记录
+	 QueryWrapper<SmartVerifyTask> queryWrapper2 = new QueryWrapper<>();
+	 queryWrapper2.eq("flow_no",smartVerifyDetail.getFlowNo());
+	 // 如果审核人给了通过
+	 if(smartVerifyDetail.getAuditStatus() == 3){
+		 // 根据flowNo查询
+		 QueryWrapper<SmartVerifyDetail> queryWrapper1 = new QueryWrapper<>();
+		 queryWrapper1.eq("flow_no",smartVerifyDetail.getFlowNo())
+				 .eq("audit_status",1);
+		 // 若没有待审核的记录了，则审核通过
+		 if (smartVerifyDetailService.count(queryWrapper1) == 0){
+			 SmartVerifyTask smartVerifyTask = new SmartVerifyTask();
+			 smartVerifyTask.setFlowStatus(1);
+			 smartVerifyTaskService.update(smartVerifyTask,queryWrapper2);
+			 // 给填报人发送消息
+
+			 String fillPersonName = smartVerifyTaskService.getOne(queryWrapper2).getFillPerson();
+			 log.info(fillPersonName);
+			 MessageDTO messageDTO = new MessageDTO();
+			 messageDTO.setFromUser(userName);
+			 messageDTO.setToUser(fillPersonName);
+			 messageDTO.setTitle("审核已通过");
+			 messageDTO.setContent("您的审核已通过");
+			 messageDTO.setCategory("2");
+			 sysBaseAPI.sendSysAnnouncement(messageDTO);
+			 return Result.OK("更新成功");
+		 }
+		 // 否则更新下一级管理员的审核状态为2
+		 else {
+			 SmartVerifyDetail smartVerifyDetail1 = new SmartVerifyDetail();
+			 smartVerifyDetail1.setAuditStatus(2);
+			 smartVerifyDetailService.update(smartVerifyDetail1,queryWrapper1);
+		 }
+	 }
+	 // 如果设置了驳回
+	 else if (smartVerifyDetail.getAuditStatus() == 4) {
+		 SmartVerifyTask smartVerifyTask1 = new SmartVerifyTask();
+		 smartVerifyTask1.setFlowStatus(0);
+		 smartVerifyTaskService.update(smartVerifyTask1,queryWrapper2);
+		 // 给填报人发送消息
+		 String fillPersonName = smartVerifyTaskService.getOne(queryWrapper2).getFillPerson();
+		 MessageDTO messageDTO = new MessageDTO();
+		 messageDTO.setFromUser(userName);
+		 messageDTO.setToUser(fillPersonName);
+		 messageDTO.setTitle("审核未通过");
+		 messageDTO.setContent("您的审核未通过");
+		 messageDTO.setCategory("2");
+		 sysBaseAPI.sendSysAnnouncement(messageDTO);
+		 return Result.OK("更新成功");
+	 }
+	 return Result.OK("更新成功");
+	}
+
 
 }

@@ -59,6 +59,7 @@ public class SmartInnerPartyTalkController {
 	private ISmartInnerPartyAnnexService smartInnerPartyAnnexService;
 	@Autowired
 	private CommonService commonService;
+
 	@Autowired
 	private SmartVerify smartVerify;
 	public String verifyType = "党内谈话";

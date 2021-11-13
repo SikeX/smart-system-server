@@ -77,4 +77,6 @@ public class AnnouncementSendModel implements Serializable {
 	 */
 	private java.lang.String msgAbstract;
 
+	private String fileList;
+
 }
