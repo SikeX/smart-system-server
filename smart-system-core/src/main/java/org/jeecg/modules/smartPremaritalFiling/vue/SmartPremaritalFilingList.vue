@@ -137,11 +137,6 @@
             }
           },
           {
-            title:'人员工号',
-            align:"center",
-            dataIndex: 'peopleNo'
-          },
-          {
             title:'人员姓名',
             align:"center",
             dataIndex: 'peopleName'
@@ -177,9 +172,14 @@
             dataIndex: 'spoName'
           },
           {
+            title:'配偶单位',
+            align:"center",
+            dataIndex: 'spoUnit'
+          },
+          {
             title:'配偶单位职务',
             align:"center",
-            dataIndex: 'spoUnitPos_dictText'
+            dataIndex: 'spoUnitPos'
           },
           {
             title:'配偶政治面貌',
@@ -215,7 +215,7 @@
           {
             title:'是否同城同地合办',
             align:"center",
-            dataIndex: 'isSameOrganized'
+            dataIndex: 'isSameOrganized_dictText'
           },
           {
             title:'拟宴请人数',
@@ -268,9 +268,14 @@
             dataIndex: 'marrySpoParName_dictText'
           },
           {
+            title:'结婚人配偶父母单位',
+            align:"center",
+            dataIndex: 'marrySpoParUnit'
+          },
+          {
             title:'结婚人配偶父母单位职务',
             align:"center",
-            dataIndex: 'marrySpoParUnitPos_dictText'
+            dataIndex: 'marrySpoParUnitPos'
           },
           {
             title:'其他需要说明的事情',
@@ -289,11 +294,6 @@
             title:'联系电话',
             align:"center",
             dataIndex: 'contactNumber'
-          },
-          {
-            title:'删除状态',
-            align:"center",
-            dataIndex: 'delFlag'
           },
           {
             title: '操作',
@@ -329,7 +329,6 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'peopleNo',text:'人员工号',dictCode:''})
          fieldList.push({type:'string',value:'peopleName',text:'人员姓名',dictCode:''})
          fieldList.push({type:'string',value:'peopleSex',text:'人员性别',dictCode:'	sex'})
          fieldList.push({type:'int',value:'peopleAge',text:'人员年龄',dictCode:''})
@@ -338,8 +337,9 @@
          fieldList.push({type:'string',value:'post',text:'职务',dictCode:'sys_position,name,code'})
          fieldList.push({type:'string',value:'postRank',text:'职级',dictCode:'position_rank'})
          fieldList.push({type:'string',value:'spoName',text:'配偶姓名',dictCode:''})
-         fieldList.push({type:'string',value:'spoUnitPos',text:'配偶单位职务',dictCode:'sys_position,name,code'})
-         fieldList.push({type:'string',value:'spoPoliticCou',text:'配偶政治面貌',dictCode:''})
+         fieldList.push({type:'string',value:'spoUnit',text:'配偶单位',dictCode:''})
+         fieldList.push({type:'string',value:'spoUnitPos',text:'配偶单位职务',dictCode:''})
+         fieldList.push({type:'string',value:'spoPoliticCou',text:'配偶政治面貌',dictCode:'political_status'})
          fieldList.push({type:'string',value:'marriedName',text:'结婚人姓名',dictCode:''})
          fieldList.push({type:'string',value:'relationWithMyself',text:'与本人关系',dictCode:''})
          fieldList.push({type:'date',value:'marryRegistTime',text:'婚姻登记时间'})
@@ -353,13 +353,13 @@
          fieldList.push({type:'string',value:'proCarsNum',text:'拟用婚礼车辆数量',dictCode:''})
          fieldList.push({type:'string',value:'marrySpoName',text:'结婚人配偶姓名',dictCode:''})
          fieldList.push({type:'string',value:'marrySpoUnit',text:'结婚人配偶单位',dictCode:''})
-         fieldList.push({type:'string',value:'marrySpoUnitPos',text:'结婚人配偶单位职务',dictCode:'sys_position,name,code'})
+         fieldList.push({type:'string',value:'marrySpoUnitPos',text:'结婚人配偶单位职务',dictCode:''})
          fieldList.push({type:'string',value:'marrySpoParName',text:'结婚人配偶父母姓名',dictCode:''})
-         fieldList.push({type:'string',value:'marrySpoParUnitPos',text:'结婚人配偶父母单位职务',dictCode:'sys_position,name,code'})
+         fieldList.push({type:'string',value:'marrySpoParUnit',text:'结婚人配偶父母单位',dictCode:''})
+         fieldList.push({type:'string',value:'marrySpoParUnitPos',text:'结婚人配偶父母单位职务',dictCode:''})
          fieldList.push({type:'string',value:'otherMattersExp',text:'其他需要说明的事情',dictCode:''})
          fieldList.push({type:'date',value:'reportTime',text:'报告时间'})
          fieldList.push({type:'string',value:'contactNumber',text:'联系电话',dictCode:''})
-         fieldList.push({type:'int',value:'delFlag',text:'删除状态',dictCode:''})
         this.superFieldList = fieldList
       }
     }
