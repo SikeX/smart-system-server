@@ -6,6 +6,7 @@ import java.util.Date;
 import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -94,4 +95,8 @@ public class SmartPunishPeople implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @ApiModelProperty(value = "解除处分时间")
     private java.util.Date removeTime;
+    /**删除状态*/
+    @Excel(name = "删除状态", width = 15,dicCode="del_flag")
+    @TableLogic
+    private java.lang.Integer delFlag;
 }

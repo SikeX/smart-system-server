@@ -21,6 +21,7 @@ import org.jeecg.modules.SmartInnerPartyTalk.service.ISmartInnerPartyTalkService
 import org.jeecg.modules.SmartInnerPartyTalk.vo.SmartInnerPartyTalkPage;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -58,6 +59,10 @@ public class SmartInnerPartyTalkController {
 	private ISmartInnerPartyAnnexService smartInnerPartyAnnexService;
 	@Autowired
 	private CommonService commonService;
+
+	@Autowired
+	private SmartVerify smartVerify;
+	public String verifyType = "党内谈话";
 	
 	/**
 	 * 分页列表查询
@@ -77,19 +82,19 @@ public class SmartInnerPartyTalkController {
 								   HttpServletRequest req) {
 		// 1. 规则，下面是 以**开始
 		String rule = "in";
-// 2. 查询字段
+		// 2. 查询字段
 		String field = "departId";
-// 获取登录用户信息，可以用来查询单位部门信息
+		// 获取登录用户信息，可以用来查询单位部门信息
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
-// 获取子单位ID
+		// 获取子单位ID
 		String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
 
 		HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
-// 获取请求参数中的superQueryParams
+		// 获取请求参数中的superQueryParams
 		List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
 
-// 添加额外查询条件，用于权限控制
+		// 添加额外查询条件，用于权限控制
 		paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
 				+ childrenIdString
 				+ "%22,%22field%22:%22" + field + "%22%7D%5D");
@@ -122,17 +127,21 @@ public class SmartInnerPartyTalkController {
 	@ApiOperation(value="党内谈话表-添加", notes="党内谈话表-添加")
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody SmartInnerPartyTalkPage smartInnerPartyTalkPage) {
-		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-		String orgCode = sysUser.getOrgCode();
-		String departId = smartInnerPartyTalkService.getDepartIdByOrgCode(sysUser.getOrgCode());
-		if ("".equals(departId)) {
-			return Result.error("本用户没有操作权限！");
-		}
-		String id = smartInnerPartyTalkService.getDepartIdByOrgCode(orgCode);
-		smartInnerPartyTalkPage.setDepartId(id);
 		SmartInnerPartyTalk smartInnerPartyTalk = new SmartInnerPartyTalk();
 		BeanUtils.copyProperties(smartInnerPartyTalkPage, smartInnerPartyTalk);
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		String orgCode = sysUser.getOrgCode();
+		if ("".equals(orgCode)) {
+			return Result.error("本用户没有操作权限！");
+		}
+		String id = commonService.getDepartIdByOrgCode(orgCode);
+		if (id == null) {
+			return Result.error("没有找到部门！");
+		}
+		smartInnerPartyTalk.setDepartId(id);
 		smartInnerPartyTalkService.saveMain(smartInnerPartyTalk, smartInnerPartyTalkPage.getSmartInnerPartyPacpaList(),smartInnerPartyTalkPage.getSmartInnerPartyAnnexList());
+		//审核
+		smartVerify.addVerifyRecord(smartInnerPartyTalk.getId(),verifyType);
 		return Result.OK("添加成功！");
 	}
 	
@@ -152,6 +161,10 @@ public class SmartInnerPartyTalkController {
 		if(smartInnerPartyTalkEntity==null) {
 			return Result.error("未找到对应数据");
 		}
+		smartInnerPartyTalk.setDepartId(null);
+		smartInnerPartyTalk.setCreateTime(null);
+		//System.out.println("############");
+		//System.out.println(smartInnerPartyTalk);
 		smartInnerPartyTalkService.updateMain(smartInnerPartyTalk, smartInnerPartyTalkPage.getSmartInnerPartyPacpaList(),smartInnerPartyTalkPage.getSmartInnerPartyAnnexList());
 		return Result.OK("编辑成功!");
 	}
