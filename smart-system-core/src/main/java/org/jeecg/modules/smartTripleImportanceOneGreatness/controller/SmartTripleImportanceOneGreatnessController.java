@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
+import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -66,6 +67,8 @@ public class SmartTripleImportanceOneGreatnessController {
 	@Autowired
 	private SmartVerify smartVerify;
 	public String verifyType="三重一大";
+	@Autowired
+	private ISmartVerifyTypeService smartVerifyTypeService;
 
 	/**
 	 * 分页列表查询
@@ -141,9 +144,28 @@ public class SmartTripleImportanceOneGreatnessController {
 		smartTripleImportanceOneGreatnessPage.setDocumentid(id);
 		SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness = new SmartTripleImportanceOneGreatness();
 		BeanUtils.copyProperties(smartTripleImportanceOneGreatnessPage, smartTripleImportanceOneGreatness);
-		smartTripleImportanceOneGreatnessService.saveMain(smartTripleImportanceOneGreatness, smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessPaccaList(),smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessDescriptionList());
 
-		smartVerify.addVerifyRecord(smartTripleImportanceOneGreatness.getId(),verifyType);
+
+		//smartVerify.addVerifyRecord(smartTripleImportanceOneGreatness.getId(),verifyType);
+
+		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType); if(isVerify){
+			smartTripleImportanceOneGreatnessService.saveMain(
+					smartTripleImportanceOneGreatness,
+					smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessPaccaList(),
+					smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessDescriptionList());
+			String recordId = smartTripleImportanceOneGreatness.getId();
+		    smartVerify.addVerifyRecord(recordId,verifyType);
+		    smartTripleImportanceOneGreatness.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+		    smartTripleImportanceOneGreatnessService.updateById(smartTripleImportanceOneGreatness); }
+		    else {
+		    	// 设置审核状态为免审
+			 smartTripleImportanceOneGreatness.setVerifyStatus("3");
+			// 直接添加，不走审核流程
+			smartTripleImportanceOneGreatnessService.saveMain(
+					smartTripleImportanceOneGreatness,
+					smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessPaccaList(),
+					smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessDescriptionList());
+		    }
 
 		return Result.OK("添加成功！");
 	}

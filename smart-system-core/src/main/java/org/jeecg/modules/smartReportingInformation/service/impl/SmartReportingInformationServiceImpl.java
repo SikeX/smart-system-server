@@ -30,7 +30,7 @@ public class SmartReportingInformationServiceImpl extends ServiceImpl<SmartRepor
 	private SmartReportingSurveyMapper smartReportingSurveyMapper;
 	@Autowired
 	private SmartReportingDescriptionMapper smartReportingDescriptionMapper;
-	
+
 	@Override
 	@Transactional
 	public void saveMain(SmartReportingInformation smartReportingInformation, List<SmartReportingSurvey> smartReportingSurveyList,List<SmartReportingDescription> smartReportingDescriptionList) {
@@ -38,14 +38,14 @@ public class SmartReportingInformationServiceImpl extends ServiceImpl<SmartRepor
 		if(smartReportingSurveyList!=null && smartReportingSurveyList.size()>0) {
 			for(SmartReportingSurvey entity:smartReportingSurveyList) {
 				//外键设置
-				entity.setReportingNumber(smartReportingInformation.getReportingNumber());
+				entity.setReportingNumber(smartReportingInformation.getId());
 				smartReportingSurveyMapper.insert(entity);
 			}
 		}
 		if(smartReportingDescriptionList!=null && smartReportingDescriptionList.size()>0) {
 			for(SmartReportingDescription entity:smartReportingDescriptionList) {
 				//外键设置
-				entity.setReportingNumber(smartReportingInformation.getReportingNumber());
+				entity.setReportingNumber(smartReportingInformation.getId());
 				smartReportingDescriptionMapper.insert(entity);
 			}
 		}
@@ -55,23 +55,23 @@ public class SmartReportingInformationServiceImpl extends ServiceImpl<SmartRepor
 	@Transactional
 	public void updateMain(SmartReportingInformation smartReportingInformation,List<SmartReportingSurvey> smartReportingSurveyList,List<SmartReportingDescription> smartReportingDescriptionList) {
 		smartReportingInformationMapper.updateById(smartReportingInformation);
-		
+
 		//1.先删除子表数据
 		smartReportingSurveyMapper.deleteByMainId(smartReportingInformation.getId());
 		smartReportingDescriptionMapper.deleteByMainId(smartReportingInformation.getId());
-		
+
 		//2.子表数据重新插入
 		if(smartReportingSurveyList!=null && smartReportingSurveyList.size()>0) {
 			for(SmartReportingSurvey entity:smartReportingSurveyList) {
 				//外键设置
-				entity.setReportingNumber(smartReportingInformation.getReportingNumber());
+				entity.setReportingNumber(smartReportingInformation.getId());
 				smartReportingSurveyMapper.insert(entity);
 			}
 		}
 		if(smartReportingDescriptionList!=null && smartReportingDescriptionList.size()>0) {
 			for(SmartReportingDescription entity:smartReportingDescriptionList) {
 				//外键设置
-				entity.setReportingNumber(smartReportingInformation.getReportingNumber());
+				entity.setReportingNumber(smartReportingInformation.getId());
 				smartReportingDescriptionMapper.insert(entity);
 			}
 		}
@@ -94,5 +94,5 @@ public class SmartReportingInformationServiceImpl extends ServiceImpl<SmartRepor
 			smartReportingInformationMapper.deleteById(id);
 		}
 	}
-	
+
 }
