@@ -1,4 +1,4 @@
-package org.jeecg.modules.tasks.taskType.entity;
+package org.jeecg.modules.app.entity;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
@@ -18,23 +18,35 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 /**
- * @Description: 审核任务类型编码表
+ * @Description: app功能模块
  * @Author: jeecg-boot
- * @Date:   2021-11-04
+ * @Date:   2021-11-08
  * @Version: V1.0
  */
 @Data
-@TableName("smart_verify_type")
+@TableName("tb_banner")
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="smart_verify_type对象", description="审核任务类型编码表")
-public class SmartVerifyType implements Serializable {
+@ApiModel(value="tb_banner对象", description="app功能模块")
+public class Banner implements Serializable {
     private static final long serialVersionUID = 1L;
 
 	/**主键*/
 	@TableId(type = IdType.ASSIGN_ID)
     @ApiModelProperty(value = "主键")
     private java.lang.String id;
+	/**banner备注标题*/
+	@Excel(name = "banner备注标题", width = 15)
+    @ApiModelProperty(value = "banner备注标题")
+    private java.lang.String title;
+	/**图片链接*/
+	@Excel(name = "图片链接", width = 15)
+    @ApiModelProperty(value = "图片链接")
+    private java.lang.String url;
+	/**排序*/
+	@Excel(name = "排序", width = 15)
+    @ApiModelProperty(value = "排序")
+    private java.lang.String sort;
 	/**创建人*/
     @ApiModelProperty(value = "创建人")
     private java.lang.String createBy;
@@ -54,34 +66,4 @@ public class SmartVerifyType implements Serializable {
 	/**所属部门*/
     @ApiModelProperty(value = "所属部门")
     private java.lang.String sysOrgCode;
-	/**任务类型名称*/
-	@Excel(name = "任务类型名称", width = 15)
-    @ApiModelProperty(value = "任务类型名称")
-    private java.lang.String typeName;
-	/**审核层级*/
-	@Excel(name = "审核层级", width = 15)
-    @ApiModelProperty(value = "审核层级")
-    private java.lang.Integer typeLevel;
-	/**一级审核部门*/
-	@Excel(name = "一级审核部门", width = 15, dictTable = "sys_depart", dicText = "depart_name", dicCode = "id")
-	@Dict(dictTable = "sys_depart", dicText = "depart_name", dicCode = "id")
-    @ApiModelProperty(value = "一级审核部门")
-    private java.lang.String verifyFirst;
-	/**二级审核部门*/
-	@Excel(name = "二级审核部门", width = 15, dictTable = "sys_depart", dicText = "depart_name", dicCode = "id")
-	@Dict(dictTable = "sys_depart", dicText = "depart_name", dicCode = "id")
-    @ApiModelProperty(value = "二级审核部门")
-    private java.lang.String verifySecond;
-	/**表单路径*/
-	@Excel(name = "表单路径", width = 15)
-    @ApiModelProperty(value = "表单路径")
-    private java.lang.String typeModralPath;
-	/**填表说明*/
-	@Excel(name = "填表说明", width = 15)
-    @ApiModelProperty(value = "填表说明")
-    private java.lang.String typeDesc;
-
-    @Excel(name = "是否审核", width = 15)
-    @ApiModelProperty(value = "是否审核")
-    private java.lang.String isVerify;
 }

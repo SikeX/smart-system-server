@@ -10,5 +10,7 @@ import org.apache.poi.ss.formula.functions.T;
  */
 public interface SmartVerify {
 
+    Integer getFlowStatusById(String id);
+
     void addVerifyRecord(String id, String verifyType);
 }

@@ -4,10 +4,5 @@
 /.idea/
 *.iml
 rebel.xml
-/smart-system-core/target/
-/jeecg-boot-module-system/target/
-/jeecg-boot-module-demo/target/
-/jeecg-boot-base/jeecg-boot-base-tools/target/
-/jeecg-boot-base/jeecg-boot-base-core/target/
-/jeecg-boot-base/jeecg-boot-base-api/jeecg-system-local-api/target/
-/jeecg-boot-base/jeecg-boot-base-api/jeecg-system-cloud-api/target/
+**/target
+**/.DS_Store

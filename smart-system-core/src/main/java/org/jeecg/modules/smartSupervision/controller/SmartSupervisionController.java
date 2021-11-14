@@ -13,6 +13,8 @@ import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
+import org.jeecg.modules.tasks.taskType.entity.SmartVerifyType;
+import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -65,6 +67,8 @@ public class SmartSupervisionController {
 	private CommonService commonService;
 	@Autowired
 	private SmartVerify smartVerify;
+	@Autowired
+	private ISmartVerifyTypeService smartVerifyTypeService;
 
 	public String verifyType = "监督检查";
 	
@@ -145,13 +149,27 @@ public class SmartSupervisionController {
 		}
 
 		String id = sysBaseAPI.getDepartIdsByOrgCode(orgCode);
-		log.info(id);
+//		log.info(id);
 		smartSupervisionPage.setDepartId(id);
 		SmartSupervision smartSupervision = new SmartSupervision();
 		BeanUtils.copyProperties(smartSupervisionPage, smartSupervision);
-		log.info(smartSupervision.getId());
-		smartSupervisionService.saveMain(smartSupervision, smartSupervisionPage.getSmartSupervisionAnnexList());
-		smartVerify.addVerifyRecord(smartSupervision.getId(),verifyType);
+//		log.info(smartSupervision.getId());
+
+		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
+		if(isVerify){
+			smartSupervisionService.saveMain(smartSupervision, smartSupervisionPage.getSmartSupervisionAnnexList());
+			String recordId = smartSupervision.getId();
+			log.info("recordId is"+recordId);
+			smartVerify.addVerifyRecord(recordId,verifyType);
+			smartSupervision.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+			smartSupervisionService.updateById(smartSupervision);
+		} else {
+			// 设置审核状态为免审
+			smartSupervision.setVerifyStatus("3");
+			// 直接添加，不走审核流程
+			smartSupervisionService.saveMain(smartSupervision, smartSupervisionPage.getSmartSupervisionAnnexList());
+		}
+
 		return Result.OK("添加成功！");
 	}
 	
