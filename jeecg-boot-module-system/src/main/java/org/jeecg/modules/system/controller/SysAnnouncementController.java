@@ -126,6 +126,14 @@ public class SysAnnouncementController {
 			// update-end-author:liusq date:20210804 for:标题处理xss攻击的问题
 			sysAnnouncement.setDelFlag(CommonConstant.DEL_FLAG_0.toString());
 			sysAnnouncement.setSendStatus(CommonSendStatus.UNPUBLISHED_STATUS_0);//未发布
+			String userIds = sysAnnouncement.getUserIds();
+			if( StringUtils.isNotBlank(userIds) ){
+				Integer send_count = sysAnnouncement.getUserIds().split(",").length;
+			}
+			Integer send_count = sysBaseAPI.queryAllUserBackCombo().size();
+			
+			log.info(String.valueOf(send_count));
+			sysAnnouncement.setSendCount(send_count);
 			sysAnnouncementService.saveAnnouncement(sysAnnouncement);
 			result.success("添加成功！");
 		} catch (Exception e) {
@@ -351,11 +359,15 @@ public class SysAnnouncementController {
 		anntMsgList = sysAnnouncementService.querySysCementPageByUserId(anntMsgList,userId,"1");//通知公告消息
 		Page<SysAnnouncement> sysMsgList = new Page<SysAnnouncement>(0,5);
 		sysMsgList = sysAnnouncementService.querySysCementPageByUserId(sysMsgList,userId,"2");//系统消息
+		Page<SysAnnouncement> taskMsgList = new Page<SysAnnouncement>(0,5);
+		taskMsgList = sysAnnouncementService.querySysCementPageByUserId(taskMsgList,userId,"3");//通知公告消息
 		Map<String,Object> sysMsgMap = new HashMap<String, Object>();
 		sysMsgMap.put("sysMsgList", sysMsgList.getRecords());
 		sysMsgMap.put("sysMsgTotal", sysMsgList.getTotal());
 		sysMsgMap.put("anntMsgList", anntMsgList.getRecords());
 		sysMsgMap.put("anntMsgTotal", anntMsgList.getTotal());
+		sysMsgMap.put("taskMsgList", taskMsgList.getRecords());
+		sysMsgMap.put("taskMsgTotal", taskMsgList.getTotal());
 		result.setSuccess(true);
 		result.setResult(sysMsgMap);
 		return result;
