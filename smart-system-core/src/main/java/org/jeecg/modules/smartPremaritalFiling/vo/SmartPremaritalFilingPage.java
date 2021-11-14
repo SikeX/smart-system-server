@@ -178,6 +178,10 @@ public class SmartPremaritalFilingPage {
 	@ApiModelProperty(value = "删除状态")
 	private java.lang.Integer delFlag;
 
+	/**审核状态*/
+	@ApiModelProperty(value = "审核状态")
+	private java.lang.String verifyStatus;
+
 	@ExcelCollection(name="8项规定婚前报备表附表")
 	@ApiModelProperty(value = "8项规定婚前报备表附表")
 	private List<SmartPremaritalFilingApp> smartPremaritalFilingAppList;
