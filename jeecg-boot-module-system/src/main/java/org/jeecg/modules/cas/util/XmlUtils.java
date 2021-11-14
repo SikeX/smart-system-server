@@ -1,19 +1,7 @@
 package org.jeecg.modules.cas.util;
 
 
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Document;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -21,7 +9,13 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-import lombok.extern.slf4j.Slf4j;
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.StringReader;
+import java.util.*;
 
 /**
  * 解析cas,ST验证后的xml
@@ -94,13 +88,15 @@ public final class XmlUtils {
 
             private StringBuilder buffer = new StringBuilder();
 
+            @Override
             public void startElement(final String uri, final String localName, final String qName,
-                    final Attributes attributes) throws SAXException {
+                                     final Attributes attributes) throws SAXException {
                 if (localName.equals(element)) {
                     this.foundElement = true;
                 }
             }
 
+            @Override
             public void endElement(final String uri, final String localName, final String qName) throws SAXException {
                 if (localName.equals(element)) {
                     this.foundElement = false;
@@ -109,6 +105,7 @@ public final class XmlUtils {
                 }
             }
 
+            @Override
             public void characters(char[] ch, int start, int length) throws SAXException {
                 if (this.foundElement) {
                     this.buffer.append(ch, start, length);
@@ -145,19 +142,22 @@ public final class XmlUtils {
 
             private boolean foundElement = false;
 
+            @Override
             public void startElement(final String uri, final String localName, final String qName,
-                    final Attributes attributes) throws SAXException {
+                                     final Attributes attributes) throws SAXException {
                 if (localName.equals(element)) {
                     this.foundElement = true;
                 }
             }
 
+            @Override
             public void endElement(final String uri, final String localName, final String qName) throws SAXException {
                 if (localName.equals(element)) {
                     this.foundElement = false;
                 }
             }
 
+            @Override
             public void characters(char[] ch, int start, int length) throws SAXException {
                 if (this.foundElement) {
                     builder.append(ch, start, length);

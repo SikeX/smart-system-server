@@ -10,6 +10,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jeecg.common.system.api.ISysBaseAPI;
+import org.jeecg.modules.common.service.CommonService;
+import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
+import org.jeecg.modules.tasks.taskType.entity.SmartVerifyType;
+import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -27,6 +32,7 @@ import org.jeecg.modules.smartSupervision.service.ISmartSupervisionService;
 import org.jeecg.modules.smartSupervision.service.ISmartSupervisionAnnexService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,6 +63,14 @@ public class SmartSupervisionController {
 	private ISmartSupervisionAnnexService smartSupervisionAnnexService;
 	@Autowired
 	private ISysBaseAPI sysBaseAPI;
+	@Autowired
+	private CommonService commonService;
+	@Autowired
+	private SmartVerify smartVerify;
+	@Autowired
+	private ISmartVerifyTypeService smartVerifyTypeService;
+
+	public String verifyType = "监督检查";
 	
 	/**
 	 * 分页列表查询
@@ -75,24 +89,43 @@ public class SmartSupervisionController {
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
 		// TODO：1. 规则，下面是 以＊*开始
-		String rule = "right_like";
+		String rule = "in";
 		// TODO：2. 查询字段
-		String field = "sysOrgCode";
+		String field = "departId";
 		// 获取登录用户信息，可以用来查询单位部门信息
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-//		System.out.println(sysUser.getOrgCode());
 
-		// 添加查询参数，下面的参数是查询以用户所在部门编码开头的的所有单位数据，即用户所在单位和子单位的信息
-		// superQueryParams=[{"rule":"right_like","type":"string","dictCode":"","val":"用户所在的部门","field":"departId"}]
+		// 获取子单位Id
+		String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
+
 		HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
-		String[] params = {"%5B%7B%22rule%22%3A%22" + rule + "%22%2C%22type%22%3A%22input%22%2C%22dictCode%22" +
-				"%3A%22%22%2C%22val%22%3A%22"+ sysUser.getOrgCode() +"%22%2C%22field%22%3A%22"+ field +"%22%7D%5D"};
+//		System.out.println(sysUser.getOrgCode());
+		// 获取请求参数中的superQueryParams
+		List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+
+		// 添加额外查询条件，用于权限控制
+		paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+				+ childrenIdString
+				+ "%22,%22field%22:%22" + field + "%22%7D%5D");
+		String[] params = new String[paramsList.size()];
+		paramsList.toArray(params);
 		map.put("superQueryParams", params);
 		params = new String[]{"and"};
 		map.put("superQueryMatchType", params);
+
+		// TODO：3. 修改自己函数中这一部门，封装查询参数修改为我们的 map
 		QueryWrapper<SmartSupervision> queryWrapper = QueryGenerator.initQueryWrapper(smartSupervision, map);
+
 		Page<SmartSupervision> page = new Page<SmartSupervision>(pageNo, pageSize);
 		IPage<SmartSupervision> pageList = smartSupervisionService.page(page, queryWrapper);
+		// 请同步修改edit函数中，将departId变为null，不然会更新成名称
+		List<String> departIds = pageList.getRecords().stream().map(SmartSupervision::getDepartId).collect(Collectors.toList());
+		if (departIds != null && departIds.size() > 0) {
+			Map<String, String> useDepNames = commonService.getDepNamesByIds(departIds);
+			pageList.getRecords().forEach(item -> {
+				item.setDepartId(useDepNames.get(item.getDepartId()));
+			});
+		}
 		return Result.OK(pageList);
 	}
 	
@@ -104,6 +137,7 @@ public class SmartSupervisionController {
 	 */
 	@AutoLog(value = "八项规定监督检查表-添加")
 	@ApiOperation(value="八项规定监督检查表-添加", notes="八项规定监督检查表-添加")
+	@Transactional
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody SmartSupervisionPage smartSupervisionPage) {
 
@@ -115,11 +149,27 @@ public class SmartSupervisionController {
 		}
 
 		String id = sysBaseAPI.getDepartIdsByOrgCode(orgCode);
-		log.info(id);
+//		log.info(id);
 		smartSupervisionPage.setDepartId(id);
 		SmartSupervision smartSupervision = new SmartSupervision();
 		BeanUtils.copyProperties(smartSupervisionPage, smartSupervision);
-		smartSupervisionService.saveMain(smartSupervision, smartSupervisionPage.getSmartSupervisionAnnexList());
+//		log.info(smartSupervision.getId());
+
+		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
+		if(isVerify){
+			smartSupervisionService.saveMain(smartSupervision, smartSupervisionPage.getSmartSupervisionAnnexList());
+			String recordId = smartSupervision.getId();
+			log.info("recordId is"+recordId);
+			smartVerify.addVerifyRecord(recordId,verifyType);
+			smartSupervision.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+			smartSupervisionService.updateById(smartSupervision);
+		} else {
+			// 设置审核状态为免审
+			smartSupervision.setVerifyStatus("3");
+			// 直接添加，不走审核流程
+			smartSupervisionService.saveMain(smartSupervision, smartSupervisionPage.getSmartSupervisionAnnexList());
+		}
+
 		return Result.OK("添加成功！");
 	}
 	
@@ -139,6 +189,8 @@ public class SmartSupervisionController {
 		if(smartSupervisionEntity==null) {
 			return Result.error("未找到对应数据");
 		}
+		smartSupervision.setDepartId(null);
+		smartSupervision.setCreateTime(null);
 		smartSupervisionService.updateMain(smartSupervision, smartSupervisionPage.getSmartSupervisionAnnexList());
 		return Result.OK("编辑成功!");
 	}
@@ -284,5 +336,16 @@ public class SmartSupervisionController {
       }
       return Result.OK("文件导入失败！");
     }
+
+	 @AutoLog(value = "更新文件下载次数")
+	 @ApiOperation(value="更新文件下载次数", notes="更新文件下载次数")
+	 @PutMapping(value = "/downloadCount")
+	 public Result<?> edit(@RequestBody SmartSupervisionAnnex smartSupervisionAnnex) {
+		 SmartSupervisionAnnex newSmartSupervisionAnnex = smartSupervisionAnnexService.getById(smartSupervisionAnnex.getId());
+		 int currentCount = newSmartSupervisionAnnex.getDownloadCount();
+		 newSmartSupervisionAnnex.setDownloadCount(currentCount+1);
+		 smartSupervisionAnnexService.updateById(newSmartSupervisionAnnex);
+		 return Result.OK("更新成功!");
+	 }
 
 }

@@ -2,6 +2,7 @@ package org.jeecg.modules.system.controller;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -10,9 +11,11 @@ import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.constant.CommonConstant;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.system.entity.SysAnnouncement;
 import org.jeecg.modules.system.entity.SysAnnouncementSend;
 import org.jeecg.modules.system.model.AnnouncementSendModel;
 import org.jeecg.modules.system.service.ISysAnnouncementSendService;
+import org.jeecg.modules.system.service.ISysAnnouncementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,6 +48,8 @@ import lombok.extern.slf4j.Slf4j;
 public class SysAnnouncementSendController {
 	@Autowired
 	private ISysAnnouncementSendService sysAnnouncementSendService;
+	@Autowired
+	private ISysAnnouncementService sysAnnouncementService;
 	
 	/**
 	  * 分页列表查询
@@ -106,7 +111,7 @@ public class SysAnnouncementSendController {
 	 * @return
 	 */
 	@PutMapping(value = "/edit")
-	public Result<SysAnnouncementSend> eidt(@RequestBody SysAnnouncementSend sysAnnouncementSend) {
+	public Result<SysAnnouncementSend> edit(@RequestBody SysAnnouncementSend sysAnnouncementSend) {
 		Result<SysAnnouncementSend> result = new Result<SysAnnouncementSend>();
 		SysAnnouncementSend sysAnnouncementSendEntity = sysAnnouncementSendService.getById(sysAnnouncementSend.getId());
 		if(sysAnnouncementSendEntity==null) {
@@ -189,6 +194,20 @@ public class SysAnnouncementSendController {
 		String anntId = json.getString("anntId");
 		LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
 		String userId = sysUser.getId();
+		QueryWrapper<SysAnnouncementSend> queryWrapper = new QueryWrapper<>();
+		queryWrapper.eq("annt_id",anntId);
+		queryWrapper.eq("user_id",userId);
+
+		String readFlag = sysAnnouncementSendService.getOne(queryWrapper).getReadFlag();
+		if(Objects.equals(readFlag, "0")){
+			Integer readCount = sysAnnouncementService.getById(anntId).getReadCount() + 1;
+			log.info("here is:"+readCount);
+			SysAnnouncement sysAnnouncement = new SysAnnouncement();
+			sysAnnouncement.setId(anntId);
+			sysAnnouncement.setReadCount(readCount);
+			sysAnnouncementService.updateById(sysAnnouncement);
+		}
+
 		LambdaUpdateWrapper<SysAnnouncementSend> updateWrapper = new UpdateWrapper().lambda();
 		updateWrapper.set(SysAnnouncementSend::getReadFlag, CommonConstant.HAS_READ_FLAG);
 		updateWrapper.set(SysAnnouncementSend::getReadTime, new Date());
@@ -219,6 +238,24 @@ public class SysAnnouncementSendController {
 		result.setSuccess(true);
 		return result;
 	}
+
+	 @GetMapping(value = "/getMyTaskSend")
+	 public Result<IPage<AnnouncementSendModel>> getMyTaskSend(AnnouncementSendModel announcementSendModel,
+																	   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+																	   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize) {
+		 Result<IPage<AnnouncementSendModel>> result = new Result<IPage<AnnouncementSendModel>>();
+		 LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
+		 String userId = sysUser.getId();
+		 announcementSendModel.setUserId(userId);
+		 announcementSendModel.setMsgCategory("3");
+		 announcementSendModel.setPageNo((pageNo-1)*pageSize);
+		 announcementSendModel.setPageSize(pageSize);
+		 Page<AnnouncementSendModel> pageList = new Page<AnnouncementSendModel>(pageNo,pageSize);
+		 pageList = sysAnnouncementSendService.getMyAnnouncementSendPage(pageList, announcementSendModel);
+		 result.setResult(pageList);
+		 result.setSuccess(true);
+		 return result;
+	 }
 
 	/**
 	 * @功能：一键已读

@@ -16,7 +16,7 @@ import java.util.Collection;
 /**
  * @Description: 8项规定婚后报备表
  * @Author: jeecg-boot
- * @Date:   2021-11-05
+ * @Date:   2021-11-10
  * @Version: V1.0
  */
 @Service
@@ -26,7 +26,7 @@ public class SmartPostMarriageReportServiceImpl extends ServiceImpl<SmartPostMar
 	private SmartPostMarriageReportMapper smartPostMarriageReportMapper;
 	@Autowired
 	private SmartPostMarriageReportFileMapper smartPostMarriageReportFileMapper;
-	
+
 	@Override
 	@Transactional
 	public void saveMain(SmartPostMarriageReport smartPostMarriageReport, List<SmartPostMarriageReportFile> smartPostMarriageReportFileList) {
@@ -44,10 +44,10 @@ public class SmartPostMarriageReportServiceImpl extends ServiceImpl<SmartPostMar
 	@Transactional
 	public void updateMain(SmartPostMarriageReport smartPostMarriageReport,List<SmartPostMarriageReportFile> smartPostMarriageReportFileList) {
 		smartPostMarriageReportMapper.updateById(smartPostMarriageReport);
-		
+
 		//1.先删除子表数据
 		smartPostMarriageReportFileMapper.deleteByMainId(smartPostMarriageReport.getId());
-		
+
 		//2.子表数据重新插入
 		if(smartPostMarriageReportFileList!=null && smartPostMarriageReportFileList.size()>0) {
 			for(SmartPostMarriageReportFile entity:smartPostMarriageReportFileList) {
@@ -73,5 +73,15 @@ public class SmartPostMarriageReportServiceImpl extends ServiceImpl<SmartPostMar
 			smartPostMarriageReportMapper.deleteById(id);
 		}
 	}
-	
+
+	@Override
+	public String getDepartIdByOrgCode(String orgCode) {
+		return smartPostMarriageReportMapper.getDepartIdByOrgCode(orgCode);
+	}
+
+	@Override
+	public List<String> getChildrenIdByOrgCode(String orgCode) {
+		return smartPostMarriageReportMapper.getChildrenIdByOrgCode(orgCode);
+	}
+
 }

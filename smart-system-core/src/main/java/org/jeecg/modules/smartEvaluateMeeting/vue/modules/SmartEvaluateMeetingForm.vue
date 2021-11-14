@@ -10,8 +10,8 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="地址" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingPlace">
-              <a-input v-model="model.meetingPlace" placeholder="请输入地址" ></a-input>
+            <a-form-model-item label="会议地点" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingPlace">
+              <a-input v-model="model.meetingPlace" placeholder="请输入会议地点" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -24,19 +24,9 @@
               <a-input v-model="model.peopleType" placeholder="请输入对象类型" ></a-input>
             </a-form-model-item>
           </a-col>
-          <a-col :span="24" >
-            <a-form-model-item label="创建人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="createBy">
-              <a-input v-model="model.createBy" placeholder="请输入创建人" ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
-            <a-form-model-item label="单位ID" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="departId">
-              <a-input v-model="model.departId" placeholder="请输入单位ID" ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
-            <a-form-model-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingRemarks">
-              <j-editor v-model="model.meetingRemarks" />
+          <a-col :span="24">
+            <a-form-model-item label="备注" :labelCol="labelCol2" :wrapperCol="wrapperCol2" prop="meetingRemarks">
+              <a-textarea v-model="model.meetingRemarks" rows="4" placeholder="请输入备注" />
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -111,16 +101,13 @@
               { required: true, message: '请输入会议名称!'},
            ],
            meetingPlace: [
-              { required: true, message: '请输入地址!'},
+              { required: true, message: '请输入会议地点!'},
            ],
            checkTime: [
               { required: true, message: '请输入检查时间!'},
            ],
            peopleType: [
               { required: true, message: '请输入对象类型!'},
-           ],
-           departId: [
-              { required: true, message: '请输入单位ID!'},
            ],
         },
         refKeys: ['smartEvaluateMeetingPacpa', 'smartEvaluateMeetingAnnex', ],
@@ -138,7 +125,6 @@
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
             },
           ]
         },
@@ -163,6 +149,7 @@
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
+              validateRules: [{ required: true, message: '${title}不能为空' }],
             },
             {
               title: '附件文件路径',
@@ -172,6 +159,24 @@
               placeholder: '请输入${title}',
               defaultValue:'',
               validateRules: [{ required: true, message: '${title}不能为空' }],
+            },
+            {
+              title: '上传时间',
+              key: 'uploadTime',
+              type: FormTypes.date,
+              disabled:true,
+              width:"200px",
+              placeholder: '请输入${title}',
+              defaultValue:'',
+            },
+            {
+              title: '下载次数',
+              key: 'downloadTimes',
+              type: FormTypes.inputNumber,
+              disabled:true,
+              width:"200px",
+              placeholder: '请输入${title}',
+              defaultValue:'',
             },
           ]
         },

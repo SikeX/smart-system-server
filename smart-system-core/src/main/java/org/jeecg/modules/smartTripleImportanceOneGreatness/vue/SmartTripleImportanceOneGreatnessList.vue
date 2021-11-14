@@ -4,6 +4,21 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="单位">
+              <j-multi-select-tag placeholder="请选择单位" dictCode="" v-model="queryParam.documentid"/>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <a @click="handleToggleSearch" style="margin-left: 8px">
+                {{ toggleSearchStatus ? '收起' : '展开' }}
+                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
+              </a>
+            </span>
+          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -122,9 +137,9 @@
             }
           },
           {
-            title:'单位ID',
+            title:'单位',
             align:"center",
-            dataIndex: 'documentid'
+            dataIndex: 'documentid_dictText'
           },
           {
             title:'名称',
@@ -220,7 +235,7 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'documentid',text:'单位ID',dictCode:''})
+         fieldList.push({type:'list_multi',value:'documentid',text:'单位',dictTable:'', dictText:'', dictCode:''})
          fieldList.push({type:'string',value:'meetingName',text:'名称',dictCode:''})
          fieldList.push({type:'string',value:'meetingPlace',text:'地点',dictCode:''})
          fieldList.push({type:'datetime',value:'meetingStarttime',text:'时间'})

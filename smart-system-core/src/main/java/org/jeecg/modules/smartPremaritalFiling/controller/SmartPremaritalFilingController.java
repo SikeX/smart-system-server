@@ -54,6 +54,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 @RequestMapping("/smartPremaritalFiling/smartPremaritalFiling")
 @Slf4j
 public class SmartPremaritalFilingController {
+
     @Autowired
     private ISmartPremaritalFilingService smartPremaritalFilingService;
     @Autowired
@@ -255,6 +256,7 @@ public class SmartPremaritalFilingController {
         List<SmartPremaritalFilingApp> smartPremaritalFilingAppList = smartPremaritalFilingAppService.selectByMainId(id);
         return Result.OK(smartPremaritalFilingAppList);
     }
+
 
     /**
      * 导出excel
