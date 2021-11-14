@@ -57,7 +57,7 @@ public class TestJob {
     //cron测试
     @Scheduled(cron = "0 51 13 * * ?")
     public void cronTest() throws InterruptedException {
-        System.out.println("测试成功，每天11点45执行");
+        System.out.println("测试成功，每天13点45执行");
     }
 
     /**
