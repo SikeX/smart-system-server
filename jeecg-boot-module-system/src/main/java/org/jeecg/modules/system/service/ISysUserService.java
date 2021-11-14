@@ -252,4 +252,18 @@ public interface ISysUserService extends IService<SysUser> {
 	/** userId转为username */
 	List<String> userIdToUsername(Collection<String> userIdList);
 
+	/**
+	 * 根据id查询系统用户
+	 * @param id
+	 * @return
+	 */
+	SysUser queryById(String id);
+
+	/**
+	 * 保存用户
+	 * @param user 用户
+	 * @param selectedRoles 选择的角色id，多个以逗号隔开
+	 */
+	void saveUserFromClient(SysUser user, String selectedRoles, int appUserId);
+
 }
