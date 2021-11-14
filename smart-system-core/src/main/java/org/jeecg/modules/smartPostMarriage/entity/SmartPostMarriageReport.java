@@ -32,9 +32,9 @@ public class SmartPostMarriageReport implements Serializable {
     @ApiModelProperty(value = "主键")
     private java.lang.String id;
     /**人员工号*/
-    @Excel(name = "人员工号", width = 15)
-    @ApiModelProperty(value = "人员工号")
-    private java.lang.String workNo;
+    @Excel(name = "人员id", width = 15 ,dictTable="sys_user",dicText="realname",dicCode="id")
+    @ApiModelProperty(value = "人员id")
+    private java.lang.String personId;
     /**姓名*/
     @Excel(name = "姓名", width = 15)
     @ApiModelProperty(value = "姓名")
