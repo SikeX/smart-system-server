@@ -165,14 +165,14 @@ public class SmartPremaritalFilingController {
         //审核状态
         Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
         if (isVerify) {
-            smartPremaritalFilingService.saveMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAnnexList());
+            smartPremaritalFilingService.saveMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
             String recordId = smartPremaritalFiling.getId();
             smartVerify.addVerifyRecord(recordId, verifyType);
             smartPremaritalFiling.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
             smartPremaritalFilingService.updateById(smartPremaritalFiling);
         } else { // 设置审核状态为免审
             smartPremaritalFiling.setVerifyStatus("3"); // 直接添加，不走审核流程
-            smartPremaritalFilingService.saveMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAnnexList());
+            smartPremaritalFilingService.saveMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
         }
         return Result.OK("添加成功！");
     }
