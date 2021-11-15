@@ -1,18 +1,12 @@
 package org.jeecg.modules.tasks.smartVerifyTask.vo;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.models.auth.In;
 import lombok.Data;
-import org.jeecg.modules.testAttached.entity.TestAttachedFile;
+import org.jeecg.common.aspect.annotation.Dict;
 import org.jeecgframework.poi.excel.annotation.Excel;
-import org.jeecgframework.poi.excel.annotation.ExcelCollection;
 import org.springframework.format.annotation.DateTimeFormat;
-
-import java.util.List;
 
 /**
  * @Author: sike
@@ -67,6 +61,7 @@ public class VerifyTaskListPage {
     @ApiModelProperty(value = "审核人审核状态")
     private Integer auditStatus;
 
+    @Dict(dictTable = "sys_depart", dicText = "depart_name", dicCode = "org_code")
     @Excel(name = "所属部门", width = 15)
     @ApiModelProperty(value = "所属部门")
     private java.lang.String sysOrgCode;

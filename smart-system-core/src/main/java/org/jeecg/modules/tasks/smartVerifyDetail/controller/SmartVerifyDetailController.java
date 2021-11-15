@@ -1,6 +1,7 @@
 package org.jeecg.modules.tasks.smartVerifyDetail.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jeecg.common.api.vo.Result;
@@ -129,6 +130,21 @@ public class SmartVerifyDetailController extends JeecgController<SmartVerifyDeta
 		}
 		return Result.OK(smartVerifyDetail);
 	}
+
+	 @AutoLog(value = "审核详情表-通过flowNo和审核人通过查询")
+	 @ApiOperation(value="审核详情表-通过flowNo和审核人通过查询", notes="审核详情表-通过flowNo和审核人通过查询")
+	 @GetMapping(value = "/queryByflowNo")
+	 public Result<?> queryByflowNo(@RequestParam(name="flowNo",required=true) String flowNo) {
+		QueryWrapper<SmartVerifyDetail> queryWrapper = new QueryWrapper<>();
+		queryWrapper.eq("flow_no",flowNo);
+		queryWrapper.eq("audit_status",3);
+
+		 List<SmartVerifyDetail> smartVerifyDetailList = smartVerifyDetailService.list(queryWrapper);
+//		 if(smartVerifyDetail==null) {
+//			 return Result.error("未找到对应数据");
+//		 }
+		 return Result.OK(smartVerifyDetailList);
+	 }
 
     /**
     * 导出excel

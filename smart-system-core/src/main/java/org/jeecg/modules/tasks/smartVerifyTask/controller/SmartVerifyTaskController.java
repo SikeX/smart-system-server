@@ -11,6 +11,7 @@ import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.dto.message.MessageDTO;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.api.ISysBaseAPI;
+import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.modules.tasks.smartVerifyDetail.entity.SmartVerifyDetail;
 import org.jeecg.modules.tasks.smartVerifyDetail.service.ISmartVerifyDetailService;
@@ -76,6 +77,7 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 								   HttpServletRequest req) {
 
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
 //		log.info(sysUser.getDepartIds());
 		String userDepartId = sysBaseAPI.getDepartIdsByOrgCode(sysUser.getOrgCode());
 
@@ -97,6 +99,29 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 
 		return Result.OK(pageList);
 	}
+
+	 @AutoLog(value = "审核任务表-分页列表查询")
+	 @ApiOperation(value="审核任务表-分页列表查询", notes="审核任务表-分页列表查询")
+	 @GetMapping(value = "/myTaskList")
+	 public Result<?> queryMyTaskPageList(SmartVerifyTask smartVerifyTask,
+									@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+									@RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+									HttpServletRequest req) {
+
+		 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		 String userName = sysUser.getRealname();
+//		log.info(sysUser.getDepartIds());
+//		 String userDepartId = sysBaseAPI.getDepartIdsByOrgCode(sysUser.getOrgCode());
+		 QueryWrapper<SmartVerifyTask> queryWrapper = QueryGenerator.initQueryWrapper(smartVerifyTask, req.getParameterMap());
+		 queryWrapper.eq("fill_person",userName);
+		 queryWrapper.orderByDesc("create_time");
+
+		 Page<SmartVerifyTask> page = new Page<>(pageNo, pageSize);
+		 IPage<SmartVerifyTask> pageList = smartVerifyTaskService.page(page,queryWrapper);
+
+		 // log.info(sysBaseAPI.getDepartIdsByOrgCode(sysUser.getOrgCode()));
+		 return Result.OK(pageList);
+	 }
 	
 	/**
 	 *   添加
@@ -202,6 +227,7 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 	 // 获取用户id及部门
 	 LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
 	 String userName = sysUser.getUsername();
+	 smartVerifyDetail.setAuditPerson(sysUser.getRealname());
 	 String orgCode = sysUser.getOrgCode();
 	 String userDepartId = sysBaseAPI.getDepartIdsByOrgCode(orgCode);
 	 log.info(userDepartId);
@@ -214,6 +240,9 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 	 // 在审核主表中找到记录
 	 QueryWrapper<SmartVerifyTask> queryWrapper2 = new QueryWrapper<>();
 	 queryWrapper2.eq("flow_no",smartVerifyDetail.getFlowNo());
+	 // 查找出记录的用户名和任务类型
+	 String fillPersonUserName = smartVerifyTaskService.getOne(queryWrapper2).getCreateBy();
+	 String taskType = smartVerifyTaskService.getOne(queryWrapper2).getTaskType();
 	 // 如果审核人给了通过
 	 if(smartVerifyDetail.getAuditStatus() == 3){
 		 // 根据flowNo查询
@@ -226,15 +255,13 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 			 smartVerifyTask.setFlowStatus(1);
 			 smartVerifyTaskService.update(smartVerifyTask,queryWrapper2);
 			 // 给填报人发送消息
-
-			 String fillPersonName = smartVerifyTaskService.getOne(queryWrapper2).getFillPerson();
-			 log.info(fillPersonName);
+//			 log.info(fillPersonUserName);
 			 MessageDTO messageDTO = new MessageDTO();
 			 messageDTO.setFromUser(userName);
-			 messageDTO.setToUser(fillPersonName);
+			 messageDTO.setToUser(fillPersonUserName);
 			 messageDTO.setTitle("审核已通过");
-			 messageDTO.setContent("您的审核已通过");
-			 messageDTO.setCategory("2");
+			 messageDTO.setContent("您的"+taskType+"审核已通过");
+			 messageDTO.setCategory("1");
 			 sysBaseAPI.sendSysAnnouncement(messageDTO);
 			 return Result.OK("更新成功");
 		 }
@@ -251,13 +278,12 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 		 smartVerifyTask1.setFlowStatus(0);
 		 smartVerifyTaskService.update(smartVerifyTask1,queryWrapper2);
 		 // 给填报人发送消息
-		 String fillPersonName = smartVerifyTaskService.getOne(queryWrapper2).getFillPerson();
 		 MessageDTO messageDTO = new MessageDTO();
 		 messageDTO.setFromUser(userName);
-		 messageDTO.setToUser(fillPersonName);
+		 messageDTO.setToUser(fillPersonUserName);
 		 messageDTO.setTitle("审核未通过");
-		 messageDTO.setContent("您的审核未通过");
-		 messageDTO.setCategory("2");
+		 messageDTO.setContent("您的"+taskType+"审核未通过");
+		 messageDTO.setCategory("1");
 		 sysBaseAPI.sendSysAnnouncement(messageDTO);
 		 return Result.OK("更新成功");
 	 }
