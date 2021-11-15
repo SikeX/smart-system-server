@@ -57,7 +57,7 @@ public class TestJob {
     //cron测试
     @Scheduled(cron = "0 51 13 * * ?")
     public void cronTest() throws InterruptedException {
-        System.out.println("测试成功，每天13点45执行");
+        System.out.println("测试成功，每天13点51执行");
     }
 
     /**
@@ -66,7 +66,7 @@ public class TestJob {
      */
 //    @Scheduled(cron = "0 0 8 * * ?")
     @Scheduled(cron = "0 0 20 * * ?")
-    public void anniversaryRe(){
+    public void punishRe(){
 
         List<SmartTaskManage> smartTaskManage = sysMessageTemplateService.getTaskDetail();
         String status = smartTaskManage.get(1).getStatus();
@@ -106,7 +106,7 @@ public class TestJob {
      */
 //    @Scheduled(cron = "0 0 8 * * ?")
     @Scheduled(cron = "0 0 8 * * ?")
-    public void punishRe(){
+    public void anniversaryRe(){
 
         List<SmartTaskManage> smartTaskManage = sysMessageTemplateService.getTaskDetail();
         String status = smartTaskManage.get(0).getStatus();

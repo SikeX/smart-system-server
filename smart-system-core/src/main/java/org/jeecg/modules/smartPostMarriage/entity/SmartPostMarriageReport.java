@@ -135,4 +135,7 @@ public class SmartPostMarriageReport implements Serializable {
     @Excel(name = "删除状态", width = 15,dicCode="del_flag")
     @TableLogic
     private Integer delFlag;
+
+    @ApiModelProperty(value = "审核状态")
+    private java.lang.String verifyStatus;
 }
