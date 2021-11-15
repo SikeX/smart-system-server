@@ -74,8 +74,11 @@ public class SmartSupervision implements Serializable {
     @ApiModelProperty(value = "所属部门")
     private java.lang.String sysOrgCode;
 	/**删除标志位*/
-	@Excel(name = "删除标志位", width = 15)
     @TableLogic
     @ApiModelProperty(value = "删除标志位")
     private java.lang.Integer delFlag;
+
+    @ApiModelProperty(value = "审核状态")
+    private java.lang.String verifyStatus;
+
 }

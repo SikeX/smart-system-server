@@ -79,4 +79,8 @@ public class AnnouncementSendModel implements Serializable {
 
 	private String fileList;
 
+	private Integer sendCount;
+
+	private Integer readCount;
+
 }
