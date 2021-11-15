@@ -159,8 +159,8 @@ public class SmartPremaritalFilingController {
         smartPremaritalFilingPage.setDepartId(id);
         SmartPremaritalFiling smartPremaritalFiling = new SmartPremaritalFiling();
         BeanUtils.copyProperties(smartPremaritalFilingPage, smartPremaritalFiling);
-        smartPremaritalFilingService.saveMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
-        smartVerify.addVerifyRecord(smartPremaritalFiling.getId(), verifyType);
+//        smartPremaritalFilingService.saveMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
+//        smartVerify.addVerifyRecord(smartPremaritalFiling.getId(), verifyType);
 
         //审核状态
         Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
