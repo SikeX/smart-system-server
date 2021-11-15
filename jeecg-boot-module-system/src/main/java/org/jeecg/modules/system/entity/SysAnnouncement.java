@@ -151,4 +151,8 @@ public class SysAnnouncement implements Serializable {
     private String departIds;
 
     private String fileList;
+
+    private Integer sendCount;
+
+    private Integer readCount;
 }

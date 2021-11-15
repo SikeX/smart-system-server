@@ -80,4 +80,8 @@ public class SmartVerifyType implements Serializable {
 	@Excel(name = "填表说明", width = 15)
     @ApiModelProperty(value = "填表说明")
     private java.lang.String typeDesc;
+
+    @Excel(name = "是否审核", width = 15)
+    @ApiModelProperty(value = "是否审核")
+    private java.lang.String isVerify;
 }

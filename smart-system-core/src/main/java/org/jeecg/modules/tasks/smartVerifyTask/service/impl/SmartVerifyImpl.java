@@ -13,6 +13,7 @@ import org.jeecg.modules.tasks.smartVerifyDetail.service.ISmartVerifyDetailServi
 import org.jeecg.modules.tasks.smartVerifyTask.entity.SmartVerifyTask;
 import org.jeecg.modules.tasks.smartVerifyTask.mapper.SmartVerifyTaskMapper;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
+import org.jeecg.modules.tasks.taskType.entity.SmartVerifyType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,14 @@ public class SmartVerifyImpl implements SmartVerify {
     private ISysBaseAPI sysBaseAPI;
 
     @Autowired ISmartVerifyDetailService smartVerifyDetailService;
+
+    @Override
+    public Integer getFlowStatusById(String id){
+        QueryWrapper<SmartVerifyTask> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("flow_no",id);
+        return smartVerifyTaskMapper.selectOne(queryWrapper).getFlowStatus();
+
+    }
 
     @Override
     public void addVerifyRecord(String id, String verifyType ) {
