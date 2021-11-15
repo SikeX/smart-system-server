@@ -22,11 +22,11 @@ public interface AppUserMapper {
     AppUser queryByAndroidId(String androidId);
 
     @Update("UPDATE tb_app_user SET last_login_ip = #{lastLoginIp}, mac = #{mac}, app_version = #{appVersion}, " +
-            "brand = #{brand}, phone_model = #{phoneModel}, last_login_time = #{lastLoginTime}, mtime = #{mtime} " +
-            "where id = #{id}")
+            "brand = #{brand}, phone_model = #{phoneModel}, last_login_time = #{lastLoginTime}, mtime = #{mtime}, " +
+            "sys_user_id = #{sysUserId} where id = #{id}")
     int updateById(AppUser appUser);
 
     @Update("UPDATE tb_app_user SET sys_user_id = #{sysUserId}, mtime = #{mtime} " +
             "where id = #{id}")
-    int updateSysUserIdById(int id, String sysUserId);
+    int updateSysUserIdById(int id, String sysUserId, int mtime);
 }
