@@ -48,6 +48,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import javax.print.MimeType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -191,6 +192,17 @@ public class SysUserController {
 			user.setDepartId(id);
 			//设置sys_code
 			user.setCreateTime(new Date());//设置创建时间
+            String phone = user.getPhone();
+            String username = user.getUsername();
+            //设置初始账号：手机号
+            if(username == null){
+                user.setPassword(phone);
+            }
+            //设置初始密码
+            String password = user.getPassword();
+            if(password == null){
+                user.setPassword("123456");
+            }
 			String salt = oConvertUtils.randomGen(8);
 			user.setSalt(salt);
 			String passwordEncode = PasswordUtil.encrypt(user.getUsername(), user.getPassword(), salt);
@@ -519,6 +531,12 @@ public class SysUserController {
                 List<SysUser> listSysUsers = ExcelImportUtil.importExcel(file.getInputStream(), SysUser.class, params);
                 for (int i = 0; i < listSysUsers.size(); i++) {
                     SysUser sysUserExcel = listSysUsers.get(i);
+                    //设置初始账号
+                    if (StringUtils.isBlank(sysUserExcel.getUsername())) {
+                        //账号默认为手机号
+                        sysUserExcel.setPassword(sysUserExcel.getPhone());
+                    }
+                    //设置默认密码
                     if (StringUtils.isBlank(sysUserExcel.getPassword())) {
                         // 密码默认为 “123456”
                         sysUserExcel.setPassword("123456");

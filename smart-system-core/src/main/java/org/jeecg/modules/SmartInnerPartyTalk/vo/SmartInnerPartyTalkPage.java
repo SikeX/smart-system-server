@@ -48,7 +48,6 @@ public class SmartInnerPartyTalkPage {
 	@ApiModelProperty(value = "所属部门")
     private java.lang.String sysOrgCode;
 	/**单位ID*/
-	@Excel(name = "单位ID", width = 15)
 	@ApiModelProperty(value = "单位ID")
     private java.lang.String departId;
 	/**会议时间*/
@@ -65,8 +64,7 @@ public class SmartInnerPartyTalkPage {
 	@Excel(name = "会议名称", width = 15)
 	@ApiModelProperty(value = "会议名称")
     private java.lang.String meetName;
-	/**主持人工号*/
-	@Excel(name = "主持人ID", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "id")
+	/**主持人ID*/
 	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "id")
 	@ApiModelProperty(value = "主持人ID")
 	private java.lang.String hostId;
@@ -75,7 +73,6 @@ public class SmartInnerPartyTalkPage {
 	@ApiModelProperty(value = "主持人姓名")
 	private java.lang.String hostName;
 	/**受约谈函询人ID*/
-	@Excel(name = "受约谈函询人ID", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "id")
 	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "id")
 	@ApiModelProperty(value = "受约谈函询人ID")
 	private java.lang.String talkedId;
@@ -84,7 +81,6 @@ public class SmartInnerPartyTalkPage {
 	@ApiModelProperty(value = "受约谈函询人姓名")
 	private java.lang.String talkedName;
 	/**受诫勉谈话人ID*/
-	@Excel(name = "受诫勉谈话人ID", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "id")
 	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "id")
 	@ApiModelProperty(value = "受诫勉谈话人ID")
 	private java.lang.String inquirerId;
@@ -92,8 +88,7 @@ public class SmartInnerPartyTalkPage {
 	@Excel(name = "受诫勉谈话人ID", width = 15)
 	@ApiModelProperty(value = "受诫勉谈话人姓名")
 	private java.lang.String inquirerName;
-	/**受党纪处分人工号*/
-	@Excel(name = "受党纪处分人工号", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "id")
+	/**受党纪处分人ID*/
 	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "id")
 	@ApiModelProperty(value = "受党纪处分人工号")
 	private java.lang.String punisherId;
@@ -106,7 +101,6 @@ public class SmartInnerPartyTalkPage {
 	@ApiModelProperty(value = "会议摘要")
     private java.lang.String abs;
 	/**记录人ID*/
-	@Excel(name = "记录人ID", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "id")
 	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "id")
 	@ApiModelProperty(value = "记录人ID")
 	private java.lang.String recorderId;

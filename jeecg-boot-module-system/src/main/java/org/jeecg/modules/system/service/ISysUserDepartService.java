@@ -50,4 +50,6 @@ public interface ISysUserDepartService extends IService<SysUserDepart> {
 	 */
 	IPage<SysUser> queryDepartUserPageList(String departId, String username, String realname, int pageSize, int pageNo);
 
+	IPage<SysUser> newqueryDepartUserPageList(String departId, String username, String realname, int pageSize, int pageNo);
+
 }

@@ -74,7 +74,7 @@ public class SysUser implements Serializable {
     /**
      * 生日
      */
-    @Excel(name = "生日", width = 15, format = "yyyy-MM-dd")
+    @Excel(name = "出生日期", width = 15, format = "yyyy-MM-dd")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birthday;
@@ -95,16 +95,18 @@ public class SysUser implements Serializable {
     /**
      * 电话
      */
-    @Excel(name = "电话", width = 15)
+    @Excel(name = "手机号码", width = 15)
     private String phone;
 
     /**
      * 部门code(当前选择登录部门)
      */
     private String orgCode;
-    @Excel(name = "单位", width = 15)
+    //当前登录人单位ID
+    /*@Excel(name = "单位", width = 15)*/
     private String departId;
     /**部门名称--将不需要序列化的属性前添加关键字transient，序列化对象的时候，这个属性就不会被序列化*/
+    @Excel(name = "单位", width = 15)
     private transient String orgCodeTxt;
 
 
