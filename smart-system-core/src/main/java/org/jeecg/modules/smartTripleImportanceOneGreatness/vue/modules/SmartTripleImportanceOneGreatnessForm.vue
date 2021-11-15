@@ -69,9 +69,21 @@
     </j-form-container>
       <!-- 子表单区域 -->
     <a-tabs v-model="activeKey" @change="handleChangeTabs">
-      <a-tab-pane tab="三重一大附件表" :key="refKeys[0]" :forceRender="true">
+      <a-tab-pane tab="三重一大参会人员表" :key="refKeys[0]" :forceRender="true">
         <j-editable-table
           :ref="refKeys[0]"
+          :loading="smartTripleImportanceOneGreatnessPaccaTable.loading"
+          :columns="smartTripleImportanceOneGreatnessPaccaTable.columns"
+          :dataSource="smartTripleImportanceOneGreatnessPaccaTable.dataSource"
+          :maxHeight="300"
+          :disabled="formDisabled"
+          :rowNumber="true"
+          :rowSelection="true"
+          :actionButton="true"/>
+      </a-tab-pane>
+      <a-tab-pane tab="三重一大附件表" :key="refKeys[1]" :forceRender="true">
+        <j-editable-table
+          :ref="refKeys[1]"
           :loading="smartTripleImportanceOneGreatnessDescriptionTable.loading"
           :columns="smartTripleImportanceOneGreatnessDescriptionTable.columns"
           :dataSource="smartTripleImportanceOneGreatnessDescriptionTable.dataSource"
@@ -133,9 +145,24 @@
               { required: true, message: '请输入创建时间!'},
            ],
         },
-        refKeys: ['smartTripleImportanceOneGreatnessDescription', ],
-        tableKeys:['smartTripleImportanceOneGreatnessDescription', ],
-        activeKey: 'smartTripleImportanceOneGreatnessDescription',
+        refKeys: ['smartTripleImportanceOneGreatnessPacca', 'smartTripleImportanceOneGreatnessDescription', ],
+        tableKeys:['smartTripleImportanceOneGreatnessPacca', 'smartTripleImportanceOneGreatnessDescription', ],
+        activeKey: 'smartTripleImportanceOneGreatnessPacca',
+        // 三重一大参会人员表
+        smartTripleImportanceOneGreatnessPaccaTable: {
+          loading: false,
+          dataSource: [],
+          columns: [
+            {
+              title: '参会人员',
+              key: 'pacpaId',
+              type: FormTypes.input,
+              width:"200px",
+              placeholder: '请输入${title}',
+              defaultValue:'',
+            },
+          ]
+        },
         // 三重一大附件表
         smartTripleImportanceOneGreatnessDescriptionTable: {
           loading: false,
@@ -183,6 +210,9 @@
           add: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/add",
           edit: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/edit",
           queryById: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/queryById",
+          smartTripleImportanceOneGreatnessPacca: {
+            list: '/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/querySmartTripleImportanceOneGreatnessPaccaByMainId'
+          },
           smartTripleImportanceOneGreatnessDescription: {
             list: '/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/querySmartTripleImportanceOneGreatnessDescriptionByMainId'
           },
@@ -206,6 +236,7 @@
     },
     methods: {
       addBefore(){
+        this.smartTripleImportanceOneGreatnessPaccaTable.dataSource=[]
         this.smartTripleImportanceOneGreatnessDescriptionTable.dataSource=[]
       },
       getAllTable() {
@@ -219,6 +250,7 @@
         // 加载子表数据
         if (this.model.id) {
           let params = { id: this.model.id }
+          this.requestSubTableData(this.url.smartTripleImportanceOneGreatnessPacca.list, params, this.smartTripleImportanceOneGreatnessPaccaTable)
           this.requestSubTableData(this.url.smartTripleImportanceOneGreatnessDescription.list, params, this.smartTripleImportanceOneGreatnessDescriptionTable)
         }
       },
@@ -243,7 +275,8 @@
         let main = Object.assign(this.model, allValues.formValue)
         return {
           ...main, // 展开
-          smartTripleImportanceOneGreatnessDescriptionList: allValues.tablesValue[0].values,
+          smartTripleImportanceOneGreatnessPaccaList: allValues.tablesValue[0].values,
+          smartTripleImportanceOneGreatnessDescriptionList: allValues.tablesValue[1].values,
         }
       },
       validateError(msg){
