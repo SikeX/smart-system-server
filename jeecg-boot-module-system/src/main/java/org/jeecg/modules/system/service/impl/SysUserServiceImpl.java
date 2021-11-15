@@ -560,7 +560,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 			}
 		}
 		//step.3 更新tb_app_user表的对应字段
-		appUserMapper.updateSysUserIdById(appUserId, user.getId());
+		appUserMapper.updateSysUserIdById(appUserId, user.getId(), (int) System.currentTimeMillis());
 	}
 
 }
