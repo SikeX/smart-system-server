@@ -137,6 +137,19 @@ public class SmartEvaluateMeetingController {
 	public Result<?> add(@RequestBody SmartEvaluateMeetingPage smartEvaluateMeetingPage) {
 		SmartEvaluateMeeting smartEvaluateMeeting = new SmartEvaluateMeeting();
 		BeanUtils.copyProperties(smartEvaluateMeetingPage, smartEvaluateMeeting);
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		String orgCode = sysUser.getOrgCode();
+		if ("".equals(orgCode)) {
+			return Result.error("本用户没有操作权限！");
+		}
+		String id = commonService.getDepartIdByOrgCode(orgCode);
+		if (id == null) {
+			return Result.error("没有找到部门！");
+		}
+		smartEvaluateMeeting.setDepartId(id);
+//		smartEvaluateMeetingService.saveMain(smartEvaluateMeeting, smartEvaluateMeetingPage.getSmartEvaluateMeetingPacpaList(),smartEvaluateMeetingPage.getSmartEvaluateMeetingAnnexList());
+//		smartVerify.addVerifyRecord(smartEvaluateMeeting.getId(),verifyType);
+
 		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
 		if(isVerify){
 			smartEvaluateMeetingService.saveMain(smartEvaluateMeeting, smartEvaluateMeetingPage.getSmartEvaluateMeetingPacpaList(),smartEvaluateMeetingPage.getSmartEvaluateMeetingAnnexList());
