@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
+import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -65,6 +66,8 @@ public class SmartEvaluateMeetingController {
 	CommonService commonService;
 	@Autowired
 	private SmartVerify smartVerify;
+	 @Autowired
+	 private ISmartVerifyTypeService smartVerifyTypeService;
 
 	public String verifyType = "述责述廉";
 
@@ -134,18 +137,20 @@ public class SmartEvaluateMeetingController {
 	public Result<?> add(@RequestBody SmartEvaluateMeetingPage smartEvaluateMeetingPage) {
 		SmartEvaluateMeeting smartEvaluateMeeting = new SmartEvaluateMeeting();
 		BeanUtils.copyProperties(smartEvaluateMeetingPage, smartEvaluateMeeting);
-		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-		String orgCode = sysUser.getOrgCode();
-		if ("".equals(orgCode)) {
-			return Result.error("本用户没有操作权限！");
+		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
+		if(isVerify){
+			smartEvaluateMeetingService.saveMain(smartEvaluateMeeting, smartEvaluateMeetingPage.getSmartEvaluateMeetingPacpaList(),smartEvaluateMeetingPage.getSmartEvaluateMeetingAnnexList());
+			String recordId = smartEvaluateMeeting.getId();
+			log.info("recordId is"+recordId);
+			smartVerify.addVerifyRecord(recordId,verifyType);
+			smartEvaluateMeeting.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+			smartEvaluateMeetingService.updateById(smartEvaluateMeeting);
+		} else {
+			// 设置审核状态为免审
+			smartEvaluateMeeting.setVerifyStatus("3");
+			// 直接添加，不走审核流程
+			smartEvaluateMeetingService.saveMain(smartEvaluateMeeting, smartEvaluateMeetingPage.getSmartEvaluateMeetingPacpaList(),smartEvaluateMeetingPage.getSmartEvaluateMeetingAnnexList());
 		}
-		String id = commonService.getDepartIdByOrgCode(orgCode);
-		if (id == null) {
-			return Result.error("没有找到部门！");
-		}
-		smartEvaluateMeeting.setDepartId(id);
-		smartEvaluateMeetingService.saveMain(smartEvaluateMeeting, smartEvaluateMeetingPage.getSmartEvaluateMeetingPacpaList(),smartEvaluateMeetingPage.getSmartEvaluateMeetingAnnexList());
-		smartVerify.addVerifyRecord(smartEvaluateMeeting.getId(),verifyType);
 		return Result.OK("添加成功！");
 	}
 	
