@@ -49,6 +49,21 @@ public class AppUser {
         this.mtime = mtime;
     }
 
+    public AppUser(int id, String androidId, String lastLoginIp, String mac, String appVersion, String brand, String phoneModel, int lastLoginTime, int status, int ctime, int mtime, String sysUserId) {
+        this.id = id;
+        this.androidId = androidId;
+        this.lastLoginIp = lastLoginIp;
+        this.mac = mac;
+        this.appVersion = appVersion;
+        this.brand = brand;
+        this.phoneModel = phoneModel;
+        this.lastLoginTime = lastLoginTime;
+        this.status = status;
+        this.ctime = ctime;
+        this.mtime = mtime;
+        this.sysUserId = sysUserId;
+    }
+
     public AppUser(String androidId, String lastLoginIp, String mac, String appVersion, String brand, String phoneModel, int lastLoginTime, int status, int ctime, int mtime) {
         this.androidId = androidId;
         this.lastLoginIp = lastLoginIp;

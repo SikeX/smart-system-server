@@ -3,6 +3,8 @@ package org.jeecg.modules.smartPremaritalFiling.service;
 import org.jeecg.modules.smartPremaritalFiling.entity.SmartPremaritalFilingApp;
 import org.jeecg.modules.smartPremaritalFiling.entity.SmartPremaritalFiling;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;

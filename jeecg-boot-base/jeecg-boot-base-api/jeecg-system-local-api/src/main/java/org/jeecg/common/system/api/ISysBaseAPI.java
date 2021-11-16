@@ -330,8 +330,10 @@ public interface ISysBaseAPI extends CommonAPI {
     // 根据userid查询业务结构父id
     String getBusDepartIdByUserId(String id);
 
+    // 根据用户id查询用户单位类型
     String getDepTypeByUserId(String userId);
 
+    // 根据部门id返回业务部门父id
     String getBusParentDepIdByDepartId(String departId);
 
     String getParentIdByUserId(String id);

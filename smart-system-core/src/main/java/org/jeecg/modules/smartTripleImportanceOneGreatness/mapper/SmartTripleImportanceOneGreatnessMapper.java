@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 /**
  * @Description: 三重一大表
  * @Author: jeecg-boot
- * @Date:   2021-11-12
+ * @Date:   2021-11-13
  * @Version: V1.0
  */
 public interface SmartTripleImportanceOneGreatnessMapper extends BaseMapper<SmartTripleImportanceOneGreatness> {
