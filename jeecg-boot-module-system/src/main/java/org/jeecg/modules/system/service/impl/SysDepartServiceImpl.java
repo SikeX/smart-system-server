@@ -470,6 +470,7 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 			}
 			query.eq(SysDepart::getDelFlag, CommonConstant.DEL_FLAG_0.toString());
 		}
+		query.eq(SysDepart::getDelFlag, CommonConstant.DEL_FLAG_0.toString());
 		query.like(SysDepart::getDepartName, keyWord);
 		//update-begin--Author:huangzhilin  Date:20140417 for：[bugfree号]组织机构搜索回显优化--------------------
 		SysDepartTreeModel model = new SysDepartTreeModel();
@@ -497,7 +498,7 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 		this.checkNaturalChildrenExists(id, idList);
 		//清空部门树内存
 		//FindsDepartsChildrenUtil.clearDepartIdModel();
-		boolean ok = this.removeByIds(idList);
+		boolean ok = this.resetByIds(idList);
 		//根据部门id获取部门角色id
 		List<String> roleIdList = new ArrayList<>();
 		LambdaQueryWrapper<SysDepartRole> query = new LambdaQueryWrapper<>();
@@ -520,7 +521,20 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 		}
 		return ok;
 	}
-	
+
+    /**
+     * delete 方法调用
+     * @param idList
+     */
+    private boolean resetByIds(List<String> idList) {
+        for(String deptId : idList){
+            SysDepart sysDepart = this.queryDeptByDepartId(deptId);
+            sysDepart.setDelFlag("1");
+            this.updateById(sysDepart);
+        }
+        return true;
+    }
+
 	/**
 	 * delete 方法调用
 	 * @param id
