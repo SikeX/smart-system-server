@@ -95,6 +95,7 @@ public interface CommonConstant {
     /**通告对象类型（USER:指定用户，ALL:全体用户）*/
     public static final String MSG_TYPE_UESR  = "USER";
     public static final String MSG_TYPE_ALL  = "ALL";
+    public static final String MSG_TYPE_DEPART = "DEPART";
     
     /**发布状态（0未发布，1已发布，2已撤销）*/
     public static final String NO_SEND  = "0";

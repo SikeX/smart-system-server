@@ -44,10 +44,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.jeecg.common.constant.CommonConstant.ANNOUNCEMENT_SEND_STATUS_1;
 
@@ -126,6 +123,20 @@ public class SysAnnouncementController {
 			// update-end-author:liusq date:20210804 for:标题处理xss攻击的问题
 			sysAnnouncement.setDelFlag(CommonConstant.DEL_FLAG_0.toString());
 			sysAnnouncement.setSendStatus(CommonSendStatus.UNPUBLISHED_STATUS_0);//未发布
+//			String userIds = sysAnnouncement.getUserIds();
+//			String departIds = sysAnnouncement.getDepartIds();
+//			Integer send_count;
+//			if( StringUtils.isNotBlank(userIds) ){
+//				send_count = sysAnnouncement.getUserIds().split(",").length;
+//			}
+//			else if( StringUtils.isNotBlank(departIds)){
+//				send_count = sysBaseAPI.getDeptHeadByDepId(departIds).size();
+//			} else {
+//				send_count = sysBaseAPI.queryAllUserBackCombo().size();
+//			}
+//
+//			log.info(String.valueOf(send_count));
+//			sysAnnouncement.setSendCount(send_count);
 			sysAnnouncementService.saveAnnouncement(sysAnnouncement);
 			result.success("添加成功！");
 		} catch (Exception e) {
@@ -248,12 +259,30 @@ public class SysAnnouncementController {
 					obj.put(WebsocketConst.MSG_ID, sysAnnouncement.getId());
 					obj.put(WebsocketConst.MSG_TXT, sysAnnouncement.getTitile());
 			    	webSocket.sendMessage(obj.toJSONString());
-				}else {
+				} else if (sysAnnouncement.getMsgType().equals(CommonConstant.MSG_TYPE_DEPART)){
+					String departId = sysAnnouncement.getDepartIds();
+					List<String> userNameList = sysBaseAPI.getDeptHeadByDepId(departId);
+//					log.info(String.valueOf(userIdList));
+					String[] userNameArray = new String[userNameList.size()];
+					for(int i = 0; i < userNameList.size(); i++){
+						userNameArray[i] = userNameList.get(i);
+					}
+					List<LoginUser> userList = sysBaseAPI.queryUserByNames(userNameArray);
+					log.info(String.valueOf(userList));
+					String[] userIdArray = new String[userList.size()];
+					for(int i = 0; i < userList.size(); i++){
+						userIdArray[i] = userList.get(i).getId();
+					}
+					log.info(Arrays.toString(userIdArray));
+					JSONObject obj = new JSONObject();
+					obj.put(WebsocketConst.MSG_CMD, WebsocketConst.CMD_USER);
+					obj.put(WebsocketConst.MSG_ID, sysAnnouncement.getId());
+					obj.put(WebsocketConst.MSG_TXT, sysAnnouncement.getTitile());
+					webSocket.sendMessage(userIdArray, obj.toJSONString());
+				} else {
 					// 2.插入用户通告阅读标记表记录
 					String userId = sysAnnouncement.getUserIds();
 					String[] userIds = userId.substring(0, (userId.length()-1)).split(",");
-					String anntId = sysAnnouncement.getId();
-					Date refDate = new Date();
 					JSONObject obj = new JSONObject();
 			    	obj.put(WebsocketConst.MSG_CMD, WebsocketConst.CMD_USER);
 					obj.put(WebsocketConst.MSG_ID, sysAnnouncement.getId());
@@ -351,11 +380,15 @@ public class SysAnnouncementController {
 		anntMsgList = sysAnnouncementService.querySysCementPageByUserId(anntMsgList,userId,"1");//通知公告消息
 		Page<SysAnnouncement> sysMsgList = new Page<SysAnnouncement>(0,5);
 		sysMsgList = sysAnnouncementService.querySysCementPageByUserId(sysMsgList,userId,"2");//系统消息
+		Page<SysAnnouncement> taskMsgList = new Page<SysAnnouncement>(0,5);
+		taskMsgList = sysAnnouncementService.querySysCementPageByUserId(taskMsgList,userId,"3");//通知公告消息
 		Map<String,Object> sysMsgMap = new HashMap<String, Object>();
 		sysMsgMap.put("sysMsgList", sysMsgList.getRecords());
 		sysMsgMap.put("sysMsgTotal", sysMsgList.getTotal());
 		sysMsgMap.put("anntMsgList", anntMsgList.getRecords());
 		sysMsgMap.put("anntMsgTotal", anntMsgList.getTotal());
+		sysMsgMap.put("taskMsgList", taskMsgList.getRecords());
+		sysMsgMap.put("taskMsgTotal", taskMsgList.getTotal());
 		result.setSuccess(true);
 		result.setResult(sysMsgMap);
 		return result;

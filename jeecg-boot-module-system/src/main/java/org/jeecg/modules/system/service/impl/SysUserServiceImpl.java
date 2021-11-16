@@ -15,6 +15,7 @@ import org.jeecg.common.system.vo.SysUserCacheInfo;
 import org.jeecg.common.util.PasswordUtil;
 import org.jeecg.common.util.UUIDGenerator;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.app.mapper.AppUserMapper;
 import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.system.entity.*;
 import org.jeecg.modules.system.mapper.*;
@@ -68,6 +69,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	ThirdAppWechatEnterpriseServiceImpl wechatEnterpriseService;
 	@Autowired
 	ThirdAppDingtalkServiceImpl dingtalkService;
+	@Autowired
+	private AppUserMapper appUserMapper;
 
     @Override
     @CacheEvict(value = {CacheConstant.SYS_USERS_CACHE}, allEntries = true)
@@ -537,6 +540,27 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 		queryWrapper.in(SysUser::getId, userIdList);
 		List<SysUser> userList = super.list(queryWrapper);
 		return userList.stream().map(SysUser::getUsername).collect(Collectors.toList());
+	}
+
+	@Override
+	public SysUser queryById(String id) {
+		return userMapper.queryById(id);
+	}
+
+	@Override
+	public void saveUserFromClient(SysUser user, String selectedRoles, int appUserId) {
+		//step.1 保存用户
+		this.save(user);
+		//step.2 保存角色
+		if(oConvertUtils.isNotEmpty(selectedRoles)) {
+			String[] arr = selectedRoles.split(",");
+			for (String roleId : arr) {
+				SysUserRole userRole = new SysUserRole(user.getId(), roleId);
+				sysUserRoleMapper.insert(userRole);
+			}
+		}
+		//step.3 更新tb_app_user表的对应字段
+		appUserMapper.updateSysUserIdById(appUserId, user.getId(), (int) System.currentTimeMillis());
 	}
 
 }

@@ -25,6 +25,9 @@
 		<result column="bus_id" property="busId" jdbcType="VARCHAR"/>
 		<result column="open_type" property="openType" jdbcType="VARCHAR"/>
 		<result column="open_page" property="openPage" jdbcType="VARCHAR"/>
+		<result column="file_list" property="fileList" jdbcType="VARCHAR"/>
+		<result column="send_count" property="sendCount" jdbcType="INTEGER" />
+		<result column="read_count" property="readCount" jdbcType="INTEGER" />
 	</resultMap>
 	
 	

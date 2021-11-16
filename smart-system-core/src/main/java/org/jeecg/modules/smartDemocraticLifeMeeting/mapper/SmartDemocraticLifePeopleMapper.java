@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 /**
  * @Description: 民主生活参会人员表
  * @Author: jeecg-boot
- * @Date:   2021-11-03
+ * @Date:   2021-11-12
  * @Version: V1.0
  */
 public interface SmartDemocraticLifePeopleMapper extends BaseMapper<SmartDemocraticLifePeople> {
@@ -16,5 +16,4 @@ public interface SmartDemocraticLifePeopleMapper extends BaseMapper<SmartDemocra
 	public boolean deleteByMainId(@Param("mainId") String mainId);
     
 	public List<SmartDemocraticLifePeople> selectByMainId(@Param("mainId") String mainId);
-
 }

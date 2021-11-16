@@ -16,7 +16,7 @@ import java.io.UnsupportedEncodingException;
 /**
  * @Description: 党内谈话参与人表
  * @Author: jeecg-boot
- * @Date:   2021-11-05
+ * @Date:   2021-11-10
  * @Version: V1.0
  */
 @ApiModel(value="smart_inner_party_pacpa对象", description="党内谈话参与人表")
@@ -50,7 +50,7 @@ public class SmartInnerPartyPacpa implements Serializable {
     private java.lang.String sysOrgCode;
 	/**主表ID*/
     @ApiModelProperty(value = "主表ID")
-    private java.lang.String parentId;
+    private java.lang.String mainId;
 	/**参会人员工号*/
 	@Excel(name = "参会人员工号", width = 15)
     @ApiModelProperty(value = "参会人员工号")

@@ -4,6 +4,21 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="单位ID">
+              <a-input placeholder="请输入单位ID" v-model="queryParam.departId"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <a @click="handleToggleSearch" style="margin-left: 8px">
+                {{ toggleSearchStatus ? '收起' : '展开' }}
+                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
+              </a>
+            </span>
+          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -97,6 +112,7 @@
 
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import SmartPremaritalFilingModal from './modules/SmartPremaritalFilingModal'
+  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import '@/assets/less/TableExpand.less'
 
   export default {
@@ -121,11 +137,6 @@
             }
           },
           {
-            title:'人员工号',
-            align:"center",
-            dataIndex: 'peopleNo'
-          },
-          {
             title:'人员姓名',
             align:"center",
             dataIndex: 'peopleName'
@@ -133,7 +144,7 @@
           {
             title:'人员性别',
             align:"center",
-            dataIndex: 'peopleSex'
+            dataIndex: 'peopleSex_dictText'
           },
           {
             title:'人员年龄',
@@ -143,27 +154,27 @@
           {
             title:'政治面貌',
             align:"center",
-            dataIndex: 'politicCou'
-          },
-          {
-            title:'工作单位',
-            align:"center",
-            dataIndex: 'workUnit'
+            dataIndex: 'politicCou_dictText'
           },
           {
             title:'职务',
             align:"center",
-            dataIndex: 'post'
+            dataIndex: 'post_dictText'
           },
           {
             title:'职级',
             align:"center",
-            dataIndex: 'postRank'
+            dataIndex: 'postRank_dictText'
           },
           {
             title:'配偶姓名',
             align:"center",
             dataIndex: 'spoName'
+          },
+          {
+            title:'配偶单位',
+            align:"center",
+            dataIndex: 'spoUnit'
           },
           {
             title:'配偶单位职务',
@@ -204,7 +215,7 @@
           {
             title:'是否同城同地合办',
             align:"center",
-            dataIndex: 'isSameOrganized'
+            dataIndex: 'isSameOrganized_dictText'
           },
           {
             title:'拟宴请人数',
@@ -249,12 +260,17 @@
           {
             title:'结婚人配偶单位职务',
             align:"center",
-            dataIndex: 'marrySpoUnitPos'
+            dataIndex: 'marrySpoUnitPos_dictText'
           },
           {
             title:'结婚人配偶父母姓名',
             align:"center",
-            dataIndex: 'marrySpoParName'
+            dataIndex: 'marrySpoParName_dictText'
+          },
+          {
+            title:'结婚人配偶父母单位',
+            align:"center",
+            dataIndex: 'marrySpoParUnit'
           },
           {
             title:'结婚人配偶父母单位职务',
@@ -313,17 +329,17 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'peopleNo',text:'人员工号',dictCode:''})
          fieldList.push({type:'string',value:'peopleName',text:'人员姓名',dictCode:''})
-         fieldList.push({type:'string',value:'peopleSex',text:'人员性别',dictCode:''})
+         fieldList.push({type:'string',value:'peopleSex',text:'人员性别',dictCode:'	sex'})
          fieldList.push({type:'int',value:'peopleAge',text:'人员年龄',dictCode:''})
-         fieldList.push({type:'string',value:'politicCou',text:'政治面貌',dictCode:''})
-         fieldList.push({type:'string',value:'workUnit',text:'工作单位',dictCode:''})
-         fieldList.push({type:'string',value:'post',text:'职务',dictCode:''})
-         fieldList.push({type:'string',value:'postRank',text:'职级',dictCode:''})
+         fieldList.push({type:'string',value:'politicCou',text:'政治面貌',dictCode:'political_status'})
+         fieldList.push({type:'string',value:'departId',text:'单位ID',dictCode:''})
+         fieldList.push({type:'string',value:'post',text:'职务',dictCode:'sys_position,name,code'})
+         fieldList.push({type:'string',value:'postRank',text:'职级',dictCode:'position_rank'})
          fieldList.push({type:'string',value:'spoName',text:'配偶姓名',dictCode:''})
+         fieldList.push({type:'string',value:'spoUnit',text:'配偶单位',dictCode:''})
          fieldList.push({type:'string',value:'spoUnitPos',text:'配偶单位职务',dictCode:''})
-         fieldList.push({type:'string',value:'spoPoliticCou',text:'配偶政治面貌',dictCode:''})
+         fieldList.push({type:'string',value:'spoPoliticCou',text:'配偶政治面貌',dictCode:'political_status'})
          fieldList.push({type:'string',value:'marriedName',text:'结婚人姓名',dictCode:''})
          fieldList.push({type:'string',value:'relationWithMyself',text:'与本人关系',dictCode:''})
          fieldList.push({type:'date',value:'marryRegistTime',text:'婚姻登记时间'})
@@ -339,6 +355,7 @@
          fieldList.push({type:'string',value:'marrySpoUnit',text:'结婚人配偶单位',dictCode:''})
          fieldList.push({type:'string',value:'marrySpoUnitPos',text:'结婚人配偶单位职务',dictCode:''})
          fieldList.push({type:'string',value:'marrySpoParName',text:'结婚人配偶父母姓名',dictCode:''})
+         fieldList.push({type:'string',value:'marrySpoParUnit',text:'结婚人配偶父母单位',dictCode:''})
          fieldList.push({type:'string',value:'marrySpoParUnitPos',text:'结婚人配偶父母单位职务',dictCode:''})
          fieldList.push({type:'string',value:'otherMattersExp',text:'其他需要说明的事情',dictCode:''})
          fieldList.push({type:'date',value:'reportTime',text:'报告时间'})

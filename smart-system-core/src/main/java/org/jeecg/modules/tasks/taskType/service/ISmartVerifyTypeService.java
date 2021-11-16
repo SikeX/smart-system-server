@@ -11,4 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ISmartVerifyTypeService extends IService<SmartVerifyType> {
 
+    Boolean getIsVerifyStatusByType(String type);
+
 }

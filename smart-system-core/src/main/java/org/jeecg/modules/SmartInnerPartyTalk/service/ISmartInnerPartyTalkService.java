@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @Description: 党内谈话表
  * @Author: jeecg-boot
- * @Date:   2021-11-05
+ * @Date:   2021-11-10
  * @Version: V1.0
  */
 public interface ISmartInnerPartyTalkService extends IService<SmartInnerPartyTalk> {
@@ -37,5 +37,6 @@ public interface ISmartInnerPartyTalkService extends IService<SmartInnerPartyTal
 	 * 批量删除一对多
 	 */
 	public void delBatchMain (Collection<? extends Serializable> idList);
+
 	
 }
