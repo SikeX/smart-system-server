@@ -1,6 +1,8 @@
 package org.jeecg.modules.smartOrgMeeting.vo;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import org.jeecg.modules.smartOrgMeeting.entity.SmartOrgMeeting;
 import org.jeecg.modules.smartOrgMeeting.entity.SmartOrgMeetingPacpa;
 import org.jeecg.modules.smartOrgMeeting.entity.SmartOrgMeetingAnnex;
@@ -18,7 +20,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 组织生活会
  * @Author: jeecg-boot
- * @Date:   2021-11-11
+ * @Date:   2021-11-14
  * @Version: V1.0
  */
 @Data
@@ -52,14 +54,24 @@ public class SmartOrgMeetingPage {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@ApiModelProperty(value = "上报时间")
     private java.util.Date reportTime;
-	/**主持人工号*/
-	@Excel(name = "主持人工号", width = 15)
-	@ApiModelProperty(value = "主持人工号")
+	/**主持人ID*/
+	@Excel(name = "主持人ID", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
+    @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
+	@ApiModelProperty(value = "主持人ID")
     private java.lang.String hostId;
-	/**会议记录人工号*/
-	@Excel(name = "会议记录人工号", width = 15)
-	@ApiModelProperty(value = "会议记录人工号")
+	/**主持人*/
+	@Excel(name = "主持人", width = 15)
+	@ApiModelProperty(value = "主持人")
+    private java.lang.String hostName;
+	/**会议记录人ID */
+	@Excel(name = "会议记录人ID ", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
+    @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
+	@ApiModelProperty(value = "会议记录人ID ")
     private java.lang.String recorderId;
+	/**会议记录人*/
+	@Excel(name = "会议记录人", width = 15)
+	@ApiModelProperty(value = "会议记录人")
+    private java.lang.String recorderName;
 	/**会议内容摘要*/
 	@Excel(name = "会议内容摘要", width = 15)
 	@ApiModelProperty(value = "会议内容摘要")
@@ -68,9 +80,9 @@ public class SmartOrgMeetingPage {
 	@Excel(name = "会议记录", width = 15)
 	@ApiModelProperty(value = "会议记录")
     private java.lang.String record;
-	/**创建人工号（未用）*/
-	@Excel(name = "创建人工号（未用）", width = 15)
-	@ApiModelProperty(value = "创建人工号（未用）")
+	/**创建人ID*/
+	@Excel(name = "创建人ID", width = 15)
+	@ApiModelProperty(value = "创建人ID")
     private java.lang.String creatorId;
 	/**创建人*/
 	@ApiModelProperty(value = "创建人")
@@ -82,6 +94,7 @@ public class SmartOrgMeetingPage {
     private java.util.Date createTime;
 	/**删除状态（0，正常，1已删除）*/
 	@Excel(name = "删除状态（0，正常，1已删除）", width = 15)
+	@TableLogic
 	@ApiModelProperty(value = "删除状态（0，正常，1已删除）")
     private java.lang.Integer delFlag;
 

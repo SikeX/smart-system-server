@@ -17,7 +17,7 @@ import java.io.UnsupportedEncodingException;
 /**
  * @Description: 组织生活会参会人员表
  * @Author: jeecg-boot
- * @Date:   2021-11-11
+ * @Date:   2021-11-14
  * @Version: V1.0
  */
 @ApiModel(value="smart_org_meeting_pacpa对象", description="组织生活会参会人员表")
@@ -52,10 +52,14 @@ public class SmartOrgMeetingPacpa implements Serializable {
 	/**主表ID*/
     @ApiModelProperty(value = "主表ID")
     private java.lang.String parentId;
-	/**参会人员工号*/
-	@Excel(name = "参会人员工号", width = 15)
-    @ApiModelProperty(value = "参会人员工号")
+	/**参会人员ID*/
+	@Excel(name = "参会人员ID", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
+    @ApiModelProperty(value = "参会人员ID")
     private java.lang.String pacpaId;
+	/**参会人员姓名*/
+	@Excel(name = "参会人员姓名", width = 15)
+    @ApiModelProperty(value = "参会人员姓名")
+    private java.lang.String pacpaName;
 	/**删除状态（0，正常，1已删除）*/
 	@Excel(name = "删除状态（0，正常，1已删除）", width = 15)
     @TableLogic
