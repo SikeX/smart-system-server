@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.smartOrgMeeting.entity.SmartOrgMeeting;
+import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
+import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -57,6 +59,14 @@ public class SmartFinanceResultController {
     private ISmartFinanceResultService smartFinanceResultService;
     @Autowired
     private ISmartFinanceAnnexService smartFinanceAnnexService;
+    /**
+     * 审核
+     */
+    @Autowired
+    private SmartVerify smartVerify;
+    @Autowired
+    private ISmartVerifyTypeService smartVerifyTypeService;
+    public String verifyType = "财务收支";
     @Autowired
     CommonService commonService;
 
@@ -82,6 +92,10 @@ public class SmartFinanceResultController {
         String field = "departId";
         // 获取登录用户信息，可以用来查询单位部门信息
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+        if ("".equals(sysUser.getOrgCode())) {
+            return Result.error("没有权限");
+        }
 
         // 获取子单位ID
         String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
@@ -136,7 +150,20 @@ public class SmartFinanceResultController {
             return Result.error("没有找到部门！");
         }
         smartFinanceResult.setDepartId(id);
-        smartFinanceResultService.saveMain(smartFinanceResult, smartFinanceResultPage.getSmartFinanceAnnexList());
+        smartFinanceResult.setCreatorId(sysUser.getId());
+
+        Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
+        if (isVerify) {
+            smartFinanceResultService.saveMain(smartFinanceResult, smartFinanceResultPage.getSmartFinanceAnnexList());
+            String recordId = smartFinanceResult.getId();
+            log.info("recordId is " + recordId);
+            smartVerify.addVerifyRecord(recordId, verifyType);
+            smartFinanceResult.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+            smartFinanceResultService.updateById(smartFinanceResult);
+        } else {
+            smartFinanceResult.setVerifyStatus("3");
+            smartFinanceResultService.saveMain(smartFinanceResult, smartFinanceResultPage.getSmartFinanceAnnexList());
+        }
         return Result.OK("添加成功！");
     }
 
