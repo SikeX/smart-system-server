@@ -7,13 +7,18 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.jeecg.common.constant.CommonConstant;
+import org.jeecg.common.constant.WebsocketConst;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.system.entity.SysAnnouncement;
 import org.jeecg.modules.system.entity.SysAnnouncementSend;
 import org.jeecg.modules.system.mapper.SysAnnouncementMapper;
 import org.jeecg.modules.system.mapper.SysAnnouncementSendMapper;
 import org.jeecg.modules.system.service.ISysAnnouncementService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +33,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
  * @Version: V1.0
  */
 @Service
+@Slf4j
 public class SysAnnouncementServiceImpl extends ServiceImpl<SysAnnouncementMapper, SysAnnouncement> implements ISysAnnouncementService {
 
 	@Resource
@@ -35,17 +41,51 @@ public class SysAnnouncementServiceImpl extends ServiceImpl<SysAnnouncementMappe
 	
 	@Resource
 	private SysAnnouncementSendMapper sysAnnouncementSendMapper;
+
+	@Autowired
+	private SysBaseApiImpl sysBaseApi;
 	
 	@Transactional
 	@Override
 	public void saveAnnouncement(SysAnnouncement sysAnnouncement) {
+		String userId = sysAnnouncement.getUserIds();
+		String departIds = sysAnnouncement.getDepartIds();
+		Integer send_count;
 		if(sysAnnouncement.getMsgType().equals(CommonConstant.MSG_TYPE_ALL)) {
+			send_count = sysBaseApi.queryAllUserBackCombo().size();
+			sysAnnouncement.setSendCount(send_count);
 			sysAnnouncementMapper.insert(sysAnnouncement);
-		}else {
+		} else if(sysAnnouncement.getMsgType().equals(CommonConstant.MSG_TYPE_DEPART)){
+			send_count = sysBaseApi.getDeptHeadByDepId(departIds).size();
+			sysAnnouncement.setSendCount(send_count);
+			log.info(String.valueOf(send_count));
+
 			// 1.插入通告表记录
 			sysAnnouncementMapper.insert(sysAnnouncement);
 			// 2.插入用户通告阅读标记表记录
-			String userId = sysAnnouncement.getUserIds();
+			List<String> userIdList = sysBaseApi.getDeptHeadByDepId(departIds);
+			String[] userIdArray = new String[userIdList.size()];
+			for(int i = 0; i < userIdList.size(); i++){
+				userIdArray[i] = userIdList.get(i);
+			}
+			String anntId = sysAnnouncement.getId();
+			Date refDate = new Date();
+			for (String s : userIdArray) {
+				SysAnnouncementSend announcementSend = new SysAnnouncementSend();
+				announcementSend.setAnntId(anntId);
+				announcementSend.setUserId(sysBaseApi.getUserByName(s).getId());
+				announcementSend.setReadFlag(CommonConstant.NO_READ_FLAG);
+				announcementSend.setReadTime(refDate);
+				sysAnnouncementSendMapper.insert(announcementSend);
+			}
+
+		} else {
+			send_count = sysAnnouncement.getUserIds().split(",").length;
+			sysAnnouncement.setSendCount(send_count);
+			// 1.插入通告表记录
+			sysAnnouncementMapper.insert(sysAnnouncement);
+			// 2.插入用户通告阅读标记表记录
+//			String userId = sysAnnouncement.getUserIds();
 			String[] userIds = userId.substring(0, (userId.length()-1)).split(",");
 			String anntId = sysAnnouncement.getId();
 			Date refDate = new Date();

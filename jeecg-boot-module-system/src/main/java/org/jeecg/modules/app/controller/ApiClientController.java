@@ -3,6 +3,8 @@ package org.jeecg.modules.app.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -20,11 +22,9 @@ import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.system.entity.SysDepart;
 import org.jeecg.modules.system.entity.SysTenant;
 import org.jeecg.modules.system.entity.SysUser;
+import org.jeecg.modules.system.model.AnnouncementSendModel;
 import org.jeecg.modules.system.model.SysLoginModel;
-import org.jeecg.modules.system.service.ISysDepartService;
-import org.jeecg.modules.system.service.ISysDictService;
-import org.jeecg.modules.system.service.ISysTenantService;
-import org.jeecg.modules.system.service.ISysUserService;
+import org.jeecg.modules.system.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -53,6 +53,8 @@ public class ApiClientController extends ApiBaseController {
     private BaseCommonService baseCommonService;
     @Autowired
     private ISysBaseAPI sysBaseAPI;
+    @Autowired
+    private ISysAnnouncementSendService sysAnnouncementSendService;
 
     /**
      * 激活设备接口
@@ -81,7 +83,7 @@ public class ApiClientController extends ApiBaseController {
             id = appUser.getId();
             AppUser newData = new AppUser(id, params.get("androidId"), params.get("clientIp"), params.get("mac"),
                     params.get("appVersion"), params.get("brand"), params.get("model"), now,
-                    ACCOUNT_ACTIVE_STATUS, now, now);
+                    ACCOUNT_ACTIVE_STATUS, now, now, appUser.getSysUserId());
             apiClientService.updateById(newData);
         } else {
             appUser = new AppUser(params.get("androidId"), params.get("clientIp"), params.get("mac"),
@@ -149,7 +151,7 @@ public class ApiClientController extends ApiBaseController {
     @PostMapping(value = "/login")
     public Result<?> login(@RequestParam Map<String, String> params) {
         // 首先校验参数是否都存在
-        String paramList = "clientIp|androidId|appVersion|mac|sign|clientId|username|password";
+        String paramList = "clientIp|androidId|appVersion|mac|sign|username|password";
         if (!super.checkParams(params, paramList)) {
             return Result.error("参数列表错误");
         }
@@ -165,7 +167,7 @@ public class ApiClientController extends ApiBaseController {
 
         // 先验证是否能登陆成功
         //1. 校验用户是否有效
-        Result<JSONObject> result = new Result<JSONObject>();
+        Result<JSONObject> result = new Result<>();
         SysUser sysUser = sysUserService.getUserByName(username);
         result = sysUserService.checkUserIsEffective(sysUser);
         if(!result.isSuccess()) {
@@ -243,7 +245,7 @@ public class ApiClientController extends ApiBaseController {
     @PostMapping(value = "/logout")
     public Result<?> logout(@RequestParam Map<String, String> params) {
         // 首先校验参数是否都存在
-        String paramList = "clientIp|androidId|appVersion|mac|sign|brand|model|clientId|token";
+        String paramList = "clientIp|androidId|appVersion|mac|sign|clientId|token";
         if (!super.checkParams(params, paramList)) {
             return Result.error("参数列表错误");
         }
@@ -273,5 +275,35 @@ public class ApiClientController extends ApiBaseController {
         }else {
             return Result.error("Token无效");
         }
+    }
+
+
+    /**
+     * 获取用户信息，显示在app中
+     * @param params
+     * @return
+     */
+    @GetMapping(value = "/info")
+    public Result<?> userInfo(@RequestParam Map<String, String> params) {
+        Result<IPage<AnnouncementSendModel>> result = new Result<>();
+        // 首先校验参数是否都存在
+        String paramList = "clientIp|androidId|appVersion|mac|sign|clientId|token";
+        if (!super.checkParams(params, paramList)) {
+            return Result.error("参数列表错误");
+        }
+        // 校验签名
+        if (!super.checkSign(params)) {
+            return Result.error("签名错误");
+        }
+        // 查
+        SysUser sysUser = sysUserService.queryById(params.get("clientId"));
+        AnnouncementSendModel announcementSendModel = new AnnouncementSendModel();
+        announcementSendModel.setUserId(sysUser.getId());
+        Page<AnnouncementSendModel> pageList = new Page<>(1, 1);
+        pageList = sysAnnouncementSendService.getMyAnnouncementSendPage(pageList, announcementSendModel);
+        result.setResult(pageList);
+        result.setSuccess(true);
+        result.setMessage(sysUser.getUsername());
+        return result;
     }
 }

@@ -7,9 +7,7 @@
         where org_code = #{orgCode}
     </select>
     <select id="getChildrenIdByOrgCode" resultType="java.lang.String">
-        select id
-        from sys_depart
-        where org_code like #{orgCode}
+        select id from sys_depart where org_code like #{orgCode}
     </select>
 
 </mapper>

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
+import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -64,6 +65,10 @@ public class SmartPostMarriageReportController {
 	 @Autowired
 	 private SmartVerify smartVerify;
 	 public String verifyType = "婚后报备";
+
+	 //审核状态
+	 @Autowired
+	 private ISmartVerifyTypeService smartVerifyTypeService;
 
 
 	 /**
@@ -150,7 +155,22 @@ public class SmartPostMarriageReportController {
 
 		 SmartPostMarriageReport smartPostMarriageReport = new SmartPostMarriageReport();
 		 BeanUtils.copyProperties(smartPostMarriageReportPage, smartPostMarriageReport);
-		 smartPostMarriageReportService.saveMain(smartPostMarriageReport, smartPostMarriageReportPage.getSmartPostMarriageReportFileList());
+
+		 //审核判断
+		 Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
+		 if(isVerify){
+			 smartPostMarriageReportService.saveMain(smartPostMarriageReport, smartPostMarriageReportPage.getSmartPostMarriageReportFileList());
+			 String recordId = smartPostMarriageReport.getId();
+			 smartVerify.addVerifyRecord(recordId,verifyType);
+			 smartPostMarriageReport.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+			 smartPostMarriageReportService.updateById(smartPostMarriageReport);
+		 }else{
+			 // 设置审核状态为免审
+			 smartPostMarriageReport.setVerifyStatus("3");
+			 // 直接添加，不走审核流程
+			 smartPostMarriageReportService.saveMain(smartPostMarriageReport, smartPostMarriageReportPage.getSmartPostMarriageReportFileList());
+		 }
+
 		 return Result.OK("添加成功！");
 	 }
 

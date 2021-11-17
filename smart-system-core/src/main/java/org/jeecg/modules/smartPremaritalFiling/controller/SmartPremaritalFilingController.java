@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
+import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -42,11 +43,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.jeecg.common.aspect.annotation.AutoLog;
 
-
 /**
  * @Description: 8项规定婚前报备表
  * @Author: jeecg-boot
- * @Date: 2021-11-11
+ * @Date: 2021-11-13
  * @Version: V1.0
  */
 @Api(tags = "8项规定婚前报备表")
@@ -65,6 +65,8 @@ public class SmartPremaritalFilingController {
 
     @Autowired
     private SmartVerify smartVerify;
+    @Autowired
+    private ISmartVerifyTypeService smartVerifyTypeService;
 
     public String verifyType = "婚前报备";
 
@@ -157,8 +159,21 @@ public class SmartPremaritalFilingController {
         smartPremaritalFilingPage.setDepartId(id);
         SmartPremaritalFiling smartPremaritalFiling = new SmartPremaritalFiling();
         BeanUtils.copyProperties(smartPremaritalFilingPage, smartPremaritalFiling);
-        smartPremaritalFilingService.saveMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
-        smartVerify.addVerifyRecord(smartPremaritalFiling.getId(),verifyType);
+//        smartPremaritalFilingService.saveMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
+//        smartVerify.addVerifyRecord(smartPremaritalFiling.getId(), verifyType);
+
+        //审核状态
+        Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
+        if (isVerify) {
+            smartPremaritalFilingService.saveMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
+            String recordId = smartPremaritalFiling.getId();
+            smartVerify.addVerifyRecord(recordId, verifyType);
+            smartPremaritalFiling.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+            smartPremaritalFilingService.updateById(smartPremaritalFiling);
+        } else { // 设置审核状态为免审
+            smartPremaritalFiling.setVerifyStatus("3"); // 直接添加，不走审核流程
+            smartPremaritalFilingService.saveMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
+        }
         return Result.OK("添加成功！");
     }
 
@@ -173,8 +188,6 @@ public class SmartPremaritalFilingController {
     @PutMapping(value = "/edit")
     public Result<?> edit(@RequestBody SmartPremaritalFilingPage smartPremaritalFilingPage) {
         SmartPremaritalFiling smartPremaritalFiling = new SmartPremaritalFiling();
-        smartPremaritalFiling.setDepartId(null);
-        smartPremaritalFiling.setCreateTime(null);
         BeanUtils.copyProperties(smartPremaritalFilingPage, smartPremaritalFiling);
         SmartPremaritalFiling smartPremaritalFilingEntity = smartPremaritalFilingService.getById(smartPremaritalFiling.getId());
         if (smartPremaritalFilingEntity == null) {
@@ -182,7 +195,6 @@ public class SmartPremaritalFilingController {
         }
         smartPremaritalFilingService.updateMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
         return Result.OK("编辑成功!");
-
     }
 
     /**
