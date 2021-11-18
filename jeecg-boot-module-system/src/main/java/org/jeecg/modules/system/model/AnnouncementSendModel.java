@@ -83,4 +83,21 @@ public class AnnouncementSendModel implements Serializable {
 
 	private Integer readCount;
 
+	private String senderDepart;
+
+	private String userName;
+
+	private String userDepart;
+
+	private Integer isDelay;
+
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private java.util.Date createTime;
+
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private java.util.Date readTime;
+
+
 }
