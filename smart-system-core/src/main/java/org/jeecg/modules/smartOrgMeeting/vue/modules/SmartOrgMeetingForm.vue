@@ -25,13 +25,13 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="主持人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="hostId">
-              <a-input v-model="model.hostId" placeholder="请输入主持人工号" ></a-input>
+            <a-form-model-item label="主持人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="hostName">
+              <a-input v-model="model.hostName" placeholder="请输入主持人" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="会议记录人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="recorderId">
-              <a-input v-model="model.recorderId" placeholder="请输入会议记录人工号" ></a-input>
+            <a-form-model-item label="会议记录人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="recorderName">
+              <a-input v-model="model.recorderName" placeholder="请输入会议记录人" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -128,7 +128,7 @@
           dataSource: [],
           columns: [
             {
-              title: '参会人员工号',
+              title: '参会人员ID',
               key: 'pacpaId',
               type: FormTypes.input,
               width:"200px",
@@ -142,15 +142,6 @@
           loading: false,
           dataSource: [],
           columns: [
-            {
-              title: '序号',
-              key: 'annexOrder',
-              type: FormTypes.inputNumber,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
-            },
             {
               title: '附件说明',
               key: 'description',

@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
+import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -60,6 +62,14 @@ public class SmartDemocraticLifeMeetingController {
 	private ISmartDemocraticLifePeopleService smartDemocraticLifePeopleService;
 	@Autowired
 	private ISmartDemocraticLifeEnclosureService smartDemocraticLifeEnclosureService;
+    /**
+     * 审核
+     */
+    @Autowired
+    private SmartVerify smartVerify;
+    @Autowired
+    private ISmartVerifyTypeService smartVerifyTypeService;
+    public String verifyType = "民主生活会";
 	@Autowired
 	CommonService commonService;
 
@@ -85,6 +95,10 @@ public class SmartDemocraticLifeMeetingController {
 		String field = "departId";
 		// 获取登录用户信息，可以用来查询单位部门信息
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+        if ("".equals(sysUser.getOrgCode())) {
+            return Result.error("没有权限");
+        }
 
 		// 获取子单位ID
 		String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
@@ -137,7 +151,20 @@ public class SmartDemocraticLifeMeetingController {
 			return Result.error("没有找到部门！");
 		}
 		smartDemocraticLifeMeeting.setDepartId(id);
-		smartDemocraticLifeMeetingService.saveMain(smartDemocraticLifeMeeting, smartDemocraticLifeMeetingPage.getSmartDemocraticLifePeopleList(), smartDemocraticLifeMeetingPage.getSmartDemocraticLifeEnclosureList());
+        smartDemocraticLifeMeeting.setCreatorId(sysUser.getId());
+
+        Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
+        if (isVerify) {
+            smartDemocraticLifeMeetingService.saveMain(smartDemocraticLifeMeeting, smartDemocraticLifeMeetingPage.getSmartDemocraticLifePeopleList(), smartDemocraticLifeMeetingPage.getSmartDemocraticLifeEnclosureList());
+            String recordId = smartDemocraticLifeMeeting.getId();
+            log.info("recordId is " + recordId);
+            smartVerify.addVerifyRecord(recordId, verifyType);
+            smartDemocraticLifeMeeting.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+            smartDemocraticLifeMeetingService.updateById(smartDemocraticLifeMeeting);
+        } else {
+            smartDemocraticLifeMeeting.setVerifyStatus("3");
+            smartDemocraticLifeMeetingService.saveMain(smartDemocraticLifeMeeting, smartDemocraticLifeMeetingPage.getSmartDemocraticLifePeopleList(), smartDemocraticLifeMeetingPage.getSmartDemocraticLifeEnclosureList());
+        }
 		return Result.OK("添加成功！");
 	}
 

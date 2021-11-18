@@ -31,7 +31,7 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="处理状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="processingType">
-              <j-dict-select-tag type="list" v-model="model.processingType" dictCode="processing_type" placeholder="请选择处理状态" />
+              <j-dict-select-tag type="list" v-model="model.processingResult" dictCode="processing_result" placeholder="请选择处理状态" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
