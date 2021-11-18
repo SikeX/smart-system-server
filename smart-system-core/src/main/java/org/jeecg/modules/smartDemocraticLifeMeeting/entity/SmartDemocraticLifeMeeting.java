@@ -18,7 +18,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 民主生活会表
  * @Author: jeecg-boot
- * @Date:   2021-11-12
+ * @Date:   2021-11-17
  * @Version: V1.0
  */
 @ApiModel(value="smart_democratic_life_meeting对象", description="民主生活会表")
@@ -35,12 +35,6 @@ public class SmartDemocraticLifeMeeting implements Serializable {
 	@Excel(name = "单位", width = 15)
     @ApiModelProperty(value = "单位")
     private java.lang.String departId;
-	/**会议时间*/
-	@Excel(name = "会议时间", width = 20, format = "yyyy-MM-dd HH:mm:ss")
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @ApiModelProperty(value = "会议时间")
-    private java.util.Date meetingTime;
 	/**会议名称*/
 	@Excel(name = "会议名称", width = 15)
     @ApiModelProperty(value = "会议名称")
@@ -49,20 +43,34 @@ public class SmartDemocraticLifeMeeting implements Serializable {
 	@Excel(name = "会议地点", width = 15)
     @ApiModelProperty(value = "会议地点")
     private java.lang.String address;
-	/**主持人工号*/
-	@Excel(name = "主持人工号", width = 15)
-    @ApiModelProperty(value = "主持人工号")
-    private java.lang.String hostId;
+	/**会议时间*/
+	@Excel(name = "会议时间", width = 20, format = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(value = "会议时间")
+    private java.util.Date meetingTime;
 	/**上报时间*/
 	@Excel(name = "上报时间", width = 20, format = "yyyy-MM-dd HH:mm:ss")
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "上报时间")
     private java.util.Date reportingTime;
-	/**会议记录人工号*/
-	@Excel(name = "会议记录人工号", width = 15)
-    @ApiModelProperty(value = "会议记录人工号")
+	/**主持人ID*/
+	@Excel(name = "主持人ID", width = 15)
+    @ApiModelProperty(value = "主持人ID")
+    private java.lang.String hostId;
+	/**主持人姓名*/
+	@Excel(name = "主持人姓名", width = 15)
+    @ApiModelProperty(value = "主持人姓名")
+    private java.lang.String hostName;
+	/**会议记录人ID*/
+	@Excel(name = "会议记录人ID", width = 15)
+    @ApiModelProperty(value = "会议记录人ID")
     private java.lang.String recorderId;
+	/**会议记录人姓名*/
+	@Excel(name = "会议记录人姓名", width = 15)
+    @ApiModelProperty(value = "会议记录人姓名")
+    private java.lang.String recorderName;
 	/**会议内容摘要*/
 	@Excel(name = "会议内容摘要", width = 15)
     @ApiModelProperty(value = "会议内容摘要")
@@ -71,6 +79,10 @@ public class SmartDemocraticLifeMeeting implements Serializable {
 	@Excel(name = "会议记录", width = 15)
     @ApiModelProperty(value = "会议记录")
     private java.lang.String record;
+	/**创建人ID*/
+	@Excel(name = "创建人ID", width = 15)
+    @ApiModelProperty(value = "创建人ID")
+    private java.lang.String creatorId;
 	/**创建人*/
     @ApiModelProperty(value = "创建人")
     private java.lang.String createBy;
@@ -84,4 +96,8 @@ public class SmartDemocraticLifeMeeting implements Serializable {
     @TableLogic
     @ApiModelProperty(value = "删除状态（0，正常，1已删除）")
     private java.lang.Integer delFlag;
+	/**审核状态*/
+	@Excel(name = "审核状态", width = 15)
+    @ApiModelProperty(value = "审核状态")
+    private java.lang.String verifyStatus;
 }

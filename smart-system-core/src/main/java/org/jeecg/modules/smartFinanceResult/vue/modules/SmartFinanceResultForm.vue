@@ -34,7 +34,8 @@
           :disabled="formDisabled"
           :rowNumber="true"
           :rowSelection="true"
-          :actionButton="true"/>
+          :actionButton="true"
+          :rootUrl="rootUrl"/>
       </a-tab-pane>
     </a-tabs>
   </a-spin>
@@ -85,15 +86,6 @@
           dataSource: [],
           columns: [
             {
-              title: '序号',
-              key: 'annexOrder',
-              type: FormTypes.inputNumber,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
-            },
-            {
               title: '附件说明',
               key: 'description',
               type: FormTypes.input,
@@ -142,6 +134,7 @@
             },
           ]
         },
+        rootUrl: "/smartFinanceResult/smartFinanceResult/",
         url: {
           add: "/smartFinanceResult/smartFinanceResult/add",
           edit: "/smartFinanceResult/smartFinanceResult/edit",

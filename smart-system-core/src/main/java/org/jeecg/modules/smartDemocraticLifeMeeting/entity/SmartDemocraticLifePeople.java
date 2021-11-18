@@ -16,7 +16,7 @@ import java.io.UnsupportedEncodingException;
 /**
  * @Description: 民主生活参会人员表
  * @Author: jeecg-boot
- * @Date:   2021-11-12
+ * @Date:   2021-11-17
  * @Version: V1.0
  */
 @ApiModel(value="smart_democratic_life_people对象", description="民主生活参会人员表")
@@ -55,4 +55,8 @@ public class SmartDemocraticLifePeople implements Serializable {
 	@Excel(name = "参会人员ID", width = 15)
     @ApiModelProperty(value = "参会人员ID")
     private java.lang.String participantId;
+	/**参会人员姓名*/
+	@Excel(name = "参会人员姓名", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
+    @ApiModelProperty(value = "参会人员姓名")
+    private java.lang.String participantName;
 }

@@ -166,14 +166,14 @@
             dataIndex: 'reportTime'
           },
           {
-            title:'主持人工号',
+            title:'主持人',
             align:"center",
-            dataIndex: 'hostId'
+            dataIndex: 'hostName'
           },
           {
-            title:'会议记录人工号',
+            title:'会议记录人',
             align:"center",
-            dataIndex: 'recorderId'
+            dataIndex: 'recorderName'
           },
           {
             title:'会议内容摘要',
@@ -234,8 +234,8 @@
          fieldList.push({type:'string',value:'address',text:'会议地点',dictCode:''})
          fieldList.push({type:'datetime',value:'meetingTime',text:'会议时间'})
          fieldList.push({type:'datetime',value:'reportTime',text:'上报时间'})
-         fieldList.push({type:'string',value:'hostId',text:'主持人工号',dictCode:''})
-         fieldList.push({type:'string',value:'recorderId',text:'会议记录人工号',dictCode:''})
+         fieldList.push({type:'string',value:'hostName',text:'主持人',dictCode:''})
+         fieldList.push({type:'string',value:'recorderName',text:'会议记录人',dictCode:''})
          fieldList.push({type:'Text',value:'summary',text:'会议内容摘要',dictCode:''})
          fieldList.push({type:'Text',value:'record',text:'会议记录',dictCode:''})
          fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
