@@ -52,11 +52,11 @@ public class SmartReportingInformation implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "举报时间")
     private java.util.Date reportingTime;
-	/**处理状态*/
-	@Excel(name = "处理状态", width = 15, dicCode = "processing_type")
-    @Dict(dicCode = "processing_type")
+	/**处理状态结果*/
+	@Excel(name = "处理状态", width = 15, dicCode = "processing_result")
+    @Dict(dicCode = "processing_result")
     @ApiModelProperty(value = "处理状态")
-    private java.lang.String processingType;
+    private java.lang.String processingResult;
 	/**创建时间*/
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
