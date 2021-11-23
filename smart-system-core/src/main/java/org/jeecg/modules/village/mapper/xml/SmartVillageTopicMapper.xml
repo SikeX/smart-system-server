@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.village.mapper.SmartVillageTopicMapper">
+
+    <select id="queryTopicList"  resultType="org.jeecg.modules.village.entity.SmartVillageTopic">
+        select * from smart_village_topic
+    </select>
+
+    <select id="queryUserByUserId"  resultType="org.jeecg.modules.village.entity.SmartVillageUser">
+        select * from smart_village_user
+        where id = #{userId}
+    </select>
+
+    <select id="queryCommentList"  parameterType="String" resultType="org.jeecg.modules.village.entity.SmartVillageComment">
+        select content,in_time from smart_village_comment as comment
+        where comment.topic_id = #{topicId}
+    </select>
+
+</mapper>
