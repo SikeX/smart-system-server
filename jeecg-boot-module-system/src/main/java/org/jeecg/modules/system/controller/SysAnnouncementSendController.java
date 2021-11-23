@@ -14,6 +14,7 @@ import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.system.entity.SysAnnouncement;
 import org.jeecg.modules.system.entity.SysAnnouncementSend;
 import org.jeecg.modules.system.model.AnnouncementSendModel;
+import org.jeecg.modules.system.model.TaskManageModel;
 import org.jeecg.modules.system.service.ISysAnnouncementSendService;
 import org.jeecg.modules.system.service.ISysAnnouncementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -210,7 +211,17 @@ public class SysAnnouncementSendController {
 
 		LambdaUpdateWrapper<SysAnnouncementSend> updateWrapper = new UpdateWrapper().lambda();
 		updateWrapper.set(SysAnnouncementSend::getReadFlag, CommonConstant.HAS_READ_FLAG);
-		updateWrapper.set(SysAnnouncementSend::getReadTime, new Date());
+		// 增加是否超时状态
+		Date readTime = new Date();
+		Date endTime = sysAnnouncementService.getById(anntId).getEndTime();
+		Integer isDelay;
+		if(readTime.after(endTime)){
+			isDelay = 1;
+		} else {
+			isDelay = 0;
+		}
+		updateWrapper.set(SysAnnouncementSend::getReadTime, readTime);
+		updateWrapper.set(SysAnnouncementSend::getIsDelay, isDelay);
 		updateWrapper.last("where annt_id ='"+anntId+"' and user_id ='"+userId+"'");
 		SysAnnouncementSend announcementSend = new SysAnnouncementSend();
 		sysAnnouncementSendService.update(announcementSend, updateWrapper);
@@ -276,4 +287,19 @@ public class SysAnnouncementSendController {
 		result.setMessage("全部已读");
 		return result;
 	}
+
+	 @GetMapping(value = "/getTaskDetail")
+	 public Result<IPage<AnnouncementSendModel>> getTaskDetail(AnnouncementSendModel announcementSendModel,
+															 @RequestParam(name="anntId", required = true) String anntId,
+															 @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+															 @RequestParam(name="pageSize", defaultValue="10") Integer pageSize) {
+		 Result<IPage<AnnouncementSendModel>> result = new Result<IPage<AnnouncementSendModel>>();
+//		 log.info(String.valueOf(announcementSendModel));
+		 Page<AnnouncementSendModel> pageList = new Page<AnnouncementSendModel>(pageNo,pageSize);
+
+		 pageList = sysAnnouncementSendService.getTaskSendPage(pageList, announcementSendModel);
+		 result.setResult(pageList);
+		 result.setSuccess(true);
+		 return result;
+	 }
 }

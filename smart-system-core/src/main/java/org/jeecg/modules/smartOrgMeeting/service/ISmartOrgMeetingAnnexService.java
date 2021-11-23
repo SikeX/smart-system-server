@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * @Description: 组织生活会附件表
  * @Author: jeecg-boot
- * @Date:   2021-11-11
+ * @Date:   2021-11-14
  * @Version: V1.0
  */
 public interface ISmartOrgMeetingAnnexService extends IService<SmartOrgMeetingAnnex> {

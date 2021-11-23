@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.smartFinanceResult.entity.SmartFinanceAnnex;
+import org.jeecg.modules.tasks.smartVerifyTask.service.ISmartVerifyTaskService;
+import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
+import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -61,6 +64,14 @@ public class SmartOrgMeetingController {
     private ISmartOrgMeetingPacpaService smartOrgMeetingPacpaService;
     @Autowired
     private ISmartOrgMeetingAnnexService smartOrgMeetingAnnexService;
+    /**
+     * 审核
+     */
+    @Autowired
+    private SmartVerify smartVerify;
+    @Autowired
+    private ISmartVerifyTypeService smartVerifyTypeService;
+    public String verifyType = "组织生活会";
     @Autowired
     CommonService commonService;
 
@@ -86,6 +97,10 @@ public class SmartOrgMeetingController {
         String field = "departId";
         // 获取登录用户信息，可以用来查询单位部门信息
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+        if ("".equals(sysUser.getOrgCode())) {
+            return Result.error("没有权限");
+        }
 
         // 获取子单位ID
         String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
@@ -140,7 +155,20 @@ public class SmartOrgMeetingController {
             return Result.error("没有找到部门！");
         }
         smartOrgMeeting.setDepartId(id);
-        smartOrgMeetingService.saveMain(smartOrgMeeting, smartOrgMeetingPage.getSmartOrgMeetingPacpaList(), smartOrgMeetingPage.getSmartOrgMeetingAnnexList());
+        smartOrgMeeting.setCreatorId(sysUser.getId());
+
+        Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
+        if (isVerify) {
+            smartOrgMeetingService.saveMain(smartOrgMeeting, smartOrgMeetingPage.getSmartOrgMeetingPacpaList(), smartOrgMeetingPage.getSmartOrgMeetingAnnexList());
+            String recordId = smartOrgMeeting.getId();
+            log.info("recordId is " + recordId);
+            smartVerify.addVerifyRecord(recordId, verifyType);
+            smartOrgMeeting.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+            smartOrgMeetingService.updateById(smartOrgMeeting);
+        } else {
+            smartOrgMeeting.setVerifyStatus("3");
+            smartOrgMeetingService.saveMain(smartOrgMeeting, smartOrgMeetingPage.getSmartOrgMeetingPacpaList(), smartOrgMeetingPage.getSmartOrgMeetingAnnexList());
+        }
         return Result.OK("添加成功！");
     }
 
@@ -300,6 +328,7 @@ public class SmartOrgMeetingController {
             MultipartFile file = entity.getValue();// 获取上传文件对象
             ImportParams params = new ImportParams();
             params.setTitleRows(2);
+            //方法方法
             params.setHeadRows(1);
             params.setNeedSave(true);
             try {

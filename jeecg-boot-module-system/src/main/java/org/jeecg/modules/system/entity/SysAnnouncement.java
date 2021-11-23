@@ -57,6 +57,11 @@ public class SysAnnouncement implements Serializable {
     @Excel(name = "发布人", width = 15)
     private java.lang.String sender;
     /**
+     * 发布部门
+     */
+    @Excel(name = "发布部门", width = 15)
+    private java.lang.String senderDepart;
+    /**
      * 优先级（L低，M中，H高）
      */
     @Excel(name = "优先级", width = 15, dicCode = "priority")

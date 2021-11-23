@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 /**
  * @Description: 民主生活会附件表
  * @Author: jeecg-boot
- * @Date:   2021-11-12
+ * @Date:   2021-11-17
  * @Version: V1.0
  */
 public interface SmartDemocraticLifeEnclosureMapper extends BaseMapper<SmartDemocraticLifeEnclosure> {

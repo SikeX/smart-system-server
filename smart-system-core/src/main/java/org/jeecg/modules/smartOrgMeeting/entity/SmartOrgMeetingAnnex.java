@@ -17,7 +17,7 @@ import java.io.UnsupportedEncodingException;
 /**
  * @Description: 组织生活会附件表
  * @Author: jeecg-boot
- * @Date:   2021-11-11
+ * @Date:   2021-11-14
  * @Version: V1.0
  */
 @ApiModel(value="smart_org_meeting_annex对象", description="组织生活会附件表")
@@ -47,10 +47,6 @@ public class SmartOrgMeetingAnnex implements Serializable {
 	/**主表ID*/
     @ApiModelProperty(value = "主表ID")
     private java.lang.String parentId;
-	/**序号*/
-	@Excel(name = "序号", width = 15)
-    @ApiModelProperty(value = "序号")
-    private java.lang.Integer annexOrder;
 	/**附件说明*/
 	@Excel(name = "附件说明", width = 15)
     @ApiModelProperty(value = "附件说明")
@@ -59,12 +55,6 @@ public class SmartOrgMeetingAnnex implements Serializable {
 	@Excel(name = "附件文件", width = 15)
     @ApiModelProperty(value = "附件文件")
     private java.lang.String annexFilepath;
-	/**上传时间（未用）*/
-	@Excel(name = "上传时间（未用）", width = 20, format = "yyyy-MM-dd HH:mm:ss")
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @ApiModelProperty(value = "上传时间（未用）")
-    private java.util.Date uploadTime;
 	/**上传时间*/
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")

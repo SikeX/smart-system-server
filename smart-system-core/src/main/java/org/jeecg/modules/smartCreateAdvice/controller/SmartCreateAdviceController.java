@@ -13,6 +13,7 @@ import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.smartDemocraticLifeMeeting.entity.SmartDemocraticLifeMeeting;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
+import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -63,6 +64,8 @@ public class SmartCreateAdviceController {
 	CommonService commonService;
 	@Autowired
 	private SmartVerify smartVerify;
+	@Autowired
+	private ISmartVerifyTypeService smartVerifyTypeService;
 
 	public String verifyType = "制发建议";
 	/**
@@ -140,8 +143,21 @@ public class SmartCreateAdviceController {
 			return Result.error("没有找到部门！");
 		}
 		smartCreateAdvice.setDepartId(id);
-		smartCreateAdviceService.saveMain(smartCreateAdvice, smartCreateAdvicePage.getSmartCreateAdviceAnnexList());
-		smartVerify.addVerifyRecord(smartCreateAdvice.getId(), verifyType);
+
+		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
+		if(isVerify){
+			smartCreateAdviceService.saveMain(smartCreateAdvice, smartCreateAdvicePage.getSmartCreateAdviceAnnexList());
+			String recordId = smartCreateAdvice.getId();
+			smartVerify.addVerifyRecord(recordId,verifyType);
+			smartCreateAdvice.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+			smartCreateAdviceService.updateById(smartCreateAdvice);
+		} else {
+			// 设置审核状态为免审
+			smartCreateAdvice.setVerifyStatus("3");
+			// 直接添加，不走审核流程
+			smartCreateAdviceService.saveMain(smartCreateAdvice, smartCreateAdvicePage.getSmartCreateAdviceAnnexList());
+		}
+
 		return Result.OK("添加成功！");
 	}
 	

@@ -45,4 +45,10 @@ public class SysAnnouncementSend implements Serializable {
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private java.util.Date updateTime;
+
+	private java.lang.String userName;
+
+	private java.lang.String userDepart;
+
+	private java.lang.Integer isDelay;
 }

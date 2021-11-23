@@ -282,7 +282,7 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 		 messageDTO.setFromUser(userName);
 		 messageDTO.setToUser(fillPersonUserName);
 		 messageDTO.setTitle("审核未通过");
-		 messageDTO.setContent("您的"+taskType+"审核未通过");
+		 messageDTO.setContent("您的"+taskType+"审核未通过，请重新填报");
 		 messageDTO.setCategory("1");
 		 sysBaseAPI.sendSysAnnouncement(messageDTO);
 		 return Result.OK("更新成功");
