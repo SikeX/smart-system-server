@@ -303,7 +303,7 @@ public class LoginController {
 			//update-end--Author:scott  Date:20190812 for：issues#391
 			result.setSuccess(true);
 
-		} catch (ClientException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			result.error500(" 短信接口未配置，请联系管理员！");
 			return result;
