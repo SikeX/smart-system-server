@@ -30,7 +30,7 @@
 	   where sas.user_id = #{userId}
 	</select>
 	
-	<select id="getMyAnnouncementSendList" parameterType="Object"  resultMap="AnnouncementSendModel">
+	<select id="getMyAnnouncementSendList"  parameterType="Object"  resultMap="AnnouncementSendModel">
 	   select
 	   		sas.id,
 	   		sas.annt_id,

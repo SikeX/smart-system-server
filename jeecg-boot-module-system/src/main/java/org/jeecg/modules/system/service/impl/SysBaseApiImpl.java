@@ -101,6 +101,8 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 	@Autowired
 	ISysCategoryService sysCategoryService;
 
+
+
 	@Override
 	@Cacheable(cacheNames=CacheConstant.SYS_USERS_CACHE, key="#username")
 	public LoginUser getUserByName(String username) {
@@ -1188,5 +1190,11 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 		return sysDepartService.getById(departId).getParentId();
 	}
 
+	@Override
+	public String getDepartIdByUserId(String userId) {
+		QueryWrapper<SysUserDepart> queryWrapper = new QueryWrapper<>();
+		queryWrapper.eq("user_id",userId);
+		return sysUserDepartService.getOne(queryWrapper).getDepId();
+	}
 
 }
