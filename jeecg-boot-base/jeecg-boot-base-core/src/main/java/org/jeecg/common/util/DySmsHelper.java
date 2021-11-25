@@ -13,6 +13,18 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import com.alibaba.fastjson.JSONObject;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created on 17/6/7.
  * 短信API产品的DEMO程序,工程中包含了一个SmsDemo类，直接通过
@@ -53,55 +65,56 @@ public class DySmsHelper {
         return accessKeySecret;
     }
     
-    
-    public static boolean sendSms(String phone,JSONObject templateParamJson,DySmsEnum dySmsEnum) throws ClientException {
-    	//可自助调整超时时间
-        System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
-        System.setProperty("sun.net.client.defaultReadTimeout", "10000");
 
-        //update-begin-author：taoyan date:20200811 for:配置类数据获取
-        StaticConfig staticConfig = SpringContextUtils.getBean(StaticConfig.class);
-        setAccessKeyId(staticConfig.getAccessKeyId());
-        setAccessKeySecret(staticConfig.getAccessKeySecret());
-        //update-end-author：taoyan date:20200811 for:配置类数据获取
-        
-        //初始化acsClient,暂不支持region化
-        IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", accessKeyId, accessKeySecret);
-        DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", product, domain);
-        IAcsClient acsClient = new DefaultAcsClient(profile);
-        
-        //验证json参数
-        validateParam(templateParamJson,dySmsEnum);
-        
-        //组装请求对象-具体描述见控制台-文档部分内容
-        SendSmsRequest request = new SendSmsRequest();
-        //必填:待发送手机号
-        request.setPhoneNumbers(phone);
-        //必填:短信签名-可在短信控制台中找到
-        request.setSignName(dySmsEnum.getSignName());
-        //必填:短信模板-可在短信控制台中找到
-        request.setTemplateCode(dySmsEnum.getTemplateCode());
-        //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
-        request.setTemplateParam(templateParamJson.toJSONString());
-        
-        //选填-上行短信扩展码(无特殊需求用户请忽略此字段)
-        //request.setSmsUpExtendCode("90997");
-
-        //可选:outId为提供给业务方扩展字段,最终在短信回执消息中将此值带回给调用者
-        //request.setOutId("yourOutId");
-
-        boolean result = false;
-
-        //hint 此处可能会抛出异常，注意catch
-        SendSmsResponse sendSmsResponse = acsClient.getAcsResponse(request);
-        logger.info("短信接口返回的数据----------------");
-        logger.info("{Code:" + sendSmsResponse.getCode()+",Message:" + sendSmsResponse.getMessage()+",RequestId:"+ sendSmsResponse.getRequestId()+",BizId:"+sendSmsResponse.getBizId()+"}");
-        if ("OK".equals(sendSmsResponse.getCode())) {
-            result = true;
-        }
-        return result;
-        
-    }
+    //阿里云短信
+//    public static boolean sendSms(String phone,JSONObject templateParamJson,DySmsEnum dySmsEnum) throws ClientException {
+//    	//可自助调整超时时间
+//        System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
+//        System.setProperty("sun.net.client.defaultReadTimeout", "10000");
+//
+//        //update-begin-author：taoyan date:20200811 for:配置类数据获取
+//        StaticConfig staticConfig = SpringContextUtils.getBean(StaticConfig.class);
+//        setAccessKeyId(staticConfig.getAccessKeyId());
+//        setAccessKeySecret(staticConfig.getAccessKeySecret());
+//        //update-end-author：taoyan date:20200811 for:配置类数据获取
+//
+//        //初始化acsClient,暂不支持region化
+//        IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", accessKeyId, accessKeySecret);
+//        DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", product, domain);
+//        IAcsClient acsClient = new DefaultAcsClient(profile);
+//
+//        //验证json参数
+//        validateParam(templateParamJson,dySmsEnum);
+//
+//        //组装请求对象-具体描述见控制台-文档部分内容
+//        SendSmsRequest request = new SendSmsRequest();
+//        //必填:待发送手机号
+//        request.setPhoneNumbers(phone);
+//        //必填:短信签名-可在短信控制台中找到
+//        request.setSignName(dySmsEnum.getSignName());
+//        //必填:短信模板-可在短信控制台中找到
+//        request.setTemplateCode(dySmsEnum.getTemplateCode());
+//        //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
+//        request.setTemplateParam(templateParamJson.toJSONString());
+//
+//        //选填-上行短信扩展码(无特殊需求用户请忽略此字段)
+//        //request.setSmsUpExtendCode("90997");
+//
+//        //可选:outId为提供给业务方扩展字段,最终在短信回执消息中将此值带回给调用者
+//        //request.setOutId("yourOutId");
+//
+//        boolean result = false;
+//
+//        //hint 此处可能会抛出异常，注意catch
+//        SendSmsResponse sendSmsResponse = acsClient.getAcsResponse(request);
+//        logger.info("短信接口返回的数据----------------");
+//        logger.info("{Code:" + sendSmsResponse.getCode()+",Message:" + sendSmsResponse.getMessage()+",RequestId:"+ sendSmsResponse.getRequestId()+",BizId:"+sendSmsResponse.getBizId()+"}");
+//        if ("OK".equals(sendSmsResponse.getCode())) {
+//            result = true;
+//        }
+//        return result;
+//
+//    }
     
     private static void validateParam(JSONObject templateParamJson,DySmsEnum dySmsEnum) {
     	String keys = dySmsEnum.getKeys();
@@ -119,4 +132,64 @@ public class DySmsHelper {
 //    	obj.put("code", "1234");
 //    	sendSms("13800138000", obj, DySmsEnum.FORGET_PASSWORD_TEMPLATE_CODE);
 //    }
+
+    //创蓝智能云平台短信服务
+    public static boolean sendSms(String mobile, JSONObject templateParamJson,DySmsEnum dySmsEnum){
+        String code = templateParamJson.get("code").toString();
+        String sendUrl = "http://smssh1.253.com/msg/v1/send/json";//API URL
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("account","N7764651");//API账号
+        map.put("password","x5ipGcgoe");//API密码
+        map.put("msg","您好，您的验证码是" + code);//短信内容
+        map.put("phone",mobile);//手机号
+        // map.put("report","true");//是否需要状态报告
+        // map.put("extend","123");//自定义扩展码
+        JSONObject js = (JSONObject) JSONObject.toJSON(map);
+        String reString = sendSmsByPost(sendUrl,js.toString());
+        System.out.println(reString);
+
+        //返回值
+        JSONObject json = JSONObject.parseObject(reString);
+        Map<String, Object> map1 = (Map<String, Object>)json;
+
+        if(map1.get("code").equals("0")){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    private static String sendSmsByPost(String path, String postContent){
+        URL url = null;
+        try {
+            url = new URL(path);
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setConnectTimeout(10000);
+            httpURLConnection.setReadTimeout(10000);
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoInput(true);
+            httpURLConnection.setRequestProperty("Charset", "UTF-8");
+            httpURLConnection.setRequestProperty("Content-Type", "application/json");
+            httpURLConnection.connect();
+            OutputStream os=httpURLConnection.getOutputStream();
+            os.write(postContent.getBytes("UTF-8"));
+            os.flush();
+            StringBuilder sb = new StringBuilder();
+            int httpRspCode = httpURLConnection.getResponseCode();
+            if (httpRspCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader br = new BufferedReader(
+                        new InputStreamReader(httpURLConnection.getInputStream(), "utf-8"));
+                String line = null;
+                while ((line = br.readLine()) != null) {
+                    sb.append(line);
+                }
+                br.close();
+                return sb.toString();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
