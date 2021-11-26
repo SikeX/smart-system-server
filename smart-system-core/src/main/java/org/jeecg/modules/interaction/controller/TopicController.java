@@ -14,6 +14,7 @@ import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.interaction.domain.SmartVillageTopic;
 import org.jeecg.modules.interaction.service.SmartVillageTopicService;
+import org.jeecg.modules.interaction.utils.SensitiveWordUtil;
 import org.jeecg.modules.smartSupervision.entity.SmartSupervision;
 import org.jeecg.modules.smartSupervision.entity.SmartSupervisionAnnex;
 import org.jeecg.modules.smartSupervision.vo.SmartSupervisionPage;
@@ -35,7 +36,7 @@ import java.util.stream.Collectors;
  * @Date: 2021/11/24 15:23
  * @Version: V1.0
  */
-@Api(tags="八项规定监督检查表")
+@Api(tags="村情互动话题")
 @RestController
 @RequestMapping("/interaction")
 @Slf4j
@@ -71,6 +72,25 @@ public class TopicController {
         return result;
     }
 
+    @AutoLog(value = "村情互动话题-分页列表查询")
+    @ApiOperation(value="村情互动话题-分页列表查询", notes="村情互动话题-分页列表查询")
+    @GetMapping(value = "/verifyList")
+    public Result<?> queryPageVerifyList(SmartVillageTopic smartVillageTopic,
+                                   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+                                   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+                                   HttpServletRequest req) {
+        Result<IPage<SmartVillageTopic>> result = new Result<IPage<SmartVillageTopic>>();
+
+        LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
+        String userId = sysUser.getId();
+
+        Page<SmartVillageTopic> pageList = new Page<SmartVillageTopic>(pageNo, pageSize);
+        pageList = smartVillageTopicService.getVerifyTopicListPage(pageList, userId);
+        result.setResult(pageList);
+        result.setSuccess(true);
+        return result;
+    }
+
     /**
      *   添加
      *
@@ -88,9 +108,25 @@ public class TopicController {
         String userId = sysUser.getId();
         smartVillageTopic.setUserId(userId);
         smartVillageTopic.setStatus(0);
+        //对敏感词进行过滤
+        smartVillageTopic.setTitle(SensitiveWordUtil.replaceSensitiveWord(smartVillageTopic.getTitle(),"*",
+                SensitiveWordUtil.MinMatchType));
+        smartVillageTopic.setContent(SensitiveWordUtil.replaceSensitiveWord(smartVillageTopic.getContent(),"*",
+                SensitiveWordUtil.MinMatchType));
         smartVillageTopicService.save(smartVillageTopic);
 
         return Result.OK("添加成功！");
+    }
+
+    @AutoLog(value = "村情互动话题-审核")
+    @ApiOperation(value="村情互动话题-审核", notes="村情互动话题-审核")
+    @Transactional
+    @PutMapping(value = "/verify")
+    public Result<?> verify(@RequestBody SmartVillageTopic smartVillageTopic) {
+
+        smartVillageTopicService.updateById(smartVillageTopic);
+
+        return Result.OK("审核成功！");
     }
 
     /**

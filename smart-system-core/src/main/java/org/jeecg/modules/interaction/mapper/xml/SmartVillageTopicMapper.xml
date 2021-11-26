@@ -34,6 +34,15 @@
         left join sys_user_depart u on t.user_id = u.user_id
         where u.dep_id = #{departId}
         and status = 1
-        order by t.create_time
+        order by t.create_time desc
+    </select>
+
+    <select id="getVerifyTopicListByDepartId" resultType="Object" resultMap="SmartVillageTopic">
+        select t.*
+        from smart_village_topic t
+                 left join sys_user_depart u on t.user_id = u.user_id
+        where u.dep_id = #{departId}
+          and status = 0
+        order by t.create_time desc
     </select>
 </mapper>

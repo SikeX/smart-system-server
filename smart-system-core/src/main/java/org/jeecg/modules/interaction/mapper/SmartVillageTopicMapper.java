@@ -18,4 +18,6 @@ public interface SmartVillageTopicMapper extends BaseMapper<SmartVillageTopic> {
 
     // 通过用户id获取话题列表
     List<SmartVillageTopic> getTopicListByDepartId(Page<SmartVillageTopic> page, @Param("departId") String departId);
+
+    List<SmartVillageTopic> getVerifyTopicListByDepartId(Page<SmartVillageTopic> page, @Param("departId") String departId);
 }
