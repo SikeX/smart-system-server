@@ -1131,6 +1131,7 @@ public class SysUserController {
 			sysUserService.addUserWithRole(user,"ee8626f80f7c2619917b6236f3a7f02b");//默认临时角色 test
 			result.success("注册成功");
 		} catch (Exception e) {
+		    e.printStackTrace();
 			result.error500("注册失败");
 		}
 		return result;
