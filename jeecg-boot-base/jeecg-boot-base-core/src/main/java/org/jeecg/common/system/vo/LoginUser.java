@@ -116,4 +116,6 @@ public class LoginUser {
 	/**设备id uniapp推送用*/
 	private String clientId;
 
+	private String departId;
+
 }

@@ -110,7 +110,30 @@ public class SysDepartController {
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);
 		}
-		System.out.println("业务结构"+res.getResult());
+//		System.out.println("业务结构"+res.getResult());
+		return res;
+	}
+
+	/**
+	 * 查询数据 查出所负责部门,并以业务层级树结构数据格式响应给前端
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "/queryFuzeTreeList", method = RequestMethod.GET)
+	public Result<List<SysDepartTreeModel>> queryFuzeTreeList() {
+		Result<List<SysDepartTreeModel>> res = new Result<>();
+		try {
+			// 从内存中读取
+//			List<SysDepartTreeModel> list =FindsDepartsChildrenUtil.getSysDepartTreeList();
+//			if (CollectionUtils.isEmpty(list)) {
+//				list = sysDepartService.queryTreeList();
+//			}
+			List<SysDepartTreeModel> list = sysDepartService.queryFuzeTreeList();
+			res.setResult(list);
+			res.setSuccess(true);
+		} catch (Exception e) {
+			log.error(e.getMessage(),e);
+		}
 		return res;
 	}
 
@@ -333,6 +356,24 @@ public class SysDepartController {
 		Result<List<DepartIdModel>> result = new Result<>();
 		try {
 			List<DepartIdModel> list = sysDepartService.queryNaturalDepartIdTreeList();
+			result.setResult(list);
+			result.setSuccess(true);
+		} catch (Exception e) {
+			log.error(e.getMessage(),e);
+		}
+		return result;
+	}
+
+	/**
+	 * 查询数据 添加或编辑页面对该方法发起请求,以业务树结构形式加载管辖范围内部门的名称,方便用户的操作
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "/queryFuzeIdTree", method = RequestMethod.GET)
+	public Result<List<DepartIdModel>> queryFuzeIdTree() {
+		Result<List<DepartIdModel>> result = new Result<>();
+		try {
+			List<DepartIdModel> list = sysDepartService.queryFuzeIdTreeList();
 			result.setResult(list);
 			result.setSuccess(true);
 		} catch (Exception e) {
