@@ -20,8 +20,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
-import org.jeecg.modules.smartPaper.entity.SmartPaper;
-import org.jeecg.modules.smartPaper.service.ISmartPaperService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -41,7 +39,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
  /**
  * @Description: 考试信息表
  * @Author: jeecg-boot
- * @Date:   2021-11-21
+ * @Date:   2021-11-23
  * @Version: V1.0
  */
 @Api(tags="考试信息表")
@@ -51,8 +49,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 public class SmartExamInformationController extends JeecgController<SmartExamInformation, ISmartExamInformationService> {
 	@Autowired
 	private ISmartExamInformationService smartExamInformationService;
-
-
+	
 	/**
 	 * 分页列表查询
 	 *
@@ -74,7 +71,7 @@ public class SmartExamInformationController extends JeecgController<SmartExamInf
 		IPage<SmartExamInformation> pageList = smartExamInformationService.page(page, queryWrapper);
 		return Result.OK(pageList);
 	}
-
+	
 	/**
 	 *   添加
 	 *
@@ -85,12 +82,10 @@ public class SmartExamInformationController extends JeecgController<SmartExamInf
 	@ApiOperation(value="考试信息表-添加", notes="考试信息表-添加")
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody SmartExamInformation smartExamInformation) {
-
 		smartExamInformationService.save(smartExamInformation);
-
 		return Result.OK("添加成功！");
 	}
-
+	
 	/**
 	 *  编辑
 	 *
@@ -104,7 +99,7 @@ public class SmartExamInformationController extends JeecgController<SmartExamInf
 		smartExamInformationService.updateById(smartExamInformation);
 		return Result.OK("编辑成功!");
 	}
-
+	
 	/**
 	 *   通过id删除
 	 *
@@ -118,7 +113,7 @@ public class SmartExamInformationController extends JeecgController<SmartExamInf
 		smartExamInformationService.removeById(id);
 		return Result.OK("删除成功!");
 	}
-
+	
 	/**
 	 *  批量删除
 	 *
@@ -132,7 +127,7 @@ public class SmartExamInformationController extends JeecgController<SmartExamInf
 		this.smartExamInformationService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.OK("批量删除成功!");
 	}
-
+	
 	/**
 	 * 通过id查询
 	 *

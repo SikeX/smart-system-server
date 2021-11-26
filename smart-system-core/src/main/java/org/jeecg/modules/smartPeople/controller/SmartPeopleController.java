@@ -39,7 +39,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
  /**
  * @Description: 考试参加人员表
  * @Author: jeecg-boot
- * @Date:   2021-11-18
+ * @Date:   2021-11-24
  * @Version: V1.0
  */
 @Api(tags="考试参加人员表")
@@ -49,7 +49,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 public class SmartPeopleController extends JeecgController<SmartPeople, ISmartPeopleService> {
 	@Autowired
 	private ISmartPeopleService smartPeopleService;
-	
+
 	/**
 	 * 分页列表查询
 	 *
@@ -71,7 +71,7 @@ public class SmartPeopleController extends JeecgController<SmartPeople, ISmartPe
 		IPage<SmartPeople> pageList = smartPeopleService.page(page, queryWrapper);
 		return Result.OK(pageList);
 	}
-	
+
 	/**
 	 *   添加
 	 *
@@ -85,7 +85,9 @@ public class SmartPeopleController extends JeecgController<SmartPeople, ISmartPe
 		smartPeopleService.save(smartPeople);
 		return Result.OK("添加成功！");
 	}
-	
+
+
+
 	/**
 	 *  编辑
 	 *
@@ -99,7 +101,7 @@ public class SmartPeopleController extends JeecgController<SmartPeople, ISmartPe
 		smartPeopleService.updateById(smartPeople);
 		return Result.OK("编辑成功!");
 	}
-	
+
 	/**
 	 *   通过id删除
 	 *
@@ -113,7 +115,7 @@ public class SmartPeopleController extends JeecgController<SmartPeople, ISmartPe
 		smartPeopleService.removeById(id);
 		return Result.OK("删除成功!");
 	}
-	
+
 	/**
 	 *  批量删除
 	 *
@@ -127,7 +129,7 @@ public class SmartPeopleController extends JeecgController<SmartPeople, ISmartPe
 		this.smartPeopleService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.OK("批量删除成功!");
 	}
-	
+
 	/**
 	 * 通过id查询
 	 *

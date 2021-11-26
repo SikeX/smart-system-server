@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 /**
  * @Description: 考试参加人员表
  * @Author: jeecg-boot
- * @Date:   2021-11-18
+ * @Date:   2021-11-24
  * @Version: V1.0
  */
 public interface SmartPeopleMapper extends BaseMapper<SmartPeople> {

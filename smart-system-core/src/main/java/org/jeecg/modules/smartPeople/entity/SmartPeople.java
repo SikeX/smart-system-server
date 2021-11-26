@@ -20,7 +20,7 @@ import lombok.experimental.Accessors;
 /**
  * @Description: 考试参加人员表
  * @Author: jeecg-boot
- * @Date:   2021-11-18
+ * @Date:   2021-11-24
  * @Version: V1.0
  */
 @Data
@@ -55,12 +55,12 @@ public class SmartPeople implements Serializable {
     @ApiModelProperty(value = "所属部门")
     private java.lang.String sysOrgCode;
 	/**人员id*/
-	//@Excel(name = "人员id", width = 15)
+	@Excel(name = "人员id", width = 15)
     @ApiModelProperty(value = "人员id")
     private java.lang.String personId;
-    /**人员姓名*/
-    @Excel(name = "人员姓名", width = 15)
-    @ApiModelProperty(value = "人员姓名")
+	/**姓名*/
+	@Excel(name = "姓名", width = 15)
+    @ApiModelProperty(value = "姓名")
     private java.lang.String personName;
 	/**考试id*/
 	@Excel(name = "考试id", width = 15)
