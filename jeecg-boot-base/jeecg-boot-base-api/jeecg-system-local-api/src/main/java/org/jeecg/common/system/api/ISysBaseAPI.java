@@ -339,4 +339,6 @@ public interface ISysBaseAPI extends CommonAPI {
     String getParentIdByUserId(String id);
 
     String getParentDepIdByDepartId(String departId);
+
+    String getDepartIdByUserId(String userId);
 }

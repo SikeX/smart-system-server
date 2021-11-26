@@ -63,6 +63,7 @@ public class SysAnnouncementServiceImpl extends ServiceImpl<SysAnnouncementMappe
 			log.info(String.valueOf(allUserIdList));
 
 			String anntId = sysAnnouncement.getId();
+			List<SysAnnouncementSend> sysAnnouncementSendList = new ArrayList<>();
 			for (String id : allUserIdList) {
 				SysAnnouncementSend announcementSend = new SysAnnouncementSend();
 				String userName = sysBaseApi.getUserById(id).getUsername();
@@ -72,8 +73,10 @@ public class SysAnnouncementServiceImpl extends ServiceImpl<SysAnnouncementMappe
 //				announcementSend.setUserDepart(sysBaseApi.getDepartNamesByUsername(userName).get(0));
 				announcementSend.setReadFlag(CommonConstant.NO_READ_FLAG);
 				announcementSend.setIsDelay(0);
-				sysAnnouncementSendMapper.insert(announcementSend);
+				sysAnnouncementSendList.add(announcementSend);
 			}
+			// TO DO
+//			sysAnnouncementSendMapper
 			
 		} else if(sysAnnouncement.getMsgType().equals(CommonConstant.MSG_TYPE_DEPART)){
 			send_count = sysBaseApi.getDeptHeadByDepId(departIds).size();
