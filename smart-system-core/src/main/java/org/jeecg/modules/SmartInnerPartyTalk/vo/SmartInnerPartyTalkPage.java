@@ -112,6 +112,8 @@ public class SmartInnerPartyTalkPage {
 	@Excel(name = "删除状态（0，未删除；1，删除）", width = 15)
 	@ApiModelProperty(value = "删除状态（0，未删除；1，删除）")
     private java.lang.Integer delFlag;
+	@ApiModelProperty(value = "审核状态")
+	private java.lang.String verifyStatus;
 
 	@ExcelCollection(name="党内谈话参与人表")
 	@ApiModelProperty(value = "党内谈话参与人表")

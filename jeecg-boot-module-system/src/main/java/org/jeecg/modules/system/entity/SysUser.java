@@ -211,7 +211,12 @@ public class SysUser implements Serializable {
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date joinPartyDate;
-
+    /**
+     * 人员类别
+     */
+    @ApiModelProperty(value = "人员类别")
+    @Dict(dicCode = "people_type")
+    private java.lang.String peopleType;
     /**
      * 多租户id配置，编辑用户的时候设置
      */

@@ -48,7 +48,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
-import javax.print.MimeType;
+//import javax.print.MimeType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -120,23 +120,22 @@ public class SysUserController {
         String field = "departId";
         // 获取登录用户信息，可以用来查询单位部门信息
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-
         // 获取子单位ID
         String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
-
         HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
         // 获取请求参数中的superQueryParams
         List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
-
         // 添加额外查询条件，用于权限控制
         paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
                 + childrenIdString
                 + "%22,%22field%22:%22" + field + "%22%7D%5D");
+
         String[] params = new String[paramsList.size()];
         paramsList.toArray(params);
         map.put("superQueryParams", params);
         params = new String[]{"and"};
         map.put("superQueryMatchType", params);
+
         Result<IPage<SysUser>> result = new Result<IPage<SysUser>>();
 		QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(user, map);
     	//TODO 外部模拟登陆临时账号，列表不显示
@@ -184,12 +183,14 @@ public class SysUserController {
             return result.error500("没有找到部门！");
         }
 		String selectedRoles = jsonObject.getString("selectedroles");
-		String selectedDeparts = jsonObject.getString("selecteddeparts");
+		/*String selectedDeparts = jsonObject.getString("selecteddeparts");*/
 		//设置部门，只能添加本部门人员
-		//String selectedDepart = id;
+		String selectedDepart = id;
 		try {
 			SysUser user = JSON.parseObject(jsonObject.toJSONString(), SysUser.class);
 			user.setDepartId(id);
+			//设置人员类别,党员干部
+            user.setPeopleType("1");
 			//设置sys_code
 			user.setCreateTime(new Date());//设置创建时间
             String phone = user.getPhone();
@@ -210,8 +211,8 @@ public class SysUserController {
 			user.setStatus(1);
 			user.setDelFlag(CommonConstant.DEL_FLAG_0);
 			// 保存用户走一个service 保证事务
-            sysUserService.saveUser(user, selectedRoles, selectedDeparts);
-            //sysUserService.saveUser(user, selectedRoles, selectedDepart);//只能添加本部门人员
+            //sysUserService.saveUser(user, selectedRoles, selectedDeparts);
+            sysUserService.saveUser(user, selectedRoles, selectedDepart);//只能添加本部门人员
 			result.success("添加成功！");
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -463,15 +464,37 @@ public class SysUserController {
      * @param username
      * @return
      */
+    @RequestMapping(value = "/newQueryUserComponentData", method = RequestMethod.GET)
+    public Result<IPage<SysUser>> newQueryUserComponentData(
+            @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+            @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+            @RequestParam(name = "departId", required = false) String departId,
+            @RequestParam(name="realname",required=false) String realname,
+            @RequestParam(name="username",required=false) String username )
+    {
+
+            IPage<SysUser> pageList = sysUserDepartService.newqueryDepartUserPageList(departId, username, realname, pageSize, pageNo);
+
+            //IPage<SysUser> pageList = sysUserDepartService.queryDepartUserPageList(departId, username, realname, pageSize, pageNo);
+
+        return Result.OK(pageList);
+
+    }
     @RequestMapping(value = "/queryUserComponentData", method = RequestMethod.GET)
     public Result<IPage<SysUser>> queryUserComponentData(
             @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
             @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
             @RequestParam(name = "departId", required = false) String departId,
             @RequestParam(name="realname",required=false) String realname,
-            @RequestParam(name="username",required=false) String username) {
+            @RequestParam(name="username",required=false) String username )
+    {
+
+        //IPage<SysUser> pageList = sysUserDepartService.newqueryDepartUserPageList(departId, username, realname, pageSize, pageNo);
+
         IPage<SysUser> pageList = sysUserDepartService.queryDepartUserPageList(departId, username, realname, pageSize, pageNo);
+
         return Result.OK(pageList);
+
     }
 
     /**

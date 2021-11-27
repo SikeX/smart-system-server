@@ -151,10 +151,9 @@ public class SmartFirstFormPeople implements Serializable {
     @ApiModelProperty(value = "办理部门")
     private java.lang.String handlerDepart;
 	/**办理状态*/
-	@Excel(name = "办理状态", width = 15,dicCode = "processing_type")
-    @ApiModelProperty(value = "办理状态")
-    @Dict(dicCode = "processing_type")
-    private java.lang.String state;
+	@Excel(name = "审核状态", width = 15)
+    @ApiModelProperty(value = "审核状态")
+    private java.lang.String verifyStatus;
 	/**类型*/
 	@Excel(name = "类型", width = 15,dicCode = "first_form_type")
     @ApiModelProperty(value = "类型")

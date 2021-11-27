@@ -15,6 +15,7 @@ import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.modules.SmartInnerPartyTalk.entity.SmartInnerPartyTalk;
 import org.jeecg.modules.SmartPunishPeople.entity.SmartPunishPeople;
+import org.jeecg.modules.SmartPunishPeople.entity.TypeCount;
 import org.jeecg.modules.SmartPunishPeople.service.ISmartPunishPeopleService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
@@ -234,7 +235,31 @@ public class SmartPunishPeopleController extends JeecgController<SmartPunishPeop
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
         return super.importExcel(request, response, SmartPunishPeople.class);
     }
-    //定时更新状态
-
+	//处分人员总数量
+    @RequestMapping(value = "/punishPeopleCount",method = RequestMethod.GET)
+	public Result<?> punishPeopleCount(){
+    	Integer count = smartPunishPeopleService.punishPeopleCount();
+		return Result.OK(count);
+	}
+	//按处分类型统计
+	@RequestMapping(value = "/punishPeopleCountByType",method = RequestMethod.GET)
+	public Result<?> punishPeopleCountByType() {
+		List<TypeCount>  list = smartPunishPeopleService.punishPeopleCountByType();
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		System.out.println(list);
+		return Result.OK(list);
+	}
+	//本月即将解除处分人员数量
+	@RequestMapping(value = "/punishPeopleCountByMonth",method = RequestMethod.GET)
+	public Result<?> punishPeopleCountByMonth() {
+    	Date date = new Date();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		String dateString = formatter.format(date);
+		String currentMonth = dateString.substring(0,7);
+		//System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		//System.out.println(currentMonth);
+		Integer count = smartPunishPeopleService.punishPeopleCountByMonth(currentMonth);
+		return Result.OK(count);
+	}
 
 }

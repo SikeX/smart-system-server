@@ -49,7 +49,7 @@ public interface ISysUserDepartService extends IService<SysUserDepart> {
 	 * @return
 	 */
 	IPage<SysUser> queryDepartUserPageList(String departId, String username, String realname, int pageSize, int pageNo);
-
+	//只展示本单位及下级单位人员
 	IPage<SysUser> newqueryDepartUserPageList(String departId, String username, String realname, int pageSize, int pageNo);
 
 }
