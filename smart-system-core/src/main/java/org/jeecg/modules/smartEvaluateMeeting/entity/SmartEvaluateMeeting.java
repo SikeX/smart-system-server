@@ -81,5 +81,8 @@ public class SmartEvaluateMeeting implements Serializable {
     @TableLogic
     @ApiModelProperty(value = "删除状态（0，正常，1已删除）")
     private java.lang.Integer delFlag;
+    /**审核状态*/
+    @ApiModelProperty(value = "审核状态")
+    private java.lang.String verifyStatus;
 
 }

@@ -17,7 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 8项规定财物收支表
  * @Author: jeecg-boot
- * @Date:   2021-11-11
+ * @Date:   2021-11-17
  * @Version: V1.0
  */
 @Data
@@ -61,9 +61,9 @@ public class SmartFinanceResultPage {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@ApiModelProperty(value = "创建时间")
     private java.util.Date createTime;
-	/**创建人工号*/
-	@Excel(name = "创建人工号", width = 15)
-	@ApiModelProperty(value = "创建人工号")
+	/**创建人ID*/
+	@Excel(name = "创建人ID", width = 15)
+	@ApiModelProperty(value = "创建人ID")
     private java.lang.String creatorId;
 	/**创建人*/
 	@ApiModelProperty(value = "创建人")
@@ -72,6 +72,10 @@ public class SmartFinanceResultPage {
 	@Excel(name = "删除状态（0，正常，1已删除）", width = 15)
 	@ApiModelProperty(value = "删除状态（0，正常，1已删除）")
     private java.lang.Integer delFlag;
+	/**审核状态*/
+	@Excel(name = "审核状态", width = 15)
+	@ApiModelProperty(value = "审核状态")
+    private java.lang.Integer verifyStatus;
 
 	@ExcelCollection(name="8项规定财物收支附件")
 	@ApiModelProperty(value = "8项规定财物收支附件")

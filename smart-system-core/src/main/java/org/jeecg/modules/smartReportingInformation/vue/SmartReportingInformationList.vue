@@ -8,7 +8,7 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
-
+    
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
@@ -36,15 +36,15 @@
       <a-table
         ref="table"
         size="middle"
-        :scroll="{x:true}"
         bordered
         rowKey="id"
+        class="j-table-force-nowrap"
+        :scroll="{x:true}"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-        class="j-table-force-nowrap"
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -89,21 +89,20 @@
       </a-table>
     </div>
 
-    <smart-reporting-information-modal ref="modalForm" @ok="modalFormOk"></smart-reporting-information-modal>
+    <smart-reporting-information-modal ref="modalForm" @ok="modalFormOk"/>
   </a-card>
 </template>
 
 <script>
 
-  import '@/assets/less/TableExpand.less'
-  import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import SmartReportingInformationModal from './modules/SmartReportingInformationModal'
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
+  import '@/assets/less/TableExpand.less'
 
   export default {
-    name: 'SmartReportingInformationList',
-    mixins:[JeecgListMixin, mixinDevice],
+    name: "SmartReportingInformationList",
+    mixins:[JeecgListMixin],
     components: {
       SmartReportingInformationModal
     },
@@ -130,7 +129,12 @@
           {
             title:'被反映人单位',
             align:"center",
-            dataIndex: 'reflectedDocumentid'
+            dataIndex: 'reflectedDepartid'
+          },
+          {
+            title:'主要问题',
+            align:"center",
+            dataIndex: 'majorProblem'
           },
           {
             title:'举报时间',
@@ -138,9 +142,19 @@
             dataIndex: 'reportingTime'
           },
           {
-            title:'处理类型',
+            title:'处理状态',
             align:"center",
             dataIndex: 'processingType_dictText'
+          },
+          {
+            title:'举报人姓名',
+            align:"center",
+            dataIndex: 'reportingName'
+          },
+          {
+            title:'联系电话',
+            align:"center",
+            dataIndex: 'contactNumber'
           },
           {
             title: '操作',
@@ -148,7 +162,7 @@
             align:"center",
             fixed:"right",
             width:147,
-            scopedSlots: { customRender: 'action' }
+            scopedSlots: { customRender: 'action' },
           }
         ],
         url: {
@@ -164,22 +178,26 @@
       }
     },
     created() {
-    this.getSuperFieldList();
+      this.getSuperFieldList();
     },
     computed: {
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
-      },
+      }
     },
     methods: {
       initDictConfig(){
       },
       getSuperFieldList(){
         let fieldList=[];
-        fieldList.push({type:'string',value:'reflectedInformation',text:'被反映人信息',dictCode:''})
-        fieldList.push({type:'string',value:'reflectedDocumentid',text:'被反映人单位',dictCode:''})
-        fieldList.push({type:'datetime',value:'reportingTime',text:'举报时间'})
-        fieldList.push({type:'string',value:'processingType',text:'处理类型',dictCode:'processing_type'})
+         fieldList.push({type:'string',value:'reflectedInformation',text:'被反映人信息',dictCode:''})
+         fieldList.push({type:'string',value:'reflectedDepartid',text:'被反映人单位',dictCode:''})
+         fieldList.push({type:'string',value:'majorProblem',text:'主要问题',dictCode:''})
+         fieldList.push({type:'Text',value:'description',text:'附件',dictCode:''})
+         fieldList.push({type:'datetime',value:'reportingTime',text:'举报时间'})
+         fieldList.push({type:'string',value:'processingType',text:'处理状态',dictCode:'processing_type'})
+         fieldList.push({type:'string',value:'reportingName',text:'举报人姓名',dictCode:''})
+         fieldList.push({type:'string',value:'contactNumber',text:'联系电话',dictCode:''})
         this.superFieldList = fieldList
       }
     }

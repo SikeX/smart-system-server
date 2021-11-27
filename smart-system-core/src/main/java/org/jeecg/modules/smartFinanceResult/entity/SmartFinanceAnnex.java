@@ -16,7 +16,7 @@ import java.io.UnsupportedEncodingException;
 /**
  * @Description: 8项规定财物收支附件
  * @Author: jeecg-boot
- * @Date:   2021-11-11
+ * @Date:   2021-11-17
  * @Version: V1.0
  */
 @ApiModel(value="smart_finance_annex对象", description="8项规定财物收支附件")
@@ -46,10 +46,6 @@ public class SmartFinanceAnnex implements Serializable {
 	/**主表ID*/
     @ApiModelProperty(value = "主表ID")
     private java.lang.String parentId;
-	/**序号*/
-	@Excel(name = "序号", width = 15)
-    @ApiModelProperty(value = "序号")
-    private java.lang.Integer annexOrder;
 	/**附件说明*/
 	@Excel(name = "附件说明", width = 15)
     @ApiModelProperty(value = "附件说明")
@@ -62,12 +58,6 @@ public class SmartFinanceAnnex implements Serializable {
 	@Excel(name = "附件文件", width = 15)
     @ApiModelProperty(value = "附件文件")
     private java.lang.String annexFilepath;
-	/**上传时间（未用）*/
-	@Excel(name = "上传时间（未用）", width = 20, format = "yyyy-MM-dd HH:mm:ss")
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @ApiModelProperty(value = "上传时间（未用）")
-    private java.util.Date uploadTime;
 	/**上传时间*/
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")

@@ -44,6 +44,7 @@ public class SmartVerifyTask implements Serializable {
     @ApiModelProperty(value = "创建日期")
     private java.util.Date createTime;
 	/**所属部门*/
+    @Dict(dictTable = "sys_depart", dicText = "depart_name", dicCode = "org_code")
     @ApiModelProperty(value = "所属部门")
     private java.lang.String sysOrgCode;
 	/**任务类型*/

@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @Description: 组织生活会
  * @Author: jeecg-boot
- * @Date:   2021-11-11
+ * @Date:   2021-11-14
  * @Version: V1.0
  */
 public interface ISmartOrgMeetingService extends IService<SmartOrgMeeting> {

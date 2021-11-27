@@ -71,4 +71,8 @@ public class SmartCreateAdvice implements Serializable {
 	@Excel(name = "单位", width = 15)
     @ApiModelProperty(value = "单位")
     private java.lang.String departId;
+
+    @Excel(name = "审核状态", width = 15)
+    @ApiModelProperty(value = "单位")
+    private java.lang.String verifyStatus;
 }

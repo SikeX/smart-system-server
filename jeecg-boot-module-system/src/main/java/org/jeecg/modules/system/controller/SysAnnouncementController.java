@@ -44,10 +44,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.jeecg.common.constant.CommonConstant.ANNOUNCEMENT_SEND_STATUS_1;
 
@@ -126,14 +123,6 @@ public class SysAnnouncementController {
 			// update-end-author:liusq date:20210804 for:标题处理xss攻击的问题
 			sysAnnouncement.setDelFlag(CommonConstant.DEL_FLAG_0.toString());
 			sysAnnouncement.setSendStatus(CommonSendStatus.UNPUBLISHED_STATUS_0);//未发布
-			String userIds = sysAnnouncement.getUserIds();
-			if( StringUtils.isNotBlank(userIds) ){
-				Integer send_count = sysAnnouncement.getUserIds().split(",").length;
-			}
-			Integer send_count = sysBaseAPI.queryAllUserBackCombo().size();
-			
-			log.info(String.valueOf(send_count));
-			sysAnnouncement.setSendCount(send_count);
 			sysAnnouncementService.saveAnnouncement(sysAnnouncement);
 			result.success("添加成功！");
 		} catch (Exception e) {
@@ -247,6 +236,7 @@ public class SysAnnouncementController {
 			sysAnnouncement.setSendTime(new Date());
 			String currentUserName = JwtUtil.getUserNameByToken(request);
 			sysAnnouncement.setSender(currentUserName);
+			sysAnnouncement.setSenderDepart(sysBaseAPI.getDepartNamesByUsername(currentUserName).get(0));
 			boolean ok = sysAnnouncementService.updateById(sysAnnouncement);
 			if(ok) {
 				result.success("该系统通知发布成功");
@@ -256,12 +246,30 @@ public class SysAnnouncementController {
 					obj.put(WebsocketConst.MSG_ID, sysAnnouncement.getId());
 					obj.put(WebsocketConst.MSG_TXT, sysAnnouncement.getTitile());
 			    	webSocket.sendMessage(obj.toJSONString());
-				}else {
+				} else if (sysAnnouncement.getMsgType().equals(CommonConstant.MSG_TYPE_DEPART)){
+					String departId = sysAnnouncement.getDepartIds();
+					List<String> userNameList = sysBaseAPI.getDeptHeadByDepId(departId);
+//					log.info(String.valueOf(userIdList));
+					String[] userNameArray = new String[userNameList.size()];
+					for(int i = 0; i < userNameList.size(); i++){
+						userNameArray[i] = userNameList.get(i);
+					}
+					List<LoginUser> userList = sysBaseAPI.queryUserByNames(userNameArray);
+					log.info(String.valueOf(userList));
+					String[] userIdArray = new String[userList.size()];
+					for(int i = 0; i < userList.size(); i++){
+						userIdArray[i] = userList.get(i).getId();
+					}
+					log.info(Arrays.toString(userIdArray));
+					JSONObject obj = new JSONObject();
+					obj.put(WebsocketConst.MSG_CMD, WebsocketConst.CMD_USER);
+					obj.put(WebsocketConst.MSG_ID, sysAnnouncement.getId());
+					obj.put(WebsocketConst.MSG_TXT, sysAnnouncement.getTitile());
+					webSocket.sendMessage(userIdArray, obj.toJSONString());
+				} else {
 					// 2.插入用户通告阅读标记表记录
 					String userId = sysAnnouncement.getUserIds();
 					String[] userIds = userId.substring(0, (userId.length()-1)).split(",");
-					String anntId = sysAnnouncement.getId();
-					Date refDate = new Date();
 					JSONObject obj = new JSONObject();
 			    	obj.put(WebsocketConst.MSG_CMD, WebsocketConst.CMD_USER);
 					obj.put(WebsocketConst.MSG_ID, sysAnnouncement.getId());
@@ -501,5 +509,39 @@ public class SysAnnouncementController {
         modelAndView.setStatus(HttpStatus.NOT_FOUND);
         return modelAndView;
     }
+
+	/**
+	 * 分页列表查询
+	 * @param sysAnnouncement
+	 * @param pageNo
+	 * @param pageSize
+	 * @param req
+	 * @return
+	 */
+	@RequestMapping(value = "/taskList", method = RequestMethod.GET)
+	public Result<IPage<SysAnnouncement>> queryPageTaskList(SysAnnouncement sysAnnouncement,
+														@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+														@RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+														HttpServletRequest req) {
+		Result<IPage<SysAnnouncement>> result = new Result<IPage<SysAnnouncement>>();
+		sysAnnouncement.setDelFlag(CommonConstant.DEL_FLAG_0.toString());
+		QueryWrapper<SysAnnouncement> queryWrapper = new QueryWrapper<SysAnnouncement>(sysAnnouncement);
+		queryWrapper.eq("msg_category","3");
+		Page<SysAnnouncement> page = new Page<SysAnnouncement>(pageNo,pageSize);
+		//排序逻辑 处理
+		String column = req.getParameter("column");
+		String order = req.getParameter("order");
+		if(oConvertUtils.isNotEmpty(column) && oConvertUtils.isNotEmpty(order)) {
+			if("asc".equals(order)) {
+				queryWrapper.orderByAsc(oConvertUtils.camelToUnderline(column));
+			}else {
+				queryWrapper.orderByDesc(oConvertUtils.camelToUnderline(column));
+			}
+		}
+		IPage<SysAnnouncement> pageList = sysAnnouncementService.page(page, queryWrapper);
+		result.setSuccess(true);
+		result.setResult(pageList);
+		return result;
+	}
 
 }

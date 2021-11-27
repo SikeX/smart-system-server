@@ -1,6 +1,8 @@
 package org.jeecg.modules.system.util;
 
+import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.constant.CommonConstant;
+import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.RedisUtil;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.system.entity.SysDepart;
@@ -48,6 +50,24 @@ public class FindsDepartsChildrenUtil {
 
     /**
      * queryTreeList的子方法 ====1=====
+     * 该方法是s将SysDepart类型的list集合转换成SysDepartTreeModel类型的集合
+     */
+    public static List<SysDepartTreeModel> wrapTreeDataToFuzeList(List<SysDepart> recordList) {
+        // 在该方法每请求一次,都要对全局list集合进行一次清理
+//        idList.clear();
+        List<DepartIdModel> idList = new ArrayList<DepartIdModel>();
+        List<SysDepartTreeModel> records = new ArrayList<>();
+        for (int i = 0; i < recordList.size(); i++) {
+            SysDepart depart = recordList.get(i);
+            records.add(new SysDepartTreeModel(depart));
+        }
+        List<SysDepartTreeModel> tree = findFuzeChildren(records, idList);
+        setEmptyChildrenAsNull(tree);
+        return tree;
+    }
+
+    /**
+     * queryTreeList的子方法 ====1=====
      * 该方法是s将SysDepart类型的list集合转换成SysDepartTreeModel类型的集合,自然层级
      */
     public static List<SysDepartTreeModel> wrapNaturalTreeDataToTreeList(List<SysDepart> recordList) {
@@ -79,6 +99,24 @@ public class FindsDepartsChildrenUtil {
             records.add(new SysDepartTreeModel(depart));
         }
         findChildren(records, idList);
+        return idList;
+    }
+
+    /**
+     * 获取 DepartIdModel
+     * @param recordList
+     * @return
+     */
+    public static List<DepartIdModel> wrapTreeDataToDepartIdFuzeTreeList(List<SysDepart> recordList) {
+        // 在该方法每请求一次,都要对全局list集合进行一次清理
+        //idList.clear();
+        List<DepartIdModel> idList = new ArrayList<DepartIdModel>();
+        List<SysDepartTreeModel> records = new ArrayList<>();
+        for (int i = 0; i < recordList.size(); i++) {
+            SysDepart depart = recordList.get(i);
+            records.add(new SysDepartTreeModel(depart));
+        }
+        findFuzeChildren(records, idList);
         return idList;
     }
 
@@ -124,6 +162,34 @@ public class FindsDepartsChildrenUtil {
         }
         getGrandChildren(treeList,recordList,departIdList);
         
+        //idList = departIdList;
+        return treeList;
+    }
+
+    /**
+     * queryTreeList的子方法 ====2=====
+     * 该方法是找到并封装顶级父类的节点到TreeList集合，业务层级
+     */
+    private static List<SysDepartTreeModel> findFuzeChildren(List<SysDepartTreeModel> recordList,
+                                                         List<DepartIdModel> departIdList) {
+        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+        System.out.println(sysUser);
+        List<SysDepartTreeModel> treeList = new ArrayList<>();
+        for (int i = 0; i < recordList.size(); i++) {
+            SysDepartTreeModel branch = recordList.get(i);
+            if( branch.getValue().equals(sysUser.getDepartId())){
+                treeList.add(branch);
+                DepartIdModel departIdModel = new DepartIdModel().convert(branch);
+                departIdList.add(departIdModel);
+            }
+//            if (oConvertUtils.isEmpty(branch.getParentId())) {
+//                treeList.add(branch);
+//                DepartIdModel departIdModel = new DepartIdModel().convert(branch);
+//                departIdList.add(departIdModel);
+//            }
+        }
+        getGrandChildren(treeList,recordList,departIdList);
+
         //idList = departIdList;
         return treeList;
     }

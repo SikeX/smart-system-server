@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @Description: 民主生活会表
  * @Author: jeecg-boot
- * @Date:   2021-11-12
+ * @Date:   2021-11-17
  * @Version: V1.0
  */
 public interface ISmartDemocraticLifeMeetingService extends IService<SmartDemocraticLifeMeeting> {
