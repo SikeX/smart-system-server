@@ -264,6 +264,6 @@ public interface ISysUserService extends IService<SysUser> {
 	 * @param user 用户
 	 * @param selectedRoles 选择的角色id，多个以逗号隔开
 	 */
-	void saveUserFromClient(SysUser user, String selectedRoles, int appUserId);
+	void saveUserFromClient(SysUser user, String selectedRoles, int id, int userType);
 
 }
