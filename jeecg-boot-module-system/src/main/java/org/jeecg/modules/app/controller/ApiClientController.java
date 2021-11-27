@@ -113,7 +113,7 @@ public class ApiClientController extends ApiBaseController {
         SysUser sysUser = null;
         if (appUser.getSysUserId() == null) {
             // 如果没有关联系统用户，那么注册
-            sysUser = register(appUser, null,  1);
+            sysUser = register(appUser, null, 1);
             if (sysUser == null) {
                 log.error("注册新用户失败，客户端用户数据如下 " + appUser);
                 return Result.OK(appUser); // 由于token和sys_user_id为空，客户端根据这个字段判断是否注册成功，并且返回提示
@@ -133,6 +133,7 @@ public class ApiClientController extends ApiBaseController {
     /**
      * 设置默认用户名 android_user_ + id
      * 设置默认密码 123456
+     *
      * @param userType 1-安卓用户 2-微信用户
      */
     public SysUser register(AppUser appUser, WXUser wxUser, int userType) {
@@ -339,12 +340,24 @@ public class ApiClientController extends ApiBaseController {
         return result;
     }
 
-    @GetMapping(value = "/phone")
+    @PostMapping(value = "/phone")
     public Result<?> parsePhoneNumber(@RequestParam("encryptedData") String encryptedData,
-                                      @RequestParam("iv") String iv) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, InvalidParameterSpecException, BadPaddingException, InvalidKeyException {
+                                      @RequestParam("iv") String iv,
+                                      @RequestParam("sessionKey") String sessionKey) {
         // 解析出phone number
-        System.out.println(Wechat.decrypt("", "", encryptedData, iv));
-        return Result.OK();
+        String jsonString = Wechat.decrypt(wechatConfig.getAppid(), encryptedData, sessionKey, iv);
+        JSONObject jsonObject = JSONObject.parseObject(jsonString);
+        Result<JSONObject> result = new Result<>();
+        result.setResult(jsonObject);
+        // 根据sessionKey更新字段
+        WXUser wxUser = apiClientService.queryWxUserBySessionKey(sessionKey);
+        if (apiClientService.updateWxUserPhoneById(wxUser.getId(), wxUser.getSysUserId() ,jsonObject.getString("purePhoneNumber"))) {
+            result.setSuccess(true);
+            result.setCode(200);
+            return result;
+        } else {
+            return Result.error("更新错误");
+        }
     }
 
     @GetMapping(value = "/wxlogin")

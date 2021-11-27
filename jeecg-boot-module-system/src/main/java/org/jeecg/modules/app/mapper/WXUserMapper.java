@@ -29,4 +29,10 @@ public interface WXUserMapper {
     @Update("UPDATE tb_wx_user SET sys_user_id = #{sysUserId}, mtime = #{mtime} " +
             "where id = #{id}")
     void updateSysUserIdById(int id, String sysUserId, int mtime);
+
+    @Select("SELECT * FROM tb_wx_user WHERE wx_session_key = #{sessionKey}")
+    WXUser queryBySessionKey(String sessionKey);
+
+    @Update("UPDATE tb_wx_user SET phone = #{purePhoneNumber} where id = #{id}")
+    void updatePhoneById(int id, String purePhoneNumber);
 }

@@ -19,4 +19,8 @@ public interface IApiClientService {
     void updateWxUserById(WXUser updateData);
 
     WXUser queryWxUserById(int id);
+
+    WXUser queryWxUserBySessionKey(String sessionKey);
+
+    boolean updateWxUserPhoneById(int id, String sysUserId, String purePhoneNumber);
 }

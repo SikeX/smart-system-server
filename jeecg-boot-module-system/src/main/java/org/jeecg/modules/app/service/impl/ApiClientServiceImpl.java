@@ -5,6 +5,7 @@ import org.jeecg.modules.app.entity.WXUser;
 import org.jeecg.modules.app.mapper.AppUserMapper;
 import org.jeecg.modules.app.mapper.WXUserMapper;
 import org.jeecg.modules.app.service.IApiClientService;
+import org.jeecg.modules.system.mapper.SysUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,8 @@ public class ApiClientServiceImpl implements IApiClientService {
     private AppUserMapper appUserMapper;
     @Autowired
     private WXUserMapper wxUserMapper;
+    @Autowired
+    private SysUserMapper sysUserMapper;
 
     @Override
     public int insert(AppUser appUser) {
@@ -53,5 +56,19 @@ public class ApiClientServiceImpl implements IApiClientService {
     @Override
     public WXUser queryWxUserById(int id) {
         return wxUserMapper.queryById(id);
+    }
+
+    @Override
+    public WXUser queryWxUserBySessionKey(String sessionKey) {
+        return wxUserMapper.queryBySessionKey(sessionKey);
+    }
+
+    @Override
+    public boolean updateWxUserPhoneById(int id, String sysUserId, String purePhoneNumber) {
+        // 首先更新tb_wx_user的phone
+        wxUserMapper.updatePhoneById(id, purePhoneNumber);
+        // 更新sys_user
+        sysUserMapper.updatePhoneById(sysUserId, purePhoneNumber);
+        return true;
     }
 }
