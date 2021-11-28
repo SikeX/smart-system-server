@@ -23,4 +23,6 @@ public interface IApiClientService {
     WXUser queryWxUserBySessionKey(String sessionKey);
 
     boolean updateWxUserPhoneById(int id, String sysUserId, String purePhoneNumber);
+
+    int queryUnreadMessageNumBySysUserId(String sysUserId);
 }

@@ -5,6 +5,7 @@ import org.jeecg.modules.app.entity.WXUser;
 import org.jeecg.modules.app.mapper.AppUserMapper;
 import org.jeecg.modules.app.mapper.WXUserMapper;
 import org.jeecg.modules.app.service.IApiClientService;
+import org.jeecg.modules.system.mapper.SysAnnouncementMapper;
 import org.jeecg.modules.system.mapper.SysUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,8 @@ public class ApiClientServiceImpl implements IApiClientService {
     private WXUserMapper wxUserMapper;
     @Autowired
     private SysUserMapper sysUserMapper;
+    @Autowired
+    private SysAnnouncementMapper sysAnnouncementMapper;
 
     @Override
     public int insert(AppUser appUser) {
@@ -70,5 +73,10 @@ public class ApiClientServiceImpl implements IApiClientService {
         // 更新sys_user
         sysUserMapper.updatePhoneById(sysUserId, purePhoneNumber);
         return true;
+    }
+
+    @Override
+    public int queryUnreadMessageNumBySysUserId(String sysUserId) {
+        return sysAnnouncementMapper.queryUnreadMessageNumBySysUserId(sysUserId);
     }
 }
