@@ -12,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.constant.CommonConstant;
 import org.jeecg.common.constant.WebsocketConst;
+import org.jeecg.common.system.util.JwtUtil;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.message.websocket.WebSocket;
 import org.jeecg.modules.system.entity.SysAnnouncement;
@@ -253,5 +254,32 @@ public class ApiMessageController extends ApiBaseController {
         }
         modelAndView.setStatus(HttpStatus.NOT_FOUND);
         return modelAndView;
+    }
+
+    /**
+     * 功能 获取我的消息 微信小程序端
+     */
+    @GetMapping(value = "/wx/messages")
+    public Result<IPage<AnnouncementSendModel>> showWxMessage(@RequestParam("sysid") String sysUserId,
+                                                              @RequestParam("token") String token,
+                                                              @RequestParam("pageNo") int pageNo,
+                                                              @RequestParam("pageSize") int pageSize) {
+        Result<IPage<AnnouncementSendModel>> result = new Result<>();
+        // 校验token
+        if (JwtUtil.getUsername(token) == null) {
+            return null;
+        }
+
+        // 用自己的用户登录, 直接根据clientId查询
+        log.info("————————————获取到的uid是： " + sysUserId);
+        AnnouncementSendModel announcementSendModel = new AnnouncementSendModel();
+        announcementSendModel.setUserId(sysUserId);
+        announcementSendModel.setPageNo((pageNo - 1) * pageSize);
+        announcementSendModel.setPageSize(pageSize);
+        Page<AnnouncementSendModel> pageList = new Page<>(pageNo, pageSize);
+        pageList = sysAnnouncementSendService.getMyAnnouncementSendPage(pageList, announcementSendModel);
+        result.setResult(pageList);
+        result.setSuccess(true);
+        return result;
     }
 }

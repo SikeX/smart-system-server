@@ -258,9 +258,9 @@ public class ApiClientController extends ApiBaseController {
 
         // 生成token
         String token = JwtUtil.sign(username, password);
-        // 设置超时时间为一天
+        // 2021-11-28 改为 设置超时时间为1h
         redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, token);
-        redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, 24 * 60 * 60);
+        redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, 60 * 60);
 
         //token 信息
         baseCommonService.addLog("用户名: " + username + ",登录成功[移动端]！", CommonConstant.LOG_TYPE_1, null);
