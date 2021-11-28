@@ -16,7 +16,7 @@ import java.io.UnsupportedEncodingException;
 /**
  * @Description: 举报调查表
  * @Author: jeecg-boot
- * @Date:   2021-11-14
+ * @Date:   2021-11-27
  * @Version: V1.0
  */
 @ApiModel(value="smart_reporting_survey对象", description="举报调查表")

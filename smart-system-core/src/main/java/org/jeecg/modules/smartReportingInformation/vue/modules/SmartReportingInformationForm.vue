@@ -30,7 +30,7 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="处理状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="processingType">
+            <a-form-model-item label="处理状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="processingResult">
               <j-dict-select-tag type="list" v-model="model.processingResult" dictCode="processing_result" placeholder="请选择处理状态" />
             </a-form-model-item>
           </a-col>
@@ -115,7 +115,7 @@
            reportingTime: [
               { required: true, message: '请输入举报时间!'},
            ],
-           processingType: [
+           processingResult: [
               { required: true, message: '请输入处理状态!'},
            ],
         },

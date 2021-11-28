@@ -47,7 +47,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
  /**
  * @Description: 举报信息表
  * @Author: jeecg-boot
- * @Date:   2021-11-14
+ * @Date:   2021-11-27
  * @Version: V1.0
  */
 @Api(tags="举报信息表")

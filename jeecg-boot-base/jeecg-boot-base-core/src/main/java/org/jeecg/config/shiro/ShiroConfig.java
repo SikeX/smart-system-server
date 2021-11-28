@@ -100,6 +100,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/**/*.png", "anon");
         filterChainDefinitionMap.put("/**/*.ico", "anon");
 
+
         // update-begin--Author:sunjianlei Date:20190813 for：排除字体格式的后缀
         filterChainDefinitionMap.put("/**/*.ttf", "anon");
         filterChainDefinitionMap.put("/**/*.woff", "anon");
@@ -114,6 +115,7 @@ public class ShiroConfig {
 
         filterChainDefinitionMap.put("/sys/annountCement/show/**", "anon");
         filterChainDefinitionMap.put("/qrCode/generate/v3","anon");
+        filterChainDefinitionMap.put("/smartReportingInformation/smartReportingInformation","anon");
 
         //积木报表排除
         filterChainDefinitionMap.put("/jmreport/**", "anon");
