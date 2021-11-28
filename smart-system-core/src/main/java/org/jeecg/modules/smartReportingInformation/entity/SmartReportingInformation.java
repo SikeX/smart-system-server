@@ -17,7 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 举报信息表
  * @Author: jeecg-boot
- * @Date:   2021-11-14
+ * @Date:   2021-11-27
  * @Version: V1.0
  */
 @ApiModel(value="smart_reporting_information对象", description="举报信息表")
@@ -52,7 +52,7 @@ public class SmartReportingInformation implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "举报时间")
     private java.util.Date reportingTime;
-	/**处理状态结果*/
+	/**处理状态*/
 	@Excel(name = "处理状态", width = 15, dicCode = "processing_result")
     @Dict(dicCode = "processing_result")
     @ApiModelProperty(value = "处理状态")
