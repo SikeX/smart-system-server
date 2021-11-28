@@ -1,5 +1,6 @@
 package org.jeecg.common.util;
 
+import org.jeecg.common.util.SMS.entity.SmartSentMsg;
 import org.jeecg.config.StaticConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
 
 /**
  * Created on 17/6/7.
@@ -133,15 +135,49 @@ public class DySmsHelper {
 //    	sendSms("13800138000", obj, DySmsEnum.FORGET_PASSWORD_TEMPLATE_CODE);
 //    }
 
-    //创蓝智能云平台短信服务
+    //创蓝智能云平台短信服务，发送验证码
     public static boolean sendSms(String mobile, JSONObject templateParamJson,DySmsEnum dySmsEnum){
+
+
+        SmartSentMsg smartSentMsg = new SmartSentMsg();
+        smartSentMsg.setReceiverPhone(mobile);
+
+
+
+
         String code = templateParamJson.get("code").toString();
         String sendUrl = "http://smssh1.253.com/msg/v1/send/json";//API URL
         Map<String, String> map = new HashMap<String, String>();
         map.put("account","N7764651");//API账号
         map.put("password","x5ipGcgoe");//API密码
-        map.put("msg","您好，您的验证码是" + code);//短信内容
+        map.put("msg","您好，您的验证码是" + code + "，十分钟内有效，请勿向任何人泄露。");//短信内容
         map.put("phone",mobile);//手机号
+        // map.put("report","true");//是否需要状态报告
+        // map.put("extend","123");//自定义扩展码
+        JSONObject js = (JSONObject) JSONObject.toJSON(map);
+        String reString = sendSmsByPost(sendUrl,js.toString());
+        System.out.println(reString);
+
+        //返回值
+        JSONObject json = JSONObject.parseObject(reString);
+        Map<String, Object> map1 = (Map<String, Object>)json;
+
+        if(map1.get("code").equals("0")){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    //创蓝智能云平台短信服务，发送模板消息
+    public static boolean sendSms(String sendFrom, String sendType, String tittle, String content, String receiver, String receiverPhone){
+
+        String sendUrl = "http://smssh1.253.com/msg/v1/send/json";//API URL
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("account","N7764651");//API账号
+        map.put("password","x5ipGcgoe");//API密码
+        map.put("msg",content);//短信内容
+        map.put("phone",receiverPhone);//手机号
         // map.put("report","true");//是否需要状态报告
         // map.put("extend","123");//自定义扩展码
         JSONObject js = (JSONObject) JSONObject.toJSON(map);
