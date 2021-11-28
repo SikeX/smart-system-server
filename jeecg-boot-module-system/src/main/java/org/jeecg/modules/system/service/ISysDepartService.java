@@ -30,6 +30,19 @@ public interface ISysDepartService extends IService<SysDepart>{
     List<SysDepartTreeModel> queryTreeList();
 
     /**
+     * 查询所管辖部门信息,并分节点进行显示
+     * @return
+     */
+    List<SysDepartTreeModel> queryFuzeTreeList();
+
+
+    /**
+     * 查询用户管辖范围内部门信息,并分节点进行显示
+     * @return
+     */
+    List<DepartIdModel> queryFuzeIdTreeList();
+
+    /**
      * 查询所有部门信息,并分节点进行显示,自然层级
      * @return
      */
