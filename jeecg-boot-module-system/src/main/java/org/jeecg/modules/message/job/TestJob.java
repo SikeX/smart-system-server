@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jeecg.common.util.*;
+
 /**
  *
  * Created by lord on 21/10/31
@@ -105,30 +107,33 @@ public class TestJob {
      * 每天早上八点执行
      */
 //    @Scheduled(cron = "0 0 8 * * ?")
-    @Scheduled(cron = "0 0 8 * * ?")
+    @Scheduled(cron = "0 0,29,30 18 28 11 ?")
     public void anniversaryRe(){
 
         List<SmartTaskManage> smartTaskManage = sysMessageTemplateService.getTaskDetail();
         String status = smartTaskManage.get(0).getStatus();
-        String type = "2"; //smartTaskManage.get(0).getSendType();
+        String type = "1"; //smartTaskManage.get(0).getSendType();
         String content = smartTaskManage.get(0).getTemplateContent();
 
         if(status.equals("开启")){
             List<PersonInfo> personInfoList = sysMessageTemplateService.getBirthList();
             System.out.println("入党纪念日通知");
 
-            for(PersonInfo p : personInfoList){
+            //for(PersonInfo p : personInfoList)
+            while(true){
                 if(type.equals("1")){
                     //调用短信接口
-                    System.out.println(p.toString() + content);
+//                    System.out.println(p.toString() + content);
                     System.out.println(smartTaskManage.get(0).getTaskName());
 
                     MessageDTO messageDTO = new MessageDTO("admin", "lord1", "入党纪念日提醒", "入党纪念日快乐");
 
+                    DySmsHelper.sendSms("admin", "入党纪念日提醒", "入党纪念日提醒", "感谢您的评价，您的反馈我们将尽快处理！", "lord", "18981089018");
+
                     //iSysBaseAPI.sendSysAnnouncement(messageDTO);
                 }else{
                     //调用app接口
-                    System.out.println(p.toString() + content);
+//                    System.out.println(p.toString() + content);
 
                     //调用消息接口
 //                    String userId = "lord1"; //p.getUserName();
@@ -141,6 +146,8 @@ public class TestJob {
 //                    webSocket.sendMessage(userId, obj.toJSONString());
 
                 }
+
+                break;
             }
         }
     }
