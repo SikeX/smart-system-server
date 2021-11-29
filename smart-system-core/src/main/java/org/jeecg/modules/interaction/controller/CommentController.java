@@ -68,6 +68,38 @@ public class CommentController {
     }
 
     /**
+     * 分页列表查询
+     *
+     * @param smartVillageComment
+     * @param pageNo
+     * @param pageSize
+     * @param req
+     * @return
+     */
+//    @AutoLog(value = "村情互动回答-分页列表查询")
+//    @ApiOperation(value="村情互动回答-分页列表查询", notes="村情互动回答-分页列表查询")
+//    @GetMapping(value = "/verifyCommentList")
+//    public Result<?> getVerifyCommentList(SmartVillageComment smartVillageComment,
+//                                   @RequestParam(name="topicId") String topicId,
+//                                   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+//                                   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+//                                   HttpServletRequest req) {
+//        Result<IPage<SmartVillageComment>> result = new Result<IPage<SmartVillageComment>>();
+//
+//        Page<SmartVillageComment> page = new Page<>(pageNo, pageSize);
+//
+//        QueryWrapper<SmartVillageComment> queryWrapper = new QueryWrapper<>();
+//
+//        queryWrapper.eq("topic_id", topicId).orderByDesc("create_time");
+//
+//        IPage<SmartVillageComment> pageList = smartVillageCommentService.page(page,queryWrapper);
+//
+//        result.setResult(pageList);
+//        result.setSuccess(true);
+//        return result;
+//    }
+
+    /**
      *   添加
      *
      * @param smartVillageComment

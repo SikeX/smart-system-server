@@ -1,7 +1,9 @@
 package org.jeecg.modules.interaction.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jeecg.modules.interaction.entity.SmartSensitiveWord;
 import org.jeecg.modules.interaction.utils.SensitiveWordUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
@@ -17,20 +19,21 @@ import java.util.Set;
  * https://yiiu.co
  */
 @Component
-@DependsOn("mybatisPlusSaasConfig")
+@Slf4j
+//@DependsOn("mybatisPlusSaasConfig")
 public class SensitiveWordFilterService {
 
-    @Resource
-    private ISmartSensitiveWordService sensitiveWordService;
+    @Autowired
+    private ISmartSensitiveWordService smartSensitiveWordService;
 
     // 初始化过滤器
-    @PostConstruct
     public void init() {
-        List<SmartSensitiveWord> sensitiveWords = sensitiveWordService.list();
+        List<SmartSensitiveWord> sensitiveWords = smartSensitiveWordService.list();
         Set<String> sensitiveWordSet = new HashSet<>();
         for (SmartSensitiveWord sensitiveWord : sensitiveWords) {
             sensitiveWordSet.add(sensitiveWord.getWord());
         }
+        log.info("什么"+String.valueOf(sensitiveWordSet));
         SensitiveWordUtil.init(sensitiveWordSet);
     }
 }

@@ -228,6 +228,24 @@ public class SysAnnouncementSendController {
 		result.setSuccess(true);
 		return result;
 	}
+
+	 /**
+	  * @功能：更新用户提交任务状态
+	  * @param json
+	  * @return
+	  */
+	 @PutMapping(value = "/editTaskSubmit")
+	 public Result<SysAnnouncementSend> editById(@RequestBody SysAnnouncementSend sysAnnouncementSend) {
+		 Result<SysAnnouncementSend> result = new Result<SysAnnouncementSend>();
+		 String anntId = sysAnnouncementSend.getAnntId();
+		 QueryWrapper<SysAnnouncementSend> queryWrapper = new QueryWrapper<>();
+		 LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
+		 String userId = sysUser.getId();
+		 queryWrapper.eq("annt_id",anntId).eq("user_id",userId);
+		 sysAnnouncementSendService.update(sysAnnouncementSend, queryWrapper);
+		 result.setSuccess(true);
+		 return result;
+	 }
 	
 	/**
 	 * @功能：获取我的消息
@@ -288,6 +306,15 @@ public class SysAnnouncementSendController {
 		return result;
 	}
 
+	 /**
+	  * 获取消息收发详情
+	  *
+	  * @param announcementSendModel
+	  * @param anntId
+	  * @param pageNo
+	  * @param pageSize
+	  * @return
+	  */
 	 @GetMapping(value = "/getTaskDetail")
 	 public Result<IPage<AnnouncementSendModel>> getTaskDetail(AnnouncementSendModel announcementSendModel,
 															 @RequestParam(name="anntId", required = true) String anntId,
@@ -302,4 +329,5 @@ public class SysAnnouncementSendController {
 		 result.setSuccess(true);
 		 return result;
 	 }
+
 }

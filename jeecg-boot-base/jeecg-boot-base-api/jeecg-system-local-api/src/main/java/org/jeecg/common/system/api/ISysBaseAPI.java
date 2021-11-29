@@ -341,4 +341,7 @@ public interface ISysBaseAPI extends CommonAPI {
     String getParentDepIdByDepartId(String departId);
 
     String getDepartIdByUserId(String userId);
+
+    public List<String> getSubDepIdsByDepId(String userId);
+
 }

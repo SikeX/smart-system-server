@@ -1,4 +1,4 @@
-package org.jeecg.modules.interaction.controller;
+package org.jeecg.modules.smartMessage.controller;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,15 +12,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.util.oConvertUtils;
-import org.jeecg.modules.interaction.entity.SmartSensitiveWord;
-import org.jeecg.modules.interaction.service.ISmartSensitiveWordService;
+import org.jeecg.modules.smartMessage.entity.SmartMsgTask;
+import org.jeecg.modules.smartMessage.service.ISmartMsgTaskService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
-import org.jeecg.modules.interaction.service.SensitiveWordFilterService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -38,70 +37,66 @@ import io.swagger.annotations.ApiOperation;
 import org.jeecg.common.aspect.annotation.AutoLog;
 
  /**
- * @Description: 敏感词列表
+ * @Description: 上传任务表
  * @Author: jeecg-boot
- * @Date:   2021-11-26
+ * @Date:   2021-11-29
  * @Version: V1.0
  */
-@Api(tags="敏感词列表")
+@Api(tags="上传任务表")
 @RestController
-@RequestMapping("/interaction/smartSensitiveWord")
+@RequestMapping("/smartMessage/smartMsgTask")
 @Slf4j
-public class SmartSensitiveWordController extends JeecgController<SmartSensitiveWord, ISmartSensitiveWordService> {
+public class SmartMsgTaskController extends JeecgController<SmartMsgTask, ISmartMsgTaskService> {
 	@Autowired
-	private ISmartSensitiveWordService smartSensitiveWordService;
-	@Autowired
-	private SensitiveWordFilterService sensitiveWordFilterService;
+	private ISmartMsgTaskService smartMsgTaskService;
 	
 	/**
 	 * 分页列表查询
 	 *
-	 * @param smartSensitiveWord
+	 * @param smartMsgTask
 	 * @param pageNo
 	 * @param pageSize
 	 * @param req
 	 * @return
 	 */
-	@AutoLog(value = "敏感词列表-分页列表查询")
-	@ApiOperation(value="敏感词列表-分页列表查询", notes="敏感词列表-分页列表查询")
+	@AutoLog(value = "上传任务表-分页列表查询")
+	@ApiOperation(value="上传任务表-分页列表查询", notes="上传任务表-分页列表查询")
 	@GetMapping(value = "/list")
-	public Result<?> queryPageList(SmartSensitiveWord smartSensitiveWord,
+	public Result<?> queryPageList(SmartMsgTask smartMsgTask,
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
-		QueryWrapper<SmartSensitiveWord> queryWrapper = QueryGenerator.initQueryWrapper(smartSensitiveWord, req.getParameterMap());
-		Page<SmartSensitiveWord> page = new Page<SmartSensitiveWord>(pageNo, pageSize);
-		IPage<SmartSensitiveWord> pageList = smartSensitiveWordService.page(page, queryWrapper);
+		QueryWrapper<SmartMsgTask> queryWrapper = QueryGenerator.initQueryWrapper(smartMsgTask, req.getParameterMap());
+		Page<SmartMsgTask> page = new Page<SmartMsgTask>(pageNo, pageSize);
+		IPage<SmartMsgTask> pageList = smartMsgTaskService.page(page, queryWrapper);
 		return Result.OK(pageList);
 	}
 	
 	/**
 	 *   添加
 	 *
-	 * @param smartSensitiveWord
+	 * @param smartMsgTask
 	 * @return
 	 */
-	@AutoLog(value = "敏感词列表-添加")
-	@ApiOperation(value="敏感词列表-添加", notes="敏感词列表-添加")
+	@AutoLog(value = "上传任务表-添加")
+	@ApiOperation(value="上传任务表-添加", notes="上传任务表-添加")
 	@PostMapping(value = "/add")
-	public Result<?> add(@RequestBody SmartSensitiveWord smartSensitiveWord) {
-		smartSensitiveWordService.save(smartSensitiveWord);
-		sensitiveWordFilterService.init();
+	public Result<?> add(@RequestBody SmartMsgTask smartMsgTask) {
+		smartMsgTaskService.save(smartMsgTask);
 		return Result.OK("添加成功！");
 	}
 	
 	/**
 	 *  编辑
 	 *
-	 * @param smartSensitiveWord
+	 * @param smartMsgTask
 	 * @return
 	 */
-	@AutoLog(value = "敏感词列表-编辑")
-	@ApiOperation(value="敏感词列表-编辑", notes="敏感词列表-编辑")
+	@AutoLog(value = "上传任务表-编辑")
+	@ApiOperation(value="上传任务表-编辑", notes="上传任务表-编辑")
 	@PutMapping(value = "/edit")
-	public Result<?> edit(@RequestBody SmartSensitiveWord smartSensitiveWord) {
-		smartSensitiveWordService.updateById(smartSensitiveWord);
-		sensitiveWordFilterService.init();
+	public Result<?> edit(@RequestBody SmartMsgTask smartMsgTask) {
+		smartMsgTaskService.updateById(smartMsgTask);
 		return Result.OK("编辑成功!");
 	}
 	
@@ -111,11 +106,11 @@ public class SmartSensitiveWordController extends JeecgController<SmartSensitive
 	 * @param id
 	 * @return
 	 */
-	@AutoLog(value = "敏感词列表-通过id删除")
-	@ApiOperation(value="敏感词列表-通过id删除", notes="敏感词列表-通过id删除")
+	@AutoLog(value = "上传任务表-通过id删除")
+	@ApiOperation(value="上传任务表-通过id删除", notes="上传任务表-通过id删除")
 	@DeleteMapping(value = "/delete")
 	public Result<?> delete(@RequestParam(name="id",required=true) String id) {
-		smartSensitiveWordService.removeById(id);
+		smartMsgTaskService.removeById(id);
 		return Result.OK("删除成功!");
 	}
 	
@@ -125,11 +120,11 @@ public class SmartSensitiveWordController extends JeecgController<SmartSensitive
 	 * @param ids
 	 * @return
 	 */
-	@AutoLog(value = "敏感词列表-批量删除")
-	@ApiOperation(value="敏感词列表-批量删除", notes="敏感词列表-批量删除")
+	@AutoLog(value = "上传任务表-批量删除")
+	@ApiOperation(value="上传任务表-批量删除", notes="上传任务表-批量删除")
 	@DeleteMapping(value = "/deleteBatch")
 	public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
-		this.smartSensitiveWordService.removeByIds(Arrays.asList(ids.split(",")));
+		this.smartMsgTaskService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.OK("批量删除成功!");
 	}
 	
@@ -139,26 +134,26 @@ public class SmartSensitiveWordController extends JeecgController<SmartSensitive
 	 * @param id
 	 * @return
 	 */
-	@AutoLog(value = "敏感词列表-通过id查询")
-	@ApiOperation(value="敏感词列表-通过id查询", notes="敏感词列表-通过id查询")
+	@AutoLog(value = "上传任务表-通过id查询")
+	@ApiOperation(value="上传任务表-通过id查询", notes="上传任务表-通过id查询")
 	@GetMapping(value = "/queryById")
 	public Result<?> queryById(@RequestParam(name="id",required=true) String id) {
-		SmartSensitiveWord smartSensitiveWord = smartSensitiveWordService.getById(id);
-		if(smartSensitiveWord==null) {
+		SmartMsgTask smartMsgTask = smartMsgTaskService.getById(id);
+		if(smartMsgTask==null) {
 			return Result.error("未找到对应数据");
 		}
-		return Result.OK(smartSensitiveWord);
+		return Result.OK(smartMsgTask);
 	}
 
     /**
     * 导出excel
     *
     * @param request
-    * @param smartSensitiveWord
+    * @param smartMsgTask
     */
     @RequestMapping(value = "/exportXls")
-    public ModelAndView exportXls(HttpServletRequest request, SmartSensitiveWord smartSensitiveWord) {
-        return super.exportXls(request, smartSensitiveWord, SmartSensitiveWord.class, "敏感词列表");
+    public ModelAndView exportXls(HttpServletRequest request, SmartMsgTask smartMsgTask) {
+        return super.exportXls(request, smartMsgTask, SmartMsgTask.class, "上传任务表");
     }
 
     /**
@@ -170,7 +165,7 @@ public class SmartSensitiveWordController extends JeecgController<SmartSensitive
     */
     @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
-        return super.importExcel(request, response, SmartSensitiveWord.class);
+        return super.importExcel(request, response, SmartMsgTask.class);
     }
 
 }

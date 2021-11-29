@@ -1197,4 +1197,9 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 		return sysUserDepartService.getOne(queryWrapper).getDepId();
 	}
 
+	@Override
+	public List<String> getSubDepIdsByDepId(String userId) {
+		return sysDepartService.getSubDepIdsByDepId(userId);
+	}
+
 }
