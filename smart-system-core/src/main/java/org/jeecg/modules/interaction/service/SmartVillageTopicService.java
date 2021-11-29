@@ -13,4 +13,6 @@ public interface SmartVillageTopicService extends IService<SmartVillageTopic> {
 
     public Page<SmartVillageTopic> getTopicListPage(Page<SmartVillageTopic> page, String userId);
 
+    public Page<SmartVillageTopic> getVerifyTopicListPage(Page<SmartVillageTopic> page, String userId);
+
 }

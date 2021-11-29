@@ -102,8 +102,12 @@ public class SysUser implements Serializable {
      * 部门code(当前选择登录部门)
      */
     private String orgCode;
-    @Excel(name = "单位", width = 15)
+
+    /**
+     * 部门
+     */
     private String departId;
+
     /**部门名称--将不需要序列化的属性前添加关键字transient，序列化对象的时候，这个属性就不会被序列化*/
     private transient String orgCodeTxt;
 
@@ -217,4 +221,12 @@ public class SysUser implements Serializable {
 
     /**设备id uniapp推送用*/
     private String clientId;
+
+    /**
+     * 人员类别
+     */
+    @ApiModelProperty(value = "人员类别")
+    @Dict(dicCode = "people_type")
+    private java.lang.String peopleType;
+
 }

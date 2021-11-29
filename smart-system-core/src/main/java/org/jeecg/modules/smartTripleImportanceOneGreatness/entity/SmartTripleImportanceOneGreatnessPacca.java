@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.jeecg.common.aspect.annotation.Dict;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import java.util.Date;
@@ -51,10 +52,15 @@ public class SmartTripleImportanceOneGreatnessPacca implements Serializable {
 	/**主表ID*/
     @ApiModelProperty(value = "主表ID")
     private java.lang.String parentId;
-	/**参会人员*/
-	@Excel(name = "参会人员", width = 15)
+    /**参会人员*/
+    /*@Excel(name = "参会人员", width = 15)*/
+    @Dict(dictTable = "sys_user",dicText = "realname",dicCode = "realname")
     @ApiModelProperty(value = "参会人员")
-    private java.lang.String pacpaId;
+    private java.lang.String meetingPeople;
+    /**参会人员姓名*/
+    @Excel(name = "参会人员姓名", width = 15)
+    @ApiModelProperty(value = "参会人员姓名")
+    private java.lang.String meetingPeopleName;
 	/**删除状态*/
 	@Excel(name = "删除状态", width = 15)
     @ApiModelProperty(value = "删除状态")

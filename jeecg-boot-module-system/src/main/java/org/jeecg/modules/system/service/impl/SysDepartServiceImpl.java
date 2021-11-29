@@ -108,6 +108,22 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 		return listResult;
 	}
 
+	/**
+	 * queryTreeList 对应 queryTreeList 查询所负责的部门数据,以业务层级树结构形式响应给前端
+	 */
+//	@Cacheable(value = CacheConstant.SYS_DEPARTS_CACHE)
+	@Override
+	public List<SysDepartTreeModel> queryFuzeTreeList() {
+		LambdaQueryWrapper<SysDepart> query = new LambdaQueryWrapper<SysDepart>();
+		query.eq(SysDepart::getDelFlag, CommonConstant.DEL_FLAG_0.toString());
+		query.orderByAsc(SysDepart::getDepartOrder);
+		List<SysDepart> list = this.list(query);
+		// 调用wrapTreeDataToTreeList方法生成树状数据
+		List<SysDepartTreeModel> listResult = FindsDepartsChildrenUtil.wrapTreeDataToFuzeList(list);
+//		System.out.println("service层自然树"+listResult);
+		return listResult;
+	}
+
 //	@Cacheable(value = CacheConstant.SYS_DEPART_IDS_CACHE)
 	@Override
 	public List<DepartIdModel> queryDepartIdTreeList() {
@@ -117,6 +133,18 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 		List<SysDepart> list = this.list(query);
 		// 调用wrapTreeDataToTreeList方法生成树状数据
 		List<DepartIdModel> listResult = FindsDepartsChildrenUtil.wrapTreeDataToDepartIdTreeList(list);
+		return listResult;
+	}
+
+//	根据当前用户所在部门获取其管辖范围内的部门单位
+	@Override
+	public List<DepartIdModel> queryFuzeIdTreeList() {
+		LambdaQueryWrapper<SysDepart> query = new LambdaQueryWrapper<SysDepart>();
+		query.eq(SysDepart::getDelFlag, CommonConstant.DEL_FLAG_0.toString());
+		query.orderByAsc(SysDepart::getDepartOrder);
+		List<SysDepart> list = this.list(query);
+		// 调用wrapTreeDataToTreeList方法生成树状数据
+		List<DepartIdModel> listResult = FindsDepartsChildrenUtil.wrapTreeDataToDepartIdFuzeTreeList(list);
 		return listResult;
 	}
 

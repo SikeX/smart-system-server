@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 /**
  * @Description: 举报附件表
  * @Author: jeecg-boot
- * @Date:   2021-11-14
+ * @Date:   2021-11-27
  * @Version: V1.0
  */
 public interface SmartReportingDescriptionMapper extends BaseMapper<SmartReportingDescription> {
