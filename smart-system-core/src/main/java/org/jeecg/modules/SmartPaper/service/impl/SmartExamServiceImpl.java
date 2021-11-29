@@ -107,6 +107,33 @@ public class SmartExamServiceImpl extends ServiceImpl<SmartExamMapper, SmartExam
                     }
                 }
 
+                //填空题
+                else if(smartSubmit.getType().equals("3")) {
+                    String[] correctAnswerArr = topic.getCorrectAnswer().split("\n");
+                    String[] submitAnswerArr = smartSubmit.getSubmitAnswer().split("\n");
+                    double topicGrade = 0;
+                    for(int n=0;n<correctAnswerArr.length;n++){
+                        System.out.println("CCCCCCCCCCCCCCCCCCCCCCCCCC");
+                        System.out.println((double)topic.getScore() / correctAnswerArr.length);
+                        if(correctAnswerArr[n].equals(submitAnswerArr[n])){
+                            topicGrade = topicGrade +((double) topic.getScore() / correctAnswerArr.length);
+                        }
+                    }
+                    grade = grade + (int) topicGrade;
+                }
+                //简答题
+                else if(smartSubmit.getType().equals("4")){
+                    String[] correctAnswerArr = topic.getCorrectAnswer().split("\n");
+                    double topicGrade = 0;
+                    for (String ca : correctAnswerArr) {
+                        if(smartSubmit.getSubmitAnswer().contains(ca)){
+                            topicGrade = topicGrade +  ((double)topic.getScore() / correctAnswerArr.length);
+                        }
+                    }
+                    grade = grade + (int) topicGrade;
+
+                }
+
             }
             Date date = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
