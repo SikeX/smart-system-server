@@ -55,17 +55,16 @@ public class SmartPunishPeople implements Serializable {
 	/**所属部门*/
     @ApiModelProperty(value = "所属部门")
     private java.lang.String sysOrgCode;
-	/**处分人工号*/
-	@Excel(name = "处分人工号", width = 15, dictTable = "sys_user", dicText = "work_no", dicCode = "work_no")
-	@Dict(dictTable = "sys_user", dicText = "work_no", dicCode = "work_no")
-    @ApiModelProperty(value = "处分人工号")
-    private java.lang.String punishNo;
+	/**处分人ID*/
+	@Excel(name = "处分人ID", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "id")
+	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "id")
+    @ApiModelProperty(value = "处分人ID")
+    private java.lang.String punishId;
 	/**处分人姓名*/
 	@Excel(name = "处分人姓名", width = 15)
     @ApiModelProperty(value = "处分人姓名")
     private java.lang.String punishName;
 	/**单位ID*/
-	@Excel(name = "单位ID", width = 15)
     @ApiModelProperty(value = "单位ID")
     private java.lang.String departId;
 	/**单位*/
@@ -77,8 +76,9 @@ public class SmartPunishPeople implements Serializable {
     @ApiModelProperty(value = "职务")
     private java.lang.String position;
 	/**职级*/
-	@Excel(name = "职级", width = 15)
+	@Excel(name = "职级", width = 15,dicCode = "position_rank")
     @ApiModelProperty(value = "职级")
+    @Dict(dicCode = "position_rank")
     private java.lang.String positionRank;
 	/**手机号*/
 	@Excel(name = "手机号", width = 15)
@@ -89,12 +89,22 @@ public class SmartPunishPeople implements Serializable {
     @ApiModelProperty(value = "处分类型")
     @Dict(dicCode = "punish_type")
     private java.lang.String punishType;
+    /**处分开始时间*/
+    @Excel(name = "处分开始时间", width = 15, format = "yyyy-MM-dd")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @ApiModelProperty(value = "处分开始时间")
+    private java.util.Date beginTime;
 	/**解除处分时间*/
 	@Excel(name = "解除处分时间", width = 15, format = "yyyy-MM-dd")
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @ApiModelProperty(value = "解除处分时间")
     private java.util.Date removeTime;
+    /**处分状态*/
+    @Excel(name = "处分状态", width = 15,dicCode="punish_statu")
+    @Dict(dicCode = "punish_statu")
+    private java.lang.Integer statu;
     /**删除状态*/
     @Excel(name = "删除状态", width = 15,dicCode="del_flag")
     @TableLogic
