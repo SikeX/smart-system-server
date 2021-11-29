@@ -392,12 +392,13 @@ public class ApiClientController extends ApiBaseController {
             WXUser updateData = new WXUser(id, session_key, now, now);
             apiClientService.updateWxUserById(updateData);
         } else {
-            wxUser = new WXUser(openId, session_key, now, ACCOUNT_ACTIVE_STATUS, now, now);
+            wxUser = new WXUser(openId, session_key, now, ACCOUNT_ACTIVE_STATUS, now, now, "4");
             apiClientService.insertWxUser(wxUser);
             id = apiClientService.queryWxUserByOpenId(openId).getId();
         }
 
         wxUser = apiClientService.queryWxUserById(id);
+        wxUser.setPeopleType(sysUserService.queryById(wxUser.getSysUserId()).getPeopleType());
         SysUser sysUser = null;
         if (wxUser.getSysUserId() == null) {
             // 如果没有关联系统用户，那么注册
@@ -416,4 +417,71 @@ public class ApiClientController extends ApiBaseController {
         }
         return Result.OK(loginResult.getMessage(), wxUser);
     }
+
+    /**
+     * 微信小程序端输入用户名密码登录，同时更换绑定用户操作也在这里
+     *
+     * @return
+     */
+    @ApiOperation(value = "微信-登录接口", notes = "微信小程序端-登录")
+    @PostMapping(value = "/wx/login")
+    public Result<?> wxManualLogin(@RequestParam("username") String username,
+                                   @RequestParam("password") String password,
+                                   @RequestParam("openId") String openId) {
+        //校验用户有效性，首先根据openId查询出关联的平台用户id，然后根据username查平台用户id，相同直接登录，不同则修改关联id
+        WXUser wxUser = apiClientService.queryWxUserByOpenId(openId);
+
+        // 先验证是否能登陆成功
+        //1. 校验用户是否有效
+        Result<JSONObject> result = new Result<>();
+        SysUser sysUser = sysUserService.getUserByName(username);
+        wxUser.setPeopleType(sysUser.getPeopleType());
+        result = sysUserService.checkUserIsEffective(sysUser);
+        if (!result.isSuccess()) {
+            return result;
+        }
+
+        //2. 校验用户名或密码是否正确
+        String userpassword = PasswordUtil.encrypt(username, password, sysUser.getSalt());
+        String syspassword = sysUser.getPassword();
+        if (!syspassword.equals(userpassword)) {
+            result.error500("用户名或密码错误");
+            return result;
+        }
+
+        // 未关联或者关联用户不同，默认视作换绑账户
+        if (!Objects.equals(wxUser.getSysUserId(), sysUser.getId())) {
+            // 先将之前的手机号取消绑定
+            SysUser old = sysUserService.queryById(wxUser.getSysUserId());
+            old.setPhone("");
+            sysUserService.updateById(old);
+            wxUser.setSysUserId(sysUser.getId());
+            System.out.println("走这里了");
+            System.out.println(sysUser.getPeopleType());
+            wxUser.setPeopleType(sysUser.getPeopleType());
+            wxUser.setMtime((int) System.currentTimeMillis());
+            apiClientService.updateWxUserById(wxUser);
+            // 此时一定已经有手机号了，更新到sys_user表
+            sysUser.setPhone(wxUser.getPhone());
+            sysUserService.updateById(sysUser);
+        }
+
+        JSONObject obj = new JSONObject();
+        //用户登录信息
+        obj.put("userInfo", wxUser);
+
+        // 生成token
+        String newToken = JwtUtil.sign(username, syspassword);
+        // 设置超时时间
+        redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + newToken, newToken);
+        redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + newToken, 60 * 60);
+        wxUser.setToken(newToken);
+        //token 信息
+        result.setResult(obj);
+        result.setSuccess(true);
+        result.setCode(200);
+        baseCommonService.addLog("用户名: " + username + ",登录成功[移动端]！", CommonConstant.LOG_TYPE_1, null);
+        return result;
+    }
+
 }

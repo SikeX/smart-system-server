@@ -11,11 +11,12 @@ public class WXUser {
     private int ctime;
     private int mtime;
     private String token;
+    private String peopleType;
 
     public WXUser() {
     }
 
-    public WXUser(int id, String wxOpenId, String wxSessionKey, int lastLoginTime, String sysUserId, String phone, int status, int ctime, int mtime, String token) {
+    public WXUser(int id, String wxOpenId, String wxSessionKey, int lastLoginTime, String sysUserId, String phone, int status, int ctime, int mtime, String token, String peopleType) {
         this.id = id;
         this.wxOpenId = wxOpenId;
         this.wxSessionKey = wxSessionKey;
@@ -26,6 +27,7 @@ public class WXUser {
         this.ctime = ctime;
         this.mtime = mtime;
         this.token = token;
+        this.peopleType = peopleType;
     }
 
     public WXUser(int id, String wxSessionKey, int lastLoginTime, int mtime) {
@@ -35,13 +37,14 @@ public class WXUser {
         this.mtime = mtime;
     }
 
-    public WXUser(String wxOpenId, String wxSessionKey, int lastLoginTime, int status, int ctime, int mtime) {
+    public WXUser(String wxOpenId, String wxSessionKey, int lastLoginTime, int status, int ctime, int mtime, String peopleType) {
         this.wxOpenId = wxOpenId;
         this.wxSessionKey = wxSessionKey;
         this.lastLoginTime = lastLoginTime;
         this.status = status;
         this.ctime = ctime;
         this.mtime = mtime;
+        this.peopleType = peopleType;
     }
 
     @Override
@@ -138,5 +141,13 @@ public class WXUser {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getPeopleType() {
+        return peopleType;
+    }
+
+    public void setPeopleType(String peopleType) {
+        this.peopleType = peopleType;
     }
 }
