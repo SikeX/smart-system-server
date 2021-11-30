@@ -79,4 +79,9 @@ public class ApiClientServiceImpl implements IApiClientService {
     public int queryUnreadMessageNumBySysUserId(String sysUserId) {
         return sysAnnouncementMapper.queryUnreadMessageNumBySysUserId(sysUserId);
     }
+
+    @Override
+    public void updateWxUserSysUserIdById(int id, String sysUserId) {
+        wxUserMapper.updateWxUserSysUserIdById(id, sysUserId);
+    }
 }

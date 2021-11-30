@@ -266,4 +266,10 @@ public interface ISysUserService extends IService<SysUser> {
 	 */
 	void saveUserFromClient(SysUser user, String selectedRoles, int id, int userType);
 
+	/**
+	 * 根据手机号码查询用户
+	 * @param purePhoneNumber
+	 * @return
+	 */
+    SysUser queryByPhone(String purePhoneNumber);
 }

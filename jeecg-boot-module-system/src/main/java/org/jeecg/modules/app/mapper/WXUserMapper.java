@@ -35,4 +35,7 @@ public interface WXUserMapper {
 
     @Update("UPDATE tb_wx_user SET phone = #{purePhoneNumber} where id = #{id}")
     void updatePhoneById(int id, String purePhoneNumber);
+
+    @Update("UPDATE tb_wx_user SET sys_user_id = #{sysUserId} where id = #{id}")
+    void updateWxUserSysUserIdById(int id, String sysUserId);
 }

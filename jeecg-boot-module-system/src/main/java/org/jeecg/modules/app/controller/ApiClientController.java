@@ -150,6 +150,7 @@ public class ApiClientController extends ApiBaseController {
                 sysUser.setRealname("微信用户_" + wxUser.getId());
                 sysUser.setClientId(wxUser.getWxOpenId());
             }
+            sysUser.setPeopleType("4");
             sysUser.setCreateTime(new Date());//设置创建时间
             sysUser.setUpdateTime(new Date());//设置更新时间
             String salt = oConvertUtils.randomGen(8);
@@ -347,14 +348,22 @@ public class ApiClientController extends ApiBaseController {
         // 解析出phone number
         String jsonString = Wechat.decrypt(wechatConfig.getAppid(), encryptedData, sessionKey, iv);
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
-        Result<JSONObject> result = new Result<>();
-        result.setResult(jsonObject);
         // 根据sessionKey更新字段
         WXUser wxUser = apiClientService.queryWxUserBySessionKey(sessionKey);
+        wxUser.setPhone(jsonObject.getString("purePhoneNumber"));
+        // 查询系统中是否已经有这个phone的用户了，如果有直接绑定，没有再继续
+        SysUser sysUser = sysUserService.queryByPhone(jsonObject.getString("purePhoneNumber"));
+        if (sysUser != null) {
+            apiClientService.updateWxUserSysUserIdById(wxUser.getId(), sysUser.getId());
+            wxUser.setSysUserId(sysUser.getId());
+            wxUser.setPeopleType(sysUser.getPeopleType());
+            Result<?> loginResult = autoLogin(sysUser);
+            if (loginResult.isSuccess()) {
+                wxUser.setToken(loginResult.getResult().toString());
+            }
+        }
         if (apiClientService.updateWxUserPhoneById(wxUser.getId(), wxUser.getSysUserId() ,jsonObject.getString("purePhoneNumber"))) {
-            result.setSuccess(true);
-            result.setCode(200);
-            return result;
+            return Result.OK(wxUser);
         } else {
             return Result.error("更新错误");
         }
@@ -398,7 +407,6 @@ public class ApiClientController extends ApiBaseController {
         }
 
         wxUser = apiClientService.queryWxUserById(id);
-        wxUser.setPeopleType(sysUserService.queryById(wxUser.getSysUserId()).getPeopleType());
         SysUser sysUser = null;
         if (wxUser.getSysUserId() == null) {
             // 如果没有关联系统用户，那么注册
@@ -410,6 +418,7 @@ public class ApiClientController extends ApiBaseController {
         } else {
             sysUser = sysUserService.queryById(wxUser.getSysUserId());
         }
+        wxUser.setPeopleType(sysUser.getPeopleType());
         // 自动登录并且返回token
         Result<?> loginResult = autoLogin(sysUser);
         if (loginResult.isSuccess()) {
@@ -453,14 +462,12 @@ public class ApiClientController extends ApiBaseController {
         if (!Objects.equals(wxUser.getSysUserId(), sysUser.getId())) {
             // 先将之前的手机号取消绑定
             SysUser old = sysUserService.queryById(wxUser.getSysUserId());
-            old.setPhone("");
+            old.setPhone(null);
             sysUserService.updateById(old);
             wxUser.setSysUserId(sysUser.getId());
-            System.out.println("走这里了");
-            System.out.println(sysUser.getPeopleType());
             wxUser.setPeopleType(sysUser.getPeopleType());
             wxUser.setMtime((int) System.currentTimeMillis());
-            apiClientService.updateWxUserById(wxUser);
+            apiClientService.updateWxUserSysUserIdById(wxUser.getId(), sysUser.getId());
             // 此时一定已经有手机号了，更新到sys_user表
             sysUser.setPhone(wxUser.getPhone());
             sysUserService.updateById(sysUser);

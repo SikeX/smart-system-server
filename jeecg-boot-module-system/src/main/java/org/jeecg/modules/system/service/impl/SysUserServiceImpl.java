@@ -572,4 +572,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
 	}
 
+	@Override
+	public SysUser queryByPhone(String purePhoneNumber) {
+		return userMapper.getUserByPhone(purePhoneNumber);
+	}
+
 }
