@@ -1,10 +1,7 @@
-package org.jeecg.modules.smartExamInformation.mapper;
+package org.jeecg.modules.SmartPaper.mapper;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
-import org.jeecg.modules.smartExamInformation.entity.SmartExamInformation;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.jeecg.modules.SmartPaper.entity.SmartExamInformation;
 
 /**
  * @Description: 考试信息表

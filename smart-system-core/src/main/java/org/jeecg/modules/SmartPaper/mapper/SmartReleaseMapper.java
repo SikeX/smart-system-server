@@ -1,7 +1,7 @@
 package org.jeecg.modules.SmartPaper.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.jeecg.modules.SmartPaper.entity.SmartPeople;
+import org.jeecg.modules.SmartPaper.entity.SmartExamInformation;
 
 /**
  * @Description: 考试表
@@ -9,6 +9,6 @@ import org.jeecg.modules.SmartPaper.entity.SmartPeople;
  * @Date:   2021-11-25
  * @Version: V1.0
  */
-public interface SmartExamMapper extends BaseMapper<SmartPeople> {
+public interface SmartReleaseMapper extends BaseMapper<SmartExamInformation> {
 
 }
