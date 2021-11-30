@@ -22,6 +22,7 @@ import org.jeecg.modules.SmartInnerPartyTalk.vo.SmartInnerPartyTalkPage;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
+import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -59,6 +60,8 @@ public class SmartInnerPartyTalkController {
 	private ISmartInnerPartyAnnexService smartInnerPartyAnnexService;
 	@Autowired
 	private CommonService commonService;
+	@Autowired
+	 private ISmartVerifyTypeService smartVerifyTypeService;
 
 	@Autowired
 	private SmartVerify smartVerify;
@@ -139,9 +142,21 @@ public class SmartInnerPartyTalkController {
 			return Result.error("没有找到部门！");
 		}
 		smartInnerPartyTalk.setDepartId(id);
-		smartInnerPartyTalkService.saveMain(smartInnerPartyTalk, smartInnerPartyTalkPage.getSmartInnerPartyPacpaList(),smartInnerPartyTalkPage.getSmartInnerPartyAnnexList());
-		//审核
-		smartVerify.addVerifyRecord(smartInnerPartyTalk.getId(),verifyType);
+		//smartInnerPartyTalkService.saveMain(smartInnerPartyTalk, smartInnerPartyTalkPage.getSmartInnerPartyPacpaList(),smartInnerPartyTalkPage.getSmartInnerPartyAnnexList());
+		//To Do
+		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
+		if(isVerify){
+			smartInnerPartyTalkService.saveMain(smartInnerPartyTalk, smartInnerPartyTalkPage.getSmartInnerPartyPacpaList(),smartInnerPartyTalkPage.getSmartInnerPartyAnnexList());
+			String recordId = smartInnerPartyTalk.getId();
+			smartVerify.addVerifyRecord(recordId,verifyType);
+			smartInnerPartyTalk.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+			smartInnerPartyTalkService.updateById(smartInnerPartyTalk);
+		} else {
+			// 设置审核状态为免审
+			smartInnerPartyTalk.setVerifyStatus("3");
+			// 直接添加，不走审核流程
+			smartInnerPartyTalkService.saveMain(smartInnerPartyTalk, smartInnerPartyTalkPage.getSmartInnerPartyPacpaList(),smartInnerPartyTalkPage.getSmartInnerPartyAnnexList());
+		}
 		return Result.OK("添加成功！");
 	}
 	
@@ -163,8 +178,8 @@ public class SmartInnerPartyTalkController {
 		}
 		smartInnerPartyTalk.setDepartId(null);
 		smartInnerPartyTalk.setCreateTime(null);
-		//System.out.println("############");
-		//System.out.println(smartInnerPartyTalk);
+		System.out.println("##########################");
+		System.out.println(smartInnerPartyTalkPage.getSmartInnerPartyPacpaList());
 		smartInnerPartyTalkService.updateMain(smartInnerPartyTalk, smartInnerPartyTalkPage.getSmartInnerPartyPacpaList(),smartInnerPartyTalkPage.getSmartInnerPartyAnnexList());
 		return Result.OK("编辑成功!");
 	}

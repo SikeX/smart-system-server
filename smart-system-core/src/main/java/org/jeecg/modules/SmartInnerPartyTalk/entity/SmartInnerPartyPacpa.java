@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.jeecg.common.aspect.annotation.Dict;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import java.util.Date;
@@ -51,8 +52,9 @@ public class SmartInnerPartyPacpa implements Serializable {
 	/**主表ID*/
     @ApiModelProperty(value = "主表ID")
     private java.lang.String mainId;
-	/**参会人员工号*/
-	@Excel(name = "参会人员工号", width = 15)
-    @ApiModelProperty(value = "参会人员工号")
-    private java.lang.String papcNo;
+	/**参会人员ID*/
+	@Excel(name = "参会人员", width = 15,dictTable = "sys_user", dicText = "realname", dicCode = "id")
+    @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "id")
+    @ApiModelProperty(value = "参会人员")
+    private java.lang.String papcId;
 }

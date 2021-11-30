@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
@@ -14,6 +15,7 @@ import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.modules.SmartInnerPartyTalk.entity.SmartInnerPartyTalk;
 import org.jeecg.modules.SmartPunishPeople.entity.SmartPunishPeople;
+import org.jeecg.modules.SmartPunishPeople.entity.TypeCount;
 import org.jeecg.modules.SmartPunishPeople.service.ISmartPunishPeopleService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
@@ -23,10 +25,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -44,6 +45,24 @@ public class SmartPunishPeopleController extends JeecgController<SmartPunishPeop
 	private ISmartPunishPeopleService smartPunishPeopleService;
 	 @Autowired
 	 private CommonService commonService;
+	//判断处分状态
+	 public Integer punishStatu(Date begin,Date end) throws ParseException {
+	 		Integer statu;
+		 Date current = new Date();
+		 System.out.println(current);
+		 System.out.println(end);
+		 if (begin.after(current)){
+			 //未开始处分
+			 statu = 2;
+		 }else if(begin.before(current) && end.after(current)){
+			 //处分中
+			 statu = 1;
+		 }else{
+			 //处分结束
+			 statu = 0;
+		 }
+		 return statu;
+	 }
 	/**
 	 * 分页列表查询
 	 *
@@ -59,7 +78,7 @@ public class SmartPunishPeopleController extends JeecgController<SmartPunishPeop
 	public Result<?> queryPageList(SmartPunishPeople smartPunishPeople,
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
-								   HttpServletRequest req) {
+								   HttpServletRequest req) throws ParseException {
 		// 1. 规则，下面是 以**开始
 		String rule = "in";
 		// 2. 查询字段
@@ -106,7 +125,7 @@ public class SmartPunishPeopleController extends JeecgController<SmartPunishPeop
 	@AutoLog(value = "处分人员表-添加")
 	@ApiOperation(value="处分人员表-添加", notes="处分人员表-添加")
 	@PostMapping(value = "/add")
-	public Result<?> add(@RequestBody SmartPunishPeople smartPunishPeople) {
+	public Result<?> add(@RequestBody SmartPunishPeople smartPunishPeople) throws ParseException {
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 		String orgCode = sysUser.getOrgCode();
 		if ("".equals(orgCode)) {
@@ -117,6 +136,10 @@ public class SmartPunishPeopleController extends JeecgController<SmartPunishPeop
 			return Result.error("没有找到部门！");
 		}
 		smartPunishPeople.setDepartId(id);
+		//更改处分状态
+		Date begin =  smartPunishPeople.getBeginTime();
+		Date end = smartPunishPeople.getRemoveTime();
+		smartPunishPeople.setStatu(punishStatu(begin,end));
 		smartPunishPeopleService.save(smartPunishPeople);
 		return Result.OK("添加成功！");
 	}
@@ -130,13 +153,17 @@ public class SmartPunishPeopleController extends JeecgController<SmartPunishPeop
 	@AutoLog(value = "处分人员表-编辑")
 	@ApiOperation(value="处分人员表-编辑", notes="处分人员表-编辑")
 	@PutMapping(value = "/edit")
-	public Result<?> edit(@RequestBody SmartPunishPeople smartPunishPeople) {
+	public Result<?> edit(@RequestBody SmartPunishPeople smartPunishPeople) throws ParseException {
 		SmartPunishPeople smartPunishPeopleEntity = smartPunishPeopleService.getById(smartPunishPeople.getId());
 		if(smartPunishPeopleEntity==null) {
 			return Result.error("未找到对应数据");
 		}
 		smartPunishPeople.setDepartId(null);
 		smartPunishPeople.setCreateTime(null);
+		//更改处分状态
+		Date begin =  smartPunishPeople.getBeginTime();
+		Date end = smartPunishPeople.getRemoveTime();
+		smartPunishPeople.setStatu(punishStatu(begin,end));
 		smartPunishPeopleService.updateById(smartPunishPeople);
 		return Result.OK("编辑成功!");
 	}
@@ -208,5 +235,31 @@ public class SmartPunishPeopleController extends JeecgController<SmartPunishPeop
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
         return super.importExcel(request, response, SmartPunishPeople.class);
     }
+	//处分人员总数量
+    @RequestMapping(value = "/punishPeopleCount",method = RequestMethod.GET)
+	public Result<?> punishPeopleCount(){
+    	Integer count = smartPunishPeopleService.punishPeopleCount();
+		return Result.OK(count);
+	}
+	//按处分类型统计
+	@RequestMapping(value = "/punishPeopleCountByType",method = RequestMethod.GET)
+	public Result<?> punishPeopleCountByType() {
+		List<TypeCount>  list = smartPunishPeopleService.punishPeopleCountByType();
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		System.out.println(list);
+		return Result.OK(list);
+	}
+	//本月即将解除处分人员数量
+	@RequestMapping(value = "/punishPeopleCountByMonth",method = RequestMethod.GET)
+	public Result<?> punishPeopleCountByMonth() {
+    	Date date = new Date();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		String dateString = formatter.format(date);
+		String currentMonth = dateString.substring(0,7);
+		//System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		//System.out.println(currentMonth);
+		Integer count = smartPunishPeopleService.punishPeopleCountByMonth(currentMonth);
+		return Result.OK(count);
+	}
 
 }

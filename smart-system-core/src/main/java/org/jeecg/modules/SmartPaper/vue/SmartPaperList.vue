@@ -177,11 +177,11 @@
           }
         ],
         url: {
-          list: "/smartPaper/smartPaper/list",
-          delete: "/smartPaper/smartPaper/delete",
-          deleteBatch: "/smartPaper/smartPaper/deleteBatch",
-          exportXlsUrl: "/smartPaper/smartPaper/exportXls",
-          importExcelUrl: "smartPaper/smartPaper/importExcel",
+          list: "/SmartPaper/smartPaper/list",
+          delete: "/SmartPaper/smartPaper/delete",
+          deleteBatch: "/SmartPaper/smartPaper/deleteBatch",
+          exportXlsUrl: "/SmartPaper/smartPaper/exportXls",
+          importExcelUrl: "SmartPaper/smartPaper/importExcel",
           
         },
         dictOptions:{},
