@@ -56,7 +56,7 @@
             <foreach collection="depIds" index="index" item="item" open="(" close=")" separator=",">
                 #{item}
             </foreach>
-            and status = 0
+            and status = 1
         </where>
         order by t.create_time desc
     </select>

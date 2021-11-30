@@ -77,6 +77,8 @@ public class SmartReportingInformationPage {
 	@ApiModelProperty(value = "调查意见")
     private java.lang.String surveyIdea;
 
+	private java.lang.String photo;
+
 	@ExcelCollection(name="举报调查表")
 	@ApiModelProperty(value = "举报调查表")
 	private List<SmartReportingSurvey> smartReportingSurveyList;
