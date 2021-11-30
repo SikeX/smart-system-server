@@ -44,33 +44,9 @@ public class SmartReportingInformation implements Serializable {
     private java.lang.String majorProblem;
 	/**照片*/
 	@Excel(name = "照片", width = 15)
-    private transient java.lang.String photoString;
+    private java.lang.String photo;
 
-    private byte[] photo;
 
-    public byte[] getPhoto(){
-        if(photoString==null){
-            return null;
-        }
-        try {
-            return photoString.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public String getPhotoString(){
-        if(photo==null || photo.length==0){
-            return "";
-        }
-        try {
-            return new String(photo,"UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
 	/**附件*/
 	@Excel(name = "附件", width = 15)
     @ApiModelProperty(value = "附件")

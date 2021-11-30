@@ -22,7 +22,7 @@ management:
 spring:
   servlet:
     multipart:
-      max-file-size: 10MB
+      max-file-size: 50MB
       max-request-size: 10MB
   mail:
     host: smtp.163.com
@@ -144,7 +144,8 @@ spring:
   #redis 配置
   redis:
     database: 0
-    host: 127.0.0.1
+    host: 192.168.1.100
+ #   host: 127.0.0.1
 #    host: 110.42.139.54
     lettuce:
       pool:
@@ -153,7 +154,7 @@ spring:
         max-wait: -1ms  #最大建立连接等待时间。如果超过此时间将接到异常。设为-1表示无限制。
         min-idle: 0     #最小等待连接中的数量,设 0 为没有限制
       shutdown-timeout: 100ms
-    password: '123456'
+
     port: 6379
 #mybatis plus 设置
 mybatis-plus:

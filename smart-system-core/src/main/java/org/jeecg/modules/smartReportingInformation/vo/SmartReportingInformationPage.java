@@ -43,7 +43,7 @@ public class SmartReportingInformationPage {
 	/**照片*/
 	@Excel(name = "照片", width = 15)
 	@ApiModelProperty(value = "照片")
-    private java.lang.String photoString;
+    private java.lang.String photo;
 	/**附件*/
 	@Excel(name = "附件", width = 15)
 	@ApiModelProperty(value = "附件")
