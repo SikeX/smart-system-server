@@ -30,20 +30,20 @@ public class Result<T> implements Serializable {
 	 * 返回处理消息
 	 */
 	@ApiModelProperty(value = "返回处理消息")
-	private String message = "操作成功！";
+	private String message = "";
 
 	/**
 	 * 返回代码
 	 */
 	@ApiModelProperty(value = "返回代码")
 	private Integer code = 0;
-	
+
 	/**
 	 * 返回数据对象 data
 	 */
 	@ApiModelProperty(value = "返回数据对象")
 	private T result;
-	
+
 	/**
 	 * 时间戳
 	 */
@@ -51,9 +51,18 @@ public class Result<T> implements Serializable {
 	private long timestamp = System.currentTimeMillis();
 
 	public Result() {
-		
 	}
-	
+
+	/**
+	 * 兼容VUE3版token失效不跳转登录页面
+	 * @param code
+	 * @param message
+	 */
+	public Result(Integer code,String message) {
+		this.code = code;
+		this.message = message;
+	}
+
 	public Result<T> success(String message) {
 		this.message = message;
 		this.code = CommonConstant.SC_OK_200;
@@ -66,7 +75,6 @@ public class Result<T> implements Serializable {
 		Result<Object> r = new Result<Object>();
 		r.setSuccess(true);
 		r.setCode(CommonConstant.SC_OK_200);
-		r.setMessage("成功");
 		return r;
 	}
 
@@ -92,7 +100,16 @@ public class Result<T> implements Serializable {
 		Result<T> r = new Result<T>();
 		r.setSuccess(true);
 		r.setCode(CommonConstant.SC_OK_200);
-		r.setMessage("成功");
+		return r;
+	}
+
+	public static<T> Result<T> OK(String msg) {
+		Result<T> r = new Result<T>();
+		r.setSuccess(true);
+		r.setCode(CommonConstant.SC_OK_200);
+		r.setMessage(msg);
+		//Result OK(String msg)方法会造成兼容性问题 issues/I4IP3D
+		r.setResult((T) msg);
 		return r;
 	}
 
@@ -125,7 +142,7 @@ public class Result<T> implements Serializable {
 	public static Result<Object> error(String msg) {
 		return error(CommonConstant.SC_INTERNAL_SERVER_ERROR_500, msg);
 	}
-	
+
 	public static Result<Object> error(int code, String msg) {
 		Result<Object> r = new Result<Object>();
 		r.setCode(code);
