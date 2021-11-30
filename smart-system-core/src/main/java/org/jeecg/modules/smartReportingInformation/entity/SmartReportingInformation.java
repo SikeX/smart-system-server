@@ -17,7 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 举报信息表
  * @Author: jeecg-boot
- * @Date:   2021-11-27
+ * @Date:   2021-11-29
  * @Version: V1.0
  */
 @ApiModel(value="smart_reporting_information对象", description="举报信息表")
@@ -42,6 +42,35 @@ public class SmartReportingInformation implements Serializable {
 	@Excel(name = "主要问题", width = 15)
     @ApiModelProperty(value = "主要问题")
     private java.lang.String majorProblem;
+	/**照片*/
+	@Excel(name = "照片", width = 15)
+    private transient java.lang.String photoString;
+
+    private byte[] photo;
+
+    public byte[] getPhoto(){
+        if(photoString==null){
+            return null;
+        }
+        try {
+            return photoString.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String getPhotoString(){
+        if(photo==null || photo.length==0){
+            return "";
+        }
+        try {
+            return new String(photo,"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 	/**附件*/
 	@Excel(name = "附件", width = 15)
     @ApiModelProperty(value = "附件")

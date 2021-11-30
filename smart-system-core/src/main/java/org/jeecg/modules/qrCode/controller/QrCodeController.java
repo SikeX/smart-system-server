@@ -29,9 +29,9 @@ import java.util.Objects;
 
 public class QrCodeController extends BaseController{
 
-    private static final String RootPath="E:\\shFiles\\QRCode";
+   private static final String RootPath="E:\\shFiles\\QRCode";
 
-    private static final String FileFormat=".png";
+   private static final String FileFormat=".png";
 
     private static final ThreadLocal<SimpleDateFormat> LOCALDATEFORMAT=ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyyMMddHHmmss"));
 
@@ -73,7 +73,7 @@ public class QrCodeController extends BaseController{
     public BaseResponse generateV3(String content,HttpServletResponse servletResponse){
         BaseResponse response=new BaseResponse(StatusCode.Success);
         try {
-            //将生成的二维码文件存放于文件目录中
+           //将生成的二维码文件存放于文件目录中
             final String fileName=LOCALDATEFORMAT.get().format(new Date());
             codeService.createCodeToFile(content,RootPath+ File.separator+fileName+".png");
 
