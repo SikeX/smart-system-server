@@ -60,6 +60,8 @@ public interface ISysUserService extends IService<SysUser> {
 	public boolean deleteBatchUsers(String userIds);
 	
 	public SysUser getUserByName(String username);
+
+	public List<String> getRolesByName(String username);
 	
 	/**
 	 * 添加用户和用户角色关系

@@ -211,6 +211,7 @@ public class ThirdLoginController {
 
 		//1. 校验用户是否有效
 		SysUser sysUser = sysUserService.getUserByName(username);
+		sysUser.setRoleId(sysUserService.getRolesByName(username));
 		result = sysUserService.checkUserIsEffective(sysUser);
 		if(!result.isSuccess()) {
 			return result;

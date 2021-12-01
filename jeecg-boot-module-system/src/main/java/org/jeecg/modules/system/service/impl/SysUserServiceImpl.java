@@ -127,10 +127,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
 	@Override
 	public SysUser getUserByName(String username) {
-		return userMapper.getUserByName(username);
+
+    	SysUser user = userMapper.getUserByName(username);
+    	user.setRoleId(userMapper.getRolesByName(username));
+
+    	return user;
 	}
-	
-	
+
+	@Override
+	public List<String> getRolesByName(String username) {
+		return userMapper.getRolesByName(username);
+	}
+
 	@Override
 	@Transactional
 	public void addUserWithRole(SysUser user, String roles) {

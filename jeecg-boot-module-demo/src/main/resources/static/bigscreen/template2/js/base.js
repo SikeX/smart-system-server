@@ -592,7 +592,7 @@ function chart2(chartType) {
                 {
                     name: '数据名称',
                     type: 'map',
-                    mapType: '广东',
+                    mapType: 'harbin',
                     selectedMode: 'multiple',
                     tooltip: {
                         trigger: 'item',

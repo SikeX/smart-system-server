@@ -13,6 +13,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.io.Serializable;
+import java.util.List;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -107,6 +108,7 @@ public class SysUser implements Serializable {
     /**部门名称--将不需要序列化的属性前添加关键字transient，序列化对象的时候，这个属性就不会被序列化*/
     @Excel(name = "单位", width = 15)
     private transient String orgCodeTxt;
+
 
 
     /**
@@ -210,12 +212,14 @@ public class SysUser implements Serializable {
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date joinPartyDate;
+
     /**
      * 人员类别
      */
     @ApiModelProperty(value = "人员类别")
     @Dict(dicCode = "people_type")
     private java.lang.String peopleType;
+
     /**
      * 多租户id配置，编辑用户的时候设置
      */
@@ -223,4 +227,6 @@ public class SysUser implements Serializable {
 
     /**设备id uniapp推送用*/
     private String clientId;
+
+    private List<String> roleId;
 }

@@ -92,6 +92,7 @@ public class LoginController {
 		LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
 		queryWrapper.eq(SysUser::getUsername,username);
 		SysUser sysUser = sysUserService.getOne(queryWrapper);
+		sysUser.setRoleId(sysUserService.getRolesByName(username));
 		//update-end-author:wangshuai date:20200601 for: 登录代码验证用户是否注销bug，if条件永远为false
 		result = sysUserService.checkUserIsEffective(sysUser);
 		if(!result.isSuccess()) {
@@ -326,6 +327,7 @@ public class LoginController {
 		
 		//校验用户有效性
 		SysUser sysUser = sysUserService.getUserByPhone(phone);
+		sysUser.setRoleId(sysUserService.getRolesByName(sysUser.getUsername()));
 		result = sysUserService.checkUserIsEffective(sysUser);
 		if(!result.isSuccess()) {
 			return result;
