@@ -57,7 +57,20 @@ public class ApiBannerController extends ApiBaseController {
         QueryWrapper<Banner> queryWrapper = QueryGenerator.initQueryWrapper(banner, req.getParameterMap());
         Page<Banner> page = new Page<>(1, 1000);
         IPage<Banner> pageList = bannerService.page(page, queryWrapper);
-        System.out.println(pageList.toString());
+        return Result.OK(pageList);
+    }
+
+    /**
+     * 这个接口不验证了
+     * @param banner
+     * @return
+     */
+    @ApiOperation(value = "小程序-获取banner列表", notes = "小程序-获取banner列表")
+    @GetMapping(value = "/wx/banner")
+    public Result<?> queryWxList(Banner banner, HttpServletRequest req) {
+        QueryWrapper<Banner> queryWrapper = QueryGenerator.initQueryWrapper(banner, req.getParameterMap());
+        Page<Banner> page = new Page<>(1, 1000);
+        IPage<Banner> pageList = bannerService.page(page, queryWrapper);
         return Result.OK(pageList);
     }
 }

@@ -2,7 +2,7 @@ package org.jeecg.modules.system.entity;
 
 import java.util.Date;
 
-import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,8 +10,6 @@ import org.jeecg.common.aspect.annotation.Dict;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.io.Serializable;
@@ -95,6 +93,7 @@ public class SysUser implements Serializable {
     /**
      * 电话
      */
+    @TableField(value = "phone",updateStrategy = FieldStrategy.IGNORED)
     @Excel(name = "手机号码", width = 15)
     private String phone;
 

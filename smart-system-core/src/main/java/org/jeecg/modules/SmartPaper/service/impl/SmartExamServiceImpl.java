@@ -1,20 +1,21 @@
 package org.jeecg.modules.SmartPaper.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
-import org.jeecg.modules.SmartPaper.entity.SmartExamPeople;
+import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.modules.SmartPaper.entity.SmartPeople;
 import org.jeecg.modules.SmartPaper.entity.SmartSubmit;
 import org.jeecg.modules.SmartPaper.entity.SmartTopic;
 import org.jeecg.modules.SmartPaper.mapper.SmartExamMapper;
+import org.jeecg.modules.SmartPaper.mapper.SmartPeopleMapper;
+import org.jeecg.modules.SmartPaper.mapper.SmartSubmitMapper;
 import org.jeecg.modules.SmartPaper.mapper.SmartTopicMapper;
 import org.jeecg.modules.SmartPaper.service.ISmartExamService;
 import org.jeecg.modules.SmartPaper.vo.SmartSubmitExamVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -32,12 +33,14 @@ import java.util.List;
  */
 @Service
 @Transactional  //事务的注解
-public class SmartExamServiceImpl extends ServiceImpl<SmartExamMapper, SmartExamPeople> implements ISmartExamService {
+public class SmartExamServiceImpl extends ServiceImpl<SmartPeopleMapper, SmartPeople> implements ISmartExamService {
 
     @Autowired
     private SmartTopicMapper smartTopicMapper;
     @Autowired
-    private SmartExamMapper smartExamMapper;
+    private SmartPeopleMapper smartPeopleMapper;
+    @Autowired
+    private SmartSubmitMapper smartSubmitMapper;
     /**
      *
      * 试卷提交,自动批改
@@ -49,8 +52,9 @@ public class SmartExamServiceImpl extends ServiceImpl<SmartExamMapper, SmartExam
         try{
             System.out.println("SSSSSSSSSSSSSSSSSSSSSSSSS");
             System.out.println(smartSubmitExamVO);
-            SmartExamPeople smartExamPeople = new SmartExamPeople();
-            BeanUtils.copyProperties(smartSubmitExamVO,smartExamPeople);
+            LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+            SmartPeople smartPeople = new SmartPeople();
+            BeanUtils.copyProperties(smartSubmitExamVO,smartPeople);
             List<SmartSubmit> smartSubmitList = smartSubmitExamVO.getSmartSubmitList();
             String paperId = (smartSubmitList.get(0)).getPaperId();
             LambdaQueryWrapper<SmartTopic> queryWrapper = new LambdaQueryWrapper();
@@ -63,6 +67,9 @@ public class SmartExamServiceImpl extends ServiceImpl<SmartExamMapper, SmartExam
                 SmartSubmit smartSubmit = new SmartSubmit();
                 BeanUtils.copyProperties(smartSubmitList.get(i),smartSubmit);
                 SmartTopic topic = smartTopicList.get(i);
+                smartSubmit.setQuestionId(topic.getId());
+                smartSubmit.setUserId(sysUser.getId());
+                smartSubmitMapper.insert(smartSubmit);
                 /*判断回答是否正确，单选及判断*/
                 if(smartSubmit.getType().equals("0") || smartSubmit.getType().equals("2")){
                     if(topic.getCorrectAnswer().equals(smartSubmit.getSubmitAnswer())){
@@ -107,13 +114,48 @@ public class SmartExamServiceImpl extends ServiceImpl<SmartExamMapper, SmartExam
                     }
                 }
 
+                //填空题
+                else if(smartSubmit.getType().equals("3")) {
+                    String[] correctAnswerArr = topic.getCorrectAnswer().split("\n");
+                    String[] submitAnswerArr = smartSubmit.getSubmitAnswer().split("\n");
+                    double topicGrade = 0;
+                    for(int n=0;n<correctAnswerArr.length;n++){
+                        System.out.println("CCCCCCCCCCCCCCCCCCCCCCCCCC");
+                        System.out.println((double)topic.getScore() / correctAnswerArr.length);
+                        if(correctAnswerArr[n].equals(submitAnswerArr[n])){
+                            topicGrade = topicGrade +((double) topic.getScore() / correctAnswerArr.length);
+                        }
+                    }
+                    grade = grade + (int) topicGrade;
+                }
+                //简答题
+                else if(smartSubmit.getType().equals("4")){
+                    String[] correctAnswerArr = topic.getCorrectAnswer().split("\n");
+                    double topicGrade = 0;
+                    for (String ca : correctAnswerArr) {
+                        if(smartSubmit.getSubmitAnswer().contains(ca)){
+                            topicGrade = topicGrade +  ((double)topic.getScore() / correctAnswerArr.length);
+                        }
+                    }
+                    grade = grade + (int) topicGrade;
+
+                }
+
             }
             Date date = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             System.out.println("当前时间：" + sdf.format(date));
-            smartExamPeople.setSubmitTime(date);
-            smartExamPeople.setExamGrade(grade);
-            smartExamMapper.insert(smartExamPeople);
+
+            smartPeople.setSubmitTime(date);
+            //记录最高成绩
+            String userId = sysUser.getId();
+            String examId = smartPeople.getExamId();
+            int oldGrade =  smartPeopleMapper.getGrade(userId,examId);
+            if(oldGrade<grade){
+                smartPeopleMapper.updateGrade(userId,examId,grade,date);
+            }else {
+
+            }
             return Result.OK(grade);
         }catch (Exception e){
             //强制手动事务回滚

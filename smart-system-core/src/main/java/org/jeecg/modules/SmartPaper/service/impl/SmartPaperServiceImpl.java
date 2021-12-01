@@ -92,8 +92,8 @@ public class SmartPaperServiceImpl extends ServiceImpl<SmartPaperMapper, SmartPa
             boolean isHas = false;
             for (int i=0; i<oldTopicIdList.size();i++){
                 if((t.getId()).equals(oldTopicIdList.get(i))){
-                    System.out.println("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
-                    System.out.println("true");
+                    //System.out.println("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
+                    //System.out.println("true");
                     isHas = true;
                     //存在则更新
                     UpdateWrapper<SmartTopic> topicId = new UpdateWrapper<>();

@@ -31,4 +31,10 @@ public interface SmartPaperMapper extends BaseMapper<SmartPaper> {
      *
      */
     List<SmartTopicVo> getTopicListByPaperId(String id);
+    /**
+     *
+     * 根据试卷ID更新试卷状态
+     *
+     */
+    void updateStatus(String paperId);
 }
