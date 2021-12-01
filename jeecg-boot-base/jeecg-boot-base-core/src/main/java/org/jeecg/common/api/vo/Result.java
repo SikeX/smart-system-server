@@ -30,7 +30,7 @@ public class Result<T> implements Serializable {
 	 * 返回处理消息
 	 */
 	@ApiModelProperty(value = "返回处理消息")
-	private String message = "";
+	private String message = "成功";
 
 	/**
 	 * 返回代码

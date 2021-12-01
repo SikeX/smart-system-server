@@ -4,9 +4,12 @@ import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.SecurityUtils;
+import org.jeecg.common.api.dto.message.MessageDTO;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.constant.CommonConstant;
+import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.system.entity.SysAnnouncement;
@@ -49,6 +52,8 @@ public class SysAnnouncementSendController {
 	private ISysAnnouncementSendService sysAnnouncementSendService;
 	@Autowired
 	private ISysAnnouncementService sysAnnouncementService;
+	@Autowired
+	private ISysBaseAPI sysBaseAPI;
 	
 	/**
 	  * 分页列表查询
@@ -344,6 +349,39 @@ public class SysAnnouncementSendController {
 		 result.setResult(pageList);
 		 result.setSuccess(true);
 		 return result;
+	 }
+
+	 @GetMapping(value = "/remindAll")
+	 public Result<?> remindAll(SysAnnouncementSend sysAnnouncementSend,
+								@RequestParam(name="anntId", required = true) String anntId) {
+
+		 LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
+
+		 QueryWrapper<SysAnnouncementSend> queryWrapper = new QueryWrapper<>();
+		 queryWrapper.eq("annt_id", anntId).eq("read_flag","0");
+
+
+		 List<SysAnnouncementSend> unReadList = sysAnnouncementSendService.list(queryWrapper);
+
+		 log.info("haha "+String.valueOf(unReadList));
+
+		 List<String> unReadUserList = new ArrayList<>();
+
+		 unReadList.forEach(item -> unReadUserList.add(sysBaseAPI.getUserById(item.getUserId()).getUsername()));
+
+		 String unReadUsers = String.join(",",unReadUserList);
+
+		 MessageDTO messageDTO = new MessageDTO();
+
+		 messageDTO.setFromUser(sysUser.getUsername());
+		 messageDTO.setToUser(unReadUsers);
+		 messageDTO.setCategory("1");
+		 messageDTO.setTitle("您有未读消息，请尽快查收");
+		 messageDTO.setContent("您有未读消息，请尽快查收");
+
+		 sysBaseAPI.sendSysAnnouncement(messageDTO);
+
+		 return Result.OK("提醒成功");
 	 }
 
 }
