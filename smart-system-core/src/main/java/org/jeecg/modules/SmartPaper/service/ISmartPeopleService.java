@@ -1,7 +1,9 @@
-package org.jeecg.modules.smartPeople.service;
+package org.jeecg.modules.SmartPaper.service;
 
-import org.jeecg.modules.smartPeople.entity.SmartPeople;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.jeecg.modules.SmartPaper.entity.SmartPeople;
+
+import java.util.List;
 
 /**
  * @Description: 考试参加人员表
@@ -11,4 +13,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ISmartPeopleService extends IService<SmartPeople> {
 
+    List<String> getMyExam(String userId);
+    String getMyExamString(String userId);
 }

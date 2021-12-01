@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.SmartPaper.mapper.SmartPeopleMapper">
+    <!--<resultMap id="peopleInfo" type="org.jeecg.modules.SmartPaper.entity.SmartPeople">
+
+    </resultMap>-->
+    <select id="getNameById" resultType="java.lang.String">
+        select realname from sys_user
+        where id = #{userId}
+    </select>
+    <select id="getExamIdByuser" resultType="java.lang.String">
+        select exam_id from smart_people
+        where person_id = #{userId}
+    </select>
+    <select id="getGrade" resultType="java.lang.Integer">
+        select exam_grade from smart_people
+        where exam_id = #{examId} and person_id = #{userId}
+    </select>
+    <update id="updateGrade">
+        update smart_people
+        set exam_grade = #{grade},submit_time = #{date} where exam_id = #{examId} and person_id = #{userId}
+    </update>
+</mapper>

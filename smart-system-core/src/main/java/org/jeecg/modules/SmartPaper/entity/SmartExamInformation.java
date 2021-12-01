@@ -17,17 +17,17 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @Description: 考试参加人员表
+ * @Description: 考试信息表
  * @Author: jeecg-boot
- * @Date:   2021-11-25
+ * @Date:   2021-11-23
  * @Version: V1.0
  */
 @Data
-@TableName("smart_people")
+@TableName("smart_exam_information")
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="smart_people对象", description="考试参加人员表")
-public class SmartExamPeople implements Serializable {
+@ApiModel(value="smart_exam_information对象", description="考试信息表")
+public class SmartExamInformation implements Serializable {
     private static final long serialVersionUID = 1L;
 
 	/**主键*/
@@ -53,32 +53,26 @@ public class SmartExamPeople implements Serializable {
 	/**所属部门*/
     @ApiModelProperty(value = "所属部门")
     private String sysOrgCode;
-	/**人员id*/
-	@Excel(name = "人员id", width = 15)
-    @ApiModelProperty(value = "人员id")
-    private String personId;
-	/**姓名*/
-	@Excel(name = "姓名", width = 15)
-    @ApiModelProperty(value = "姓名")
-    private String personName;
-	/**考试id*/
-	@Excel(name = "考试id", width = 15)
-    @ApiModelProperty(value = "考试id")
-    private String examId;
-	/**成绩*/
-	@Excel(name = "成绩", width = 15)
-    @ApiModelProperty(value = "成绩")
-    private Integer examGrade;
-	/**提交时间*/
-	@Excel(name = "提交时间", width = 20, format = "yyyy-MM-dd HH:mm:ss")
+	/**试卷ID*/
+	@Excel(name = "试卷ID", width = 15)
+    @ApiModelProperty(value = "试卷ID")
+    private String paperId;
+	/**考试名称*/
+	@Excel(name = "考试名称", width = 15)
+    @ApiModelProperty(value = "考试名称")
+    private String examName;
+	/**考试开始时间*/
+	@Excel(name = "考试开始时间", width = 20, format = "yyyy-MM-dd HH:mm:ss")
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @ApiModelProperty(value = "提交时间")
-    private Date submitTime;
-	/**ip地址*/
-	@Excel(name = "ip地址", width = 15)
-    @ApiModelProperty(value = "ip地址")
-    private String ipAddress;
+    @ApiModelProperty(value = "考试开始时间")
+    private Date examStarttime;
+	/**考试结束时间*/
+	@Excel(name = "考试结束时间", width = 20, format = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(value = "考试结束时间")
+    private Date examEndtime;
 	/**删除状态*/
 	@Excel(name = "删除状态", width = 15)
     @TableLogic
