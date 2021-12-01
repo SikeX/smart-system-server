@@ -12,7 +12,9 @@ import org.apache.commons.lang.StringUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.constant.CommonConstant;
 import org.jeecg.common.constant.WebsocketConst;
+import org.jeecg.common.system.util.JwtUtil;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.app.service.IApiClientService;
 import org.jeecg.modules.message.websocket.WebSocket;
 import org.jeecg.modules.system.entity.SysAnnouncement;
 import org.jeecg.modules.system.entity.SysAnnouncementSend;
@@ -51,11 +53,14 @@ public class ApiMessageController extends ApiBaseController {
     private ISysAnnouncementService sysAnnouncementService;
     @Autowired
     private ISysUserService sysUserService;
+    @Autowired
+    private IApiClientService apiClientService;
     @Resource
     private WebSocket webSocket;
 
     /**
      * 功能 获取我的消息
+     *
      * @param params
      * @return
      */
@@ -146,9 +151,9 @@ public class ApiMessageController extends ApiBaseController {
         }
         // 2.查询用户未读的系统消息
         Page<SysAnnouncement> anntMsgList = new Page<>(0, 5);
-        anntMsgList = sysAnnouncementService.querySysCementPageByUserId(anntMsgList,userId,"1");//通知公告消息
+        anntMsgList = sysAnnouncementService.querySysCementPageByUserId(anntMsgList, userId, "1");//通知公告消息
         Page<SysAnnouncement> sysMsgList = new Page<>(0, 5);
-        sysMsgList = sysAnnouncementService.querySysCementPageByUserId(sysMsgList,userId,"2");//系统消息
+        sysMsgList = sysAnnouncementService.querySysCementPageByUserId(sysMsgList, userId, "2");//系统消息
         Map<String, Object> sysMsgMap = new HashMap<>();
         // 不需要传过去具体的列表
 //        sysMsgMap.put("sysMsgList", sysMsgList.getRecords());
@@ -162,6 +167,7 @@ public class ApiMessageController extends ApiBaseController {
 
     /**
      * 更新用户系统消息阅读状态
+     *
      * @param params
      * @return
      */
@@ -185,7 +191,7 @@ public class ApiMessageController extends ApiBaseController {
         LambdaUpdateWrapper<SysAnnouncementSend> updateWrapper = new UpdateWrapper().lambda();
         updateWrapper.set(SysAnnouncementSend::getReadFlag, CommonConstant.HAS_READ_FLAG);
         updateWrapper.set(SysAnnouncementSend::getReadTime, new Date());
-        updateWrapper.last("where annt_id ='"+anntId+"' and user_id ='"+userId+"'");
+        updateWrapper.last("where annt_id ='" + anntId + "' and user_id ='" + userId + "'");
         SysAnnouncementSend announcementSend = new SysAnnouncementSend();
         sysAnnouncementSendService.update(announcementSend, updateWrapper);
         result.setSuccess(true);
@@ -198,36 +204,39 @@ public class ApiMessageController extends ApiBaseController {
 
     /**
      * 同步消息
-     * @link SysAnnouncementController/syncNotic()
+     *
      * @param anntId
      * @return
+     * @link SysAnnouncementController/syncNotic()
      */
     public Result<SysAnnouncement> syncNotice(String anntId) {
         Result<SysAnnouncement> result = new Result<>();
         JSONObject obj = new JSONObject();
-        if(StringUtils.isNotBlank(anntId)){
+        if (StringUtils.isNotBlank(anntId)) {
             SysAnnouncement sysAnnouncement = sysAnnouncementService.getById(anntId);
-            if(sysAnnouncement==null) {
+            if (sysAnnouncement == null) {
                 result.error500("未找到对应实体");
-            }else {
-                if(sysAnnouncement.getMsgType().equals(CommonConstant.MSG_TYPE_ALL)) {
+            } else {
+                if (sysAnnouncement.getMsgType().equals(CommonConstant.MSG_TYPE_ALL)) {
                     obj.put(WebsocketConst.MSG_CMD, WebsocketConst.CMD_TOPIC);
                     obj.put(WebsocketConst.MSG_ID, sysAnnouncement.getId());
                     obj.put(WebsocketConst.MSG_TXT, sysAnnouncement.getTitile());
+                    obj.put("type", "2");
                     webSocket.sendMessage(obj.toJSONString());
-                }else {
+                } else {
                     // 2.插入用户通告阅读标记表记录
                     String userId = sysAnnouncement.getUserIds();
-                    if(oConvertUtils.isNotEmpty(userId)){
-                        String[] userIds = userId.substring(0, (userId.length()-1)).split(",");
+                    if (oConvertUtils.isNotEmpty(userId)) {
+                        String[] userIds = userId.substring(0, (userId.length() - 1)).split(",");
                         obj.put(WebsocketConst.MSG_CMD, WebsocketConst.CMD_USER);
                         obj.put(WebsocketConst.MSG_ID, sysAnnouncement.getId());
                         obj.put(WebsocketConst.MSG_TXT, sysAnnouncement.getTitile());
+                        obj.put("type", "2");
                         webSocket.sendMessage(userIds, obj.toJSONString());
                     }
                 }
             }
-        }else{
+        } else {
             obj.put(WebsocketConst.MSG_CMD, WebsocketConst.CMD_TOPIC);
             obj.put(WebsocketConst.MSG_TXT, "批量设置已读");
             webSocket.sendMessage(obj.toJSONString());
@@ -237,6 +246,7 @@ public class ApiMessageController extends ApiBaseController {
 
     /**
      * 通告查看详情页面 返回web页面
+     *
      * @param anntId
      * @return
      */
@@ -253,5 +263,113 @@ public class ApiMessageController extends ApiBaseController {
         }
         modelAndView.setStatus(HttpStatus.NOT_FOUND);
         return modelAndView;
+    }
+
+    /**
+     * 功能 获取我的消息 微信小程序端
+     */
+    @GetMapping(value = "/wx/messages")
+    public Result<IPage<AnnouncementSendModel>> showWxMessage(@RequestParam("sysid") String sysUserId,
+                                                              @RequestParam("token") String token,
+                                                              @RequestParam("pageNo") int pageNo,
+                                                              @RequestParam("pageSize") int pageSize) {
+        Result<IPage<AnnouncementSendModel>> result = new Result<>();
+        // 校验token
+        if (JwtUtil.getUsername(token) == null) {
+            return null;
+        }
+
+        // 用自己的用户登录, 直接根据clientId查询
+        log.info("————————————获取到的uid是： " + sysUserId);
+        AnnouncementSendModel announcementSendModel = new AnnouncementSendModel();
+        announcementSendModel.setUserId(sysUserId);
+        announcementSendModel.setPageNo((pageNo - 1) * pageSize);
+        announcementSendModel.setPageSize(pageSize);
+        Page<AnnouncementSendModel> pageList = new Page<>(pageNo, pageSize);
+        pageList = sysAnnouncementSendService.getMyAnnouncementSendPage(pageList, announcementSendModel);
+        result.setResult(pageList);
+        result.setSuccess(true);
+        return result;
+    }
+
+    /**
+     * 更新用户系统消息阅读状态
+     * @return
+     */
+    @PostMapping(value = "/wx/messages/read")
+    public Result<SysAnnouncementSend> editMessageReadStatusByAnnIdWx(@RequestParam("sysid") String sysUserId,
+                                                                      @RequestParam("token") String token,
+                                                                      @RequestParam("anntId") String anntId) {
+        Result<SysAnnouncementSend> result = new Result<>();
+        // 校验token
+        if (JwtUtil.getUsername(token) == null) {
+            return null;
+        }
+        LambdaUpdateWrapper<SysAnnouncementSend> updateWrapper = new UpdateWrapper().lambda();
+        updateWrapper.set(SysAnnouncementSend::getReadFlag, CommonConstant.HAS_READ_FLAG);
+        updateWrapper.set(SysAnnouncementSend::getReadTime, new Date());
+        updateWrapper.last("where annt_id ='" + anntId + "' and user_id ='" + sysUserId + "'");
+        SysAnnouncementSend announcementSend = new SysAnnouncementSend();
+        sysAnnouncementSendService.update(announcementSend, updateWrapper);
+        result.setSuccess(true);
+
+        // 进行前端会进行的同步消息，目前不知道用处，后期研究
+        syncNotice(anntId);
+        return result;
+    }
+
+    /**
+     * @return
+     * @功能：补充用户数据，只返回未读消息数量
+     */
+    @GetMapping(value = "/wx/messages/sync")
+    public Result<Map<String, Object>> asyncWxMessage(@RequestParam("sysid") String sysUserId,
+                                                      @RequestParam("token") String token) {
+        Result<Map<String, Object>> result = new Result<>();
+        // 校验token
+        if (JwtUtil.getUsername(token) == null) {
+            return null;
+        }
+        // 这里直接使用传过来的id
+        SysUser sysUser = sysUserService.queryById(sysUserId);
+
+        // 1.将系统消息补充到用户通告阅读标记表中
+        LambdaQueryWrapper<SysAnnouncement> querySaWrapper = new LambdaQueryWrapper<>();
+        querySaWrapper.eq(SysAnnouncement::getMsgType, CommonConstant.MSG_TYPE_ALL); // 全部人员
+        querySaWrapper.eq(SysAnnouncement::getDelFlag, CommonConstant.DEL_FLAG_0.toString());  // 未删除
+        querySaWrapper.eq(SysAnnouncement::getSendStatus, CommonConstant.HAS_SEND); //已发布
+        querySaWrapper.ge(SysAnnouncement::getEndTime, sysUser.getCreateTime()); //新注册用户不看结束通知
+//        update-begin--Author:liusq  Date:20210108 for：[JT-424] 【开源issue】bug处理--------------------
+        querySaWrapper.notInSql(SysAnnouncement::getId, "select annt_id from sys_announcement_send where user_id='" + sysUserId + "'");
+        //update-begin--Author:liusq  Date:20210108  for： [JT-424] 【开源issue】bug处理--------------------
+        log.info(querySaWrapper.toString() + "——————————————————————————————————————");
+        List<SysAnnouncement> announcements = sysAnnouncementService.list(querySaWrapper);
+        log.info(announcements.size() + "——————————————————————要补充的消息个数");
+        if (announcements.size() > 0) {
+            for (SysAnnouncement announcement : announcements) {
+                //update-begin--Author:wangshuai  Date:20200803  for： 通知公告消息重复LOWCOD-759--------------------
+                //因为websocket没有判断是否存在这个用户，要是判断会出现问题，故在此判断逻辑
+                LambdaQueryWrapper<SysAnnouncementSend> query = new LambdaQueryWrapper<>();
+                query.eq(SysAnnouncementSend::getAnntId, announcement.getId());
+                query.eq(SysAnnouncementSend::getUserId, sysUserId);
+                SysAnnouncementSend one = sysAnnouncementSendService.getOne(query);
+                if (null == one) {
+                    SysAnnouncementSend announcementSend = new SysAnnouncementSend();
+                    announcementSend.setAnntId(announcement.getId());
+                    announcementSend.setUserId(sysUserId);
+                    announcementSend.setReadFlag(CommonConstant.NO_READ_FLAG);
+                    sysAnnouncementSendService.save(announcementSend);
+                }
+                //update-end--Author:wangshuai  Date:20200803  for： 通知公告消息重复LOWCOD-759------------
+            }
+        }
+        // 2.查询用户未读的系统消息
+        int num = apiClientService.queryUnreadMessageNumBySysUserId(sysUserId);
+        Map<String, Object> sysMsgMap = new HashMap<>();
+        // 不需要传过去具体的列表
+        sysMsgMap.put("nums", num);
+        result.setSuccess(true);
+        result.setResult(sysMsgMap);
+        return result;
     }
 }
