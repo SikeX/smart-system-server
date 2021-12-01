@@ -218,8 +218,12 @@ public class SysAnnouncementSendController {
 		Date readTime = new Date();
 		Date endTime = sysAnnouncementService.getById(anntId).getEndTime();
 		Integer isDelay;
-		if(readTime.after(endTime)){
-			isDelay = 1;
+		if(endTime != null){
+			if(readTime.after(endTime)){
+				isDelay = 1;
+			} else {
+				isDelay = 0;
+			}
 		} else {
 			isDelay = 0;
 		}
