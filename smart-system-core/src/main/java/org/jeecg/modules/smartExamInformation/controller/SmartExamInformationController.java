@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.SmartPaper.entity.SmartPaper;
+import org.jeecg.modules.SmartPaper.service.ISmartPaperService;
 import org.jeecg.modules.smartExamInformation.entity.SmartExamInformation;
 import org.jeecg.modules.smartExamInformation.service.ISmartExamInformationService;
 
@@ -49,7 +51,9 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 public class SmartExamInformationController extends JeecgController<SmartExamInformation, ISmartExamInformationService> {
 	@Autowired
 	private ISmartExamInformationService smartExamInformationService;
-	
+	@Autowired
+	private ISmartPaperService smartPaperService;
+
 	/**
 	 * 分页列表查询
 	 *
@@ -71,7 +75,7 @@ public class SmartExamInformationController extends JeecgController<SmartExamInf
 		IPage<SmartExamInformation> pageList = smartExamInformationService.page(page, queryWrapper);
 		return Result.OK(pageList);
 	}
-	
+
 	/**
 	 *   添加
 	 *
@@ -82,10 +86,15 @@ public class SmartExamInformationController extends JeecgController<SmartExamInf
 	@ApiOperation(value="考试信息表-添加", notes="考试信息表-添加")
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody SmartExamInformation smartExamInformation) {
+		SmartPaper smartPaper=new SmartPaper();
+		//考试信息表的考试名称对应试卷表的试卷名称
+		smartPaper.setPaperName(smartExamInformation.getExamName());
+
+		smartPaperService.save(smartPaper);
 		smartExamInformationService.save(smartExamInformation);
 		return Result.OK("添加成功！");
 	}
-	
+
 	/**
 	 *  编辑
 	 *
@@ -99,7 +108,7 @@ public class SmartExamInformationController extends JeecgController<SmartExamInf
 		smartExamInformationService.updateById(smartExamInformation);
 		return Result.OK("编辑成功!");
 	}
-	
+
 	/**
 	 *   通过id删除
 	 *
@@ -113,7 +122,7 @@ public class SmartExamInformationController extends JeecgController<SmartExamInf
 		smartExamInformationService.removeById(id);
 		return Result.OK("删除成功!");
 	}
-	
+
 	/**
 	 *  批量删除
 	 *
@@ -127,7 +136,7 @@ public class SmartExamInformationController extends JeecgController<SmartExamInf
 		this.smartExamInformationService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.OK("批量删除成功!");
 	}
-	
+
 	/**
 	 * 通过id查询
 	 *
