@@ -29,6 +29,13 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 	public SysUser getUserByName(@Param("username") String username);
 
 	/**
+	 * 通过用户账号查询用户角色
+	 * @param username
+	 * @return
+	 */
+	public List<String> getRolesByName(@Param("username") String username);
+
+	/**
 	 *  根据部门Id查询用户信息
 	 * @param page
 	 * @param departId
