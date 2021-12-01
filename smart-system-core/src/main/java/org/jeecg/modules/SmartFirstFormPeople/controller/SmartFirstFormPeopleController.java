@@ -29,6 +29,7 @@ import org.jeecg.modules.SmartPunishPeople.entity.SmartPunishPeople;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
+import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -61,6 +62,8 @@ public class SmartFirstFormPeopleController extends JeecgController<SmartFirstFo
 
 	 @Autowired
 	 private CommonService commonService;
+	 @Autowired
+	 private ISmartVerifyTypeService smartVerifyTypeService;
 	 @Autowired
 	 private SmartVerify smartVerify;
 	 public String verifyType = "执行第一形态人";
@@ -137,9 +140,21 @@ public class SmartFirstFormPeopleController extends JeecgController<SmartFirstFo
 			return Result.error("没有找到部门！");
 		}
 		smartFirstFormPeople.setDepartId(id);
-		smartFirstFormPeopleService.save(smartFirstFormPeople);
+		//smartFirstFormPeopleService.save(smartFirstFormPeople);
 		//审核
-		smartVerify.addVerifyRecord(smartFirstFormPeople.getId(),verifyType);
+		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
+		if(isVerify){
+			smartFirstFormPeopleService.save(smartFirstFormPeople);
+			String recordId = smartFirstFormPeople.getId();
+			smartVerify.addVerifyRecord(recordId,verifyType);
+			smartFirstFormPeople.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+			smartFirstFormPeopleService.updateById(smartFirstFormPeople);
+		} else {
+			// 设置审核状态为免审
+			smartFirstFormPeople.setVerifyStatus("3");
+			// 直接添加，不走审核流程
+			smartFirstFormPeopleService.save(smartFirstFormPeople);
+		}
 		return Result.OK("添加成功！");
 	}
 	

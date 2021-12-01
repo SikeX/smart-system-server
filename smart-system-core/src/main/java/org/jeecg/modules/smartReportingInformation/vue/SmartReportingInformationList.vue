@@ -144,7 +144,7 @@
           {
             title:'处理状态',
             align:"center",
-            dataIndex: 'processingType_dictText'
+            dataIndex: 'processingResult_dictText'
           },
           {
             title:'举报人姓名',
@@ -195,7 +195,7 @@
          fieldList.push({type:'string',value:'majorProblem',text:'主要问题',dictCode:''})
          fieldList.push({type:'Text',value:'description',text:'附件',dictCode:''})
          fieldList.push({type:'datetime',value:'reportingTime',text:'举报时间'})
-         fieldList.push({type:'string',value:'processingType',text:'处理状态',dictCode:'processing_type'})
+         fieldList.push({type:'string',value:'processingResult',text:'处理状态',dictCode:'processing_result'})
          fieldList.push({type:'string',value:'reportingName',text:'举报人姓名',dictCode:''})
          fieldList.push({type:'string',value:'contactNumber',text:'联系电话',dictCode:''})
         this.superFieldList = fieldList

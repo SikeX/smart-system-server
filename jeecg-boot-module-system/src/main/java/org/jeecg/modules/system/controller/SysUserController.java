@@ -48,6 +48,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+//import javax.print.MimeType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -119,23 +120,22 @@ public class SysUserController {
         String field = "departId";
         // 获取登录用户信息，可以用来查询单位部门信息
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-
         // 获取子单位ID
         String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
-
         HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
         // 获取请求参数中的superQueryParams
         List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
-
         // 添加额外查询条件，用于权限控制
         paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
                 + childrenIdString
                 + "%22,%22field%22:%22" + field + "%22%7D%5D");
+
         String[] params = new String[paramsList.size()];
         paramsList.toArray(params);
         map.put("superQueryParams", params);
         params = new String[]{"and"};
         map.put("superQueryMatchType", params);
+
         Result<IPage<SysUser>> result = new Result<IPage<SysUser>>();
 		QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(user, map);
     	//TODO 外部模拟登陆临时账号，列表不显示
@@ -167,10 +167,106 @@ public class SysUserController {
 		return result;
 	}
 
+
+    //@RequiresRoles({"admin"})
+    //@RequiresPermissions("user:add")
+	@RequestMapping(value = "/add", method = RequestMethod.POST)
+	public Result<SysUser> add(@RequestBody JSONObject jsonObject) {
+		Result<SysUser> result = new Result<SysUser>();
+        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+        String orgCode = sysUser.getOrgCode();
+        if ("".equals(orgCode)) {
+            return result.error500("本用户没有操作权限！");
+        }
+        String id = commonService.getDepartIdByOrgCode(orgCode);
+        if (id == null) {
+            return result.error500("没有找到部门！");
+        }
+		String selectedRoles = jsonObject.getString("selectedroles");
+		/*String selectedDeparts = jsonObject.getString("selecteddeparts");*/
+		//设置部门，只能添加本部门人员
+		String selectedDepart = id;
+		try {
+			SysUser user = JSON.parseObject(jsonObject.toJSONString(), SysUser.class);
+			user.setDepartId(id);
+			//设置人员类别,党员干部
+            user.setPeopleType("1");
+			//设置sys_code
+			user.setCreateTime(new Date());//设置创建时间
+            String phone = user.getPhone();
+            String username = user.getUsername();
+            //设置初始账号：手机号
+            if(username == null){
+                user.setPassword(phone);
+            }
+            //设置初始密码
+            String password = user.getPassword();
+            if(password == null){
+                user.setPassword("123456");
+            }
+			String salt = oConvertUtils.randomGen(8);
+			user.setSalt(salt);
+			String passwordEncode = PasswordUtil.encrypt(user.getUsername(), user.getPassword(), salt);
+			user.setPassword(passwordEncode);
+			user.setStatus(1);
+			user.setDelFlag(CommonConstant.DEL_FLAG_0);
+			// 保存用户走一个service 保证事务
+            //sysUserService.saveUser(user, selectedRoles, selectedDeparts);
+            sysUserService.saveUser(user, selectedRoles, selectedDepart);//只能添加本部门人员
+			result.success("添加成功！");
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			result.error500("操作失败");
+		}
+		return result;
+	}
+
+    //@RequiresRoles({"admin"})
+    //@RequiresPermissions("user:edit")
+	@RequestMapping(value = "/edit", method = RequestMethod.PUT)
+	public Result<SysUser> edit(@RequestBody JSONObject jsonObject) {
+		Result<SysUser> result = new Result<SysUser>();
+
+		try {
+			SysUser sysUser = sysUserService.getById(jsonObject.getString("id"));
+			baseCommonService.addLog("编辑用户，id： " +jsonObject.getString("id") ,CommonConstant.LOG_TYPE_2, 2);
+			if(sysUser==null) {
+				result.error500("未找到对应实体");
+			}else {
+				SysUser user = JSON.parseObject(jsonObject.toJSONString(), SysUser.class);
+                user.setDepartId(null);
+                //user.setCreateTime(null);
+				user.setUpdateTime(new Date());
+				//String passwordEncode = PasswordUtil.encrypt(user.getUsername(), user.getPassword(), sysUser.getSalt());
+				user.setPassword(sysUser.getPassword());
+				String roles = jsonObject.getString("selectedroles");
+                String departs = jsonObject.getString("selecteddeparts");
+                // 修改用户走一个service 保证事务
+				sysUserService.editUser(user, roles, departs);
+				result.success("修改成功!");
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			result.error500("操作失败");
+		}
+		return result;
+	}
+
+	/**
+	 * 删除用户
+	 */
+	//@RequiresRoles({"admin"})
+	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+	public Result<?> delete(@RequestParam(name="id",required=true) String id) {
+		baseCommonService.addLog("删除用户，id： " +id ,CommonConstant.LOG_TYPE_2, 3);
+		this.sysUserService.deleteUser(id);
+		return Result.ok("删除用户成功");
+	}
+
     @PermissionData(pageComponent = "system/villagePeopleList")
     @RequestMapping(value = "/villageList", method = RequestMethod.GET)
     public Result<IPage<SysUser>> queryVillageList(SysUser user,@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
-                                                @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,HttpServletRequest req) {
+                                                   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,HttpServletRequest req) {
 
         Result<IPage<SysUser>> result = new Result<IPage<SysUser>>();
         // 1. 规则，下面是 以**开始
@@ -182,9 +278,9 @@ public class SysUserController {
         String childrenIdString = null;
         if(sysUser.getDepartId()!=null && !"".equals(sysUser.getDepartId()))
         {
-        String userOrgCode = sysDepartService.getById(sysUser.getDepartId()).getOrgCode();
-        // 获取子单位ID
-        childrenIdString = commonService.getChildrenIdStringByOrgCode(userOrgCode);}
+            String userOrgCode = sysDepartService.getById(sysUser.getDepartId()).getOrgCode();
+            // 获取子单位ID
+            childrenIdString = commonService.getChildrenIdStringByOrgCode(userOrgCode);}
         else{
             return result.error500("无法获取当前用户所在单位信息！");
         }
@@ -232,48 +328,6 @@ public class SysUserController {
         }
         return result;
     }
-
-    //@RequiresRoles({"admin"})
-    //@RequiresPermissions("user:add")
-	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public Result<SysUser> add(@RequestBody JSONObject jsonObject) {
-		Result<SysUser> result = new Result<SysUser>();
-        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-        String orgCode = sysUser.getOrgCode();
-        if ("".equals(orgCode)) {
-            return result.error500("本用户没有操作权限！");
-        }
-        String id = commonService.getDepartIdByOrgCode(orgCode);
-        if (id == null) {
-            return result.error500("没有找到部门！");
-        }
-		String selectedRoles = jsonObject.getString("selectedroles");
-//		String selectedDeparts = jsonObject.getString("selecteddeparts");
-        String selectedDepart = id;
-		//设置部门，只能添加本部门人员
-		//String selectedDepart = id;
-		try {
-			SysUser user = JSON.parseObject(jsonObject.toJSONString(), SysUser.class);
-			user.setDepartId(id);
-			//设置sys_code
-			user.setCreateTime(new Date());//设置创建时间
-			String salt = oConvertUtils.randomGen(8);
-			user.setSalt(salt);
-			String passwordEncode = PasswordUtil.encrypt(user.getUsername(), user.getPassword(), salt);
-			user.setPassword(passwordEncode);
-			user.setStatus(1);
-			user.setDelFlag(CommonConstant.DEL_FLAG_0);
-			// 保存用户走一个service 保证事务
-            sysUserService.saveUser(user, selectedRoles, selectedDepart);//只能添加本部门人员
-//			sysUserService.saveUser(user, selectedRoles, selectedDeparts);
-			result.success("添加成功！");
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-			result.error500("操作失败");
-		}
-		return result;
-	}
-
     @RequestMapping(value = "/addVillage", method = RequestMethod.POST)
     public Result<SysUser> addVillage(@RequestBody JSONObject jsonObject) {
         Result<SysUser> result = new Result<SysUser>();
@@ -287,7 +341,7 @@ public class SysUserController {
 //            return result.error500("没有找到部门！");
 //        }
         String selectedRoles = jsonObject.getString("selectedroles");
-		String selectedDeparts = jsonObject.getString("selecteddeparts");
+        String selectedDeparts = jsonObject.getString("selecteddeparts");
 
 //        String selectedDepart = id;
         //设置部门，只能添加本部门人员
@@ -308,7 +362,7 @@ public class SysUserController {
             user.setOrgCode(userOrgCode);
             // 保存用户走一个service 保证事务
 //            sysUserService.saveUser(user, selectedRoles, selectedDepart);//只能添加本部门人员
-			sysUserService.saveUser(user, selectedRoles, selectedDeparts);
+            sysUserService.saveUser(user, selectedRoles, selectedDeparts);
             result.success("添加成功！");
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -316,38 +370,6 @@ public class SysUserController {
         }
         return result;
     }
-
-    //@RequiresRoles({"admin"})
-    //@RequiresPermissions("user:edit")
-	@RequestMapping(value = "/edit", method = RequestMethod.PUT)
-	public Result<SysUser> edit(@RequestBody JSONObject jsonObject) {
-		Result<SysUser> result = new Result<SysUser>();
-
-		try {
-			SysUser sysUser = sysUserService.getById(jsonObject.getString("id"));
-			baseCommonService.addLog("编辑用户，id： " +jsonObject.getString("id") ,CommonConstant.LOG_TYPE_2, 2);
-			if(sysUser==null) {
-				result.error500("未找到对应实体");
-			}else {
-				SysUser user = JSON.parseObject(jsonObject.toJSONString(), SysUser.class);
-                user.setDepartId(null);
-                //user.setCreateTime(null);
-				user.setUpdateTime(new Date());
-				//String passwordEncode = PasswordUtil.encrypt(user.getUsername(), user.getPassword(), sysUser.getSalt());
-				user.setPassword(sysUser.getPassword());
-				String roles = jsonObject.getString("selectedroles");
-                String departs = jsonObject.getString("selecteddeparts");
-                // 修改用户走一个service 保证事务
-				sysUserService.editUser(user, roles, departs);
-				result.success("修改成功!");
-			}
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-			result.error500("操作失败");
-		}
-		return result;
-	}
-
     @RequestMapping(value = "/editVillage", method = RequestMethod.PUT)
     public Result<SysUser> editVillage(@RequestBody JSONObject jsonObject) {
         Result<SysUser> result = new Result<SysUser>();
@@ -377,18 +399,8 @@ public class SysUserController {
         return result;
     }
 
-	/**
-	 * 删除用户
-	 */
-	//@RequiresRoles({"admin"})
-	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-	public Result<?> delete(@RequestParam(name="id",required=true) String id) {
-		baseCommonService.addLog("删除用户，id： " +id ,CommonConstant.LOG_TYPE_2, 3);
-		this.sysUserService.deleteUser(id);
-		return Result.ok("删除用户成功");
-	}
 
-	/**
+    /**
 	 * 批量删除用户
 	 */
 	//@RequiresRoles({"admin"})
@@ -589,15 +601,37 @@ public class SysUserController {
      * @param username
      * @return
      */
+    @RequestMapping(value = "/newQueryUserComponentData", method = RequestMethod.GET)
+    public Result<IPage<SysUser>> newQueryUserComponentData(
+            @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+            @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+            @RequestParam(name = "departId", required = false) String departId,
+            @RequestParam(name="realname",required=false) String realname,
+            @RequestParam(name="username",required=false) String username )
+    {
+
+            IPage<SysUser> pageList = sysUserDepartService.newqueryDepartUserPageList(departId, username, realname, pageSize, pageNo);
+
+            //IPage<SysUser> pageList = sysUserDepartService.queryDepartUserPageList(departId, username, realname, pageSize, pageNo);
+
+        return Result.OK(pageList);
+
+    }
     @RequestMapping(value = "/queryUserComponentData", method = RequestMethod.GET)
     public Result<IPage<SysUser>> queryUserComponentData(
             @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
             @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
             @RequestParam(name = "departId", required = false) String departId,
             @RequestParam(name="realname",required=false) String realname,
-            @RequestParam(name="username",required=false) String username) {
+            @RequestParam(name="username",required=false) String username )
+    {
+
+        //IPage<SysUser> pageList = sysUserDepartService.newqueryDepartUserPageList(departId, username, realname, pageSize, pageNo);
+
         IPage<SysUser> pageList = sysUserDepartService.queryDepartUserPageList(departId, username, realname, pageSize, pageNo);
+
         return Result.OK(pageList);
+
     }
 
     /**
@@ -657,6 +691,12 @@ public class SysUserController {
                 List<SysUser> listSysUsers = ExcelImportUtil.importExcel(file.getInputStream(), SysUser.class, params);
                 for (int i = 0; i < listSysUsers.size(); i++) {
                     SysUser sysUserExcel = listSysUsers.get(i);
+                    //设置初始账号
+                    if (StringUtils.isBlank(sysUserExcel.getUsername())) {
+                        //账号默认为手机号
+                        sysUserExcel.setPassword(sysUserExcel.getPhone());
+                    }
+                    //设置默认密码
                     if (StringUtils.isBlank(sysUserExcel.getPassword())) {
                         // 密码默认为 “123456”
                         sysUserExcel.setPassword("123456");
@@ -1131,7 +1171,6 @@ public class SysUserController {
 			sysUserService.addUserWithRole(user,"ee8626f80f7c2619917b6236f3a7f02b");//默认临时角色 test
 			result.success("注册成功");
 		} catch (Exception e) {
-		    e.printStackTrace();
 			result.error500("注册失败");
 		}
 		return result;

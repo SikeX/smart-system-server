@@ -55,16 +55,16 @@ public class SmartTripleImportanceOneGreatnessPage {
 	@Excel(name = "参会人数", width = 15)
 	@ApiModelProperty(value = "参会人数")
     private java.lang.Integer meetingNumber;
-
-	/**参会人员*/
+/*
+	*//**参会人员*//*
 	@Excel(name = "参会人员", width = 15,dictTable = "sys_user",dicText = "realname",dicCode = "id")
 	@Dict(dictTable = "sys_user",dicText = "realname",dicCode = "id")
 	@ApiModelProperty(value = "参会人员")
     private java.lang.String meetingPeople;
-	/**参会人员姓名*/
+	*//**参会人员姓名*//*
 	@Excel(name = "参会人员姓名", width = 15)
 	@ApiModelProperty(value = "参会人员姓名")
-	private java.lang.String meetingPeopleName;
+	private java.lang.String meetingPeopleName;*/
 
 	/**主持人*/
 	@Excel(name = "主持人", width = 15,dictTable = "sys_user",dicText = "realname",dicCode = "id")

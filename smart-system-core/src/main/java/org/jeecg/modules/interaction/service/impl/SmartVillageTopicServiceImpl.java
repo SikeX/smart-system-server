@@ -38,13 +38,15 @@ implements SmartVillageTopicService{
 
         String departId = sysBaseAPI.getDepartIdByUserId(userId);
 
-        List<SmartVillageTopic> list = new ArrayList<>();
-
-        list = smartVillageTopicMapper.getTopicListByDepartId(page,departId);
-
-        log.info(String.valueOf(list));
-
         return page.setRecords(smartVillageTopicMapper.getTopicListByDepartId(page,departId));
+    }
+
+    @Override
+    public Page<SmartVillageTopic> getVerifyTopicListPage(Page<SmartVillageTopic> page, String userId){
+
+        String departId = sysBaseAPI.getDepartIdByUserId(userId);
+
+        return page.setRecords(smartVillageTopicMapper.getVerifyTopicListByDepartId(page,departId));
     }
 
 }

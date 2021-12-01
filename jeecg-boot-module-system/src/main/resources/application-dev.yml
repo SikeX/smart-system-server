@@ -153,7 +153,7 @@ spring:
         max-wait: -1ms  #最大建立连接等待时间。如果超过此时间将接到异常。设为-1表示无限制。
         min-idle: 0     #最小等待连接中的数量,设 0 为没有限制
       shutdown-timeout: 100ms
-    password: ''
+    password: '123456'
     port: 6379
 #mybatis plus 设置
 mybatis-plus:
@@ -324,3 +324,8 @@ flowable:
   # 关闭异步，不关闭历史数据的插入就是异步的，会在同一个事物里面，无法回滚
   # 开发可开启会提高些效率，上线需要关闭
   async-executor-activate: false
+
+# 2021-11-27 增加wechat小程序配置 @Author CabbSir
+wechat:
+  appid: "wxcd1dbe5d7680899c"
+  secret: "92f896dabf08699396dd6a3e20873d12"

@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.SmartPunishPeople.mapper.SmartPunishPeopleMapper">
+    <!--处分人员总数量-->
+    <select id="punishPeopleCount" resultType="java.lang.Integer">
+        select count(1) from smart_punish_people
+    </select>
+    <!--统计处分类型 End -->
+    <resultMap id="StaticMap" type="org.jeecg.modules.SmartPunishPeople.entity.TypeCount">
+        <result property="type" column="punish_type"/>
+        <result property="value" column="count"/>
+    </resultMap>
+    <!--按处分类型统计-->
+    <select id="punishPeopleCountByType" resultMap="StaticMap">
+        select count(*) as count,i.item_text as punish_type from smart_punish_people as p ,sys_dict as d,sys_dict_item as i
+        where p.punish_type = i.item_value and d.dict_code = 'punish_type' and i.dict_id = d.id
+        group by p.punish_type,i.item_text
+    </select>
+    <!--本月即将解除处分人员数量-->
+    <select id="punishPeopleCountByMonth" resultType="java.lang.Integer">
+        select count(*)  from smart_punish_people s
+        where  substr(s.remove_time,1,7) = #{currentMonth}
+    </select>
 
 </mapper>

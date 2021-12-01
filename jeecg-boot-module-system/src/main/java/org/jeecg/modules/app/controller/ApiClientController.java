@@ -17,7 +17,10 @@ import org.jeecg.common.system.util.JwtUtil;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.*;
 import org.jeecg.modules.app.entity.AppUser;
+import org.jeecg.modules.app.entity.WXUser;
 import org.jeecg.modules.app.service.IApiClientService;
+import org.jeecg.modules.app.util.Wechat;
+import org.jeecg.modules.app.util.WechatConfig;
 import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.system.entity.SysDepart;
 import org.jeecg.modules.system.entity.SysTenant;
@@ -27,13 +30,23 @@ import org.jeecg.modules.system.model.SysLoginModel;
 import org.jeecg.modules.system.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidParameterSpecException;
 import java.util.*;
 
 /**
- * @Description: 客户端的一些功能接口
+ * @Description: 改为微信小程序功能接口
  * @Author: CabbSir cabbsir@gmail.com
  * @Date: 2021-11-07
  * @Version: V1.0
@@ -55,6 +68,10 @@ public class ApiClientController extends ApiBaseController {
     private ISysBaseAPI sysBaseAPI;
     @Autowired
     private ISysAnnouncementSendService sysAnnouncementSendService;
+    @Autowired
+    private WechatConfig wechatConfig;
+    @Autowired
+    private RestTemplate restTemplate;
 
     /**
      * 激活设备接口
@@ -96,7 +113,7 @@ public class ApiClientController extends ApiBaseController {
         SysUser sysUser = null;
         if (appUser.getSysUserId() == null) {
             // 如果没有关联系统用户，那么注册
-            sysUser = register(appUser);
+            sysUser = register(appUser, null, 1);
             if (sysUser == null) {
                 log.error("注册新用户失败，客户端用户数据如下 " + appUser);
                 return Result.OK(appUser); // 由于token和sys_user_id为空，客户端根据这个字段判断是否注册成功，并且返回提示
@@ -116,15 +133,24 @@ public class ApiClientController extends ApiBaseController {
     /**
      * 设置默认用户名 android_user_ + id
      * 设置默认密码 123456
+     *
+     * @param userType 1-安卓用户 2-微信用户
      */
-    public SysUser register(AppUser appUser) {
+    public SysUser register(AppUser appUser, WXUser wxUser, int userType) {
         // 激活成功之后自动在平台注册用户
         try {
             SysUser sysUser = new SysUser();
             sysUser.setId(UUIDGenerator.generate());
-            sysUser.setUsername("android_user_" + appUser.getId());
-            sysUser.setRealname("安卓用户_" + appUser.getId());
-            sysUser.setClientId(appUser.getClientId());
+            if (userType == 1) {
+                sysUser.setUsername("android_user_" + appUser.getId());
+                sysUser.setRealname("安卓用户_" + appUser.getId());
+                sysUser.setClientId(appUser.getClientId());
+            } else if (userType == 2) {
+                sysUser.setUsername("weixin_user_" + wxUser.getId());
+                sysUser.setRealname("微信用户_" + wxUser.getId());
+                sysUser.setClientId(wxUser.getWxOpenId());
+            }
+            sysUser.setPeopleType("4");
             sysUser.setCreateTime(new Date());//设置创建时间
             sysUser.setUpdateTime(new Date());//设置更新时间
             String salt = oConvertUtils.randomGen(8);
@@ -134,7 +160,11 @@ public class ApiClientController extends ApiBaseController {
             sysUser.setStatus(1);
             sysUser.setDelFlag(CommonConstant.DEL_FLAG_0);
             // 保存用户走一个service 保证事务
-            sysUserService.saveUserFromClient(sysUser, "mw7vfrjgbj2e8tdhaulnvz6e1oz4dgws", appUser.getId());
+            if (userType == 1) {
+                sysUserService.saveUserFromClient(sysUser, "mw7vfrjgbj2e8tdhaulnvz6e1oz4dgws", appUser.getId(), userType);
+            } else if (userType == 2) {
+                sysUserService.saveUserFromClient(sysUser, "mw7vfrjgbj2e8tdhaulnvz6e1oz4dgws", wxUser.getId(), userType);
+            }
             return sysUser;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -144,6 +174,7 @@ public class ApiClientController extends ApiBaseController {
 
     /**
      * app端输入用户名密码登录，同时更换绑定用户操作也在这里
+     *
      * @param params
      * @return
      */
@@ -170,7 +201,7 @@ public class ApiClientController extends ApiBaseController {
         Result<JSONObject> result = new Result<>();
         SysUser sysUser = sysUserService.getUserByName(username);
         result = sysUserService.checkUserIsEffective(sysUser);
-        if(!result.isSuccess()) {
+        if (!result.isSuccess()) {
             return result;
         }
 
@@ -210,6 +241,7 @@ public class ApiClientController extends ApiBaseController {
 
     /**
      * app进入自动登录
+     *
      * @param sysUser
      * @return 返回值是token
      */
@@ -221,15 +253,15 @@ public class ApiClientController extends ApiBaseController {
         //1. 校验用户是否有效
         SysUser databaseUser = sysUserService.getUserByName(username);
         result = sysUserService.checkUserIsEffective(databaseUser);
-        if(!result.isSuccess()) {
+        if (!result.isSuccess()) {
             return result;
         }
 
         // 生成token
         String token = JwtUtil.sign(username, password);
-        // 设置超时时间为一天
+        // 2021-11-28 改为 设置超时时间为1h
         redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, token);
-        redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, 24 * 60 * 60);
+        redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, 60 * 60);
 
         //token 信息
         baseCommonService.addLog("用户名: " + username + ",登录成功[移动端]！", CommonConstant.LOG_TYPE_1, null);
@@ -238,6 +270,7 @@ public class ApiClientController extends ApiBaseController {
 
     /**
      * app端登出
+     *
      * @param params
      * @return
      */
@@ -255,14 +288,14 @@ public class ApiClientController extends ApiBaseController {
         }
         //用户退出逻辑
         String token = params.get("token").replace(CommonConstant.PREFIX_USER_TOKEN, "");
-        if(oConvertUtils.isEmpty(token)) {
+        if (oConvertUtils.isEmpty(token)) {
             return Result.error("退出登录失败");
         }
         String username = JwtUtil.getUsername(token);
         LoginUser sysUser = sysBaseAPI.getUserByName(username);
-        if(sysUser!=null) {
-            baseCommonService.addLog("用户名: "+sysUser.getRealname()+",退出成功！", CommonConstant.LOG_TYPE_1, null,sysUser);
-            log.info(" 用户名:  "+sysUser.getRealname()+",退出成功！ ");
+        if (sysUser != null) {
+            baseCommonService.addLog("用户名: " + sysUser.getRealname() + ",退出成功！", CommonConstant.LOG_TYPE_1, null, sysUser);
+            log.info(" 用户名:  " + sysUser.getRealname() + ",退出成功！ ");
             //清空用户登录Token缓存
             redisUtil.del(CommonConstant.PREFIX_USER_TOKEN + token);
             //清空用户登录Shiro权限缓存
@@ -272,7 +305,7 @@ public class ApiClientController extends ApiBaseController {
             //调用shiro的logout
             SecurityUtils.getSubject().logout();
             return Result.OK("退出登录成功");
-        }else {
+        } else {
             return Result.error("Token无效");
         }
     }
@@ -280,6 +313,7 @@ public class ApiClientController extends ApiBaseController {
 
     /**
      * 获取用户信息，显示在app中
+     *
      * @param params
      * @return
      */
@@ -306,4 +340,155 @@ public class ApiClientController extends ApiBaseController {
         result.setMessage(sysUser.getUsername());
         return result;
     }
+
+    @PostMapping(value = "/phone")
+    public Result<?> parsePhoneNumber(@RequestParam("encryptedData") String encryptedData,
+                                      @RequestParam("iv") String iv,
+                                      @RequestParam("sessionKey") String sessionKey) {
+        // 解析出phone number
+        String jsonString = Wechat.decrypt(wechatConfig.getAppid(), encryptedData, sessionKey, iv);
+        JSONObject jsonObject = JSONObject.parseObject(jsonString);
+        // 根据sessionKey更新字段
+        WXUser wxUser = apiClientService.queryWxUserBySessionKey(sessionKey);
+        wxUser.setPhone(jsonObject.getString("purePhoneNumber"));
+        // 查询系统中是否已经有这个phone的用户了，如果有直接绑定，没有再继续
+        SysUser sysUser = sysUserService.queryByPhone(jsonObject.getString("purePhoneNumber"));
+        if (sysUser != null) {
+            apiClientService.updateWxUserSysUserIdById(wxUser.getId(), sysUser.getId());
+            wxUser.setSysUserId(sysUser.getId());
+            wxUser.setPeopleType(sysUser.getPeopleType());
+            Result<?> loginResult = autoLogin(sysUser);
+            if (loginResult.isSuccess()) {
+                wxUser.setToken(loginResult.getResult().toString());
+            }
+        }
+        if (apiClientService.updateWxUserPhoneById(wxUser.getId(), wxUser.getSysUserId() ,jsonObject.getString("purePhoneNumber"))) {
+            return Result.OK(wxUser);
+        } else {
+            return Result.error("更新错误");
+        }
+    }
+
+    @GetMapping(value = "/wxlogin")
+    public Result<?> wxLogin(@RequestParam("code") String code) {
+        // 判断code
+        if (code == null || code.equals("")) {
+            return Result.error("code错误");
+        }
+        String url = "https://api.weixin.qq.com/sns/jscode2session?appid={appid}&secret={secret}&js_code={code}&grant_type=authorization_code";
+        Map<String, String> requestMap = new HashMap<>();
+        requestMap.put("appid", wechatConfig.getAppid());
+        requestMap.put("secret", wechatConfig.getSecret());
+        requestMap.put("code", code);
+
+        ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class, requestMap);
+        JSONObject jsonObject = JSONObject.parseObject(responseEntity.getBody());
+        String openId = jsonObject.getString("openid");
+        String session_key = jsonObject.getString("session_key");
+
+        // 判断登录是否成功
+        if (openId == null || session_key == null) {
+            return Result.error("code错误");
+        }
+
+        // 校验通过，先查询是否已经存在用户，根据openId查询
+        WXUser wxUser = apiClientService.queryWxUserByOpenId(openId);
+        int now = (int) (System.currentTimeMillis() / 1000);
+        int id;
+        if (wxUser != null) {
+            // 更新字段
+            id = wxUser.getId();
+            WXUser updateData = new WXUser(id, session_key, now, now);
+            apiClientService.updateWxUserById(updateData);
+        } else {
+            wxUser = new WXUser(openId, session_key, now, ACCOUNT_ACTIVE_STATUS, now, now, "4");
+            apiClientService.insertWxUser(wxUser);
+            id = apiClientService.queryWxUserByOpenId(openId).getId();
+        }
+
+        wxUser = apiClientService.queryWxUserById(id);
+        SysUser sysUser = null;
+        if (wxUser.getSysUserId() == null) {
+            // 如果没有关联系统用户，那么注册
+            sysUser = register(null, wxUser, 2);
+            if (sysUser == null) {
+                return Result.OK(wxUser); // 由于token和sys_user_id为空，客户端根据这个字段判断是否注册成功，并且返回提示
+            }
+            wxUser.setSysUserId(sysUser.getId());
+        } else {
+            sysUser = sysUserService.queryById(wxUser.getSysUserId());
+        }
+        wxUser.setPeopleType(sysUser.getPeopleType());
+        // 自动登录并且返回token
+        Result<?> loginResult = autoLogin(sysUser);
+        if (loginResult.isSuccess()) {
+            wxUser.setToken(loginResult.getResult().toString());
+        }
+        return Result.OK(loginResult.getMessage(), wxUser);
+    }
+
+    /**
+     * 微信小程序端输入用户名密码登录，同时更换绑定用户操作也在这里
+     *
+     * @return
+     */
+    @ApiOperation(value = "微信-登录接口", notes = "微信小程序端-登录")
+    @PostMapping(value = "/wx/login")
+    public Result<?> wxManualLogin(@RequestParam("username") String username,
+                                   @RequestParam("password") String password,
+                                   @RequestParam("openId") String openId) {
+        //校验用户有效性，首先根据openId查询出关联的平台用户id，然后根据username查平台用户id，相同直接登录，不同则修改关联id
+        WXUser wxUser = apiClientService.queryWxUserByOpenId(openId);
+
+        // 先验证是否能登陆成功
+        //1. 校验用户是否有效
+        Result<JSONObject> result = new Result<>();
+        SysUser sysUser = sysUserService.getUserByName(username);
+        wxUser.setPeopleType(sysUser.getPeopleType());
+        result = sysUserService.checkUserIsEffective(sysUser);
+        if (!result.isSuccess()) {
+            return result;
+        }
+
+        //2. 校验用户名或密码是否正确
+        String userpassword = PasswordUtil.encrypt(username, password, sysUser.getSalt());
+        String syspassword = sysUser.getPassword();
+        if (!syspassword.equals(userpassword)) {
+            result.error500("用户名或密码错误");
+            return result;
+        }
+
+        // 未关联或者关联用户不同，默认视作换绑账户
+        if (!Objects.equals(wxUser.getSysUserId(), sysUser.getId())) {
+            // 先将之前的手机号取消绑定
+            SysUser old = sysUserService.queryById(wxUser.getSysUserId());
+            old.setPhone(null);
+            sysUserService.updateById(old);
+            wxUser.setSysUserId(sysUser.getId());
+            wxUser.setPeopleType(sysUser.getPeopleType());
+            wxUser.setMtime((int) System.currentTimeMillis());
+            apiClientService.updateWxUserSysUserIdById(wxUser.getId(), sysUser.getId());
+            // 此时一定已经有手机号了，更新到sys_user表
+            sysUser.setPhone(wxUser.getPhone());
+            sysUserService.updateById(sysUser);
+        }
+
+        JSONObject obj = new JSONObject();
+        //用户登录信息
+        obj.put("userInfo", wxUser);
+
+        // 生成token
+        String newToken = JwtUtil.sign(username, syspassword);
+        // 设置超时时间
+        redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + newToken, newToken);
+        redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + newToken, 60 * 60);
+        wxUser.setToken(newToken);
+        //token 信息
+        result.setResult(obj);
+        result.setSuccess(true);
+        result.setCode(200);
+        baseCommonService.addLog("用户名: " + username + ",登录成功[移动端]！", CommonConstant.LOG_TYPE_1, null);
+        return result;
+    }
+
 }
