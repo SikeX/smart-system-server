@@ -1,8 +1,6 @@
 package org.jeecg.modules.system.controller;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -267,6 +265,24 @@ public class SysAnnouncementSendController {
 		result.setSuccess(true);
 		return result;
 	}
+
+	 @GetMapping(value = "/getSubmitFileList")
+	 public Result<List<String>> getSubmitFileList(@RequestParam(name="anntId") String anntId) {
+		 Result<List<String>> result = new Result<List<String>>();
+
+		 QueryWrapper<SysAnnouncementSend> queryWrapper = new QueryWrapper<>();
+		 queryWrapper.eq("annt_id",anntId);
+
+		 List<String> fileList = new ArrayList<>();
+
+		 List<SysAnnouncementSend> submitFileList = sysAnnouncementSendService.list(queryWrapper);
+
+		 submitFileList.forEach(item->fileList.add(item.getSubmitFile()));
+
+		 result.setResult(fileList);
+		 result.setSuccess(true);
+		 return result;
+	 }
 
 	 @GetMapping(value = "/getMyTaskSend")
 	 public Result<IPage<AnnouncementSendModel>> getMyTaskSend(AnnouncementSendModel announcementSendModel,
