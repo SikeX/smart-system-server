@@ -8,11 +8,11 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
-    
+
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('举报信息表')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('通知模板')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -36,15 +36,15 @@
       <a-table
         ref="table"
         size="middle"
+        :scroll="{x:true}"
         bordered
         rowKey="id"
-        class="j-table-force-nowrap"
-        :scroll="{x:true}"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        class="j-table-force-nowrap"
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -89,26 +89,26 @@
       </a-table>
     </div>
 
-    <smart-reporting-information-modal ref="modalForm" @ok="modalFormOk"/>
+    <smart-message-template-modal ref="modalForm" @ok="modalFormOk"></smart-message-template-modal>
   </a-card>
 </template>
 
 <script>
 
-  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartReportingInformationModal from './modules/SmartReportingInformationModal'
-  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import '@/assets/less/TableExpand.less'
+  import { mixinDevice } from '@/utils/mixin'
+  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+  import SmartMessageTemplateModal from './modules/SmartMessageTemplateModal'
 
   export default {
-    name: "SmartReportingInformationList",
-    mixins:[JeecgListMixin],
+    name: 'SmartMessageTemplateList',
+    mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartReportingInformationModal
+      SmartMessageTemplateModal
     },
     data () {
       return {
-        description: '举报信息表管理页面',
+        description: '通知模板管理页面',
         // 表头
         columns: [
           {
@@ -122,39 +122,44 @@
             }
           },
           {
-            title:'被反映人信息',
+            title:'创建人',
             align:"center",
-            dataIndex: 'reflectedInformation'
+            dataIndex: 'createBy'
           },
           {
-            title:'被反映人单位',
+            title:'创建时间',
             align:"center",
-            dataIndex: 'reflectedDepartid'
+            dataIndex: 'createTime'
           },
           {
-            title:'主要问题',
+            title:'修改人',
             align:"center",
-            dataIndex: 'majorProblem'
+            dataIndex: 'updateBy'
           },
           {
-            title:'举报时间',
+            title:'修改时间',
             align:"center",
-            dataIndex: 'reportingTime'
+            dataIndex: 'updateTime'
           },
           {
-            title:'处理状态',
+            title:'标题',
             align:"center",
-            dataIndex: 'processingResult_dictText'
+            dataIndex: 'title'
           },
           {
-            title:'举报人姓名',
+            title:'优先级',
             align:"center",
-            dataIndex: 'reportingName'
+            dataIndex: 'priority'
           },
           {
-            title:'联系电话',
+            title:'摘要',
             align:"center",
-            dataIndex: 'contactNumber'
+            dataIndex: 'abstract'
+          },
+          {
+            title:'内容',
+            align:"center",
+            dataIndex: 'content'
           },
           {
             title: '操作',
@@ -162,15 +167,15 @@
             align:"center",
             fixed:"right",
             width:147,
-            scopedSlots: { customRender: 'action' },
+            scopedSlots: { customRender: 'action' }
           }
         ],
         url: {
-          list: "/smartReportingInformation/smartReportingInformation/list",
-          delete: "/smartReportingInformation/smartReportingInformation/delete",
-          deleteBatch: "/smartReportingInformation/smartReportingInformation/deleteBatch",
-          exportXlsUrl: "/smartReportingInformation/smartReportingInformation/exportXls",
-          importExcelUrl: "smartReportingInformation/smartReportingInformation/importExcel",
+          list: "/smartMessageTemplate/smartMessageTemplate/list",
+          delete: "/smartMessageTemplate/smartMessageTemplate/delete",
+          deleteBatch: "/smartMessageTemplate/smartMessageTemplate/deleteBatch",
+          exportXlsUrl: "/smartMessageTemplate/smartMessageTemplate/exportXls",
+          importExcelUrl: "smartMessageTemplate/smartMessageTemplate/importExcel",
           
         },
         dictOptions:{},
@@ -178,26 +183,26 @@
       }
     },
     created() {
-      this.getSuperFieldList();
+    this.getSuperFieldList();
     },
     computed: {
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
-      }
+      },
     },
     methods: {
       initDictConfig(){
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'reflectedInformation',text:'被反映人信息',dictCode:''})
-         fieldList.push({type:'string',value:'reflectedDepartid',text:'被反映人单位',dictCode:''})
-         fieldList.push({type:'string',value:'majorProblem',text:'主要问题',dictCode:''})
-         fieldList.push({type:'Text',value:'description',text:'附件',dictCode:''})
-         fieldList.push({type:'datetime',value:'reportingTime',text:'举报时间'})
-         fieldList.push({type:'string',value:'processingResult',text:'处理状态',dictCode:'processing_result'})
-         fieldList.push({type:'string',value:'reportingName',text:'举报人姓名',dictCode:''})
-         fieldList.push({type:'string',value:'contactNumber',text:'联系电话',dictCode:''})
+        fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
+        fieldList.push({type:'datetime',value:'createTime',text:'创建时间'})
+        fieldList.push({type:'string',value:'updateBy',text:'修改人',dictCode:''})
+        fieldList.push({type:'datetime',value:'updateTime',text:'修改时间'})
+        fieldList.push({type:'string',value:'title',text:'标题',dictCode:''})
+        fieldList.push({type:'string',value:'priority',text:'优先级',dictCode:''})
+        fieldList.push({type:'string',value:'abstract',text:'摘要',dictCode:''})
+        fieldList.push({type:'Text',value:'content',text:'内容',dictCode:''})
         this.superFieldList = fieldList
       }
     }

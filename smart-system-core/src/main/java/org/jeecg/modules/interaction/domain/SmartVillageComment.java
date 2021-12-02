@@ -66,6 +66,8 @@ public class SmartVillageComment implements Serializable {
      */
     private Date inTime;
 
+    private String status;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

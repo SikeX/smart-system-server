@@ -14,6 +14,7 @@ import org.jeecg.modules.interaction.domain.SmartVillageComment;
 import org.jeecg.modules.interaction.domain.SmartVillageTopic;
 import org.jeecg.modules.interaction.service.SmartVillageCommentService;
 import org.jeecg.modules.interaction.utils.SensitiveWordUtil;
+import org.jeecg.modules.interaction.vo.CommentVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -68,6 +69,35 @@ public class CommentController {
     }
 
     /**
+     * 查询待审核回答
+     *
+     * @param smartVillageComment
+     * @param pageNo
+     * @param pageSize
+     * @param req
+     * @return
+     */
+    @AutoLog(value = "村情互动回答-分页列表查询")
+    @ApiOperation(value="村情互动回答-分页列表查询", notes="村情互动回答-分页列表查询")
+    @GetMapping(value = "/verifyCommentList")
+    public Result<?> getVerifyCommentList(CommentVo commentVo,
+                                          @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+                                          @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+                                          HttpServletRequest req) {
+        Result<IPage<CommentVo>> result = new Result<IPage<CommentVo>>();
+
+        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+        Page<CommentVo> page = new Page<>(pageNo, pageSize);
+
+        IPage<CommentVo> pageList = smartVillageCommentService.getCommentListPage(page,sysUser.getId());
+
+        result.setResult(pageList);
+        result.setSuccess(true);
+        return result;
+    }
+
+    /**
      *   添加
      *
      * @param smartVillageComment
@@ -82,6 +112,7 @@ public class CommentController {
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
         String userId = sysUser.getId();
+        smartVillageComment.setStatus("0");
         smartVillageComment.setUserId(userId);
         //对敏感词进行过滤
         smartVillageComment.setContent(SensitiveWordUtil.replaceSensitiveWord(smartVillageComment.getContent(),"*",

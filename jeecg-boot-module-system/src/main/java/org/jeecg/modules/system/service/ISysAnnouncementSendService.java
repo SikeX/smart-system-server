@@ -23,7 +23,9 @@ public interface ISysAnnouncementSendService extends IService<SysAnnouncementSen
 	 * @param announcementSendModel
 	 * @return
 	 */
-	public Page<AnnouncementSendModel> getMyAnnouncementSendPage(Page<AnnouncementSendModel> page,AnnouncementSendModel announcementSendModel);
+	public Page<AnnouncementSendModel> getMyAnnouncementSendPage(Page<AnnouncementSendModel> page,
+																 AnnouncementSendModel announcementSendModel,
+																 String type);
 
 	/**
 	 * @功能 获取我的发送任务

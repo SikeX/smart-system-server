@@ -4,8 +4,23 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24">
-            <a-form-model-item label="敏感词" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="word">
-              <a-input v-model="model.word" placeholder="请输入敏感词"  ></a-input>
+            <a-form-model-item label="标题" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="title">
+              <a-input v-model="model.title" placeholder="请输入标题"  ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="优先级" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="priority">
+              <a-input v-model="model.priority" placeholder="请输入优先级"  ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="摘要" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="abstract">
+              <a-input v-model="model.abstract" placeholder="请输入摘要"  ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="内容" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="content">
+              <a-input v-model="model.content" placeholder="请输入内容"  ></a-input>
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -20,7 +35,7 @@
   import { validateDuplicateValue } from '@/utils/util'
 
   export default {
-    name: 'SmartSensitiveWordForm',
+    name: 'SmartMessageTemplateForm',
     components: {
     },
     props: {
@@ -45,11 +60,23 @@
         },
         confirmLoading: false,
         validatorRules: {
+           title: [
+              { required: true, message: '请输入标题!'},
+           ],
+           priority: [
+              { required: true, message: '请输入优先级!'},
+           ],
+           abstract: [
+              { required: true, message: '请输入摘要!'},
+           ],
+           content: [
+              { required: true, message: '请输入内容!'},
+           ],
         },
         url: {
-          add: "/interaction/smartSensitiveWord/add",
-          edit: "/interaction/smartSensitiveWord/edit",
-          queryById: "/interaction/smartSensitiveWord/queryById"
+          add: "/smartMessageTemplate/smartMessageTemplate/add",
+          edit: "/smartMessageTemplate/smartMessageTemplate/edit",
+          queryById: "/smartMessageTemplate/smartMessageTemplate/queryById"
         }
       }
     },

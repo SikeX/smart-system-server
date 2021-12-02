@@ -334,7 +334,8 @@ public class ApiClientController extends ApiBaseController {
         AnnouncementSendModel announcementSendModel = new AnnouncementSendModel();
         announcementSendModel.setUserId(sysUser.getId());
         Page<AnnouncementSendModel> pageList = new Page<>(1, 1);
-        pageList = sysAnnouncementSendService.getMyAnnouncementSendPage(pageList, announcementSendModel);
+        String type = "msg";
+        pageList = sysAnnouncementSendService.getMyAnnouncementSendPage(pageList, announcementSendModel, type);
         result.setResult(pageList);
         result.setSuccess(true);
         result.setMessage(sysUser.getUsername());

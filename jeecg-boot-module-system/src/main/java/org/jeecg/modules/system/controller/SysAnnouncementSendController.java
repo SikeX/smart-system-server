@@ -1,14 +1,15 @@
 package org.jeecg.modules.system.controller;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.SecurityUtils;
+import org.jeecg.common.api.dto.message.MessageDTO;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.constant.CommonConstant;
+import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.system.entity.SysAnnouncement;
@@ -51,6 +52,8 @@ public class SysAnnouncementSendController {
 	private ISysAnnouncementSendService sysAnnouncementSendService;
 	@Autowired
 	private ISysAnnouncementService sysAnnouncementService;
+	@Autowired
+	private ISysBaseAPI sysBaseAPI;
 	
 	/**
 	  * 分页列表查询
@@ -215,8 +218,12 @@ public class SysAnnouncementSendController {
 		Date readTime = new Date();
 		Date endTime = sysAnnouncementService.getById(anntId).getEndTime();
 		Integer isDelay;
-		if(readTime.after(endTime)){
-			isDelay = 1;
+		if(endTime != null){
+			if(readTime.after(endTime)){
+				isDelay = 1;
+			} else {
+				isDelay = 0;
+			}
 		} else {
 			isDelay = 0;
 		}
@@ -228,6 +235,24 @@ public class SysAnnouncementSendController {
 		result.setSuccess(true);
 		return result;
 	}
+
+	 /**
+	  * @功能：更新用户提交任务状态
+	  * @param json
+	  * @return
+	  */
+	 @PutMapping(value = "/editTaskSubmit")
+	 public Result<SysAnnouncementSend> editById(@RequestBody SysAnnouncementSend sysAnnouncementSend) {
+		 Result<SysAnnouncementSend> result = new Result<SysAnnouncementSend>();
+		 String anntId = sysAnnouncementSend.getAnntId();
+		 QueryWrapper<SysAnnouncementSend> queryWrapper = new QueryWrapper<>();
+		 LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
+		 String userId = sysUser.getId();
+		 queryWrapper.eq("annt_id",anntId).eq("user_id",userId);
+		 sysAnnouncementSendService.update(sysAnnouncementSend, queryWrapper);
+		 result.setSuccess(true);
+		 return result;
+	 }
 	
 	/**
 	 * @功能：获取我的消息
@@ -237,6 +262,7 @@ public class SysAnnouncementSendController {
 	public Result<IPage<AnnouncementSendModel>> getMyAnnouncementSend(AnnouncementSendModel announcementSendModel,
 			@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 			  @RequestParam(name="pageSize", defaultValue="10") Integer pageSize) {
+		String type = "msg";
 		Result<IPage<AnnouncementSendModel>> result = new Result<IPage<AnnouncementSendModel>>();
 		LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
 		String userId = sysUser.getId();
@@ -244,25 +270,43 @@ public class SysAnnouncementSendController {
 		announcementSendModel.setPageNo((pageNo-1)*pageSize);
 		announcementSendModel.setPageSize(pageSize);
 		Page<AnnouncementSendModel> pageList = new Page<AnnouncementSendModel>(pageNo,pageSize);
-		pageList = sysAnnouncementSendService.getMyAnnouncementSendPage(pageList, announcementSendModel);
+		pageList = sysAnnouncementSendService.getMyAnnouncementSendPage(pageList, announcementSendModel, type);
 		result.setResult(pageList);
 		result.setSuccess(true);
 		return result;
 	}
+
+	 @GetMapping(value = "/getSubmitFileList")
+	 public Result<List<String>> getSubmitFileList(@RequestParam(name="anntId") String anntId) {
+		 Result<List<String>> result = new Result<List<String>>();
+
+		 QueryWrapper<SysAnnouncementSend> queryWrapper = new QueryWrapper<>();
+		 queryWrapper.eq("annt_id",anntId);
+
+		 List<String> fileList = new ArrayList<>();
+
+		 List<SysAnnouncementSend> submitFileList = sysAnnouncementSendService.list(queryWrapper);
+
+		 submitFileList.forEach(item->fileList.add(item.getSubmitFile()));
+
+		 result.setResult(fileList);
+		 result.setSuccess(true);
+		 return result;
+	 }
 
 	 @GetMapping(value = "/getMyTaskSend")
 	 public Result<IPage<AnnouncementSendModel>> getMyTaskSend(AnnouncementSendModel announcementSendModel,
 																	   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 																	   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize) {
 		 Result<IPage<AnnouncementSendModel>> result = new Result<IPage<AnnouncementSendModel>>();
+		 String type = "task";
 		 LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
 		 String userId = sysUser.getId();
 		 announcementSendModel.setUserId(userId);
-		 announcementSendModel.setMsgCategory("3");
 		 announcementSendModel.setPageNo((pageNo-1)*pageSize);
 		 announcementSendModel.setPageSize(pageSize);
 		 Page<AnnouncementSendModel> pageList = new Page<AnnouncementSendModel>(pageNo,pageSize);
-		 pageList = sysAnnouncementSendService.getMyAnnouncementSendPage(pageList, announcementSendModel);
+		 pageList = sysAnnouncementSendService.getMyAnnouncementSendPage(pageList, announcementSendModel,type);
 		 result.setResult(pageList);
 		 result.setSuccess(true);
 		 return result;
@@ -288,6 +332,15 @@ public class SysAnnouncementSendController {
 		return result;
 	}
 
+	 /**
+	  * 获取消息收发详情
+	  *
+	  * @param announcementSendModel
+	  * @param anntId
+	  * @param pageNo
+	  * @param pageSize
+	  * @return
+	  */
 	 @GetMapping(value = "/getTaskDetail")
 	 public Result<IPage<AnnouncementSendModel>> getTaskDetail(AnnouncementSendModel announcementSendModel,
 															 @RequestParam(name="anntId", required = true) String anntId,
@@ -302,4 +355,38 @@ public class SysAnnouncementSendController {
 		 result.setSuccess(true);
 		 return result;
 	 }
+
+	 @GetMapping(value = "/remindAll")
+	 public Result<?> remindAll(SysAnnouncementSend sysAnnouncementSend,
+								@RequestParam(name="anntId", required = true) String anntId) {
+
+		 LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
+
+		 QueryWrapper<SysAnnouncementSend> queryWrapper = new QueryWrapper<>();
+		 queryWrapper.eq("annt_id", anntId).eq("read_flag","0");
+
+
+		 List<SysAnnouncementSend> unReadList = sysAnnouncementSendService.list(queryWrapper);
+
+		 log.info("haha "+String.valueOf(unReadList));
+
+		 List<String> unReadUserList = new ArrayList<>();
+
+		 unReadList.forEach(item -> unReadUserList.add(item.getUserId()));
+
+		 String unReadUsers = String.join(",",unReadUserList);
+
+		 MessageDTO messageDTO = new MessageDTO();
+
+		 messageDTO.setFromUser(sysUser.getUsername());
+		 messageDTO.setToUser(unReadUsers);
+		 messageDTO.setCategory("1");
+		 messageDTO.setTitle("您有未读消息，请尽快查收");
+		 messageDTO.setContent("您有未读消息，请尽快查收");
+
+		 sysBaseAPI.sendSysAnnouncementById(messageDTO);
+
+		 return Result.OK("提醒成功");
+	 }
+
 }

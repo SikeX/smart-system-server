@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
+import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.modules.common.util.ParamsUtil;
@@ -24,10 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -44,10 +42,13 @@ public class TopicController {
 
     @Autowired
     private SmartVillageTopicService smartVillageTopicService;
+    @Autowired
+    private ISysBaseAPI sysBaseAPI;
+
     /**
      * 分页列表查询
      *
-     * @param smartSupervision
+     * @param smartVillageTopic
      * @param pageNo
      * @param pageSize
      * @param req
@@ -63,10 +64,19 @@ public class TopicController {
         Result<IPage<SmartVillageTopic>> result = new Result<IPage<SmartVillageTopic>>();
 
         LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
+        String peopleType =  sysUser.getPeopleType();
         String userId = sysUser.getId();
 
+        log.info("人员类型 "+peopleType);
+
         Page<SmartVillageTopic> pageList = new Page<SmartVillageTopic>(pageNo, pageSize);
-        pageList = smartVillageTopicService.getTopicListPage(pageList, userId);
+
+        if(Objects.equals(peopleType, "2")) {
+            pageList = smartVillageTopicService.getTopicListPage(pageList, userId);
+        } else {
+            pageList = smartVillageTopicService.getTopicListByUserId(pageList, userId);
+        }
+
         result.setResult(pageList);
         result.setSuccess(true);
         return result;

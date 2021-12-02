@@ -8,17 +8,17 @@
     :okButtonProps="{ class:{'jee-hidden': disableSubmit} }"
     @cancel="handleCancel"
     cancelText="关闭">
-    <smart-sensitive-word-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"></smart-sensitive-word-form>
+    <smart-msg-task-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"></smart-msg-task-form>
   </j-modal>
 </template>
 
 <script>
 
-  import SmartSensitiveWordForm from './SmartSensitiveWordForm'
+  import SmartMsgTaskForm from './SmartMsgTaskForm'
   export default {
-    name: 'SmartSensitiveWordModal',
+    name: 'SmartMsgTaskModal',
     components: {
-      SmartSensitiveWordForm
+      SmartMsgTaskForm
     },
     data () {
       return {

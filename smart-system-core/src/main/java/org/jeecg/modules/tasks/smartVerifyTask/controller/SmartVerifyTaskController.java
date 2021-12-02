@@ -1,6 +1,7 @@
 package org.jeecg.modules.tasks.smartVerifyTask.controller;
 
 import java.util.Arrays;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,6 +14,25 @@ import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.modules.SmartFirstFormPeople.entity.SmartFirstFormPeople;
+import org.jeecg.modules.SmartFirstFormPeople.service.ISmartFirstFormPeopleService;
+import org.jeecg.modules.SmartInnerPartyTalk.entity.SmartInnerPartyTalk;
+import org.jeecg.modules.SmartInnerPartyTalk.service.ISmartInnerPartyAnnexService;
+import org.jeecg.modules.SmartInnerPartyTalk.service.ISmartInnerPartyTalkService;
+import org.jeecg.modules.smartCreateAdvice.entity.SmartCreateAdvice;
+import org.jeecg.modules.smartCreateAdvice.service.ISmartCreateAdviceService;
+import org.jeecg.modules.smartEvaluateMeeting.entity.SmartEvaluateMeeting;
+import org.jeecg.modules.smartEvaluateMeeting.service.ISmartEvaluateMeetingService;
+import org.jeecg.modules.smartFinanceResult.entity.SmartFinanceResult;
+import org.jeecg.modules.smartOrgMeeting.entity.SmartOrgMeeting;
+import org.jeecg.modules.smartPostMarriage.entity.SmartPostMarriageReport;
+import org.jeecg.modules.smartPostMarriage.service.ISmartPostMarriageReportService;
+import org.jeecg.modules.smartSupervision.entity.SmartSupervision;
+import org.jeecg.modules.smartSupervision.service.ISmartSupervisionService;
+import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatness;
+import org.jeecg.modules.smartTripleImportanceOneGreatness.service.ISmartTripleImportanceOneGreatnessService;
+import org.jeecg.modules.smart_8regulations_for_reception.entity.Smart_8regulationsForReception;
+import org.jeecg.modules.smart_8regulations_for_reception.service.ISmart_8regulationsForReceptionService;
 import org.jeecg.modules.tasks.smartVerifyDetail.entity.SmartVerifyDetail;
 import org.jeecg.modules.tasks.smartVerifyDetail.service.ISmartVerifyDetailService;
 import org.jeecg.modules.tasks.smartVerifyTask.entity.SmartVerifyTask;
@@ -47,17 +67,50 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 	@Autowired
 	private ISmartVerifyTaskService smartVerifyTaskService;
 
-	@Autowired
+	@Resource
 	private SmartVerifyTaskMapper smartVerifyTaskMapper;
 
 	@Autowired
 	private ISysBaseAPI sysBaseAPI;
 
-	@Autowired
+	@Resource
 	private VerifyTaskListPageMapper verifyTaskListPageMapper;
 
 	@Autowired
 	private ISmartVerifyDetailService smartVerifyDetailService;
+
+	@Autowired
+	private ISmartEvaluateMeetingService smartEvaluateMeetingService;
+
+	@Autowired
+	private ISmartFirstFormPeopleService smartFirstFormPeopleService;
+
+	@Autowired
+	private ISmartInnerPartyTalkService smartInnerPartyTalkService;
+
+	@Autowired
+	private org.jeecg.modules.smartOrgMeeting.service.ISmartOrgMeetingService smartOrgMeetingService;
+
+	@Autowired
+	private ISmartCreateAdviceService smartCreateAdviceService;
+
+	@Autowired
+	private ISmartPostMarriageReportService smartPostMarriageReportService;
+
+	@Autowired
+	private ISmartTripleImportanceOneGreatnessService smartTripleImportanceOneGreatnessService;
+
+	@Autowired
+	private ISmartSupervisionService smartSupervisionService;
+
+	@Autowired
+	private ISmart_8regulationsForReceptionService smart_8regulationsForReceptionService;
+
+	@Autowired
+	private org.jeecg.modules.smartFinanceResult.service.ISmartFinanceResultService smartFinanceResultService;
+
+
+
 	
 	/**
 	 * 分页列表查询
@@ -223,8 +276,9 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 	@ApiOperation(value="审核任务表-编辑", notes="审核任务表-编辑")
 	@PutMapping(value = "/updateStatus")
 	public Result<?> updateStatus(@RequestBody SmartVerifyDetail smartVerifyDetail) {
+		String flowNo = smartVerifyDetail.getFlowNo();
 	 log.info(String.valueOf(smartVerifyDetail));
-	 // 获取用户id及部门
+	 // 获取当前审批用户id及部门，并设置到审批详表中
 	 LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
 	 String userName = sysUser.getUsername();
 	 smartVerifyDetail.setAuditPerson(sysUser.getRealname());
@@ -240,7 +294,7 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 	 // 在审核主表中找到记录
 	 QueryWrapper<SmartVerifyTask> queryWrapper2 = new QueryWrapper<>();
 	 queryWrapper2.eq("flow_no",smartVerifyDetail.getFlowNo());
-	 // 查找出记录的用户名和任务类型
+	 // 查找出填报记录的用户名和任务类型
 	 String fillPersonUserName = smartVerifyTaskService.getOne(queryWrapper2).getCreateBy();
 	 String taskType = smartVerifyTaskService.getOne(queryWrapper2).getTaskType();
 	 // 如果审核人给了通过
@@ -254,6 +308,8 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 			 SmartVerifyTask smartVerifyTask = new SmartVerifyTask();
 			 smartVerifyTask.setFlowStatus(1);
 			 smartVerifyTaskService.update(smartVerifyTask,queryWrapper2);
+			 //同时给各个记录表更新状态
+			 syncVerify(flowNo, taskType, "1");
 			 // 给填报人发送消息
 //			 log.info(fillPersonUserName);
 			 MessageDTO messageDTO = new MessageDTO();
@@ -277,6 +333,7 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 		 SmartVerifyTask smartVerifyTask1 = new SmartVerifyTask();
 		 smartVerifyTask1.setFlowStatus(0);
 		 smartVerifyTaskService.update(smartVerifyTask1,queryWrapper2);
+		 syncVerify(flowNo,taskType, "0");
 		 // 给填报人发送消息
 		 MessageDTO messageDTO = new MessageDTO();
 		 messageDTO.setFromUser(userName);
@@ -288,6 +345,70 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 		 return Result.OK("更新成功");
 	 }
 	 return Result.OK("更新成功");
+	}
+
+	public void syncVerify(String flowNo, String taskType, String status) {
+		switch (taskType) {
+			case "述责述廉" :
+				SmartEvaluateMeeting smartEvaluateMeeting = new SmartEvaluateMeeting();
+				smartEvaluateMeeting.setId(flowNo);
+				smartEvaluateMeeting.setVerifyStatus(status);
+				smartEvaluateMeetingService.updateById(smartEvaluateMeeting);
+				break;
+			case "执行第一形态人":
+				SmartFirstFormPeople smartFirstFormPeople = new SmartFirstFormPeople();
+				smartFirstFormPeople.setId(flowNo);
+				smartFirstFormPeople.setVerifyStatus(status);
+				smartFirstFormPeopleService.updateById(smartFirstFormPeople);
+				break;
+			case "党内谈话":
+				SmartInnerPartyTalk smartInnerPartyTalk = new SmartInnerPartyTalk();
+				smartInnerPartyTalk.setId(flowNo);
+				smartInnerPartyTalk.setVerifyStatus(status);
+				smartInnerPartyTalkService.updateById(smartInnerPartyTalk);
+			case "组织生活会":
+				org.jeecg.modules.smartOrgMeeting.entity.SmartOrgMeeting smartOrgMeeting = new SmartOrgMeeting();
+				smartOrgMeeting.setId(flowNo);
+				smartOrgMeeting.setVerifyStatus(status);
+				smartOrgMeetingService.updateById(smartOrgMeeting);
+				break;
+			case "制发建议":
+				SmartCreateAdvice smartCreateAdvice = new SmartCreateAdvice();
+				smartCreateAdvice.setId(flowNo);
+				smartCreateAdvice.setVerifyStatus(status);
+				smartCreateAdviceService.updateById(smartCreateAdvice);
+				break;
+			case "婚后报备":
+				SmartPostMarriageReport smartPostMarriageReport = new SmartPostMarriageReport();
+				smartPostMarriageReport.setId(flowNo);
+				smartPostMarriageReport.setVerifyStatus(status);
+				smartPostMarriageReportService.updateById(smartPostMarriageReport);
+				break;
+			case "三重一大":
+				SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness =
+						new SmartTripleImportanceOneGreatness();
+				smartTripleImportanceOneGreatness.setId(flowNo);
+				smartTripleImportanceOneGreatness.setVerifyStatus(status);
+				smartTripleImportanceOneGreatnessService.updateById(smartTripleImportanceOneGreatness);
+				break;
+			case "监督检查":
+				SmartSupervision smartSupervision = new SmartSupervision();
+				smartSupervision.setId(flowNo);
+				smartSupervision.setVerifyStatus(status);
+				smartSupervisionService.updateById(smartSupervision);
+				break;
+			case "公务接待":
+				Smart_8regulationsForReception smart_8regulationsForReception = new Smart_8regulationsForReception();
+				smart_8regulationsForReception.setId(flowNo);
+				// TO DO 曹萌这个居然还没改
+				break;
+			case "财务收支":
+				org.jeecg.modules.smartFinanceResult.entity.SmartFinanceResult smartFinanceResult =
+						new SmartFinanceResult();
+				smartFinanceResult.setId(flowNo);
+				smartFinanceResult.setVerifyStatus(status);
+				break;
+		}
 	}
 
 
