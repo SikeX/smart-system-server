@@ -3,6 +3,7 @@ package org.jeecg.modules.SmartPaper.controller;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.api.vo.Result;
+import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.modules.SmartPaper.entity.SmartExamInformation;
 import org.jeecg.modules.SmartPaper.service.ISmartReleaseService;
@@ -22,6 +23,9 @@ import org.springframework.web.bind.annotation.*;
 public class SmartReleaseController extends JeecgController<SmartExamInformation, ISmartReleaseService> {
    @Autowired
    private ISmartReleaseService smartReleaseService;
+
+   @Autowired
+   private ISysBaseAPI sysBaseAPI;
    /**
     *
     * 发布考试
@@ -30,9 +34,10 @@ public class SmartReleaseController extends JeecgController<SmartExamInformation
    @ApiOperation(value = "发布考试")
    @PostMapping(value = "/releaseExam/{paperId}" )
    public Result releaseExam(@PathVariable("paperId") String paperId,@RequestBody SmartExamVo smartExamVO){
-      System.out.println("AAAAAAAAAAAAAAAAAAAAA");
-      System.out.println(smartExamVO);
+      //System.out.println("AAAAAAAAAAAAAAAAAAAAA");
+      //System.out.println(smartExamVO);
       Result res = smartReleaseService.releaseExam(paperId,smartExamVO);
+      //TODO 发送系统消息提醒
       return res;
    }
 
