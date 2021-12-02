@@ -51,4 +51,8 @@ public class SysAnnouncementSend implements Serializable {
 	private java.lang.String userDepart;
 
 	private java.lang.Integer isDelay;
+
+	private java.lang.String submitFile;
+
+	private java.lang.String submitRemark;
 }

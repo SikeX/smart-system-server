@@ -45,4 +45,19 @@
           and status = 0
         order by t.create_time desc
     </select>
+
+    <select id="getTopicListByDepIds" parameterType="java.util.List"
+            resultType="org.jeecg.modules.interaction.domain.SmartVillageTopic">
+        select t.*
+        from smart_village_topic t
+        left join sys_user_depart u on t.user_id = u.user_id
+        <where>
+            u.dep_id in
+            <foreach collection="depIds" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+            and status = 1
+        </where>
+        order by t.create_time desc
+    </select>
 </mapper>

@@ -20,4 +20,8 @@ public interface SmartVillageTopicMapper extends BaseMapper<SmartVillageTopic> {
     List<SmartVillageTopic> getTopicListByDepartId(Page<SmartVillageTopic> page, @Param("departId") String departId);
 
     List<SmartVillageTopic> getVerifyTopicListByDepartId(Page<SmartVillageTopic> page, @Param("departId") String departId);
+
+    List<SmartVillageTopic> getTopicListByDepIds(Page<SmartVillageTopic> page, @Param("depIds") List<String> depIds);
+
+
 }

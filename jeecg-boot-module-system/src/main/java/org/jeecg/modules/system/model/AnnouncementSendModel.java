@@ -99,5 +99,9 @@ public class AnnouncementSendModel implements Serializable {
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private java.util.Date readTime;
 
+	private java.lang.String submitFile;
+
+	private java.lang.String submitRemark;
+
 
 }

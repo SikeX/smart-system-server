@@ -7,6 +7,8 @@ import javax.annotation.Resource;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.ibatis.session.ExecutorType;
+import org.apache.ibatis.session.SqlSession;
 import org.jeecg.common.constant.CommonConstant;
 import org.jeecg.common.constant.WebsocketConst;
 import org.jeecg.common.system.vo.ComboModel;
@@ -16,6 +18,7 @@ import org.jeecg.modules.system.entity.SysAnnouncementSend;
 import org.jeecg.modules.system.mapper.SysAnnouncementMapper;
 import org.jeecg.modules.system.mapper.SysAnnouncementSendMapper;
 import org.jeecg.modules.system.service.ISysAnnouncementService;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +45,8 @@ public class SysAnnouncementServiceImpl extends ServiceImpl<SysAnnouncementMappe
 
 	@Autowired
 	private SysBaseApiImpl sysBaseApi;
+
+	SqlSessionTemplate sqlSessionTemplate;
 	
 	@Transactional
 	@Override
@@ -75,9 +80,13 @@ public class SysAnnouncementServiceImpl extends ServiceImpl<SysAnnouncementMappe
 				announcementSend.setIsDelay(0);
 				sysAnnouncementSendList.add(announcementSend);
 			}
-			// TO DO
-//			sysAnnouncementSendMapper
-			
+			SqlSession sqlSession = sqlSessionTemplate.getSqlSessionFactory().openSession(ExecutorType.BATCH.BATCH, false);
+			sysAnnouncementSendMapper = sqlSession.getMapper(SysAnnouncementSendMapper.class);
+			sysAnnouncementSendList.forEach(item -> {
+				sysAnnouncementSendMapper.insert(item);
+			});
+			sqlSession.commit();
+
 		} else if(sysAnnouncement.getMsgType().equals(CommonConstant.MSG_TYPE_DEPART)){
 			send_count = sysBaseApi.getDeptHeadByDepId(departIds).size();
 			sysAnnouncement.setSendCount(send_count);
@@ -86,6 +95,7 @@ public class SysAnnouncementServiceImpl extends ServiceImpl<SysAnnouncementMappe
 			// 1.插入通告表记录
 			sysAnnouncementMapper.insert(sysAnnouncement);
 			// 2.插入用户通告阅读标记表记录
+			List<SysAnnouncementSend> sysAnnouncementSendList = new ArrayList<>();
 			List<String> userIdList = sysBaseApi.getDeptHeadByDepId(departIds);
 			String[] userIdArray = new String[userIdList.size()];
 			for(int i = 0; i < userIdList.size(); i++){
@@ -101,8 +111,14 @@ public class SysAnnouncementServiceImpl extends ServiceImpl<SysAnnouncementMappe
 				announcementSend.setUserDepart(sysBaseApi.getDepartNamesByUsername(s).get(0));
 				announcementSend.setReadFlag(CommonConstant.NO_READ_FLAG);
 				announcementSend.setIsDelay(0);
-				sysAnnouncementSendMapper.insert(announcementSend);
+				sysAnnouncementSendList.add(announcementSend);
 			}
+			SqlSession sqlSession = sqlSessionTemplate.getSqlSessionFactory().openSession(ExecutorType.BATCH.BATCH, false);
+			sysAnnouncementSendMapper = sqlSession.getMapper(SysAnnouncementSendMapper.class);
+			sysAnnouncementSendList.forEach(item -> {
+				sysAnnouncementSendMapper.insert(item);
+			});
+			sqlSession.commit();
 
 		} else {
 			send_count = sysAnnouncement.getUserIds().split(",").length;
@@ -112,6 +128,7 @@ public class SysAnnouncementServiceImpl extends ServiceImpl<SysAnnouncementMappe
 			// 2.插入用户通告阅读标记表记录
 //			String userId = sysAnnouncement.getUserIds();
 			String[] userIds = userId.substring(0, (userId.length()-1)).split(",");
+			List<SysAnnouncementSend> sysAnnouncementSendList = new ArrayList<>();
 
 			String anntId = sysAnnouncement.getId();
 			for (String id : userIds) {
@@ -123,8 +140,14 @@ public class SysAnnouncementServiceImpl extends ServiceImpl<SysAnnouncementMappe
 				announcementSend.setUserDepart(sysBaseApi.getDepartNamesByUsername(userName).get(0));
 				announcementSend.setReadFlag(CommonConstant.NO_READ_FLAG);
 				announcementSend.setIsDelay(0);
-				sysAnnouncementSendMapper.insert(announcementSend);
+				sysAnnouncementSendList.add(announcementSend);
 			}
+			SqlSession sqlSession = sqlSessionTemplate.getSqlSessionFactory().openSession(ExecutorType.BATCH.BATCH, false);
+			sysAnnouncementSendMapper = sqlSession.getMapper(SysAnnouncementSendMapper.class);
+			sysAnnouncementSendList.forEach(item -> {
+				sysAnnouncementSendMapper.insert(item);
+			});
+			sqlSession.commit();
 		}
 	}
 	

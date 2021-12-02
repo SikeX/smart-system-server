@@ -23,6 +23,8 @@
 		<result column="user_name" property="userName" jdbcType="VARCHAR" />
 		<result column="is_delay" property="isDelay" jdbcType="INTEGER" />
 		<result column="read_time" property="readTime" jdbcType="TIMESTAMP" />
+		<result column="submit_file" property="submitFile" jdbcType="VARCHAR" />
+		<result column="submit_remark" property="submitRemark" jdbcType="VARCHAR" />
 	</resultMap>
 	
 	<select id="queryByUserId" parameterType="String"  resultType="String">
@@ -87,6 +89,8 @@
 		    sas.read_time,
 		    sas.create_time,
 		    sas.is_delay,
+		    sas.submit_remark,
+		    sas.submit_file,
 			sa.file_list,
 			sa.sender_depart,
 			sa.titile as titile,

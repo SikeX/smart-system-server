@@ -49,4 +49,13 @@ implements SmartVillageTopicService{
         return page.setRecords(smartVillageTopicMapper.getVerifyTopicListByDepartId(page,departId));
     }
 
+    @Override
+    public Page<SmartVillageTopic> getTopicListByUserId(Page<SmartVillageTopic> page, String userId){
+        log.info(String.valueOf("what "+userId));
+        String departId = sysBaseAPI.getDepartIdByUserId(userId);
+        List<String> subDepIds = sysBaseAPI.getSubDepIdsByDepId(departId);
+        log.info(String.valueOf(subDepIds));
+        return page.setRecords(smartVillageTopicMapper.getTopicListByDepIds(page, subDepIds));
+    }
+
 }

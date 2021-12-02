@@ -20,6 +20,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
+import org.jeecg.modules.interaction.service.SensitiveWordFilterService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -49,6 +50,8 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 public class SmartSensitiveWordController extends JeecgController<SmartSensitiveWord, ISmartSensitiveWordService> {
 	@Autowired
 	private ISmartSensitiveWordService smartSensitiveWordService;
+	@Autowired
+	private SensitiveWordFilterService sensitiveWordFilterService;
 	
 	/**
 	 * 分页列表查询
@@ -83,6 +86,7 @@ public class SmartSensitiveWordController extends JeecgController<SmartSensitive
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody SmartSensitiveWord smartSensitiveWord) {
 		smartSensitiveWordService.save(smartSensitiveWord);
+		sensitiveWordFilterService.init();
 		return Result.OK("添加成功！");
 	}
 	
@@ -97,6 +101,7 @@ public class SmartSensitiveWordController extends JeecgController<SmartSensitive
 	@PutMapping(value = "/edit")
 	public Result<?> edit(@RequestBody SmartSensitiveWord smartSensitiveWord) {
 		smartSensitiveWordService.updateById(smartSensitiveWord);
+		sensitiveWordFilterService.init();
 		return Result.OK("编辑成功!");
 	}
 	

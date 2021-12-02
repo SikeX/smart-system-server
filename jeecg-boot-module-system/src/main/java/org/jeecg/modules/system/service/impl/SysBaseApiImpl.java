@@ -951,6 +951,7 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 		announcement.setSendTime(new Date());
 		announcement.setMsgCategory(setMsgCategory);
 		announcement.setDelFlag(String.valueOf(CommonConstant.DEL_FLAG_0));
+		announcement.setSendCount(toUser.split(",").length);
 		sysAnnouncementMapper.insert(announcement);
 		// 2.插入用户通告阅读标记表记录
 		String userId = toUser;
@@ -1195,6 +1196,11 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 		QueryWrapper<SysUserDepart> queryWrapper = new QueryWrapper<>();
 		queryWrapper.eq("user_id",userId);
 		return sysUserDepartService.getOne(queryWrapper).getDepId();
+	}
+
+	@Override
+	public List<String> getSubDepIdsByDepId(String userId) {
+		return sysDepartService.getSubDepIdsByDepId(userId);
 	}
 
 }

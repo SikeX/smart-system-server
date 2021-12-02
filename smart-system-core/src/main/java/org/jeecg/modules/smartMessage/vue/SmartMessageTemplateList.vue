@@ -12,7 +12,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('敏感词列表')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('通知模板')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -89,7 +89,7 @@
       </a-table>
     </div>
 
-    <smart-sensitive-word-modal ref="modalForm" @ok="modalFormOk"></smart-sensitive-word-modal>
+    <smart-message-template-modal ref="modalForm" @ok="modalFormOk"></smart-message-template-modal>
   </a-card>
 </template>
 
@@ -98,17 +98,17 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartSensitiveWordModal from './modules/SmartSensitiveWordModal'
+  import SmartMessageTemplateModal from './modules/SmartMessageTemplateModal'
 
   export default {
-    name: 'SmartSensitiveWordList',
+    name: 'SmartMessageTemplateList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartSensitiveWordModal
+      SmartMessageTemplateModal
     },
     data () {
       return {
-        description: '敏感词列表管理页面',
+        description: '通知模板管理页面',
         // 表头
         columns: [
           {
@@ -122,9 +122,44 @@
             }
           },
           {
-            title:'敏感词',
+            title:'创建人',
             align:"center",
-            dataIndex: 'word'
+            dataIndex: 'createBy'
+          },
+          {
+            title:'创建时间',
+            align:"center",
+            dataIndex: 'createTime'
+          },
+          {
+            title:'修改人',
+            align:"center",
+            dataIndex: 'updateBy'
+          },
+          {
+            title:'修改时间',
+            align:"center",
+            dataIndex: 'updateTime'
+          },
+          {
+            title:'标题',
+            align:"center",
+            dataIndex: 'title'
+          },
+          {
+            title:'优先级',
+            align:"center",
+            dataIndex: 'priority'
+          },
+          {
+            title:'摘要',
+            align:"center",
+            dataIndex: 'abstract'
+          },
+          {
+            title:'内容',
+            align:"center",
+            dataIndex: 'content'
           },
           {
             title: '操作',
@@ -136,11 +171,11 @@
           }
         ],
         url: {
-          list: "/interaction/smartSensitiveWord/list",
-          delete: "/interaction/smartSensitiveWord/delete",
-          deleteBatch: "/interaction/smartSensitiveWord/deleteBatch",
-          exportXlsUrl: "/interaction/smartSensitiveWord/exportXls",
-          importExcelUrl: "interaction/smartSensitiveWord/importExcel",
+          list: "/smartMessageTemplate/smartMessageTemplate/list",
+          delete: "/smartMessageTemplate/smartMessageTemplate/delete",
+          deleteBatch: "/smartMessageTemplate/smartMessageTemplate/deleteBatch",
+          exportXlsUrl: "/smartMessageTemplate/smartMessageTemplate/exportXls",
+          importExcelUrl: "smartMessageTemplate/smartMessageTemplate/importExcel",
           
         },
         dictOptions:{},
@@ -160,7 +195,14 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-        fieldList.push({type:'string',value:'word',text:'敏感词',dictCode:''})
+        fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
+        fieldList.push({type:'datetime',value:'createTime',text:'创建时间'})
+        fieldList.push({type:'string',value:'updateBy',text:'修改人',dictCode:''})
+        fieldList.push({type:'datetime',value:'updateTime',text:'修改时间'})
+        fieldList.push({type:'string',value:'title',text:'标题',dictCode:''})
+        fieldList.push({type:'string',value:'priority',text:'优先级',dictCode:''})
+        fieldList.push({type:'string',value:'abstract',text:'摘要',dictCode:''})
+        fieldList.push({type:'Text',value:'content',text:'内容',dictCode:''})
         this.superFieldList = fieldList
       }
     }
