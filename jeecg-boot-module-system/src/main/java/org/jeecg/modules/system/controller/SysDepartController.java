@@ -381,6 +381,24 @@ public class SysDepartController {
 		}
 		return result;
 	}
+
+	/**
+	 * 查询数据 添加或编辑页面对该方法发起请求,以业务树结构形式加载管辖范围内部门的名称,方便用户的操作
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "/queryVillageIdTree", method = RequestMethod.GET)
+	public Result<List<DepartIdModel>> queryVillageIdTree() {
+		Result<List<DepartIdModel>> result = new Result<>();
+		try {
+			List<DepartIdModel> list = sysDepartService.queryVillageIdTreeList();
+			result.setResult(list);
+			result.setSuccess(true);
+		} catch (Exception e) {
+			log.error(e.getMessage(),e);
+		}
+		return result;
+	}
 	 
 	/**
 	 * <p>

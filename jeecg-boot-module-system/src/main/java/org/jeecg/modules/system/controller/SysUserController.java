@@ -35,6 +35,7 @@ import org.jeecg.modules.system.model.SysUserSysDepartModel;
 import org.jeecg.modules.system.service.*;
 import org.jeecg.modules.system.vo.SysDepartUsersVO;
 import org.jeecg.modules.system.vo.SysUserRoleVO;
+import org.jeecg.modules.system.entity.SysDepart;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -348,10 +349,20 @@ public class SysUserController {
         //String selectedDepart = id;
         try {
             SysUser user = JSON.parseObject(jsonObject.toJSONString(), SysUser.class);
-            String userOrgCode = sysDepartService.getById(user.getDepartId()).getOrgCode();
-//            user.setDepartId(id);
+            user.setPeopleType("2");
             //设置sys_code
             user.setCreateTime(new Date());//设置创建时间
+            String phone = user.getPhone();
+            String username = user.getUsername();
+            //设置初始账号：手机号
+            if(username == null){
+                user.setPassword(phone);
+            }
+            //设置初始密码
+            String password = user.getPassword();
+            if(password == null){
+                user.setPassword("123456");
+            }
             String salt = oConvertUtils.randomGen(8);
             user.setSalt(salt);
             String passwordEncode = PasswordUtil.encrypt(user.getUsername(), user.getPassword(), salt);
@@ -359,6 +370,8 @@ public class SysUserController {
             user.setStatus(1);
             user.setDelFlag(CommonConstant.DEL_FLAG_0);
             user.setDepartId(selectedDeparts);
+            SysDepart depart =  sysDepartService.queryDeptByDepartId(user.getDepartId());
+            String userOrgCode = depart.getOrgCode();
             user.setOrgCode(userOrgCode);
             // 保存用户走一个service 保证事务
 //            sysUserService.saveUser(user, selectedRoles, selectedDepart);//只能添加本部门人员
@@ -386,6 +399,10 @@ public class SysUserController {
                 user.setUpdateTime(new Date());
                 //String passwordEncode = PasswordUtil.encrypt(user.getUsername(), user.getPassword(), sysUser.getSalt());
                 user.setPassword(sysUser.getPassword());
+
+                SysDepart depart =  sysDepartService.queryDeptByDepartId(user.getDepartId());
+                String userOrgCode = depart.getOrgCode();
+                user.setOrgCode(userOrgCode);
                 String roles = jsonObject.getString("selectedroles");
                 String departs = jsonObject.getString("selecteddeparts");
                 // 修改用户走一个service 保证事务
