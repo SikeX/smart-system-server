@@ -2,6 +2,8 @@ package org.jeecg.modules.system.model;
 
 import java.io.Serializable;
 
+import org.jeecg.common.aspect.annotation.Dict;
+import org.jeecgframework.poi.excel.annotation.Excel;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -85,9 +87,11 @@ public class AnnouncementSendModel implements Serializable {
 
 	private String senderDepart;
 
-	private String userName;
+	private String username;
 
-	private String userDepart;
+	@Dict(dictTable = "sys_depart", dicText = "depart_name", dicCode = "org_code")
+	@Excel(name = "所属部门", width = 15)
+	private String orgCode;
 
 	private Integer isDelay;
 

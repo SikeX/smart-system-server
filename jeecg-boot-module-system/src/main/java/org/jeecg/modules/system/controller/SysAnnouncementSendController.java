@@ -371,7 +371,7 @@ public class SysAnnouncementSendController {
 
 		 List<String> unReadUserList = new ArrayList<>();
 
-		 unReadList.forEach(item -> unReadUserList.add(sysBaseAPI.getUserById(item.getUserId()).getUsername()));
+		 unReadList.forEach(item -> unReadUserList.add(item.getUserId()));
 
 		 String unReadUsers = String.join(",",unReadUserList);
 
@@ -383,7 +383,7 @@ public class SysAnnouncementSendController {
 		 messageDTO.setTitle("您有未读消息，请尽快查收");
 		 messageDTO.setContent("您有未读消息，请尽快查收");
 
-		 sysBaseAPI.sendSysAnnouncement(messageDTO);
+		 sysBaseAPI.sendSysAnnouncementById(messageDTO);
 
 		 return Result.OK("提醒成功");
 	 }
