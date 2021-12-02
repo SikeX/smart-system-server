@@ -55,8 +55,15 @@
 	   from sys_announcement_send sas
 	   left join sys_announcement sa ON sas.annt_id = sa.id
 	   where sa.send_status = '1'
-	   and sa.del_flag = '0'
-	   and sas.user_id = #{announcementSendModel.userId}
+	     and sa.del_flag = '0'
+	   	 and sas.user_id = #{announcementSendModel.userId}
+		<if test="type  == 'msg'">
+			and sa.msg_category = '1'
+			or sa.msg_category = '2'
+		</if>
+		<if test="type  == 'task'">
+			and sa.msg_category = '3'
+		</if>
 	   <if test="announcementSendModel.titile !=null and announcementSendModel.titile != ''">
 	   		and sa.titile LIKE concat(concat('%',#{announcementSendModel.titile}),'%')
 	   </if>

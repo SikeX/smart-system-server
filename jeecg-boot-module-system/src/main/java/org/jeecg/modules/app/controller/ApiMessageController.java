@@ -90,7 +90,8 @@ public class ApiMessageController extends ApiBaseController {
         announcementSendModel.setPageNo((pageNo - 1) * pageSize);
         announcementSendModel.setPageSize(pageSize);
         Page<AnnouncementSendModel> pageList = new Page<>(pageNo, pageSize);
-        pageList = sysAnnouncementSendService.getMyAnnouncementSendPage(pageList, announcementSendModel);
+        String type = "msg";
+        pageList = sysAnnouncementSendService.getMyAnnouncementSendPage(pageList, announcementSendModel, type);
         result.setResult(pageList);
         result.setSuccess(true);
         return result;
@@ -286,7 +287,8 @@ public class ApiMessageController extends ApiBaseController {
         announcementSendModel.setPageNo((pageNo - 1) * pageSize);
         announcementSendModel.setPageSize(pageSize);
         Page<AnnouncementSendModel> pageList = new Page<>(pageNo, pageSize);
-        pageList = sysAnnouncementSendService.getMyAnnouncementSendPage(pageList, announcementSendModel);
+        String type = "msg";
+        pageList = sysAnnouncementSendService.getMyAnnouncementSendPage(pageList, announcementSendModel, type);
         result.setResult(pageList);
         result.setSuccess(true);
         return result;
