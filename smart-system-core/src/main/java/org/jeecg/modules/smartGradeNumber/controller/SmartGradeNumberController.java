@@ -26,6 +26,7 @@ import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.ImportParams;
 import org.jeecgframework.poi.excel.view.JeecgEntityExcelView;
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -112,7 +113,6 @@ public class SmartGradeNumberController extends JeecgController<SmartGradeNumber
 
 		 } else if(exam_grade<0.9*total_score && exam_grade>=0.8*total_score){
 		 	//良好
-
 			 good_number += 1;
 
 		 } else if(exam_grade<0.8*total_score && exam_grade>=pass_mark){

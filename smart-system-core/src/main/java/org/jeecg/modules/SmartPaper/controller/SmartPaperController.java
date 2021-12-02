@@ -53,7 +53,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 public class SmartPaperController extends JeecgController<SmartPaper, ISmartPaperService> {
 	@Autowired
 	private ISmartPaperService smartPaperService;
-	
+
 	/**
 	 * 分页列表查询
 	 *
@@ -75,7 +75,7 @@ public class SmartPaperController extends JeecgController<SmartPaper, ISmartPape
 		IPage<SmartPaper> pageList = smartPaperService.page(page, queryWrapper);
 		return Result.OK(pageList);
 	}
-	
+
 	/**
 	 *   添加
 	 *
@@ -88,12 +88,30 @@ public class SmartPaperController extends JeecgController<SmartPaper, ISmartPape
 	public Result<?> add(@RequestBody SmartPaperPage smartPaperPage) {
 		//System.out.println("####################");
 		//System.out.println(smartPaperPage);
-		smartPaperPage.setPaperType("1");
+		smartPaperPage.setPaperType("1");//添加试卷
 		smartPaperPage.setPaperStatus("0");
 		smartPaperService.insert(smartPaperPage);
 		return Result.OK("添加成功！");
 	}
-	
+
+	 /**
+	  *   添加
+	  *
+	  * @param smartPaperPage
+	  * @return
+	  */
+	 @AutoLog(value = "试卷表-添加")
+	 @ApiOperation(value="试卷表-添加", notes="试卷表-添加")
+	 @PostMapping(value = "/addSurvey")
+	 public Result<?> addSurvey(@RequestBody SmartPaperPage smartPaperPage) {
+		 //System.out.println("####################");
+		 //System.out.println(smartPaperPage);
+		 smartPaperPage.setPaperType("2");//添加调查问卷
+		 smartPaperPage.setPaperStatus("0");
+		 smartPaperService.insert(smartPaperPage);
+		 return Result.OK("添加成功！");
+	 }
+
 	/**
 	 *  编辑
 	 *
@@ -110,7 +128,7 @@ public class SmartPaperController extends JeecgController<SmartPaper, ISmartPape
 		smartPaperService.updatePaperById(id,smartPaperPage);
 		return Result.OK("编辑成功!");
 	}
-	
+
 	/**
 	 *   通过id删除
 	 *
@@ -141,7 +159,7 @@ public class SmartPaperController extends JeecgController<SmartPaper, ISmartPape
 		this.smartPaperService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.OK("批量删除成功!");
 	}
-	
+
 	/**
 	 * 通过id查询
 	 *

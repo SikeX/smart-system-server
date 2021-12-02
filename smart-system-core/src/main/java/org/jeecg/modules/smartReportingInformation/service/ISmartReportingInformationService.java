@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @Description: 举报信息表
  * @Author: jeecg-boot
- * @Date:   2021-11-27
+ * @Date:   2021-11-29
  * @Version: V1.0
  */
 public interface ISmartReportingInformationService extends IService<SmartReportingInformation> {

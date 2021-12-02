@@ -18,7 +18,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 举报信息表
  * @Author: jeecg-boot
- * @Date:   2021-11-27
+ * @Date:   2021-11-29
  * @Version: V1.0
  */
 @Data
@@ -40,6 +40,10 @@ public class SmartReportingInformationPage {
 	@Excel(name = "主要问题", width = 15)
 	@ApiModelProperty(value = "主要问题")
     private java.lang.String majorProblem;
+	/**照片*/
+	@Excel(name = "照片", width = 15)
+	@ApiModelProperty(value = "照片")
+    private java.lang.String photo;
 	/**附件*/
 	@Excel(name = "附件", width = 15)
 	@ApiModelProperty(value = "附件")
@@ -77,7 +81,7 @@ public class SmartReportingInformationPage {
 	@ApiModelProperty(value = "调查意见")
     private java.lang.String surveyIdea;
 
-	private java.lang.String photo;
+
 
 	@ExcelCollection(name="举报调查表")
 	@ApiModelProperty(value = "举报调查表")
