@@ -84,5 +84,5 @@ public class SmartReportingInformation implements Serializable {
     @ApiModelProperty(value = "调查意见")
     private java.lang.String surveyIdea;
 
-    private java.lang.String photo;
+
 }
