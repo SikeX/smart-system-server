@@ -118,4 +118,6 @@ public class LoginUser {
 
 	private String departId;
 
+	private java.lang.String peopleType;
+
 }

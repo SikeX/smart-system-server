@@ -25,6 +25,8 @@ public interface ISysBaseAPI extends CommonAPI {
      */
     void sendSysAnnouncement(MessageDTO message);
 
+    void sendSysAnnouncementById(MessageDTO message);
+
     /**
      * 2发送消息 附带业务参数
      * @param message 使用构造器赋值参数
@@ -341,4 +343,7 @@ public interface ISysBaseAPI extends CommonAPI {
     String getParentDepIdByDepartId(String departId);
 
     String getDepartIdByUserId(String userId);
+
+    public List<String> getSubDepIdsByDepId(String userId);
+
 }

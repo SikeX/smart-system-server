@@ -19,7 +19,7 @@
         <div class="left-top">
             <div class="current-num">
                 <div>当前到件量</div>
-                <p>123,456,789</p>
+                <p>${shenhe}</p>
             </div>
         </div>
         <div class="left-center">

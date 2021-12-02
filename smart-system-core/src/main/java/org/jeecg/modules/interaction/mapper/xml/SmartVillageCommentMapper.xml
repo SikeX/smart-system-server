@@ -23,4 +23,26 @@
         content,topic_id,user_id,
         in_time
     </sql>
+    <select id="getCommentList" parameterType="Object" resultType="org.jeecg.modules.interaction.vo.CommentVo">
+        SELECT
+            tt.title,
+            c.content,
+            c.create_by,
+            c.create_time
+        FROM
+            (
+                SELECT
+                    t.*
+                FROM
+                    smart_village_topic t
+                        LEFT JOIN sys_user_depart u ON t.user_id = u.user_id
+                WHERE
+                    u.dep_id = #{departId}
+                  AND t.status = 1
+            ) tt
+                LEFT JOIN smart_village_comment c ON tt.id = c.topic_id
+        WHERE
+            c.status = '1'
+        order by c.create_time desc
+    </select>
 </mapper>

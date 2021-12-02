@@ -1,6 +1,10 @@
 package org.jeecg.modules.interaction.utils;
 
 import com.aliyuncs.utils.StringUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.jeecg.modules.interaction.entity.SmartSensitiveWord;
+import org.jeecg.modules.interaction.service.ISmartSensitiveWordService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
@@ -14,7 +18,11 @@ import java.util.*;
  * <p>
  * 这个过滤算法简单是简单，但没法对多音字过滤，一个敏感词，如果用同音的字把其中一个字换了，就过滤不掉了，不过聊胜于无 :)
  */
+@Slf4j
 public class SensitiveWordUtil {
+
+    @Autowired
+    private ISmartSensitiveWordService smartSensitiveWordService;
 
     /**
      * 敏感词匹配规则
@@ -26,6 +34,18 @@ public class SensitiveWordUtil {
      * 敏感词集合
      */
     public static HashMap sensitiveWordMap;
+
+
+//    public void test() {
+//        List<SmartSensitiveWord> sensitiveWords = smartSensitiveWordService.list();
+//        Set<String> sensitiveWordSet = new HashSet<>();
+////        log.info("haha"+String.valueOf(sensitiveWordSet));
+//        for (SmartSensitiveWord sensitiveWord : sensitiveWords) {
+//            sensitiveWordSet.add(sensitiveWord.getWord());
+//        }
+//        SensitiveWordUtil.init(sensitiveWordSet);
+//    }
+
 
     /**
      * 初始化敏感词库，构建DFA算法模型

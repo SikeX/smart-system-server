@@ -12,7 +12,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('敏感词列表')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('上传任务表')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -89,7 +89,7 @@
       </a-table>
     </div>
 
-    <smart-sensitive-word-modal ref="modalForm" @ok="modalFormOk"></smart-sensitive-word-modal>
+    <smart-msg-task-modal ref="modalForm" @ok="modalFormOk"></smart-msg-task-modal>
   </a-card>
 </template>
 
@@ -98,17 +98,17 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartSensitiveWordModal from './modules/SmartSensitiveWordModal'
+  import SmartMsgTaskModal from './modules/SmartMsgTaskModal'
 
   export default {
-    name: 'SmartSensitiveWordList',
+    name: 'SmartMsgTaskList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartSensitiveWordModal
+      SmartMsgTaskModal
     },
     data () {
       return {
-        description: '敏感词列表管理页面',
+        description: '上传任务表管理页面',
         // 表头
         columns: [
           {
@@ -122,9 +122,19 @@
             }
           },
           {
-            title:'敏感词',
+            title:'任务id',
             align:"center",
-            dataIndex: 'word'
+            dataIndex: 'anntId'
+          },
+          {
+            title:'上传任务备注',
+            align:"center",
+            dataIndex: 'remark'
+          },
+          {
+            title:'上传任务附件',
+            align:"center",
+            dataIndex: 'fileList'
           },
           {
             title: '操作',
@@ -136,11 +146,11 @@
           }
         ],
         url: {
-          list: "/interaction/smartSensitiveWord/list",
-          delete: "/interaction/smartSensitiveWord/delete",
-          deleteBatch: "/interaction/smartSensitiveWord/deleteBatch",
-          exportXlsUrl: "/interaction/smartSensitiveWord/exportXls",
-          importExcelUrl: "interaction/smartSensitiveWord/importExcel",
+          list: "/smartMessage/smartMsgTask/list",
+          delete: "/smartMessage/smartMsgTask/delete",
+          deleteBatch: "/smartMessage/smartMsgTask/deleteBatch",
+          exportXlsUrl: "/smartMessage/smartMsgTask/exportXls",
+          importExcelUrl: "smartMessage/smartMsgTask/importExcel",
           
         },
         dictOptions:{},
@@ -160,7 +170,9 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-        fieldList.push({type:'string',value:'word',text:'敏感词',dictCode:''})
+        fieldList.push({type:'string',value:'anntId',text:'任务id',dictCode:''})
+        fieldList.push({type:'string',value:'remark',text:'上传任务备注',dictCode:''})
+        fieldList.push({type:'string',value:'fileList',text:'上传任务附件',dictCode:''})
         this.superFieldList = fieldList
       }
     }

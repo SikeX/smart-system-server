@@ -461,6 +461,7 @@ public class SysAnnouncementController {
 					obj.put(WebsocketConst.MSG_CMD, WebsocketConst.CMD_TOPIC);
 					obj.put(WebsocketConst.MSG_ID, sysAnnouncement.getId());
 					obj.put(WebsocketConst.MSG_TXT, sysAnnouncement.getTitile());
+					obj.put("type", "2");
 					webSocket.sendMessage(obj.toJSONString());
 				}else {
 					// 2.插入用户通告阅读标记表记录
@@ -470,6 +471,7 @@ public class SysAnnouncementController {
 						obj.put(WebsocketConst.MSG_CMD, WebsocketConst.CMD_USER);
 						obj.put(WebsocketConst.MSG_ID, sysAnnouncement.getId());
 						obj.put(WebsocketConst.MSG_TXT, sysAnnouncement.getTitile());
+						obj.put("type", "2");
 						webSocket.sendMessage(userIds, obj.toJSONString());
 					}
 				}

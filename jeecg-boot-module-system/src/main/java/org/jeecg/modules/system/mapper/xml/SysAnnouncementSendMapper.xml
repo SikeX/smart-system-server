@@ -19,10 +19,12 @@
 		<result column="send_count" property="sendCount" jdbcType="INTEGER" />
 		<result column="read_count" property="readCount" jdbcType="INTEGER" />
 		<result column="sender_depart" property="senderDepart" jdbcType="VARCHAR" />
-		<result column="user_depart" property="userDepart" jdbcType="VARCHAR" />
-		<result column="user_name" property="userName" jdbcType="VARCHAR" />
+		<result column="org_code" property="orgCode" jdbcType="VARCHAR" />
+		<result column="username" property="username" jdbcType="VARCHAR" />
 		<result column="is_delay" property="isDelay" jdbcType="INTEGER" />
 		<result column="read_time" property="readTime" jdbcType="TIMESTAMP" />
+		<result column="submit_file" property="submitFile" jdbcType="VARCHAR" />
+		<result column="submit_remark" property="submitRemark" jdbcType="VARCHAR" />
 	</resultMap>
 	
 	<select id="queryByUserId" parameterType="String"  resultType="String">
@@ -77,28 +79,32 @@
 	</select>
 	
 	<select id="getTaskSendList" parameterType="Object" resultMap="AnnouncementSendModel">
-		select
-			sas.id,
-			sas.annt_id,
-			sas.user_id,
-			sas.user_name,
-		    sas.user_depart,
-			sas.read_flag,
-		    sas.read_time,
-		    sas.create_time,
-		    sas.is_delay,
+		SELECT
+			sasu.id,
+			sasu.annt_id,
+			sasu.user_id,
+			sasu.username,
+			sasu.org_code,
+			sasu.read_flag,
+			sasu.read_time,
+			sasu.create_time,
+			sasu.is_delay,
+			sasu.submit_remark,
+			sasu.submit_file,
 			sa.file_list,
 			sa.sender_depart,
-			sa.titile as titile,
-			sa.sender as sender,
-			sa.priority as priority,
+			sa.titile AS titile,
+			sa.sender AS sender,
+			sa.priority AS priority,
 			sa.msg_category,
-			sa.send_time as send_time,
-			sa.bus_id as bus_id
-		from sys_announcement_send sas
-		left join sys_announcement sa ON sas.annt_id = sa.id
-		where sa.del_flag = '0'
-		and sas.annt_id = #{announcementSendModel.anntId}
+			sa.send_time AS send_time,
+			sa.bus_id AS bus_id
+		FROM
+			( SELECT sas.*, u.username, u.org_code FROM sys_announcement_send sas INNER JOIN sys_user u ON sas.user_id = u.id ) sasu
+			LEFT JOIN sys_announcement sa ON sasu.annt_id = sa.id
+		WHERE
+			sa.del_flag = '0'
+			and sasu.annt_id = #{announcementSendModel.anntId}
 		<if test="announcementSendModel.titile !=null and announcementSendModel.titile != ''">
 			and sa.titile LIKE concat(concat('%',#{announcementSendModel.titile}),'%')
 		</if>
@@ -106,7 +112,7 @@
 			and sa.sender LIKE concat(concat('%',#{announcementSendModel.sender}),'%')
 		</if>
 		<if test="announcementSendModel.readFlag !=null and announcementSendModel.readFlag != ''">
-			and sas.read_flag = #{announcementSendModel.readFlag}
+			and sasu.read_flag = #{announcementSendModel.readFlag}
 		</if>
 		<if test="announcementSendModel.busType !=null and announcementSendModel.busType != ''">
 			and sa.bus_type = #{announcementSendModel.busType}
@@ -117,7 +123,7 @@
 		<if test="announcementSendModel.msgCategory !=null and announcementSendModel.msgCategory != ''">
 			and sa.msg_category = #{announcementSendModel.msgCategory}
 		</if>
-		order by sas.read_flag,sas.read_time desc
+		order by sasu.read_flag,sasu.read_time desc
 	</select>
 
 </mapper>

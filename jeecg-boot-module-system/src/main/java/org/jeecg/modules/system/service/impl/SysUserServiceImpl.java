@@ -15,7 +15,9 @@ import org.jeecg.common.system.vo.SysUserCacheInfo;
 import org.jeecg.common.util.PasswordUtil;
 import org.jeecg.common.util.UUIDGenerator;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.app.entity.WXUser;
 import org.jeecg.modules.app.mapper.AppUserMapper;
+import org.jeecg.modules.app.mapper.WXUserMapper;
 import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.system.entity.*;
 import org.jeecg.modules.system.mapper.*;
@@ -71,6 +73,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	ThirdAppDingtalkServiceImpl dingtalkService;
 	@Autowired
 	private AppUserMapper appUserMapper;
+	@Autowired
+	private WXUserMapper wxUserMapper;
 
     @Override
     @CacheEvict(value = {CacheConstant.SYS_USERS_CACHE}, allEntries = true)
@@ -123,10 +127,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
 	@Override
 	public SysUser getUserByName(String username) {
-		return userMapper.getUserByName(username);
+
+    	SysUser user = userMapper.getUserByName(username);
+    	user.setRoleId(userMapper.getRolesByName(username));
+
+    	return user;
 	}
-	
-	
+
+	@Override
+	public List<String> getRolesByName(String username) {
+		return userMapper.getRolesByName(username);
+	}
+
 	@Override
 	@Transactional
 	public void addUserWithRole(SysUser user, String roles) {
@@ -548,7 +560,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	}
 
 	@Override
-	public void saveUserFromClient(SysUser user, String selectedRoles, int appUserId) {
+	public void saveUserFromClient(SysUser user, String selectedRoles, int id, int userType) {
 		//step.1 保存用户
 		this.save(user);
 		//step.2 保存角色
@@ -560,7 +572,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 			}
 		}
 		//step.3 更新tb_app_user表的对应字段
-		appUserMapper.updateSysUserIdById(appUserId, user.getId(), (int) System.currentTimeMillis());
+		if (userType == 1) {
+			appUserMapper.updateSysUserIdById(id, user.getId(), (int) System.currentTimeMillis());
+		} else if (userType == 2) {
+			wxUserMapper.updateSysUserIdById(id, user.getId(), (int) System.currentTimeMillis());
+		}
+
+	}
+
+	@Override
+	public SysUser queryByPhone(String purePhoneNumber) {
+		return userMapper.getUserByPhone(purePhoneNumber);
 	}
 
 }
