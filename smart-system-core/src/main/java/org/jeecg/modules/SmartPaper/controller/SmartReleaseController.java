@@ -2,9 +2,12 @@ package org.jeecg.modules.SmartPaper.controller;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
+import org.jeecg.common.api.dto.message.MessageDTO;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.modules.SmartPaper.entity.SmartExamInformation;
 import org.jeecg.modules.SmartPaper.service.ISmartReleaseService;
 import org.jeecg.modules.SmartPaper.vo.SmartExamVo;
@@ -32,12 +35,21 @@ public class SmartReleaseController extends JeecgController<SmartExamInformation
     *
     */
    @ApiOperation(value = "发布考试")
-   @PostMapping(value = "/releaseExam/{paperId}" )
+   @PostMapping(value = "/releaseExam/{paperId}")
    public Result releaseExam(@PathVariable("paperId") String paperId,@RequestBody SmartExamVo smartExamVO){
       //System.out.println("AAAAAAAAAAAAAAAAAAAAA");
       //System.out.println(smartExamVO);
       Result res = smartReleaseService.releaseExam(paperId,smartExamVO);
-      //TODO 发送系统消息提醒
+      //发送系统消息提醒
+      LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+      MessageDTO messageDTO = new MessageDTO();
+      messageDTO.setTitle("考试提醒");
+      messageDTO.setContent("您有新的考试，请在规定时间内完成考试！");
+      messageDTO.setFromUser(sysUser.getRealname());
+      messageDTO.setToUser(smartExamVO.getUsers());
+      messageDTO.setCategory("3");
+
+      sysBaseAPI.sendSysAnnouncementById(messageDTO);
       return res;
    }
 

@@ -101,28 +101,29 @@ public class SmartGradeNumberController extends JeecgController<SmartGradeNumber
 		 // int total_score;//试卷满分
 		 //int pass_mark;//试卷及格线
 
-	 	 int excellent_number=0;//优秀人数
-		 int good_number=0;//良好人数
-		 int pass_number=0;//及格人数
-		 int fail_number=0;//不及格人数
+	 	 int excellentNumber =0;//优秀人数
+		 int goodNumber =0;//良好人数
+		 int passNumber=0;//及格人数
+		 int failNumber=0;//不及格人数
+         double you = 0.9*total_score;
 
 		 if(exam_grade<=total_score && exam_grade>=0.9*total_score){
 		 	//优秀
 
-		 	 excellent_number += 1;
+		 	 excellentNumber += 1;
 
-		 } else if(exam_grade<0.9*total_score && exam_grade>=0.8*total_score){
+		 } else if((double)exam_grade<you && exam_grade>=0.8*total_score){
 		 	//良好
-			 good_number += 1;
+			 goodNumber += 1;
 
 		 } else if(exam_grade<0.8*total_score && exam_grade>=pass_mark){
 		 	//及格
 
-			 pass_number += 1;
+			 passNumber += 1;
 
 		 }else{
 		 	//不及格
-			 fail_number += 1;
+			 failNumber += 1;
 		 }
 		 return Result.OK("添加成功！");
 
