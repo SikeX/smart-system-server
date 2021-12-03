@@ -4,6 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.Context;
 import org.apache.tomcat.util.scan.StandardJarScanner;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.smartJob.util.ComputeTime;
+import org.jeecg.modules.smartJob.util.LoopTask;
+import org.jeecg.modules.smartJob.util.TaskInit;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,6 +17,7 @@ import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactor
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -45,6 +50,7 @@ public class JeecgSystemApplication extends SpringBootServletInitializer {
                 "External: \thttp://" + ip + ":" + port + path + "/\n\t" +
                 "Swagger文档: \thttp://" + ip + ":" + port + path + "/doc.html\n" +
                 "----------------------------------------------------------");
+        TaskInit.init();
 
     }
 
