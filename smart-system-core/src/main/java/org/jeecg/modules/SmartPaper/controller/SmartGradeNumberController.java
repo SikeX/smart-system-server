@@ -1,38 +1,22 @@
-package org.jeecg.modules.smartGradeNumber.controller;
+package org.jeecg.modules.SmartPaper.controller;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
-import org.jeecg.common.util.oConvertUtils;
-import org.jeecg.modules.smartGradeNumber.entity.SmartGradeNumber;
-import org.jeecg.modules.smartGradeNumber.service.ISmartGradeNumberService;
+import org.jeecg.modules.SmartPaper.entity.SmartGradeNumber;
+import org.jeecg.modules.SmartPaper.service.ISmartGradeNumberService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
-import org.jeecgframework.poi.excel.ExcelImportUtil;
-import org.jeecgframework.poi.excel.def.NormalExcelConstants;
-import org.jeecgframework.poi.excel.entity.ExportParams;
-import org.jeecgframework.poi.excel.entity.ImportParams;
-import org.jeecgframework.poi.excel.view.JeecgEntityExcelView;
 import org.jeecg.common.system.base.controller.JeecgController;
-import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
-import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.jeecg.common.aspect.annotation.AutoLog;
@@ -45,7 +29,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
  */
 @Api(tags="成绩分布人数表")
 @RestController
-@RequestMapping("/smartGradeNumber/smartGradeNumber")
+@RequestMapping("/SmartPeople/smartGradeNumber")
 @Slf4j
 public class SmartGradeNumberController extends JeecgController<SmartGradeNumber, ISmartGradeNumberService> {
 	@Autowired
@@ -87,16 +71,16 @@ public class SmartGradeNumberController extends JeecgController<SmartGradeNumber
 		return Result.OK("添加成功！");
 	}
 
-	 /**
+	/* /**
 	  *   添加人数
 	  *
 	  * @param
 	  * @return
-	  */
+	  *//*
 	 @AutoLog(value = "添加人数")
 	 @ApiOperation(value="给不同的成绩等级添加人数", notes="给不同的成绩等级添加人数")
 	 @PostMapping(value = "/addPersonNumber")
-	 public Result<?> addPersonNumber(int exam_grade,int total_score,int pass_mark) {
+	 public Result<?> addPersonNumber(double exam_grade,double total_score,double pass_mark) {
 		 //int exam_grade;//考试成绩
 		 // int total_score;//试卷满分
 		 //int pass_mark;//试卷及格线
@@ -106,7 +90,9 @@ public class SmartGradeNumberController extends JeecgController<SmartGradeNumber
 		 int pass_number=0;//及格人数
 		 int fail_number=0;//不及格人数
 
-		 if(exam_grade<=total_score && exam_grade>=0.9*total_score){
+		 double excellent_line =0.9*total_score;//优秀线
+
+		 *//*if(exam_grade<=total_score && exam_grade>=0.9*total_score){
 		 	//优秀
 
 		 	 excellent_number += 1;
@@ -123,10 +109,10 @@ public class SmartGradeNumberController extends JeecgController<SmartGradeNumber
 		 }else{
 		 	//不及格
 			 fail_number += 1;
-		 }
+		 }*//*
 		 return Result.OK("添加成功！");
 
-	 }
+	 }*/
 
 	/**
 	 *  编辑
@@ -210,4 +196,34 @@ public class SmartGradeNumberController extends JeecgController<SmartGradeNumber
         return super.importExcel(request, response, SmartGradeNumber.class);
     }
 
-}
+   //优秀总数量
+	 @RequestMapping(value = "excellentCount",method = RequestMethod.GET)
+	 public Result<?> excellentCount(int total_score){
+    	 int excellent_line= 90%total_score;//优秀线
+    	 Integer count = smartGradeNumberService.excellentCount(excellent_line);
+		 return Result.OK(count);
+	 }
+	 //良好总数量
+	 @RequestMapping(value = "goodCount",method = RequestMethod.GET)
+	 public Result<?> goodCount(int total_score){
+		 int good_line=80%total_score;//良好线
+		 Integer count = smartGradeNumberService.goodCount(good_line);
+		 return Result.OK(count);
+	 }
+	 //及格总数量
+	 @RequestMapping(value = "passCount",method = RequestMethod.GET)
+	 public Result<?> passCount(){
+		 Integer count = smartGradeNumberService.passCount();
+		 return Result.OK(count);
+	 }
+	 //不及格总数量
+	 @RequestMapping(value = "failCount",method = RequestMethod.GET)
+	 public Result<?> failCount(){
+
+		 Integer count = smartGradeNumberService.failCount();
+		 return Result.OK(count);
+	 }
+
+
+
+ }

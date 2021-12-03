@@ -1,6 +1,6 @@
-package org.jeecg.modules.smartGradeNumber.service;
+package org.jeecg.modules.SmartPaper.service;
 
-import org.jeecg.modules.smartGradeNumber.entity.SmartGradeNumber;
+import org.jeecg.modules.SmartPaper.entity.SmartGradeNumber;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -10,5 +10,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @Version: V1.0
  */
 public interface ISmartGradeNumberService extends IService<SmartGradeNumber> {
-
+    Integer excellentCount(int excellent_line);
+    Integer goodCount(int good_line);
+    Integer passCount();
+    Integer failCount();
 }
