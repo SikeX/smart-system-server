@@ -1,4 +1,5 @@
-package org.jeecg.modules.smartGradeNumber.entity;
+package org.jeecg.modules.SmartPaper.vo;
+
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
@@ -31,43 +32,44 @@ import lombok.experimental.Accessors;
 public class SmartGradeNumber implements Serializable {
     private static final long serialVersionUID = 1L;
 
-	/**主键*/
-	@TableId(type = IdType.ASSIGN_ID)
+    /**主键*/
+    @TableId(type = IdType.ASSIGN_ID)
     @ApiModelProperty(value = "主键")
     private java.lang.String id;
-	/**创建人*/
+    /**创建人*/
     @ApiModelProperty(value = "创建人")
     private java.lang.String createBy;
-	/**创建日期*/
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    /**创建日期*/
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "创建日期")
     private java.util.Date createTime;
-	/**更新人*/
+    /**更新人*/
     @ApiModelProperty(value = "更新人")
     private java.lang.String updateBy;
-	/**更新日期*/
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    /**更新日期*/
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "更新日期")
     private java.util.Date updateTime;
-	/**所属部门*/
+    /**所属部门*/
     @ApiModelProperty(value = "所属部门")
     private java.lang.String sysOrgCode;
-	/**优秀人数*/
-	@Excel(name = "优秀人数", width = 15)
+    /**优秀人数*/
+    @Excel(name = "优秀人数", width = 15)
     @ApiModelProperty(value = "优秀人数")
     private java.lang.Integer excellentNumber;
-	/**良好人数*/
-	@Excel(name = "良好人数", width = 15)
+    /**良好人数*/
+    @Excel(name = "良好人数", width = 15)
     @ApiModelProperty(value = "良好人数")
     private java.lang.Integer goodNumber;
-	/**及格人数*/
-	@Excel(name = "及格人数", width = 15)
+    /**及格人数*/
+    @Excel(name = "及格人数", width = 15)
     @ApiModelProperty(value = "及格人数")
     private java.lang.Integer passNumber;
-	/**不及格人数*/
-	@Excel(name = "不及格人数", width = 15)
+    /**不及格人数*/
+    @Excel(name = "不及格人数", width = 15)
     @ApiModelProperty(value = "不及格人数")
     private java.lang.Integer failNumber;
 }
+
