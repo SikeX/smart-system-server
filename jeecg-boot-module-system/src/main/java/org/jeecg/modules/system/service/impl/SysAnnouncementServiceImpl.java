@@ -149,11 +149,11 @@ public class SysAnnouncementServiceImpl extends ServiceImpl<SysAnnouncementMappe
 			String anntId = sysAnnouncement.getId();
 			for (String id : userIds) {
 				SysAnnouncementSend announcementSend = new SysAnnouncementSend();
-				String userName = sysBaseApi.getUserById(id).getUsername();
+//				String userName = sysBaseApi.getUserById(id).getUsername();
 				announcementSend.setAnntId(anntId);
 				announcementSend.setUserId(id);
-				announcementSend.setUserName(userName);
-				announcementSend.setUserDepart(sysBaseApi.getDepartNamesByUsername(userName).get(0));
+//				announcementSend.setUserName(userName);
+//				announcementSend.setUserDepart(sysBaseApi.getDepartNamesByUsername(userName).get(0));
 				announcementSend.setReadFlag(CommonConstant.NO_READ_FLAG);
 				announcementSend.setIsDelay(0);
 				sysAnnouncementSendList.add(announcementSend);
