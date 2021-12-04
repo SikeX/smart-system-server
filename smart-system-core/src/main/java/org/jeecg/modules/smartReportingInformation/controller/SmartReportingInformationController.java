@@ -281,11 +281,11 @@ public class SmartReportingInformationController {
     }
 
 
-    //发送消息
-     @PostMapping(value = "/sendMessage")
+	 //发送消息
+	 @PostMapping(value = "/sendMessage")
 	 private Result<?> sendMessage(@RequestBody SmartReportingInformationPage smartReportingInformationPage){
 
-    	//LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		 //LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
 		 DySmsHelper.sendSms(
 				 //sysUser.getRealname(),
@@ -298,15 +298,15 @@ public class SmartReportingInformationController {
 
 		 );
 		 return Result.OK("短信发送成功");
-     }
+	 }
 
 	 @PostMapping(value = "/sendMessageAgree")
 	 private Result<?> sendMessageAgree(@RequestBody SmartReportingInformationPage smartReportingInformationPage){
 
-    	//LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		 //LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
 		 DySmsHelper.sendSms(
-				// sysUser.getRealname(),
+				 // sysUser.getRealname(),
 				 "admin",
 				 "1",
 				 "短信提醒",
@@ -316,14 +316,14 @@ public class SmartReportingInformationController {
 
 		 );
 		 return Result.OK("短信发送成功");
-    }
+	 }
 
 	 @PostMapping(value = "/sendMessageDisagree")
 	 private Result<?> sendMessageDisagree(@RequestBody SmartReportingInformationPage smartReportingInformationPage){
 
-    	//LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();//登录用户
-         DySmsHelper.sendSms(
-				// sysUser.getRealname(),
+		 //LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();//登录用户
+		 DySmsHelper.sendSms(
+				 // sysUser.getRealname(),
 				 "admin",
 				 "1",
 				 "短信提醒",
@@ -334,7 +334,7 @@ public class SmartReportingInformationController {
 		 );
 		 return Result.OK("短信发送成功");
 
-    }
+	 }
 
 	 @PostMapping(value = "/sendMessageFinish")
 	 private Result<?> sendMessageFinish(@RequestBody SmartReportingInformationPage smartReportingInformationPage){
@@ -353,6 +353,5 @@ public class SmartReportingInformationController {
 		 return Result.OK("短信发送成功");
 
 	 }
-
 
  }

@@ -10,8 +10,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @Version: V1.0
  */
 public interface ISmartGradeNumberService extends IService<SmartGradeNumber> {
-    Integer excellentCount(int excellent_line);
-    Integer goodCount(int good_line);
+    Integer excellentCount(double excellent_line);
+    Integer goodCount(double good_line);
     Integer passCount();
     Integer failCount();
 }

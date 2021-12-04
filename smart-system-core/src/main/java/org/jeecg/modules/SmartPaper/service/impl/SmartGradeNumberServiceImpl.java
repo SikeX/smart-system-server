@@ -21,12 +21,12 @@ public class SmartGradeNumberServiceImpl extends ServiceImpl<SmartGradeNumberMap
     private SmartGradeNumberMapper smartGradeNumberMapper;
     //优秀总数量
     @Override
-    public Integer excellentCount(int excellent_line) {
+    public Integer excellentCount(double excellent_line) {
         return smartGradeNumberMapper.excellentCount(excellent_line);
     }
     //良好总数量
     @Override
-    public Integer goodCount(int good_line) {
+    public Integer goodCount(double good_line) {
         return smartGradeNumberMapper.goodCount(good_line);
     }
     //及格总数量
