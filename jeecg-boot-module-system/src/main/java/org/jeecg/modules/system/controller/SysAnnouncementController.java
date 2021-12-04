@@ -90,7 +90,11 @@ public class SysAnnouncementController {
 									  HttpServletRequest req) {
 		Result<IPage<SysAnnouncement>> result = new Result<IPage<SysAnnouncement>>();
 		sysAnnouncement.setDelFlag(CommonConstant.DEL_FLAG_0.toString());
+
+		LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
+
 		QueryWrapper<SysAnnouncement> queryWrapper = new QueryWrapper<SysAnnouncement>(sysAnnouncement);
+		queryWrapper.eq("create_by",sysUser.getUsername());
 		Page<SysAnnouncement> page = new Page<SysAnnouncement>(pageNo,pageSize);
 		//排序逻辑 处理
 		String column = req.getParameter("column");

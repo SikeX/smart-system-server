@@ -42,6 +42,13 @@ public interface ISysDepartService extends IService<SysDepart>{
      */
     List<DepartIdModel> queryFuzeIdTreeList();
 
+
+    /**
+     * 查询用户管辖范围内部门信息,并分节点进行显示
+     * @return
+     */
+    List<DepartIdModel> queryVillageIdTreeList();
+
     /**
      * 查询所有部门信息,并分节点进行显示,自然层级
      * @return
@@ -111,7 +118,7 @@ public interface ISysDepartService extends IService<SysDepart>{
 
 	 /**
      * 根据部门id批量删除并删除其可能存在的子级部门
-     * @param id
+     * @param ids
      * @return
      */
 	void deleteBatchWithChildren(List<String> ids);

@@ -1,6 +1,8 @@
 package org.jeecg.modules.smartReportingInformation.vo;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import org.jeecg.modules.smartReportingInformation.entity.SmartReportingInformation;
 import org.jeecg.modules.smartReportingInformation.entity.SmartReportingSurvey;
 import org.jeecg.modules.smartReportingInformation.entity.SmartReportingDescription;
@@ -44,6 +46,8 @@ public class SmartReportingInformationPage {
 	@Excel(name = "照片", width = 15)
 	@ApiModelProperty(value = "照片")
     private java.lang.String photo;
+	@TableField(exist = false)
+	private List photoList;
 	/**附件*/
 	@Excel(name = "附件", width = 15)
 	@ApiModelProperty(value = "附件")

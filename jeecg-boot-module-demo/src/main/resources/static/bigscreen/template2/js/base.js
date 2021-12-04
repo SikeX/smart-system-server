@@ -469,90 +469,40 @@ $('#filBtn').on('click', function () {
 function chart2(chartType) {
     var data = [
         {
-            name: '广州市',
-            value: 120057.34
-            },
+            name: '榆树镇',
+            value: 20
+        },
         {
-            name: '韶关市',
-            value: 15477.48
-            },
+            name: '新农镇',
+            value: 20
+        },
         {
-            name: '深圳市',
-            value: 131686.1
-            },
+            name: '新发镇',
+            value: 100
+        },
         {
-            name: '珠海市',
-            value: 6992.6
-            },
-        {
-            name: '汕头市',
-            value: 44045.49
-            },
-        {
-            name: '佛山市',
-            value: 40689.64
-            },
-        {
-            name: '江门市',
-            value: 37659.78
-            },
-        {
-            name: '湛江市',
-            value: 45180.97
-            },
-        {
-            name: '茂名市',
-            value: 5204.26
-            },
-        {
-            name: '肇庆市',
-            value: 21900.9
-            },
-        {
-            name: '惠州市',
-            value: 4918.26
-            },
-        {
-            name: '梅州市',
-            value: 5881.84
-            },
-        {
-            name: '汕尾市',
-            value: 4178.01
-            },
-        {
-            name: '河源市',
-            value: 2227.92
-            },
-        {
-            name: '阳江市',
-            value: 2180.98
-            },
-        {
-            name: '清远市',
-            value: 9172.94
-            },
-        {
-            name: '东莞市',
-            value: 3368
-            },
-        {
-            name: '中山市',
-            value: 306.98
-            },
-        {
-            name: '潮州市',
-            value: 810.66
-            },
-        {
-            name: '揭阳市',
-            value: 542.2
-            },
-        {
-            name: '云浮市',
-            value: 256.38
+            name: '太平镇',
+            value: 50
             }]
+    $.ajax({
+        type: "post",
+        async: false, //同步执行
+        url: "getHomeData",
+        // data : {},
+        dataType: "json", //返回数据形式为json
+        success: function (result) {
+            if (result) {
+                // data[0].value = 1000
+               data[0].value = result.yushuZ
+                data[1].value = result.xinnongZ
+                data[2].value = result.xinfaZ
+                data[3].value = result.taipingZ
 
+
+
+            }
+        }
+    });
     var myChart = echarts.init(document.getElementById('gdMap'));
     var myCharts = echarts.init(document.getElementById('gdMaps'));
     window.addEventListener('resize', function () {
@@ -592,7 +542,7 @@ function chart2(chartType) {
                 {
                     name: '数据名称',
                     type: 'map',
-                    mapType: 'harbin',
+                    mapType: 'daoli',
                     selectedMode: 'multiple',
                     tooltip: {
                         trigger: 'item',

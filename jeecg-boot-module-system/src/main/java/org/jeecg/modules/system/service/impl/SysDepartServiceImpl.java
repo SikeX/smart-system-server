@@ -148,6 +148,17 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 		return listResult;
 	}
 
+	@Override
+	public List<DepartIdModel> queryVillageIdTreeList() {
+		LambdaQueryWrapper<SysDepart> query = new LambdaQueryWrapper<SysDepart>();
+		query.eq(SysDepart::getDelFlag, CommonConstant.DEL_FLAG_0.toString());
+		query.orderByAsc(SysDepart::getDepartOrder);
+		List<SysDepart> list = this.list(query);
+		// 调用wrapTreeDataToTreeList方法生成树状数据
+		List<DepartIdModel> listResult = FindsDepartsChildrenUtil.wrapTreeDataToDepartIdVillageTreeList(list);
+		return listResult;
+	}
+
 //	@Cacheable(value = CacheConstant.SYS_DEPART_IDS_CACHE)
 	@Override
 	public List<DepartIdModel> queryNaturalDepartIdTreeList() {

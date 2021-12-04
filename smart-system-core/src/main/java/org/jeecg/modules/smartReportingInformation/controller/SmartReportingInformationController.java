@@ -44,6 +44,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.jeecg.common.aspect.annotation.AutoLog;
 
+import org.jeecg.common.util.DySmsHelper;
+
  /**
  * @Description: 举报信息表
  * @Author: jeecg-boot
@@ -61,7 +63,7 @@ public class SmartReportingInformationController {
 	private ISmartReportingSurveyService smartReportingSurveyService;
 	@Autowired
 	private ISmartReportingDescriptionService smartReportingDescriptionService;
-	
+
 	/**
 	 * 分页列表查询
 	 *
@@ -83,7 +85,7 @@ public class SmartReportingInformationController {
 		IPage<SmartReportingInformation> pageList = smartReportingInformationService.page(page, queryWrapper);
 		return Result.OK(pageList);
 	}
-	
+
 	/**
 	 *   添加
 	 *
@@ -97,9 +99,10 @@ public class SmartReportingInformationController {
 		SmartReportingInformation smartReportingInformation = new SmartReportingInformation();
 		BeanUtils.copyProperties(smartReportingInformationPage, smartReportingInformation);
 		smartReportingInformationService.saveMain(smartReportingInformation, smartReportingInformationPage.getSmartReportingSurveyList(),smartReportingInformationPage.getSmartReportingDescriptionList());
+
 		return Result.OK("添加成功！");
 	}
-	
+
 	/**
 	 *  编辑
 	 *
@@ -119,7 +122,7 @@ public class SmartReportingInformationController {
 		smartReportingInformationService.updateMain(smartReportingInformation, smartReportingInformationPage.getSmartReportingSurveyList(),smartReportingInformationPage.getSmartReportingDescriptionList());
 		return Result.OK("编辑成功!");
 	}
-	
+
 	/**
 	 *   通过id删除
 	 *
@@ -133,7 +136,7 @@ public class SmartReportingInformationController {
 		smartReportingInformationService.delMain(id);
 		return Result.OK("删除成功!");
 	}
-	
+
 	/**
 	 *  批量删除
 	 *
@@ -147,7 +150,7 @@ public class SmartReportingInformationController {
 		this.smartReportingInformationService.delBatchMain(Arrays.asList(ids.split(",")));
 		return Result.OK("批量删除成功！");
 	}
-	
+
 	/**
 	 * 通过id查询
 	 *
@@ -165,7 +168,7 @@ public class SmartReportingInformationController {
 		return Result.OK(smartReportingInformation);
 
 	}
-	
+
 	/**
 	 * 通过id查询
 	 *
@@ -277,4 +280,78 @@ public class SmartReportingInformationController {
       return Result.OK("文件导入失败！");
     }
 
-}
+
+	 //发送消息
+	 @PostMapping(value = "/sendMessage")
+	 private Result<?> sendMessage(@RequestBody SmartReportingInformationPage smartReportingInformationPage){
+
+		 //LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+		 DySmsHelper.sendSms(
+				 //sysUser.getRealname(),
+				 "admin",
+				 "1",
+				 "短信提醒",
+				 "您的举报信息已提交",
+				 smartReportingInformationPage.getReportingName(),
+				 smartReportingInformationPage.getContactNumber()
+
+		 );
+		 return Result.OK("短信发送成功");
+	 }
+
+	 @PostMapping(value = "/sendMessageAgree")
+	 private Result<?> sendMessageAgree(@RequestBody SmartReportingInformationPage smartReportingInformationPage){
+
+		 //LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+		 DySmsHelper.sendSms(
+				 // sysUser.getRealname(),
+				 "admin",
+				 "1",
+				 "短信提醒",
+				 "您的举报信息已受理",
+				 smartReportingInformationPage.getReportingName(),
+				 smartReportingInformationPage.getContactNumber()
+
+		 );
+		 return Result.OK("短信发送成功");
+	 }
+
+	 @PostMapping(value = "/sendMessageDisagree")
+	 private Result<?> sendMessageDisagree(@RequestBody SmartReportingInformationPage smartReportingInformationPage){
+
+		 //LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();//登录用户
+		 DySmsHelper.sendSms(
+				 // sysUser.getRealname(),
+				 "admin",
+				 "1",
+				 "短信提醒",
+				 "抱歉，您的举报信息未成功",
+				 smartReportingInformationPage.getReportingName(),
+				 smartReportingInformationPage.getContactNumber()
+
+		 );
+		 return Result.OK("短信发送成功");
+
+	 }
+
+	 @PostMapping(value = "/sendMessageFinish")
+	 private Result<?> sendMessageFinish(@RequestBody SmartReportingInformationPage smartReportingInformationPage){
+
+		 //LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();//登录用户
+		 DySmsHelper.sendSms(
+				 // sysUser.getRealname(),
+				 "admin",
+				 "1",
+				 "短信提醒",
+				 "你的举报信息已处理完结",
+				 smartReportingInformationPage.getReportingName(),
+				 smartReportingInformationPage.getContactNumber()
+
+		 );
+		 return Result.OK("短信发送成功");
+
+	 }
+
+ }

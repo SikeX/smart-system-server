@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.smartJob.mapper.SmartJobMapper">
+
+    <select id="getPunish" resultType="org.jeecg.modules.SmartPunishPeople.entity.SmartPunishPeople">
+        SELECT *
+            from smart_punish_people
+        WHERE
+            remove_time is not null
+            and YEAR(remove_time) = YEAR (NOW())
+            and MONTH(remove_time) = MONTH(NOW())
+            and DAY(remove_time) = DAY(NOW())
+    </select>
+
+    <select id="getAnniversaryList" resultType="org.jeecg.modules.smartJob.entity.SysUser">
+        SELECT *
+            from sys_user
+        WHERE
+            join_party_date is not null
+            and MONTH(join_party_date) = MONTH(NOW())
+            and DAY(join_party_date) = DAY(NOW())
+    </select>
+
+    <select id="getUsers" resultType="org.jeecg.modules.smartJob.entity.SysUser">
+        SELECT *
+            from sys_user
+        WHERE
+            id in
+            <foreach collection="list" item="userids" open="(" close=")" separator=",">
+                #{userids}
+            </foreach>
+    </select>
+
+    <select id="getAllUser" resultType="org.jeecg.modules.smartJob.entity.SysUser">
+        SELECT *
+        from sys_user
+    </select>
+
+    <select id="initGetTasks" resultType="org.jeecg.modules.smartJob.entity.SmartJob">
+        SELECT *
+        from smart_job
+        where job_status = '开启'
+    </select>
+
+    <select id="getOrgId" resultType="java.lang.String">
+        SELECT sys_depart.id
+        from sys_depart, sys_user
+        where username = #{from} and sys_depart.org_code = sys_user.org_code
+    </select>
+
+</mapper>

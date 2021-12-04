@@ -16,6 +16,7 @@
             <groupId>org.jeecgframework.boot</groupId>
             <artifactId>jeecg-boot-base-core</artifactId>
         </dependency>
+
         <!--引入微服务启动依赖 starter
       <dependency>
           <groupId>org.jeecgframework.boot</groupId>
@@ -54,6 +55,19 @@
             <version>3.3.1</version>
             <scope>compile</scope>
         </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-common</artifactId>
+            <version>4.1.48.Final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-transport</artifactId>
+            <version>4.1.65.Final</version>
+        </dependency>
+
     </dependencies>
 
 </project>
