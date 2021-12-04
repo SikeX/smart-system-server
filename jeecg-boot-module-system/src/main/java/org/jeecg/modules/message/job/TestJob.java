@@ -9,6 +9,7 @@ import org.jeecg.modules.message.entity.PunishPerson;
 import org.jeecg.modules.message.entity.SmartTaskManage;
 import org.jeecg.modules.message.service.ISysMessageTemplateService;
 import org.jeecg.modules.message.websocket.WebSocket;
+import org.jeecg.modules.smartSentMsg.util.SMSHelper;
 import org.jeecg.modules.system.service.ISysAnnouncementSendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -57,49 +58,53 @@ public class TestJob {
 //    }
 
     //cron测试
-    @Scheduled(cron = "0 51 13 * * ?")
-    public void cronTest() throws InterruptedException {
-        System.out.println("测试成功，每天13点51执行");
-    }
+//    @Scheduled(cron = "0 51 13 * * ?")
+//    public void cronTest() throws InterruptedException {
+//        System.out.println("测试成功，每天13点51执行");
+//    }
 
     /**
      * 解除处分通知
      * 每天早上八点执行
      */
 //    @Scheduled(cron = "0 0 8 * * ?")
-    @Scheduled(cron = "0 0 20 * * ?")
+//    @Scheduled(cron = "0,10,20,30,40,50 * * * * ? ")
     public void punishRe(){
 
-        List<SmartTaskManage> smartTaskManage = sysMessageTemplateService.getTaskDetail();
-        String status = smartTaskManage.get(1).getStatus();
-        //发送类型
-        String type = "1"; //smartTaskManage.get(1).getSendType();
-        String content = smartTaskManage.get(1).getTemplateContent();
+        SMSHelper.saveSMS("admin", "入党纪念日提醒", "入党纪念日提醒", "感谢您的评价，您的反馈我们将尽快处理！", "lord", "18981089018");
 
-        if(status.equals("开启")){
-            List<PunishPerson> punishPersonList = sysMessageTemplateService.getPunishList();
-            System.out.println("解除处分通知");
-
-            for(PunishPerson p : punishPersonList){
-                if(type.equals("1")){
-                    //调用短信接口
-                    System.out.println(p.toString() + content);
-                    System.out.println(smartTaskManage.get(0).getTaskName());
-                }else{
-                    //调用消息接口
-                    System.out.println(p.toString() + content);
-
-                    //系统消息
-                    //MessageDTO messageDTO = new MessageDTO("admin", "lord1", "入党纪念日提醒", "入党纪念日快乐");
-                    //iSysBaseAPI.sendSysAnnouncement(messageDTO);
-
-                    //通知
-
-
-
-                }
-            }
-        }
+//        List<SmartTaskManage> smartTaskManage = sysMessageTemplateService.getTaskDetail();
+//        String status = smartTaskManage.get(1).getStatus();
+//        //发送类型
+//        String type = "1"; //smartTaskManage.get(1).getSendType();
+//        String content = smartTaskManage.get(1).getTemplateContent();
+//
+//        if(status.equals("开启")){
+//            List<PunishPerson> punishPersonList = sysMessageTemplateService.getPunishList();
+//            System.out.println("解除处分通知");
+//
+//            for(PunishPerson p : punishPersonList){
+//                if(type.equals("1")){
+//                    //调用短信接口
+//                    System.out.println(p.toString() + content);
+//                    System.out.println(smartTaskManage.get(0).getTaskName());
+//                }else{
+//                    //调用消息接口
+//                    System.out.println(p.toString() + content);
+//
+//
+//
+//                    //系统消息
+//                    //MessageDTO messageDTO = new MessageDTO("admin", "lord1", "入党纪念日提醒", "入党纪念日快乐");
+//                    //iSysBaseAPI.sendSysAnnouncement(messageDTO);
+//
+//                    //通知
+//
+//
+//
+//                }
+//            }
+//        }
     }
 
     /**
@@ -107,7 +112,7 @@ public class TestJob {
      * 每天早上八点执行
      */
 //    @Scheduled(cron = "0 0 8 * * ?")
-    @Scheduled(cron = "0 0,29,30 18 28 11 ?")
+    @Scheduled(cron = "0 0 8 * * ?")
     public void anniversaryRe(){
 
         List<SmartTaskManage> smartTaskManage = sysMessageTemplateService.getTaskDetail();

@@ -94,7 +94,7 @@ public class SysAnnouncementController {
 		LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
 
 		QueryWrapper<SysAnnouncement> queryWrapper = new QueryWrapper<SysAnnouncement>(sysAnnouncement);
-		queryWrapper.eq("sender",sysUser.getUsername());
+		queryWrapper.eq("create_by",sysUser.getUsername());
 		Page<SysAnnouncement> page = new Page<SysAnnouncement>(pageNo,pageSize);
 		//排序逻辑 处理
 		String column = req.getParameter("column");
