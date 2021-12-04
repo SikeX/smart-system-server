@@ -21,4 +21,6 @@ public interface SmartJobMapper extends BaseMapper<SmartJob> {
     List<SysUser> getUsers(List<String> userids);
 
     List<SmartJob> initGetTasks();
+
+    String getOrgId(String from);
 }
