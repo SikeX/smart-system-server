@@ -195,5 +195,10 @@ public class SmartJobServiceImpl extends ServiceImpl<SmartJobMapper, SmartJob> i
         return smartJobMapper.initGetTasks();
     }
 
+    @Override
+    public String getOrgId(String from) {
+        return smartJobMapper.getOrgId(from);
+    }
+
 
 }
