@@ -197,27 +197,29 @@ public class SmartGradeNumberController extends JeecgController<SmartGradeNumber
     }
 
    //优秀总数量
-	 @RequestMapping(value = "excellentCount",method = RequestMethod.GET)
+	 @PostMapping(value = "excellentCount")
 	 public Result<?> excellentCount(int total_score){
-    	 int excellent_line= 90%total_score;//优秀线
-    	 Integer count = smartGradeNumberService.excellentCount(excellent_line);
+		 double excellent_line = 0.9 *total_score;//优秀线
+		 Integer count = smartGradeNumberService.excellentCount(excellent_line);
 		 return Result.OK(count);
 	 }
+
 	 //良好总数量
-	 @RequestMapping(value = "goodCount",method = RequestMethod.GET)
+	 @PostMapping(value="goodCount")
 	 public Result<?> goodCount(int total_score){
-		 int good_line=80%total_score;//良好线
+    	 double good_line=0.8 * total_score;//良好线
 		 Integer count = smartGradeNumberService.goodCount(good_line);
 		 return Result.OK(count);
 	 }
+
 	 //及格总数量
-	 @RequestMapping(value = "passCount",method = RequestMethod.GET)
+	@PostMapping(value="passCount")
 	 public Result<?> passCount(){
 		 Integer count = smartGradeNumberService.passCount();
 		 return Result.OK(count);
 	 }
 	 //不及格总数量
-	 @RequestMapping(value = "failCount",method = RequestMethod.GET)
+	@PostMapping(value="failCount")
 	 public Result<?> failCount(){
 
 		 Integer count = smartGradeNumberService.failCount();

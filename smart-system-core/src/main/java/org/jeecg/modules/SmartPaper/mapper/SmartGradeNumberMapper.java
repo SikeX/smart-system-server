@@ -11,8 +11,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface SmartGradeNumberMapper extends BaseMapper<SmartGradeNumber> {
 
-    Integer excellentCount(int excellent_line);//优秀总数量
-    Integer goodCount(int good_line);//良好总数量
+    Integer excellentCount(double excellent_line);//优秀总数量
+    Integer goodCount(double good_line);//良好总数量
     Integer passCount();//及格总数量
     Integer failCount();//不及格总数量
 }
