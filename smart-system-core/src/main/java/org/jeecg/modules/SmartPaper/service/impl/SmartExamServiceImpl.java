@@ -63,84 +63,88 @@ public class SmartExamServiceImpl extends ServiceImpl<SmartPeopleMapper, SmartPe
             int grade = 0;
 
             //总分
-            for (int i=0;i<smartSubmitList.size();i++){
+            for (int i=0;i<smartSubmitList.size();i++) {
                 SmartSubmit smartSubmit = new SmartSubmit();
-                BeanUtils.copyProperties(smartSubmitList.get(i),smartSubmit);
+                BeanUtils.copyProperties(smartSubmitList.get(i), smartSubmit);
                 SmartTopic topic = smartTopicList.get(i);
                 smartSubmit.setQuestionId(topic.getId());
                 smartSubmit.setUserId(sysUser.getId());
                 smartSubmitMapper.insert(smartSubmit);
-                /*判断回答是否正确，单选及判断*/
-                if(smartSubmit.getType().equals("0") || smartSubmit.getType().equals("2")){
-                    if(topic.getCorrectAnswer().equals(smartSubmit.getSubmitAnswer())){
-                        //计算总分
-                        grade = grade + topic.getScore();
+                /*判断回答是否正确，处理空值*/
+                if (smartSubmit.getSubmitAnswer() == null || (smartSubmit.getSubmitAnswer()).isEmpty()) {
+                    grade = grade + 0;
+                } else {
+                    if (smartSubmit.getType().equals("0") || smartSubmit.getType().equals("2")) {
+                        if (topic.getCorrectAnswer().equals(smartSubmit.getSubmitAnswer())) {
+                            //计算总分
+                            grade = grade + topic.getScore();
+                        }
                     }
-                }
-                //多选题
-                else if(smartSubmit.getType().equals("1")){
-                    String[] correctList = topic.getCorrectAnswer().split("\n");
-                    String[] submitList = smartSubmit.getSubmitAnswer().split("\n");
-                    List<String> list = new ArrayList<String>();
-                    //倒序赋值，list.remove删除时序号会前移
-                    for(int m= submitList.length-1;m>=0;m--){
-                        list.add(submitList[m]);
-                    }
-                    System.out.println("CCCCCCCCCCCCCCCCCCCCCCCCCC");
-                    System.out.println(correctList[0]);
-                    //与正确答案选项个数不一样
-                    if(correctList.length !=submitList.length){
+                    //多选题
+                    else if (smartSubmit.getType().equals("1")) {
+                        String[] correctList = topic.getCorrectAnswer().split("\n");
+                        String[] submitList = smartSubmit.getSubmitAnswer().split("\n");
+                        List<String> list = new ArrayList<String>();
+                        //倒序赋值，list.remove删除时序号会前移
+                        for (int m = submitList.length - 1; m >= 0; m--) {
+                            list.add(submitList[m]);
+                        }
+                        System.out.println("CCCCCCCCCCCCCCCCCCCCCCCCCC");
+                        System.out.println(correctList[0]);
+                        //与正确答案选项个数不一样
+                        if (correctList.length != submitList.length) {
 
-                    }
-                    //与正确答案选项个数一样
-                    else {
-                        //循环判断答案（提交答案顺序可能与正确答案不一致）
-                        for(int j=submitList.length-1;j>=0;j--){
-                            for(int k= 0;k<correctList.length;k++){
-                                if(submitList[j].equals(correctList[k])){
-                                    list.remove(0);
-                                }
-                                else {
+                        }
+                        //与正确答案选项个数一样
+                        else {
+                            //循环判断答案（提交答案顺序可能与正确答案不一致）
+                            for (int j = submitList.length - 1; j >= 0; j--) {
+                                for (int k = 0; k < correctList.length; k++) {
+                                    if (submitList[j].equals(correctList[k])) {
+                                        list.remove(0);
+                                    } else {
+                                    }
                                 }
                             }
-                        }
-                        //list为空，正确
-                        if (list.size() == 0){
-                            grade = grade + topic.getScore();
-                        }else {
+                            //list为空，正确
+                            if (list.size() == 0) {
+                                grade = grade + topic.getScore();
+                            } else {
 
-                        }
+                            }
 
-                    }
-                }
-
-                //填空题
-                else if(smartSubmit.getType().equals("3")) {
-                    String[] correctAnswerArr = topic.getCorrectAnswer().split("\n");
-                    String[] submitAnswerArr = smartSubmit.getSubmitAnswer().split("\n");
-                    double topicGrade = 0;
-                    for(int n=0;n<correctAnswerArr.length;n++){
-                        System.out.println("CCCCCCCCCCCCCCCCCCCCCCCCCC");
-                        System.out.println((double)topic.getScore() / correctAnswerArr.length);
-                        if(correctAnswerArr[n].equals(submitAnswerArr[n])){
-                            topicGrade = topicGrade +((double) topic.getScore() / correctAnswerArr.length);
                         }
                     }
-                    grade = grade + (int) topicGrade;
-                }
-                //简答题
-                else if(smartSubmit.getType().equals("4")){
-                    String[] correctAnswerArr = topic.getCorrectAnswer().split("\n");
-                    double topicGrade = 0;
-                    for (String ca : correctAnswerArr) {
-                        if(smartSubmit.getSubmitAnswer().contains(ca)){
-                            topicGrade = topicGrade +  ((double)topic.getScore() / correctAnswerArr.length);
+
+                    //填空题
+                    else if (smartSubmit.getType().equals("3")) {
+                        String[] correctAnswerArr = topic.getCorrectAnswer().split("\n");
+                        String[] submitAnswerArr = smartSubmit.getSubmitAnswer().split("\n");
+                        double topicGrade = 0;
+                        for (int n = 0; n < correctAnswerArr.length; n++) {
+                            System.out.println("CCCCCCCCCCCCCCCCCCCCCCCCCC");
+                            System.out.println((double) topic.getScore() / correctAnswerArr.length);
+                            if (correctAnswerArr[n].equals(submitAnswerArr[n])) {
+                                topicGrade = topicGrade + ((double) topic.getScore() / correctAnswerArr.length);
+                            }
                         }
+                        grade = grade + (int) topicGrade;
                     }
-                    grade = grade + (int) topicGrade;
+                    //简答题
+                    else if (smartSubmit.getType().equals("4")) {
+                        String[] correctAnswerArr = topic.getCorrectAnswer().split("\n");
+                        double topicGrade = 0;
+                        for (String ca : correctAnswerArr) {
+                            if (smartSubmit.getSubmitAnswer().contains(ca)) {
+                                topicGrade = topicGrade + ((double) topic.getScore() / correctAnswerArr.length);
+                            }
+                        }
+                        grade = grade + (int) topicGrade;
+
+                    }
+
 
                 }
-
             }
             Date date = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

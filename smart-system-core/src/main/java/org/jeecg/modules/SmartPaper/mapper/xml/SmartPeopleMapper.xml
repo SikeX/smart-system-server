@@ -8,10 +8,16 @@
         select realname from sys_user
         where id = #{userId}
     </select>
+    <!--按照人员Id获取考试ID-->
     <select id="getExamIdByuser" resultType="java.lang.String">
         select exam_id from smart_people
         where person_id = #{userId}
     </select>
+    <!--按照人员Id获取考试ID,考试信息未删除才显示-->
+<!--    select exam_id from smart_people
+    where person_id = '1455153317689438210' and exam_id in (
+    select id from smart_exam_information where smart_exam_information.del_flag ='0'
+    )-->
     <select id="getGrade" resultType="java.lang.Integer">
         select exam_grade from smart_people
         where exam_id = #{examId} and person_id = #{userId}
