@@ -30,4 +30,28 @@ public interface IJeecgDemoService extends JeecgService<JeecgDemo> {
 	 * @return
 	 */
 	String getExportFields();
+
+//	/**
+//	 * 获取榆树镇互动数
+//	 * @return
+//	 */
+//	String getYushuZ();
+
+//	/**
+//	 * 获取新农镇互动数
+//	 * @return
+//	 */
+//	String getXinnongZ();
+//
+//	/**
+//	 * 获取新发镇互动数
+//	 * @return
+//	 */
+//	String getXinfaZ();
+//
+//	/**
+//	 * 获取太平镇互动数
+//	 * @return
+//	 */
+//	String getTaipingZ();
 }
