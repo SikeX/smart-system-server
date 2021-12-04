@@ -3,7 +3,10 @@ package org.jeecg.modules.smartReportingInformation.entity;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+import java.util.List;
+
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -43,9 +46,10 @@ public class SmartReportingInformation implements Serializable {
     @ApiModelProperty(value = "主要问题")
     private java.lang.String majorProblem;
 	/**照片*/
-	@Excel(name = "照片", width = 15)
-    private java.lang.String photo;
 
+    private java.lang.String photo;
+    @TableField(exist = false)
+    private List photoList;
 
 	/**附件*/
 	@Excel(name = "附件", width = 15)
