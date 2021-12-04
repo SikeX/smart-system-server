@@ -13,8 +13,12 @@ import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.modules.SmartPaper.entity.SmartExamInformation;
+import org.jeecg.modules.SmartPaper.entity.SmartPaper;
 import org.jeecg.modules.SmartPaper.service.ISmartExamInfoService;
+import org.jeecg.modules.SmartPaper.service.ISmartMyExamService;
+import org.jeecg.modules.SmartPaper.service.ISmartPaperService;
 import org.jeecg.modules.SmartPaper.service.ISmartPeopleService;
+import org.jeecg.modules.SmartPaper.vo.SmartMyExamVo;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +45,10 @@ public class SmartExamInfoController extends JeecgController<SmartExamInformatio
    private ISmartExamInfoService smartExamInformationService;
    @Autowired
    private ISmartPeopleService smartPeopleService;
+   @Autowired
+   private ISmartMyExamService smartMyExamService;
+   @Autowired
+   private ISmartPaperService smartPaperService;
 
    /**
     * 分页列表查询
@@ -66,10 +74,10 @@ public class SmartExamInfoController extends JeecgController<SmartExamInformatio
     @AutoLog(value = "个人考试信息表-分页列表查询")
     @ApiOperation(value="个人考试信息表-分页列表查询", notes="个人考试信息表-分页列表查询")
     @GetMapping(value = "/myList")
-    public Result<?> queryPageMyList(SmartExamInformation smartExamInformation,
-                                   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
-                                   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
-                                   HttpServletRequest req) {
+    public Result<?> queryPageMyList(SmartMyExamVo smartMyExamVo,
+                                     @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+                                     @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+                                     HttpServletRequest req) {
         // 1. 规则，下面是 以**开始
         String rule = "in";
         // 2. 查询字段
@@ -93,10 +101,21 @@ public class SmartExamInfoController extends JeecgController<SmartExamInformatio
         params = new String[]{"and"};
         map.put("superQueryMatchType", params);
 
-        QueryWrapper<SmartExamInformation> queryWrapper = QueryGenerator.initQueryWrapper(smartExamInformation, map);
+        QueryWrapper<SmartMyExamVo> queryWrapper = QueryGenerator.initQueryWrapper(smartMyExamVo, map);
 
-        Page<SmartExamInformation> page = new Page<SmartExamInformation>(pageNo, pageSize);
-        IPage<SmartExamInformation> pageList = smartExamInformationService.page(page, queryWrapper);
+        Page<SmartMyExamVo> page = new Page<SmartMyExamVo>(pageNo, pageSize);
+        String oldExamName = smartMyExamVo.getExamName();
+        String examName = "";
+        if(oldExamName == null || oldExamName.equals("")){
+            examName = oldExamName;
+        }else {
+            examName = oldExamName.replace('*','%');
+        }
+        System.out.println("PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP");
+        System.out.println(req.getParameterMap());
+        System.out.println(oldExamName);
+        System.out.println(examName);
+        IPage<SmartMyExamVo> pageList = smartMyExamService.getMyAllExam(page,userId,examName);
         return Result.OK(pageList);
     }
 
@@ -141,7 +160,21 @@ public class SmartExamInfoController extends JeecgController<SmartExamInformatio
        smartExamInformationService.removeById(id);
        return Result.OK("删除成功!");
    }
-
+    @AutoLog(value = "考试信息表-取消发布")
+    @ApiOperation(value="考试信息表-取消发布", notes="考试信息表-取消发布")
+    @PostMapping(value = "/deleteRelease")
+    public Result<?> deleteRelease(@RequestBody SmartExamInformation smartExamInformation) {
+       //System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        //System.out.println(smartExamInformation);
+        String id = smartExamInformation.getId();
+        String paperId = smartExamInformation.getPaperId();
+        smartExamInformationService.removeById(id);
+        SmartPaper smartPaper = new SmartPaper();
+        smartPaper.setId(paperId);
+        smartPaper.setPaperStatus("0");
+        smartPaperService.updateById(smartPaper);
+        return Result.OK("成功!");
+    }
    /**
     *  批量删除
     *
