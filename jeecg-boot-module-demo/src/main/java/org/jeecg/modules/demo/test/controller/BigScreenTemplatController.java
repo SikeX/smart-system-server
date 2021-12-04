@@ -4,11 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.modules.demo.test.entity.JeecgDemo;
 import org.jeecg.modules.demo.test.service.IJeecgDemoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -22,6 +25,8 @@ import java.util.List;
 @RequestMapping("/test/bigScreen/templat")
 public class BigScreenTemplatController extends JeecgController<JeecgDemo, IJeecgDemoService> {
 
+    @Autowired
+    private IJeecgDemoService jeecgDemoService;
     /**
      * @param modelAndView
      * @return
@@ -57,8 +62,21 @@ public class BigScreenTemplatController extends JeecgController<JeecgDemo, IJeec
     @RequestMapping("/index2")
     public ModelAndView index2(ModelAndView modelAndView) {
         modelAndView.setViewName("/bigscreen/template2/index");
-        modelAndView.addObject("shenhe",88888);
+        modelAndView.addObject("shenhe",0000000000);
         return modelAndView;
+    }
+
+    @RequestMapping(value = "/getHomeData")
+    @ResponseBody
+    public HashMap<String,Object> getHomeData() {
+//        List<Object> hudong = new ArrayList<>();
+        HashMap<String, Object> map = new HashMap<>();
+//        map.put("yushuZ", jeecgDemoService.getYushuZ());
+//        map.put("xinnongZ",jeecgDemoService.getXinnongZ());
+//        map.put("xinfaZ", jeecgDemoService.getXinfaZ());
+//        map.put("taipingZ", jeecgDemoService.getTaipingZ());
+//        map.put("seriesdata", seriesdata);
+        return map;
     }
 
 }

@@ -467,7 +467,6 @@ $('#filBtn').on('click', function () {
 
 
 function chart2(chartType) {
-    let that = this
     var data = [
         {
             name: '榆树镇',
@@ -479,11 +478,11 @@ function chart2(chartType) {
         },
         {
             name: '新发镇',
-            value: 20
+            value: 100
         },
         {
             name: '太平镇',
-            value: 20
+            value: 50
             }]
     $.ajax({
         type: "post",
@@ -493,34 +492,15 @@ function chart2(chartType) {
         dataType: "json", //返回数据形式为json
         success: function (result) {
             if (result) {
-                for (let i = 0; i < result.data.hudong.length; i++) {
-                    let e = result.data.hudong[i]
-                    // let e = res.data.caseCount[i]
-                    // that.widgetInfo.caseCountSum += e.value
-                    if (e.name === '榆树镇') {
-                        that.data[0].value = e.value
-                    }
-                    if (e.name === '新农镇') {
-                        that.data[1].value = e.value
-                    }
-                    if (e.name === '新发镇') {
-                        that.data[2].value = e.value
-                    }
-                    if (e.name === '太平镇') {
-                        that.data[3].value = e.value
-                    }
-                }
+                // data[0].value = 1000
+               data[0].value = result.yushuZ
+                data[1].value = result.xinnongZ
+                data[2].value = result.xinfaZ
+                data[3].value = result.taipingZ
+
+
 
             }
-        },
-        error: function (result) {
-            that.$message({
-                message: "请检查网络连接",
-                type: "error"
-            })
-        },
-        complete: function (result, statusText) {
-
         }
     });
     var myChart = echarts.init(document.getElementById('gdMap'));
