@@ -30,31 +30,31 @@ public class SmartDataSheet implements Serializable {
 	/**主键*/
 	@TableId(type = IdType.ASSIGN_ID)
     @ApiModelProperty(value = "主键")
-    private java.lang.String id;
+    private String id;
 	/**文件名*/
 	@Excel(name = "文件名", width = 15)
     @ApiModelProperty(value = "文件名")
-    private java.lang.String name;
+    private String name;
 	/**文件类型*/
 	@Excel(name = "文件类型", width = 15, dicCode = "type_data")
     @Dict(dicCode = "type_data")
     @ApiModelProperty(value = "文件类型")
-    private java.lang.Integer type;
+    private Integer type;
 	/**发布时间*/
 	@Excel(name = "发布时间", width = 20, format = "yyyy-MM-dd HH:mm:ss")
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "发布时间")
-    private java.util.Date time;
+    private Date time;
 	/**发布人*/
 	@Excel(name = "发布人", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @ApiModelProperty(value = "发布人")
-    private java.lang.String publisher;
+    private String publisher;
 	/**文件描述*/
 	@Excel(name = "文件描述", width = 15)
     @ApiModelProperty(value = "文件描述")
-    private java.lang.String describe;
+    private String describe_;
     /**删除状态*/
     @Excel(name = "删除状态", width = 15,dicCode = "del_flag")
     @TableLogic
@@ -62,5 +62,10 @@ public class SmartDataSheet implements Serializable {
 	/**单位id*/
 	@Excel(name = "单位id", width = 15)
     @ApiModelProperty(value = "单位id")
-    private java.lang.String departmentid;
+    private String departmentid;
+    /**更新日期*/
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(value = "更新日期")
+    private java.util.Date updateTime;
 }

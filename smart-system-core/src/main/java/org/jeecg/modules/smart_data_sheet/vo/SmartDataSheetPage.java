@@ -50,7 +50,7 @@ public class SmartDataSheetPage {
 	/**文件描述*/
 	@Excel(name = "文件描述", width = 15)
 	@ApiModelProperty(value = "文件描述")
-    private java.lang.String describe;
+    private java.lang.String describe_;
 	/**删除状态*/
 	@Excel(name = "删除状态", width = 15)
 	@ApiModelProperty(value = "删除状态")
@@ -63,5 +63,7 @@ public class SmartDataSheetPage {
 	@ExcelCollection(name="资料库文件")
 	@ApiModelProperty(value = "资料库文件")
 	private List<SmartDataSheetFile> smartDataSheetFileList;
+
+	private Date createTime;
 
 }

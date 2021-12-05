@@ -1,4 +1,4 @@
-package org.jeecg.modules.smart_window_unit.service;/**
+package org.jeecg.modules.smart_qrCode.SQRcodeService;/**
  * Created by Administrator on 2020/11/21.
  */
 
@@ -20,7 +20,7 @@ import java.io.IOException;
  **/
 @Service
 @Slf4j
-public class CodeService {
+public class SQrCodeService {
 
     @Autowired
     private QrConfig config;
@@ -30,6 +30,15 @@ public class CodeService {
         try {
             QrCodeUtil.generate(content,config,FileUtil.file(filePath));
         } catch (QrCodeException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //生成到流
+    public void createCodeToStream(String content, HttpServletResponse response) {
+        try {
+            QrCodeUtil.generate(content,config, "png", response.getOutputStream());
+        } catch (QrCodeException | IOException e) {
             e.printStackTrace();
         }
     }
