@@ -7,11 +7,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
+import org.checkerframework.checker.units.qual.A;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.modules.interaction.domain.SmartVillageComment;
 import org.jeecg.modules.interaction.domain.SmartVillageTopic;
+import org.jeecg.modules.interaction.service.SensitiveWordFilterService;
 import org.jeecg.modules.interaction.service.SmartVillageCommentService;
 import org.jeecg.modules.interaction.utils.SensitiveWordUtil;
 import org.jeecg.modules.interaction.vo.CommentVo;
@@ -35,6 +37,10 @@ public class CommentController {
 
     @Autowired
     private SmartVillageCommentService smartVillageCommentService;
+
+    @Autowired
+    private SensitiveWordFilterService sensitiveWordFilterService;
+
 
     /**
      * 分页列表查询
@@ -108,6 +114,8 @@ public class CommentController {
     @Transactional
     @PostMapping(value = "/add")
     public Result<?> add(@RequestBody SmartVillageComment smartVillageComment) {
+
+        sensitiveWordFilterService.init();
 
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
