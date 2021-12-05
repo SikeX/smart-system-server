@@ -8,8 +8,10 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.jeecg.common.aspect.annotation.Dict;
@@ -25,6 +27,8 @@ import lombok.experimental.Accessors;
  * @Version: V1.0
  */
 @Data
+@AllArgsConstructor //全参构造函数
+@NoArgsConstructor  //无参构造函数
 @TableName("smart_question")
 @ApiModel(value="smart_question对象", description="试题表")
 public class SmartTopic implements Serializable {

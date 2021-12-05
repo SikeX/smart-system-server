@@ -7,8 +7,10 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,6 +25,8 @@ import java.util.Date;
  * @Version: V1.0
  */
 @Data
+@AllArgsConstructor //全参构造函数
+@NoArgsConstructor  //无参构造函数
 @TableName("smart_submit")
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
