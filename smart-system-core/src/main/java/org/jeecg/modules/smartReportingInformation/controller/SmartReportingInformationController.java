@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -63,6 +64,7 @@ public class SmartReportingInformationController {
 	private ISmartReportingSurveyService smartReportingSurveyService;
 	@Autowired
 	private ISmartReportingDescriptionService smartReportingDescriptionService;
+
 
 	/**
 	 * 分页列表查询
@@ -196,49 +198,49 @@ public class SmartReportingInformationController {
 		return Result.OK(smartReportingDescriptionList);
 	}
 
-    /**
-    * 导出excel
-    *
-    * @param request
-    * @param smartReportingInformation
-    */
-    @RequestMapping(value = "/exportXls")
-    public ModelAndView exportXls(HttpServletRequest request, SmartReportingInformation smartReportingInformation) {
-      // Step.1 组装查询条件查询数据
-      QueryWrapper<SmartReportingInformation> queryWrapper = QueryGenerator.initQueryWrapper(smartReportingInformation, request.getParameterMap());
-      LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+	 /**
+	  * 导出excel
+	  *
+	  * @param request
+	  * @param smartReportingInformation
+	  */
+	 @RequestMapping(value = "/exportXls")
+	 public ModelAndView exportXls(HttpServletRequest request, SmartReportingInformation smartReportingInformation) {
+		 // Step.1 组装查询条件查询数据
+		 QueryWrapper<SmartReportingInformation> queryWrapper = QueryGenerator.initQueryWrapper(smartReportingInformation, request.getParameterMap());
+		 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
-      //Step.2 获取导出数据
-      List<SmartReportingInformation> queryList = smartReportingInformationService.list(queryWrapper);
-      // 过滤选中数据
-      String selections = request.getParameter("selections");
-      List<SmartReportingInformation> smartReportingInformationList = new ArrayList<SmartReportingInformation>();
-      if(oConvertUtils.isEmpty(selections)) {
-          smartReportingInformationList = queryList;
-      }else {
-          List<String> selectionList = Arrays.asList(selections.split(","));
-          smartReportingInformationList = queryList.stream().filter(item -> selectionList.contains(item.getId())).collect(Collectors.toList());
-      }
+		 //Step.2 获取导出数据
+		 List<SmartReportingInformation> queryList = smartReportingInformationService.list(queryWrapper);
+		 // 过滤选中数据
+		 String selections = request.getParameter("selections");
+		 List<SmartReportingInformation> smartReportingInformationList = new ArrayList<SmartReportingInformation>();
+		 if(oConvertUtils.isEmpty(selections)) {
+			 smartReportingInformationList = queryList;
+		 }else {
+			 List<String> selectionList = Arrays.asList(selections.split(","));
+			 smartReportingInformationList = queryList.stream().filter(item -> selectionList.contains(item.getId())).collect(Collectors.toList());
+		 }
 
-      // Step.3 组装pageList
-      List<SmartReportingInformationPage> pageList = new ArrayList<SmartReportingInformationPage>();
-      for (SmartReportingInformation main : smartReportingInformationList) {
-          SmartReportingInformationPage vo = new SmartReportingInformationPage();
-          BeanUtils.copyProperties(main, vo);
-          List<SmartReportingSurvey> smartReportingSurveyList = smartReportingSurveyService.selectByMainId(main.getId());
-          vo.setSmartReportingSurveyList(smartReportingSurveyList);
-          List<SmartReportingDescription> smartReportingDescriptionList = smartReportingDescriptionService.selectByMainId(main.getId());
-          vo.setSmartReportingDescriptionList(smartReportingDescriptionList);
-          pageList.add(vo);
-      }
+		 // Step.3 组装pageList
+		 List<SmartReportingInformationPage> pageList = new ArrayList<SmartReportingInformationPage>();
+		 for (SmartReportingInformation main : smartReportingInformationList) {
+			 SmartReportingInformationPage vo = new SmartReportingInformationPage();
+			 BeanUtils.copyProperties(main, vo);
+			 List<SmartReportingSurvey> smartReportingSurveyList = smartReportingSurveyService.selectByMainId(main.getId());
+			 vo.setSmartReportingSurveyList(smartReportingSurveyList);
+			 List<SmartReportingDescription> smartReportingDescriptionList = smartReportingDescriptionService.selectByMainId(main.getId());
+			 vo.setSmartReportingDescriptionList(smartReportingDescriptionList);
+			 pageList.add(vo);
+		 }
 
-      // Step.4 AutoPoi 导出Excel
-      ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
-      mv.addObject(NormalExcelConstants.FILE_NAME, "举报信息表列表");
-      mv.addObject(NormalExcelConstants.CLASS, SmartReportingInformationPage.class);
-      mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("举报信息表数据", "导出人:"+sysUser.getRealname(), "举报信息表"));
-      mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
-      return mv;
+		 // Step.4 AutoPoi 导出Excel
+		 ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
+		 mv.addObject(NormalExcelConstants.FILE_NAME, "举报信息表列表");
+		 mv.addObject(NormalExcelConstants.CLASS, SmartReportingInformationPage.class);
+		 mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("举报信息表数据", "导出人:"+sysUser.getRealname(), "举报信息表"));
+		 mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
+		 return mv;
     }
 
     /**
@@ -287,16 +289,9 @@ public class SmartReportingInformationController {
 
 		 //LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
-		 DySmsHelper.sendSms(
-				 //sysUser.getRealname(),
-				 "admin",
-				 "1",
-				 "短信提醒",
-				 "您的举报信息已提交",
-				 smartReportingInformationPage.getReportingName(),
-				 smartReportingInformationPage.getContactNumber()
-
-		 );
+		 String content="您的举报信息已提交";
+		 String receiverPhone=smartReportingInformationPage.getContactNumber();
+		 DySmsHelper.sendSms(content,receiverPhone);
 		 return Result.OK("短信发送成功");
 	 }
 
@@ -305,16 +300,9 @@ public class SmartReportingInformationController {
 
 		 //LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
-		 DySmsHelper.sendSms(
-				 // sysUser.getRealname(),
-				 "admin",
-				 "1",
-				 "短信提醒",
-				 "您的举报信息已受理",
-				 smartReportingInformationPage.getReportingName(),
-				 smartReportingInformationPage.getContactNumber()
-
-		 );
+		 String content="您的举报信息已受理";
+		 String receiverPhone=smartReportingInformationPage.getContactNumber();
+		 DySmsHelper.sendSms(content,receiverPhone);
 		 return Result.OK("短信发送成功");
 	 }
 
@@ -322,16 +310,9 @@ public class SmartReportingInformationController {
 	 private Result<?> sendMessageDisagree(@RequestBody SmartReportingInformationPage smartReportingInformationPage){
 
 		 //LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();//登录用户
-		 DySmsHelper.sendSms(
-				 // sysUser.getRealname(),
-				 "admin",
-				 "1",
-				 "短信提醒",
-				 "抱歉，您的举报信息未成功",
-				 smartReportingInformationPage.getReportingName(),
-				 smartReportingInformationPage.getContactNumber()
-
-		 );
+		 String content="您的举报信息未成功";
+		 String receiverPhone=smartReportingInformationPage.getContactNumber();
+		 DySmsHelper.sendSms(content,receiverPhone);
 		 return Result.OK("短信发送成功");
 
 	 }
@@ -340,16 +321,9 @@ public class SmartReportingInformationController {
 	 private Result<?> sendMessageFinish(@RequestBody SmartReportingInformationPage smartReportingInformationPage){
 
 		 //LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();//登录用户
-		 DySmsHelper.sendSms(
-				 // sysUser.getRealname(),
-				 "admin",
-				 "1",
-				 "短信提醒",
-				 "你的举报信息已处理完结",
-				 smartReportingInformationPage.getReportingName(),
-				 smartReportingInformationPage.getContactNumber()
-
-		 );
+		 String content="你的举报信息已处理完结";
+		 String receiverPhone=smartReportingInformationPage.getContactNumber();
+		 DySmsHelper.sendSms(content,receiverPhone);
 		 return Result.OK("短信发送成功");
 
 	 }
