@@ -26,9 +26,7 @@
     <select id="getCommentList" parameterType="Object" resultType="org.jeecg.modules.interaction.vo.CommentVo">
         SELECT
             tt.title,
-            c.content,
-            c.create_by,
-            c.create_time
+            c.*
         FROM
             (
                 SELECT
@@ -42,7 +40,7 @@
             ) tt
                 LEFT JOIN smart_village_comment c ON tt.id = c.topic_id
         WHERE
-            c.status = '1'
+            c.status = '0'
         order by c.create_time desc
     </select>
 </mapper>

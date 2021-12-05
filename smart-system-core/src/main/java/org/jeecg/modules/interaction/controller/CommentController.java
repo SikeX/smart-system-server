@@ -59,7 +59,7 @@ public class CommentController {
 
         QueryWrapper<SmartVillageComment> queryWrapper = new QueryWrapper<>();
 
-        queryWrapper.eq("topic_id", topicId).orderByDesc("create_time");
+        queryWrapper.eq("topic_id", topicId).eq("status","1").orderByDesc("create_time");
 
         IPage<SmartVillageComment> pageList = smartVillageCommentService.page(page,queryWrapper);
 
@@ -120,6 +120,20 @@ public class CommentController {
         smartVillageCommentService.save(smartVillageComment);
 
         return Result.OK("添加成功！");
+    }
+
+
+    @AutoLog(value = "八项规定监督检查表-编辑")
+    @ApiOperation(value="八项规定监督检查表-编辑", notes="八项规定监督检查表-编辑")
+    @PutMapping(value = "/edit")
+    public Result<?> edit(@RequestBody CommentVo commentVo) {
+        SmartVillageComment smartVillageComment = new SmartVillageComment();
+        smartVillageComment.setId(commentVo.getId());
+        smartVillageComment.setStatus(commentVo.getStatus());
+
+        smartVillageCommentService.updateById(smartVillageComment);
+
+        return Result.OK("编辑成功!");
     }
 
 }
