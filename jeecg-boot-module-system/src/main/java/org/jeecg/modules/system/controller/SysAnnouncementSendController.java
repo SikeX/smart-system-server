@@ -276,6 +276,24 @@ public class SysAnnouncementSendController {
 		return result;
 	}
 
+	 @GetMapping(value = "/getMyAnnouncementSendMobile")
+	 public Result<IPage<AnnouncementSendModel>> getMyAnnouncementSendMobile(AnnouncementSendModel announcementSendModel,
+																	   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+																	   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize) {
+		 String type = "mobile";
+		 Result<IPage<AnnouncementSendModel>> result = new Result<IPage<AnnouncementSendModel>>();
+		 LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
+		 String userId = sysUser.getId();
+		 announcementSendModel.setUserId(userId);
+		 announcementSendModel.setPageNo((pageNo-1)*pageSize);
+		 announcementSendModel.setPageSize(pageSize);
+		 Page<AnnouncementSendModel> pageList = new Page<AnnouncementSendModel>(pageNo,pageSize);
+		 pageList = sysAnnouncementSendService.getMyAnnouncementSendPage(pageList, announcementSendModel, type);
+		 result.setResult(pageList);
+		 result.setSuccess(true);
+		 return result;
+	 }
+
 	 @GetMapping(value = "/getSubmitFileList")
 	 public Result<List<String>> getSubmitFileList(@RequestParam(name="anntId") String anntId) {
 		 Result<List<String>> result = new Result<List<String>>();
