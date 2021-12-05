@@ -154,12 +154,23 @@ public class SmartExamServiceImpl extends ServiceImpl<SmartPeopleMapper, SmartPe
             //记录最高成绩
             String userId = sysUser.getId();
             String examId = smartPeople.getExamId();
-            int oldGrade =  smartPeopleMapper.getGrade(userId,examId);
-            if(oldGrade<grade){
-                smartPeopleMapper.updateGrade(userId,examId,grade,date);
-            }else {
+            Integer oldGrade =  smartPeopleMapper.getGrade(userId,examId);
+            System.out.println("oldGradeoldGradeoldGradeoldGradeoldGradeoldGradeoldGradeoldGrade");
+            System.out.println(oldGrade);
+            //String stringGrade = String.valueOf(oldGrade);
+            //成绩不为空，记录最高成绩
+            if(oldGrade != -1){
+                if(oldGrade<grade){
+                    smartPeopleMapper.updateGrade(userId,examId,grade,date);
+                }else {
 
+                }
             }
+            //成绩为空，插入成绩
+            else{
+                smartPeopleMapper.updateGrade(userId,examId,grade,date);
+            }
+
             return Result.OK(grade);
         }catch (Exception e){
             //强制手动事务回滚

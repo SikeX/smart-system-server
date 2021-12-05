@@ -21,7 +21,7 @@ public interface SmartPeopleMapper extends BaseMapper<SmartPeople> {
     //获取用户考试ID
     List<String> getExamIdByuser(String userId);
     //获取成绩
-    int getGrade(String userId, String examId);
+    Integer getGrade(String userId, String examId);
     //更新成绩
     void updateGrade(String userId, String examId, int grade, Date date);
 }

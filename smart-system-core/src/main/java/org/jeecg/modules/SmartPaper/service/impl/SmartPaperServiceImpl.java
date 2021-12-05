@@ -88,24 +88,23 @@ public class SmartPaperServiceImpl extends ServiceImpl<SmartPaperMapper, SmartPa
 
             SmartTopic topic = new SmartTopic();
             BeanUtils.copyProperties(t,topic);
-
-            boolean isHas = false;
-            for (int i=0; i<oldTopicIdList.size();i++){
-                if((t.getId()).equals(oldTopicIdList.get(i))){
-                    //System.out.println("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
-                    //System.out.println("true");
-                    isHas = true;
-                    //存在则更新
-                    UpdateWrapper<SmartTopic> topicId = new UpdateWrapper<>();
-                    topicId.eq("id",t.getId());
-                    smartTopicMapper.update(topic,topicId);
-                    //移出旧的试卷id集合
-                    oldTopicIdList.remove(i);
-                    break;
+            //题目ID不为空，为旧题目
+            if(t.getId() != null && !(t.getId()).isEmpty() ){
+                for (int i=0; i<oldTopicIdList.size();i++){
+                    if((t.getId()).equals(oldTopicIdList.get(i))){
+                        System.out.println("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
+                        System.out.println("true");
+                        //存在则更新
+                        UpdateWrapper<SmartTopic> topicId = new UpdateWrapper<>();
+                        topicId.eq("id",t.getId());
+                        smartTopicMapper.update(topic,topicId);
+                        //移出旧的试卷id集合
+                        oldTopicIdList.remove(i);
+                        break;
+                    }
                 }
-            }
-            //不存在则添加
-            if(isHas == false){
+            }//不存在则添加
+            else{
                 topic.setPaperId(id);
                 smartTopicMapper.insert(topic);
             }
