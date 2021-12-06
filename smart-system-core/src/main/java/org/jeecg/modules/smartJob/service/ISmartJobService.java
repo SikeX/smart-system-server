@@ -27,4 +27,6 @@ public interface ISmartJobService extends IService<SmartJob> {
     void updateStatus(String jobBean);
 
     List<SmartJob> initGetTasks();
+
+    String getOrgId(String from);
 }

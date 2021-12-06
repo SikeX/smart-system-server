@@ -1,6 +1,8 @@
 package org.jeecg.modules.smartReportingInformation.vo;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import org.jeecg.modules.smartReportingInformation.entity.SmartReportingInformation;
 import org.jeecg.modules.smartReportingInformation.entity.SmartReportingSurvey;
 import org.jeecg.modules.smartReportingInformation.entity.SmartReportingDescription;
@@ -35,20 +37,25 @@ public class SmartReportingInformationPage {
 	/**被反映人单位*/
 	@Excel(name = "被反映人单位", width = 15)
 	@ApiModelProperty(value = "被反映人单位")
-    private java.lang.String reflectedDepartid;
+    private java.lang.String reflectedDocumentid;
 	/**主要问题*/
 	@Excel(name = "主要问题", width = 15)
 	@ApiModelProperty(value = "主要问题")
     private java.lang.String majorProblem;
+
 	/**照片*/
-	@Excel(name = "照片", width = 15)
+
 	@ApiModelProperty(value = "照片")
     private java.lang.String photo;
+	@TableField(exist = false)
+	private List photoList;
+
 	/**附件*/
-	@Excel(name = "附件", width = 15)
+
 	@ApiModelProperty(value = "附件")
     private java.lang.String description;
 	/**举报时间*/
+
 	@Excel(name = "举报时间", width = 20, format = "yyyy-MM-dd HH:mm:ss")
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
@@ -65,7 +72,7 @@ public class SmartReportingInformationPage {
 	@ApiModelProperty(value = "创建时间")
     private java.util.Date createTime;
 	/**删除状态*/
-	@Excel(name = "删除状态", width = 15)
+	/*@Excel(name = "删除状态", width = 15)*/
 	@ApiModelProperty(value = "删除状态")
     private java.lang.Integer delFlag;
 	/**举报人姓名*/

@@ -4,6 +4,8 @@ import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
 import org.jeecg.common.util.DySmsHelper;
+import org.jeecg.common.util.entity.SmartSentMsg;
+import org.jeecg.modules.smartJob.entity.SmartJob;
 import org.jeecg.modules.smartJob.entity.SysUser;
 import org.jeecg.modules.smartJob.service.ISmartJobService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,16 +124,26 @@ public class DelayTask {
             System.out.println(infoList.get(0));
             System.out.println(infoList.get(1));
             int len = infoList.get(0).size();
+
+//            String orgId = smartJobService.getOrgId("from");
+//            System.out.println(orgId);
+//
+//            List<SmartSentMsg> list = ComputeTime.userToSMS(users, from, orgId, "0", "其他提醒", content);
+//            DySmsHelper.sendSms(list);
+
+
+
             for(int i = 0; i < len; i++){
                 DySmsHelper.sendSms(
-                        from,
-                        SMS,
-                        "其他提醒",
+//                        from,
+//                        SMS,
+//                        "其他提醒",
                         content,
-                        infoList.get(0).get(i),
+//                        infoList.get(0).get(i),
                         infoList.get(1).get(i)
                 );
             }
+
 
         }else if(sendType.equals(SYS)){
             //发送系统消息

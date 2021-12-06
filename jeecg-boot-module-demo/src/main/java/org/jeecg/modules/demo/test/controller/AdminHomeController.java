@@ -16,7 +16,7 @@ public class AdminHomeController {
 //
 //    @RequestMapping(value = "/getHomeData")
 //    @ResponseBody
-//    public HashMap<String,Object> getEvidenceVaries() {
+//    public HashMap<String,Object> getHomeData() {
 ////        List<Object> hudong = new ArrayList<>();
 //        HashMap<String, Object> map = new HashMap<>();
 //        map.put("hudong", adminHomeService.getHudong());

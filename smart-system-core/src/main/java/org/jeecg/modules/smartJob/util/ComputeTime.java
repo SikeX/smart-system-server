@@ -1,6 +1,7 @@
 package org.jeecg.modules.smartJob.util;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.jeecg.common.util.entity.SmartSentMsg;
 import org.jeecg.modules.smartJob.entity.SysUser;
 import org.jeecg.modules.smartJob.service.ISmartJobService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,29 @@ import java.util.List;
 public class ComputeTime {
 
     private static ISmartJobService smartJobService;
+
+    public static List<SmartSentMsg> userToSMS(List<SysUser> users, String from, String orgId, String type, String tittle, String content) {
+
+        Date date = new Date();
+
+        int len = users.size();
+
+        List<SmartSentMsg> list = new ArrayList<>();
+
+        for(int i = 0; i < len; i++){
+            SmartSentMsg smartSentMsg = new SmartSentMsg();
+            smartSentMsg.setSendFrom(from);
+            smartSentMsg.setTittle("其他提醒");
+            smartSentMsg.setSysOrgCode(orgId);
+            smartSentMsg.setContent(content);
+            smartSentMsg.setSendTime(date);
+            smartSentMsg.setReceiverPhone(users.get(i).getPhone());
+            smartSentMsg.setReceiver(users.get(i).getRealname());
+
+            list.add(smartSentMsg);
+        }
+        return list;
+    }
 
     @Autowired
     public void setSmartJobService(ISmartJobService smartJobService){

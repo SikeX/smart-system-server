@@ -42,5 +42,10 @@
         where job_status = '开启'
     </select>
 
+    <select id="getOrgId" resultType="java.lang.String">
+        SELECT sys_depart.id
+        from sys_depart, sys_user
+        where username = #{from} and sys_depart.org_code = sys_user.org_code
+    </select>
 
 </mapper>
