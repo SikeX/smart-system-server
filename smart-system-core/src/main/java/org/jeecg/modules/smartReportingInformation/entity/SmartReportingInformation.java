@@ -52,7 +52,7 @@ public class SmartReportingInformation implements Serializable {
     private List photoList;
 
 	/**附件*/
-	@Excel(name = "附件", width = 15)
+
     @ApiModelProperty(value = "附件")
     private java.lang.String description;
 	/**举报时间*/
