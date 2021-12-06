@@ -40,13 +40,13 @@ public class SmartReportingInformation implements Serializable {
 	/**被反映人单位*/
 	@Excel(name = "被反映人单位", width = 15)
     @ApiModelProperty(value = "被反映人单位")
-    private java.lang.String reflectedDepartid;
+    private java.lang.String reflectedDocumentid;
 	/**主要问题*/
 	@Excel(name = "主要问题", width = 15)
     @ApiModelProperty(value = "主要问题")
     private java.lang.String majorProblem;
-	/**照片*/
 
+	/**照片*/
     private java.lang.String photo;
     @TableField(exist = false)
     private List photoList;
@@ -72,7 +72,7 @@ public class SmartReportingInformation implements Serializable {
     @ApiModelProperty(value = "创建时间")
     private java.util.Date createTime;
 	/**删除状态*/
-	@Excel(name = "删除状态", width = 15)
+	/*@Excel(name = "删除状态", width = 15)*/
     @ApiModelProperty(value = "删除状态")
     private java.lang.Integer delFlag;
 	/**举报人姓名*/

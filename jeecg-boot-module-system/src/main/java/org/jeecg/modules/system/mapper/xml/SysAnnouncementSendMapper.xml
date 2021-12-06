@@ -64,6 +64,9 @@
 		<if test="type  == 'task'">
 			and sa.msg_category = '3'
 		</if>
+		<if test="type  == 'mobile'">
+			and sa.msg_category = '1'
+		</if>
 	   <if test="announcementSendModel.titile !=null and announcementSendModel.titile != ''">
 	   		and sa.titile LIKE concat(concat('%',#{announcementSendModel.titile}),'%')
 	   </if>
