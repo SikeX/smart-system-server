@@ -72,7 +72,6 @@ public class SmartExamVo implements Serializable {
     @ApiModelProperty(value = "考试结束时间")
     private Date examEndtime;
 	/**删除状态*/
-	@Excel(name = "删除状态", width = 15)
     @TableLogic
     private Integer delFlag;
 	//指定人
