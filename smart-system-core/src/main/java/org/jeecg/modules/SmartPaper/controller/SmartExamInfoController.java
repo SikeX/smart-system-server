@@ -38,7 +38,7 @@ import java.util.List;
 */
 @Api(tags="考试信息表")
 @RestController
-@RequestMapping("/SmartPaper/smartMySurvey")
+@RequestMapping("/SmartPaper/smartMyExam")
 @Slf4j
 public class SmartExamInfoController extends JeecgController<SmartExamInformation, ISmartExamInfoService> {
    @Autowired
