@@ -55,7 +55,7 @@ public class SmartPremaritalFiling implements Serializable {
     @ApiModelProperty(value = "政治面貌")
     private java.lang.String politicCou;
     /**单位ID*/
-    @Excel(name = "单位ID", width = 15)
+    @Excel(name = "单位", width = 15)
     @ApiModelProperty(value = "单位ID")
     private java.lang.String departId;
     /**职务*/
@@ -188,4 +188,6 @@ public class SmartPremaritalFiling implements Serializable {
 
     @ApiModelProperty(value = "审核状态")
     private java.lang.String verifyStatus;
+    @ApiModelProperty(value = "创建人")
+    private java.lang.String createBy;
 }

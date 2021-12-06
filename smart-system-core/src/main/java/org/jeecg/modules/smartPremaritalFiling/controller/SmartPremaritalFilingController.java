@@ -9,8 +9,10 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.smartCreateAdvice.entity.SmartCreateAdvice;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
 import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
@@ -54,7 +56,8 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 @RequestMapping("/smartPremaritalFiling/smartPremaritalFiling")
 @Slf4j
 public class SmartPremaritalFilingController {
-
+    @Autowired
+    private ISysBaseAPI sysBaseAPI;
     @Autowired
     private ISmartPremaritalFilingService smartPremaritalFilingService;
     @Autowired
@@ -98,46 +101,54 @@ public class SmartPremaritalFilingController {
                                    @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                                    @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                    HttpServletRequest req) {
-
-        // 1. 规则，下面是 以**开始
-        String rule = "in";
-        // 2. 查询字段
-        String field = "departId";
         // 获取登录用户信息，可以用来查询单位部门信息
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-
-        // 获取子单位ID
-        String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
-
-        HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
-        // 获取请求参数中的superQueryParams
-        List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
-
-        // 添加额外查询条件，用于权限控制
-        paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
-                + childrenIdString
-                + "%22,%22field%22:%22" + field + "%22%7D%5D");
-        String[] params = new String[paramsList.size()];
-        paramsList.toArray(params);
-        map.put("superQueryParams", params);
-        params = new String[]{"and"};
-        map.put("superQueryMatchType", params);
-
-        // TODO：3. 修改自己函数中这一部门，封装查询参数修改为我们的 map
-        QueryWrapper<SmartPremaritalFiling> queryWrapper = QueryGenerator.initQueryWrapper(smartPremaritalFiling, map);
-        //QueryWrapper<SmartPremaritalFiling> queryWrapper = QueryGenerator.initQueryWrapper(smartPremaritalFiling, req.getParameterMap());
-
+        String username = sysUser.getUsername();
+        // 获取用户角色
+        List<String> role = sysBaseAPI.getRolesByUsername(username);
         Page<SmartPremaritalFiling> page = new Page<SmartPremaritalFiling>(pageNo, pageSize);
-        IPage<SmartPremaritalFiling> pageList = smartPremaritalFilingService.page(page, queryWrapper);
-        // 请同步修改edit函数中，将departId变为null，不然会更新成名称
-        List<String> departIds = pageList.getRecords().stream().map(SmartPremaritalFiling::getDepartId).collect(Collectors.toList());
-        if (departIds != null && departIds.size() > 0) {
-            Map<String, String> useDepNames = commonService.getDepNamesByIds(departIds);
-            pageList.getRecords().forEach(item -> {
-                item.setDepartId(useDepNames.get(item.getDepartId()));
-            });
+        // 如果是普通用户，则只能看到自己创建的数据
+        if (role.contains("CommonUser")) {
+            QueryWrapper<SmartPremaritalFiling> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("create_by", username);
+            IPage<SmartPremaritalFiling> pageList = smartPremaritalFilingService.page(page, queryWrapper);
+            return Result.OK(pageList);
+        } else {
+            // 1. 规则，下面是 以**开始
+            String rule = "in";
+            // 2. 查询字段
+            String field = "departId";
+            // 获取子单位ID
+            String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
+
+            HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+            // 获取请求参数中的superQueryParams
+            List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+
+            // 添加额外查询条件，用于权限控制
+            paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+                    + childrenIdString
+                    + "%22,%22field%22:%22" + field + "%22%7D%5D");
+            String[] params = new String[paramsList.size()];
+            paramsList.toArray(params);
+            map.put("superQueryParams", params);
+            params = new String[]{"and"};
+            map.put("superQueryMatchType", params);
+
+            // TODO：3. 修改自己函数中这一部门，封装查询参数修改为我们的 map
+            QueryWrapper<SmartPremaritalFiling> queryWrapper = QueryGenerator.initQueryWrapper(smartPremaritalFiling, map);
+            //QueryWrapper<SmartPremaritalFiling> queryWrapper = QueryGenerator.initQueryWrapper(smartPremaritalFiling, req.getParameterMap());
+            IPage<SmartPremaritalFiling> pageList = smartPremaritalFilingService.page(page, queryWrapper);
+            // 请同步修改edit函数中，将departId变为null，不然会更新成名称
+            List<String> departIds = pageList.getRecords().stream().map(SmartPremaritalFiling::getDepartId).collect(Collectors.toList());
+            if (departIds != null && departIds.size() > 0) {
+                Map<String, String> useDepNames = commonService.getDepNamesByIds(departIds);
+                pageList.getRecords().forEach(item -> {
+                    item.setDepartId(useDepNames.get(item.getDepartId()));
+                });
+            }
+            return Result.OK(pageList);
         }
-        return Result.OK(pageList);
     }
 
     /**
@@ -150,6 +161,8 @@ public class SmartPremaritalFilingController {
     @ApiOperation(value = "8项规定婚前报备表-添加", notes = "8项规定婚前报备表-添加")
     @PostMapping(value = "/add")
     public Result<?> add(@RequestBody SmartPremaritalFilingPage smartPremaritalFilingPage) {
+        //审核功能
+        smartVerify.addVerifyRecord(smartPremaritalFilingPage.getId(), verifyType);
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
         String orgCode = sysUser.getOrgCode();
         if ("".equals(orgCode)) {
@@ -252,7 +265,8 @@ public class SmartPremaritalFilingController {
     @AutoLog(value = "8项规定婚前报备表附表通过主表ID查询")
     @ApiOperation(value = "8项规定婚前报备表附表主表ID查询", notes = "8项规定婚前报备表附表-通主表ID查询")
     @GetMapping(value = "/querySmartPremaritalFilingAppByMainId")
-    public Result<?> querySmartPremaritalFilingAppListByMainId(@RequestParam(name = "id", required = true) String id) {
+    public Result<?> querySmartPremaritalFilingAppListByMainId(@RequestParam(name = "id", required = true) String
+                                                                       id) {
         List<SmartPremaritalFilingApp> smartPremaritalFilingAppList = smartPremaritalFilingAppService.selectByMainId(id);
         return Result.OK(smartPremaritalFilingAppList);
     }

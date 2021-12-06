@@ -48,8 +48,8 @@ public class SmartReportingInformation implements Serializable {
 
 	/**照片*/
     private java.lang.String photo;
-    @TableField(exist = false)
-    private List photoList;
+//    @TableField(exist = false)
+//    private List photoList;
 
 	/**附件*/
 	@Excel(name = "附件", width = 15)
