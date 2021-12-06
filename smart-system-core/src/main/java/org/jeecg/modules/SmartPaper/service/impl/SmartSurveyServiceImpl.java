@@ -148,7 +148,7 @@ public class SmartSurveyServiceImpl extends ServiceImpl
             if(oldGrade<grade){
                 smartPeopleMapper.updateGrade(userId,examId,grade,date);
             }else {
-
+                smartPeopleMapper.updateGrade(userId,examId,grade,date);
             }
             return Result.OK(grade);
         }catch (Exception e){

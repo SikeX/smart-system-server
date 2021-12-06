@@ -7,11 +7,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
+import org.checkerframework.checker.units.qual.A;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.modules.interaction.domain.SmartVillageComment;
 import org.jeecg.modules.interaction.domain.SmartVillageTopic;
+import org.jeecg.modules.interaction.service.SensitiveWordFilterService;
 import org.jeecg.modules.interaction.service.SmartVillageCommentService;
 import org.jeecg.modules.interaction.utils.SensitiveWordUtil;
 import org.jeecg.modules.interaction.vo.CommentVo;
@@ -36,6 +38,10 @@ public class CommentController {
     @Autowired
     private SmartVillageCommentService smartVillageCommentService;
 
+    @Autowired
+    private SensitiveWordFilterService sensitiveWordFilterService;
+
+
     /**
      * 分页列表查询
      *
@@ -59,7 +65,7 @@ public class CommentController {
 
         QueryWrapper<SmartVillageComment> queryWrapper = new QueryWrapper<>();
 
-        queryWrapper.eq("topic_id", topicId).orderByDesc("create_time");
+        queryWrapper.eq("topic_id", topicId).eq("status","1").orderByDesc("create_time");
 
         IPage<SmartVillageComment> pageList = smartVillageCommentService.page(page,queryWrapper);
 
@@ -109,6 +115,8 @@ public class CommentController {
     @PostMapping(value = "/add")
     public Result<?> add(@RequestBody SmartVillageComment smartVillageComment) {
 
+        sensitiveWordFilterService.init();
+
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
         String userId = sysUser.getId();
@@ -120,6 +128,20 @@ public class CommentController {
         smartVillageCommentService.save(smartVillageComment);
 
         return Result.OK("添加成功！");
+    }
+
+
+    @AutoLog(value = "八项规定监督检查表-编辑")
+    @ApiOperation(value="八项规定监督检查表-编辑", notes="八项规定监督检查表-编辑")
+    @PutMapping(value = "/edit")
+    public Result<?> edit(@RequestBody CommentVo commentVo) {
+        SmartVillageComment smartVillageComment = new SmartVillageComment();
+        smartVillageComment.setId(commentVo.getId());
+        smartVillageComment.setStatus(commentVo.getStatus());
+
+        smartVillageCommentService.updateById(smartVillageComment);
+
+        return Result.OK("编辑成功!");
     }
 
 }

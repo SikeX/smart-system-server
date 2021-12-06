@@ -14,6 +14,8 @@ import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.interaction.domain.SmartVillageTopic;
+import org.jeecg.modules.interaction.service.ISmartSensitiveWordService;
+import org.jeecg.modules.interaction.service.SensitiveWordFilterService;
 import org.jeecg.modules.interaction.service.SmartVillageTopicService;
 import org.jeecg.modules.interaction.utils.SensitiveWordUtil;
 import org.jeecg.modules.smartSupervision.entity.SmartSupervision;
@@ -44,6 +46,8 @@ public class TopicController {
     private SmartVillageTopicService smartVillageTopicService;
     @Autowired
     private ISysBaseAPI sysBaseAPI;
+    @Autowired
+    private SensitiveWordFilterService sensitiveWordFilterService;
 
     /**
      * 分页列表查询
@@ -112,6 +116,7 @@ public class TopicController {
     @Transactional
     @PostMapping(value = "/add")
     public Result<?> add(@RequestBody SmartVillageTopic smartVillageTopic) {
+        sensitiveWordFilterService.init();
 
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 

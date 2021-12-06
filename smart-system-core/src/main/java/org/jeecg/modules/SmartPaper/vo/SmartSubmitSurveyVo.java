@@ -6,8 +6,10 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.jeecg.modules.SmartPaper.entity.SmartSubmit;
 import org.jeecgframework.poi.excel.annotation.Excel;
@@ -18,6 +20,8 @@ import java.util.Date;
 import java.util.List;
 
 @Data
+@AllArgsConstructor //全参构造函数
+@NoArgsConstructor  //无参构造函数
 public class SmartSubmitSurveyVo {
     /**主键*/
     @ApiModelProperty(value = "主键")

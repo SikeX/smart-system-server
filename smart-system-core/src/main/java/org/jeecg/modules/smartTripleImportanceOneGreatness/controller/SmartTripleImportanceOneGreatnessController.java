@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
@@ -69,6 +70,8 @@ public class SmartTripleImportanceOneGreatnessController {
 	public String verifyType="三重一大";
 	@Autowired
 	private ISmartVerifyTypeService smartVerifyTypeService;
+	@Autowired
+	private ISysBaseAPI sysBaseAPI;
 
 	/**
 	 * 分页列表查询
@@ -86,44 +89,59 @@ public class SmartTripleImportanceOneGreatnessController {
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
-		// 1. 规则，下面是 以**开始
-		String rule = "in";
-		// 2. 查询字段
-		String field = "documentid";
 		// 获取登录用户信息，可以用来查询单位部门信息
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
-		// 获取子单位ID
-		String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
+		String username = sysUser.getUsername();
 
-		HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
-		// 获取请求参数中的superQueryParams
-		List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+		//获取用户角色
+		List<String> role = sysBaseAPI.getRolesByUsername(username);
+		if (role.contains("CommonUser")) {
+			QueryWrapper<SmartTripleImportanceOneGreatness> queryWrapper = new QueryWrapper<>();
+			queryWrapper.eq("create_by", username);
+			Page<SmartTripleImportanceOneGreatness> page
+					= new Page<SmartTripleImportanceOneGreatness>(pageNo, pageSize);
+			IPage<SmartTripleImportanceOneGreatness> pageList
+					= smartTripleImportanceOneGreatnessService.page(page, queryWrapper);
+			return Result.OK(pageList);
+		} else {
+			// 1. 规则，下面是 以**开始
+			String rule = "in";
+			// 2. 查询字段
+			String field = "documentid";
 
-		// 添加额外查询条件，用于权限控制
-		paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
-				+ childrenIdString
-				+ "%22,%22field%22:%22" + field + "%22%7D%5D");
-		String[] params = new String[paramsList.size()];
-		paramsList.toArray(params);
-		map.put("superQueryParams", params);
-		params = new String[]{"and"};
-		map.put("superQueryMatchType", params);
 
-		QueryWrapper<SmartTripleImportanceOneGreatness> queryWrapper = QueryGenerator.initQueryWrapper(smartTripleImportanceOneGreatness, map);
-		Page<SmartTripleImportanceOneGreatness> page = new Page<SmartTripleImportanceOneGreatness>(pageNo, pageSize);
-		IPage<SmartTripleImportanceOneGreatness> pageList = smartTripleImportanceOneGreatnessService.page(page, queryWrapper);
-		// 请同步修改edit函数中，将departId变为null，不然会更新成名称
-		List<String> departIds = pageList.getRecords().stream().map(SmartTripleImportanceOneGreatness::getDocumentid).collect(Collectors.toList());
-		if (departIds != null && departIds.size() > 0) {
-			Map<String, String> useDepNames = commonService.getDepNamesByIds(departIds);
-			pageList.getRecords().forEach(item -> {
-				item.setDocumentid(useDepNames.get(item.getDocumentid()));
-			});
+			// 获取子单位ID
+			String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
+
+			HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+			// 获取请求参数中的superQueryParams
+			List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+
+			// 添加额外查询条件，用于权限控制
+			paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+					+ childrenIdString
+					+ "%22,%22field%22:%22" + field + "%22%7D%5D");
+			String[] params = new String[paramsList.size()];
+			paramsList.toArray(params);
+			map.put("superQueryParams", params);
+			params = new String[]{"and"};
+			map.put("superQueryMatchType", params);
+
+			QueryWrapper<SmartTripleImportanceOneGreatness> queryWrapper = QueryGenerator.initQueryWrapper(smartTripleImportanceOneGreatness, map);
+			Page<SmartTripleImportanceOneGreatness> page = new Page<SmartTripleImportanceOneGreatness>(pageNo, pageSize);
+			IPage<SmartTripleImportanceOneGreatness> pageList = smartTripleImportanceOneGreatnessService.page(page, queryWrapper);
+			// 请同步修改edit函数中，将departId变为null，不然会更新成名称
+			List<String> departIds = pageList.getRecords().stream().map(SmartTripleImportanceOneGreatness::getDocumentid).collect(Collectors.toList());
+			if (departIds != null && departIds.size() > 0) {
+				Map<String, String> useDepNames = commonService.getDepNamesByIds(departIds);
+				pageList.getRecords().forEach(item -> {
+					item.setDocumentid(useDepNames.get(item.getDocumentid()));
+				});
+			}
+			return Result.OK(pageList);
 		}
-		return Result.OK(pageList);
 	}
-
 	/**
 	 *   添加
 	 *

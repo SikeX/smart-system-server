@@ -12,6 +12,8 @@ import org.springframework.format.annotation.DateTimeFormat;
  */
 @Data
 public class CommentVo {
+    private String id;
+
     private String title;
 
     private String content;
@@ -21,4 +23,6 @@ public class CommentVo {
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private java.util.Date createTime;
+
+    private String status;
 }
