@@ -78,7 +78,7 @@ public class LoginUser {
 	 * 状态(1：正常 2：冻结 ）
 	 */
 	private Integer status;
-	
+
 	private Integer delFlag;
 	/**
      * 同步工作流引擎1同步0不同步
@@ -120,4 +120,31 @@ public class LoginUser {
 
 	private java.lang.String peopleType;
 
+	@Override
+	public String toString() {
+		return "LoginUser{" +
+				"id='" + id + '\'' +
+				", username='" + username + '\'' +
+				", realname='" + realname + '\'' +
+				", password='" + password + '\'' +
+				", orgCode='" + orgCode + '\'' +
+				", avatar='" + avatar + '\'' +
+				", birthday=" + birthday +
+				", sex=" + sex +
+				", email='" + email + '\'' +
+				", phone='" + phone + '\'' +
+				", status=" + status +
+				", delFlag=" + delFlag +
+				", activitiSync=" + activitiSync +
+				", createTime=" + createTime +
+				", userIdentity=" + userIdentity +
+				", departIds='" + departIds + '\'' +
+				", post='" + post + '\'' +
+				", telephone='" + telephone + '\'' +
+				", relTenantIds='" + relTenantIds + '\'' +
+				", clientId='" + clientId + '\'' +
+				", departId='" + departId + '\'' +
+				", peopleType='" + peopleType + '\'' +
+				'}';
+	}
 }

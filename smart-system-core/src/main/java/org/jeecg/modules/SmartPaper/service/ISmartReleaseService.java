@@ -15,4 +15,5 @@ public interface ISmartReleaseService extends IService<SmartExamInformation> {
 
 
     Result releaseExam(String paperId, SmartExamVo smartExamVO);
+    Result releaseSurvey(String paperId, SmartExamVo smartExamVO);
 }
