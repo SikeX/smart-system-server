@@ -5,10 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -47,6 +44,7 @@ public class SmartReportingInformation implements Serializable {
     private java.lang.String majorProblem;
 
 	/**照片*/
+	@ApiModelProperty(value= "照片")
     private java.lang.String photo;
 //    @TableField(exist = false)
 //    private List photoList;
@@ -71,10 +69,11 @@ public class SmartReportingInformation implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "创建时间")
     private java.util.Date createTime;
+
 	/**删除状态*/
-	/*@Excel(name = "删除状态", width = 15)*/
-    @ApiModelProperty(value = "删除状态")
-    private java.lang.Integer delFlag;
+	@TableLogic
+    private Integer delFlag;
+
 	/**举报人姓名*/
 	@Excel(name = "举报人姓名", width = 15)
     @ApiModelProperty(value = "举报人姓名")

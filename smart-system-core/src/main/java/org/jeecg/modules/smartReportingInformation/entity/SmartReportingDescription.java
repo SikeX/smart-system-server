@@ -50,7 +50,7 @@ public class SmartReportingDescription implements Serializable {
     private java.lang.String sysOrgCode;
 	/**举报信息编号*/
     @ApiModelProperty(value = "举报信息编号")
-    private java.lang.String reportingNumber;
+    private java.lang.String reportingId;
 	/**举报附件名称*/
 	@Excel(name = "举报附件名称", width = 15)
     @ApiModelProperty(value = "举报附件名称")
