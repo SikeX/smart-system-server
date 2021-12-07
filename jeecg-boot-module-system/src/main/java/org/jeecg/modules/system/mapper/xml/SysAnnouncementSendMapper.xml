@@ -57,16 +57,6 @@
 	   where sa.send_status = '1'
 	     and sa.del_flag = '0'
 	   	 and sas.user_id = #{announcementSendModel.userId}
-		<if test="type  == 'msg'">
-			and sa.msg_category = '1'
-			or sa.msg_category = '2'
-		</if>
-		<if test="type  == 'task'">
-			and sa.msg_category = '3'
-		</if>
-		<if test="type  == 'mobile'">
-			and sa.msg_category = '1'
-		</if>
 	   <if test="announcementSendModel.titile !=null and announcementSendModel.titile != ''">
 	   		and sa.titile LIKE concat(concat('%',#{announcementSendModel.titile}),'%')
 	   </if>
@@ -85,6 +75,16 @@
         <if test="announcementSendModel.msgCategory !=null and announcementSendModel.msgCategory != ''">
             and sa.msg_category = #{announcementSendModel.msgCategory}
         </if>
+		<if test="type  == 'task'">
+			and sa.msg_category = '3'
+		</if>
+		<if test="type  == 'mobile'">
+			and sa.msg_category = '1'
+		</if>
+		<if test="type  == 'msg'">
+			and (sa.msg_category = '1'
+			or sa.msg_category = '2')
+		</if>
 	   order by sas.read_flag,sa.send_time desc
 	</select>
 	
