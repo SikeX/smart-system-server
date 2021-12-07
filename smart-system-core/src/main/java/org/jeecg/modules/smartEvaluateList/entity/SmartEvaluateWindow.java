@@ -89,7 +89,6 @@ public class SmartEvaluateWindow implements Serializable {
     @ApiModelProperty(value = "意见")
     private java.lang.String evaluateOpinion;
 	/**删除状态*/
-    @Excel(name = "删除状态", width = 15,dicCode="del_flag")
     @TableLogic
     private java.lang.Integer delFlag;
 }
