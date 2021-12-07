@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
+import org.jeecg.common.system.util.JwtUtil;
+import org.jeecg.modules.smartJob.entity.SysUser;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -208,8 +210,8 @@ public class SmartReportingInformationController {
 	 public ModelAndView exportXls(HttpServletRequest request, SmartReportingInformation smartReportingInformation) {
 		 // Step.1 组装查询条件查询数据
 		 QueryWrapper<SmartReportingInformation> queryWrapper = QueryGenerator.initQueryWrapper(smartReportingInformation, request.getParameterMap());
-		 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-
+//		 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		 String username = JwtUtil.getUserNameByToken(request);
 		 //Step.2 获取导出数据
 		 List<SmartReportingInformation> queryList = smartReportingInformationService.list(queryWrapper);
 		 // 过滤选中数据
@@ -238,7 +240,7 @@ public class SmartReportingInformationController {
 		 ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
 		 mv.addObject(NormalExcelConstants.FILE_NAME, "举报信息表列表");
 		 mv.addObject(NormalExcelConstants.CLASS, SmartReportingInformationPage.class);
-		 mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("举报信息表数据", "导出人:"+sysUser.getRealname(), "举报信息表"));
+		 mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("举报信息表数据", "导出人:"+username, "举报信息表"));
 		 mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
 		 return mv;
     }
