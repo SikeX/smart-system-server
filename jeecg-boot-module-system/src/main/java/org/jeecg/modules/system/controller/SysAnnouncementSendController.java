@@ -381,7 +381,7 @@ public class SysAnnouncementSendController {
 	 @GetMapping(value = "/remindAll")
 	 public Result<?> remindAll(SysAnnouncementSend sysAnnouncementSend,
 								@RequestParam(name="anntId", required = true) String anntId,
-								@RequestParam(name="type",required = false, defaultValue="【测试】") String type) {
+								@RequestParam(name="type",required = true) String type) {
 
 		 LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
 
