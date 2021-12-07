@@ -47,8 +47,8 @@ public class SmartReportingInformationPage {
 
 	@ApiModelProperty(value = "照片")
     private java.lang.String photo;
-	@TableField(exist = false)
-	private List photoList;
+//	@TableField(exist = false)
+//	private List photoList;
 
 	/**附件*/
 

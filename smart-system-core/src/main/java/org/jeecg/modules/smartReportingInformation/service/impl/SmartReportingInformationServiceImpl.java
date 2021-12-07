@@ -34,7 +34,7 @@ public class SmartReportingInformationServiceImpl extends ServiceImpl<SmartRepor
 	@Override
 	@Transactional
 	public void saveMain(SmartReportingInformation smartReportingInformation, List<SmartReportingSurvey> smartReportingSurveyList,List<SmartReportingDescription> smartReportingDescriptionList) {
-		smartReportingInformation.setPhoto(smartReportingInformation.getPhotoList().toString());
+//		smartReportingInformation.setPhoto(smartReportingInformation.getPhotoList().toString());
 		smartReportingInformationMapper.insert(smartReportingInformation);
 		if(smartReportingSurveyList!=null && smartReportingSurveyList.size()>0) {
 			for(SmartReportingSurvey entity:smartReportingSurveyList) {
