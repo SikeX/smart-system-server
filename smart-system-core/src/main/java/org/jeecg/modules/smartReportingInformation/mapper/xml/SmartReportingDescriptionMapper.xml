@@ -3,14 +3,14 @@
 <mapper namespace="org.jeecg.modules.smartReportingInformation.mapper.SmartReportingDescriptionMapper">
 
 	<delete id="deleteByMainId" parameterType="java.lang.String">
-		DELETE 
-		FROM  smart_reporting_description 
-		WHERE
-			 reporting_number = #{mainId} 	</delete>
-	
-	<select id="selectByMainId" parameterType="java.lang.String" resultType="org.jeecg.modules.smartReportingInformation.entity.SmartReportingDescription">
-		SELECT * 
+		DELETE
 		FROM  smart_reporting_description
 		WHERE
-			 reporting_number = #{mainId} 	</select>
+			 reporting_id = #{mainId} 	</delete>
+
+	<select id="selectByMainId" parameterType="java.lang.String" resultType="org.jeecg.modules.smartReportingInformation.entity.SmartReportingDescription">
+		SELECT *
+		FROM  smart_reporting_description
+		WHERE
+			 reporting_id = #{mainId} 	</select>
 </mapper>

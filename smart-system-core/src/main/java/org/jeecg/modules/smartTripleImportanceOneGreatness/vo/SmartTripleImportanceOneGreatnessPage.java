@@ -103,7 +103,7 @@ public class SmartTripleImportanceOneGreatnessPage {
 	@ApiModelProperty(value = "创建时间")
     private java.util.Date createTime;
 	/**删除状态（0正常，1已删除）*/
-	@Excel(name = "删除状态（0正常，1已删除）", width = 15)
+
 	@ApiModelProperty(value = "删除状态（0正常，1已删除）")
     private java.lang.Integer delFlag;
 
