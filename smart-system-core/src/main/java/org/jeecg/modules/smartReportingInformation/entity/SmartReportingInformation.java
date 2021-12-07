@@ -44,6 +44,7 @@ public class SmartReportingInformation implements Serializable {
     private java.lang.String majorProblem;
 
 	/**照片*/
+	@ApiModelProperty(value= "照片")
     private java.lang.String photo;
     @TableField(exist = false)
     private List photoList;

@@ -39,14 +39,14 @@ public class SmartReportingInformationServiceImpl extends ServiceImpl<SmartRepor
 		if(smartReportingSurveyList!=null && smartReportingSurveyList.size()>0) {
 			for(SmartReportingSurvey entity:smartReportingSurveyList) {
 				//外键设置
-				entity.setReportingNumber(smartReportingInformation.getId());
+				entity.setReportingId(smartReportingInformation.getId());
 				smartReportingSurveyMapper.insert(entity);
 			}
 		}
 		if(smartReportingDescriptionList!=null && smartReportingDescriptionList.size()>0) {
 			for(SmartReportingDescription entity:smartReportingDescriptionList) {
 				//外键设置
-				entity.setReportingNumber(smartReportingInformation.getId());
+				entity.setReportingId(smartReportingInformation.getId());
 				smartReportingDescriptionMapper.insert(entity);
 			}
 		}
@@ -65,14 +65,14 @@ public class SmartReportingInformationServiceImpl extends ServiceImpl<SmartRepor
 		if(smartReportingSurveyList!=null && smartReportingSurveyList.size()>0) {
 			for(SmartReportingSurvey entity:smartReportingSurveyList) {
 				//外键设置
-				entity.setReportingNumber(smartReportingInformation.getId());
+				entity.setReportingId(smartReportingInformation.getId());
 				smartReportingSurveyMapper.insert(entity);
 			}
 		}
 		if(smartReportingDescriptionList!=null && smartReportingDescriptionList.size()>0) {
 			for(SmartReportingDescription entity:smartReportingDescriptionList) {
 				//外键设置
-				entity.setReportingNumber(smartReportingInformation.getId());
+				entity.setReportingId(smartReportingInformation.getId());
 				smartReportingDescriptionMapper.insert(entity);
 			}
 		}
