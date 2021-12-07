@@ -104,7 +104,16 @@ public class SysAnnouncementServiceImpl extends ServiceImpl<SysAnnouncementMappe
 			sqlSession.commit();
 
 		} else if(sysAnnouncement.getMsgType().equals(CommonConstant.MSG_TYPE_DEPART)){
-			send_count = sysBaseApi.getDeptHeadByDepId(departIds).size();
+
+			List<String> userList = new ArrayList<>();
+
+			String[] departArray = departIds.split(",");
+			for(String depart: departArray){
+				userList.addAll(sysBaseApi.getDepAdminByDepId(depart));
+			}
+
+			sysAnnouncement.setUserIds(String.join(",",userList));
+			send_count = userList.size();
 			sysAnnouncement.setSendCount(send_count);
 			log.info(String.valueOf(send_count));
 
@@ -112,19 +121,19 @@ public class SysAnnouncementServiceImpl extends ServiceImpl<SysAnnouncementMappe
 			sysAnnouncementMapper.insert(sysAnnouncement);
 			// 2.插入用户通告阅读标记表记录
 			List<SysAnnouncementSend> sysAnnouncementSendList = new ArrayList<>();
-			List<String> userIdList = sysBaseApi.getDeptHeadByDepId(departIds);
-			String[] userIdArray = new String[userIdList.size()];
-			for(int i = 0; i < userIdList.size(); i++){
-				userIdArray[i] = userIdList.get(i);
-			}
+
+//			String[] userIdArray = new String[userIdList.size()];
+//			for(int i = 0; i < userIdList.size(); i++){
+//				userIdArray[i] = userIdList.get(i);
+//			}
 
 			String anntId = sysAnnouncement.getId();
-			for (String s : userIdArray) {
+			for (String s : userList) {
 				SysAnnouncementSend announcementSend = new SysAnnouncementSend();
 				announcementSend.setAnntId(anntId);
-				announcementSend.setUserId(sysBaseApi.getUserByName(s).getId());
-				announcementSend.setUserName(s);
-				announcementSend.setUserDepart(sysBaseApi.getDepartNamesByUsername(s).get(0));
+				announcementSend.setUserId(s);
+//				announcementSend.setUserName(s);
+//				announcementSend.setUserDepart(sysBaseApi.getDepartNamesByUsername(s).get(0));
 				announcementSend.setReadFlag(CommonConstant.NO_READ_FLAG);
 				announcementSend.setIsDelay(0);
 				sysAnnouncementSendList.add(announcementSend);
@@ -143,7 +152,7 @@ public class SysAnnouncementServiceImpl extends ServiceImpl<SysAnnouncementMappe
 			sysAnnouncementMapper.insert(sysAnnouncement);
 			// 2.插入用户通告阅读标记表记录
 //			String userId = sysAnnouncement.getUserIds();
-			String[] userIds = userId.substring(0, (userId.length()-1)).split(",");
+			String[] userIds = userId.split(",",-1);
 			List<SysAnnouncementSend> sysAnnouncementSendList = new ArrayList<>();
 
 			String anntId = sysAnnouncement.getId();

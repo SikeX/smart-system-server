@@ -4,6 +4,7 @@ import java.util.Arrays;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.jeecg.common.util.*;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
@@ -296,6 +297,7 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 	 queryWrapper2.eq("flow_no",smartVerifyDetail.getFlowNo());
 	 // 查找出填报记录的用户名和任务类型
 	 String fillPersonUserName = smartVerifyTaskService.getOne(queryWrapper2).getCreateBy();
+	 String fillPersonUserPhone = sysBaseAPI.getUserByName(fillPersonUserName).getPhone();
 	 String taskType = smartVerifyTaskService.getOne(queryWrapper2).getTaskType();
 	 // 如果审核人给了通过
 	 if(smartVerifyDetail.getAuditStatus() == 3){
@@ -312,13 +314,15 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 			 syncVerify(flowNo, taskType, "1");
 			 // 给填报人发送消息
 //			 log.info(fillPersonUserName);
+
 			 MessageDTO messageDTO = new MessageDTO();
 			 messageDTO.setFromUser(userName);
 			 messageDTO.setToUser(fillPersonUserName);
 			 messageDTO.setTitle("审核已通过");
-			 messageDTO.setContent("您的"+taskType+"审核已通过");
+			 messageDTO.setContent("您的【"+taskType+"】审核已通过");
 			 messageDTO.setCategory("1");
 			 sysBaseAPI.sendSysAnnouncement(messageDTO);
+			 DySmsHelper.sendSms(userName,"test","审核已通过","您的【"+taskType+"】审核已通过",fillPersonUserName,fillPersonUserPhone);
 			 return Result.OK("更新成功");
 		 }
 		 // 否则更新下一级管理员的审核状态为2
@@ -339,9 +343,10 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 		 messageDTO.setFromUser(userName);
 		 messageDTO.setToUser(fillPersonUserName);
 		 messageDTO.setTitle("审核未通过");
-		 messageDTO.setContent("您的"+taskType+"审核未通过，请重新填报");
+		 messageDTO.setContent("您的【"+taskType+"】审核未通过，请重新填报");
 		 messageDTO.setCategory("1");
 		 sysBaseAPI.sendSysAnnouncement(messageDTO);
+		 DySmsHelper.sendSms(userName,"test","审核未通过","您的【"+taskType+"】审核未通过，请重新填报",fillPersonUserName,fillPersonUserPhone);
 		 return Result.OK("更新成功");
 	 }
 	 return Result.OK("更新成功");

@@ -52,7 +52,7 @@ public class SmartPremaritalFilingPage {
 	@ApiModelProperty(value = "政治面貌")
 	private java.lang.String politicCou;
 	/**单位ID*/
-	@Excel(name = "单位ID", width = 15)
+	@Excel(name = "单位", width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
 	@ApiModelProperty(value = "单位ID")
 	private java.lang.String departId;
 	/**职务*/
@@ -174,14 +174,14 @@ public class SmartPremaritalFilingPage {
 	@ApiModelProperty(value = "创建时间")
 	private java.util.Date createTime;
 	/**删除状态*/
-	@Excel(name = "删除状态", width = 15)
 	@ApiModelProperty(value = "删除状态")
 	private java.lang.Integer delFlag;
 
 	/**审核状态*/
 	@ApiModelProperty(value = "审核状态")
 	private java.lang.String verifyStatus;
-
+	@ApiModelProperty(value = "创建人")
+	private java.lang.String createBy;
 	@ExcelCollection(name="8项规定婚前报备表附表")
 	@ApiModelProperty(value = "8项规定婚前报备表附表")
 	private List<SmartPremaritalFilingApp> smartPremaritalFilingAppList;
