@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.constant.CacheConstant;
 import org.jeecg.common.constant.CommonConstant;
@@ -498,6 +499,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	@CacheEvict(value={CacheConstant.SYS_USERS_CACHE}, allEntries=true)
 	public void editUser(SysUser user, String roles, String departs) {
 		//step.1 修改用户基础信息
+		// 如果修改部门信息，同步更新用户表中的orgcode
+		if(StringUtils.isNotBlank(departs)){
+			String newDepartId = departs.split(",",-1)[0];
+			String newOrgCode = sysDepartMapper.selectById(newDepartId).getOrgCode();
+			user.setOrgCode(newOrgCode);
+		}
 		this.updateById(user);
 		//step.2 修改角色
 		//处理用户角色 先删后加
