@@ -140,8 +140,8 @@
             <img src="${base}/bigscreen/template2/images/line_bg.png" alt="">
             <div class="select-box">
                 <ul id="barType">
-                    <li class="active" data-value="1">自然</li>
-                    <li data-value="2">业务</li>
+                    <li class="active" data-value="1">自然机构</li>
+                    <li data-value="2">业务机构</li>
                 </ul>
 <#--                <div data-type="2">-->
 <#--                    <div class="select" tabindex="0" hidefocus="true">-->
@@ -393,8 +393,8 @@
         <div class="filter-con pop-filters" style="display:flex" data-type="4">
             <div class="select-pop" tabindex="0" hidefocus="true">
                 <ul id="barTypes">
-                    <li class="active" data-value="1">自然</li>
-                    <li data-value="2">业务</li>
+                    <li class="active" data-value="1">自然机构</li>
+                    <li data-value="2">业务机构</li>
                 </ul>
             </div>
         </div>
