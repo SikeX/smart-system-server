@@ -1,9 +1,13 @@
 package org.jeecg.modules.demo.test.service;
 
 import org.jeecg.common.system.base.service.JeecgService;
+import org.jeecg.modules.demo.test.entity.Cloud;
 import org.jeecg.modules.demo.test.entity.JeecgDemo;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.jeecg.modules.demo.test.entity.partyUser;
+
+import java.util.List;
 
 /**
  * @Description: jeecg 测试demo
@@ -31,27 +35,99 @@ public interface IJeecgDemoService extends JeecgService<JeecgDemo> {
 	 */
 	String getExportFields();
 
-//	/**
-//	 * 获取榆树镇互动数
-//	 * @return
-//	 */
-//	String getYushuZ();
+	/**
+	 * 获取榆树镇互动数
+	 * @return
+	 */
+	String getYushuZ();
 
-//	/**
-//	 * 获取新农镇互动数
-//	 * @return
-//	 */
-//	String getXinnongZ();
-//
-//	/**
-//	 * 获取新发镇互动数
-//	 * @return
-//	 */
-//	String getXinfaZ();
-//
-//	/**
-//	 * 获取太平镇互动数
-//	 * @return
-//	 */
-//	String getTaipingZ();
+	/**
+	 * 获取新农镇互动数
+	 * @return
+	 */
+	String getXinnongZ();
+
+	/**
+	 * 获取新发镇互动数
+	 * @return
+	 */
+	String getXinfaZ();
+
+	/**
+	 * 获取太平镇互动数
+	 * @return
+	 */
+	String getTaipingZ();
+
+	/**
+	 * 获取通知数
+	 * @return
+	 */
+	String getTongzhi();
+
+	/**
+	 * 获取廉政数
+	 * @return
+	 */
+	String getLianzheng();
+
+	/**
+	 * 获取任务数
+	 * @return
+	 */
+	String getRenwu();
+
+	/**
+	 * 获取审核数
+	 * @return
+	 */
+	String getShenhe();
+
+	/**
+	 * 获取通知未读数
+	 * @return
+	 */
+	String getTongzhiweidu(String userId);
+
+	/**
+	 * 获取通知已读数
+	 * @return
+	 */
+	String getTongzhiyidu(String userId);
+
+	/**
+	 * 获取廉政未读数
+	 * @return
+	 */
+	String getLianzhengweidu(String userId);
+
+	/**
+	 * 获取廉政已读数
+	 * @return
+	 */
+	String getLianzhengyidu(String userId);
+
+	/**
+	 * 获取我的任务数
+	 * @return
+	 */
+	String getRenwutiao(String userId);
+
+	/**
+	 * 获取我的任务数
+	 * @return
+	 */
+	String getDaishenhe();
+
+	/**
+	 * 获取我的任务数
+	 * @return
+	 */
+	String getYishenhe();
+
+	/**
+	 * 获取我的任务数
+	 * @return
+	 */
+	List<partyUser> getCloudData(String departId);
 }

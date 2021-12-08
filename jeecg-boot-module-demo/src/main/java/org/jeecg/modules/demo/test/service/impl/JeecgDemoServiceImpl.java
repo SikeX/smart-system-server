@@ -7,7 +7,9 @@ import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.constant.CacheConstant;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.modules.demo.test.entity.Cloud;
 import org.jeecg.modules.demo.test.entity.JeecgDemo;
+import org.jeecg.modules.demo.test.entity.partyUser;
 import org.jeecg.modules.demo.test.mapper.JeecgDemoMapper;
 import org.jeecg.modules.demo.test.service.IJeecgDemoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +18,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,6 +32,7 @@ import java.util.List;
  */
 @Service
 public class JeecgDemoServiceImpl extends ServiceImpl<JeecgDemoMapper, JeecgDemo> implements IJeecgDemoService {
+
 	@Autowired
 	JeecgDemoMapper jeecgDemoMapper;
 	
@@ -108,9 +113,86 @@ public class JeecgDemoServiceImpl extends ServiceImpl<JeecgDemoMapper, JeecgDemo
 		return exportFieldsList != null && exportFieldsList.size()>0 ? String.join(",", exportFieldsList) : "";
 	}
 
-//	@Override
-//	public String getYushuZ(){
-//		return "3000";
-//	}
+	@Override
+	public String getYushuZ(){
+		return this.jeecgDemoMapper.getTopicCount("榆树镇");
+	}
+
+	@Override
+	public String getXinnongZ(){
+		return this.jeecgDemoMapper.getTopicCount("新农镇");
+	}
+
+	@Override
+	public String getXinfaZ(){
+		return this.jeecgDemoMapper.getTopicCount("新发镇");
+	}
+
+	@Override
+	public String getTaipingZ(){
+		return this.jeecgDemoMapper.getTopicCount("太平镇");
+	}
+
+	@Override
+	public String getTongzhi(){
+		return this.jeecgDemoMapper.getMessageCount("1");
+	}
+	@Override
+	public String getLianzheng(){
+		return this.jeecgDemoMapper.getMessageCount("2");
+	}
+
+	@Override
+	public String getRenwu(){
+		return this.jeecgDemoMapper.getMessageCount("3");
+	}
+
+	@Override
+	public String getShenhe(){
+		return this.jeecgDemoMapper.getShenhe();
+	}
+
+	@Override
+	public String getTongzhiyidu(String userId){
+		return this.jeecgDemoMapper.getTongzhiyidu(userId);
+	}
+
+	@Override
+	public String getTongzhiweidu(String userId){
+		return this.jeecgDemoMapper.getTongzhiweidu(userId);
+	}
+
+	@Override
+	public String getLianzhengyidu(String userId){
+		return this.jeecgDemoMapper.getLianzhengyidu(userId);
+	}
+
+	@Override
+	public String getLianzhengweidu(String userId){
+		return this.jeecgDemoMapper.getLianzhengweidu(userId);
+	}
+
+	@Override
+	public String getRenwutiao(String userId){
+		return this.jeecgDemoMapper.getRenwutiao(userId);
+	}
+
+	@Override
+	public String getDaishenhe(){
+		return this.jeecgDemoMapper.getDaishenhe();
+	}
+
+	@Override
+	public String getYishenhe(){
+		return this.jeecgDemoMapper.getYishenhe();
+	}
+
+	@Override
+	public List<partyUser> getCloudData(String departId){
+		Date date = new Date();
+		SimpleDateFormat formatter = new SimpleDateFormat("-MM-dd");
+		String partyDate = formatter.format(date).toString();
+		return this.jeecgDemoMapper.getCloudData(departId, partyDate);
+	}
 
 }

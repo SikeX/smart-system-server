@@ -3,6 +3,10 @@ function fnW(str) {
     str >= 10 ? num = str : num = "0" + str;
     return num;
 }
+
+
+
+
 //获取当前时间
 var timer = setInterval(function () {
     var date = new Date();
@@ -289,23 +293,47 @@ var borderStartColor = ['#0077c5', '#a819d7', '#c99002', '#24bc00', '#b6cb04', '
 function chart1() {
     //data 为模拟数据
     var data = [{
-        name: '顺丰',
-        value: 192581,
-        percent: '30.8721',
+        name: '通知公告',
+        value: 200,
+        percent: '33.3',
     }, {
-        name: '京东',
-        value: 215635,
-        percent: '34.076',
+        name: '廉政提醒',
+        value: 200,
+        percent: '33.3',
     }, {
-        name: 'EMS',
-        value: 224585,
-        percent: '35.49',
+        name: '任务下发',
+        value: 200,
+        percent: '33.4',
     }];
+    $.ajax({
+        type: "post",
+        async: false, //同步执行
+        url: "getChart1Data",
+        // data : {},
+        dataType: "json", //返回数据形式为json
+        success: function (result) {
+            if (result) {
+                // data[0].value = 1000
+                data[0].value = result.tongzhi
+                data[1].value = result.lianzheng
+                data[2].value = result.renwu
+                if(result.tongzhi !== '0' || result.lianzheng !== '0' || result.renwu !== '0') {
+                    data[0].percent = 100*parseInt(result.tongzhi) / (parseInt(result.tongzhi) + parseInt(result.lianzheng) + parseInt(result.renwu))
+                    data[1].percent = 100*parseInt(result.lianzheng) / (parseInt(result.tongzhi) + parseInt(result.lianzheng) + parseInt(result.renwu))
+                    data[2].percent = 100*parseInt(result.renwu) / (parseInt(result.tongzhi) + parseInt(result.lianzheng) + parseInt(result.renwu))
+                }
+            }
+        }
+    });
     var myChart = echarts.init(document.getElementById('pie'));
     var myChart1 = echarts.init(document.getElementById('pie1'));
+    var myCharts = echarts.init(document.getElementById('gdMap1'));
+    var myCharts1 = echarts.init(document.getElementById('gdMaps1'));
     window.addEventListener('resize', function () {
         myChart.resize();
         myChart1.resize();
+        myCharts.resize();
+        myCharts1.resize();
     });
 
     var str = '';
@@ -413,7 +441,7 @@ function chart1() {
                         show: false
                     }
                 },
-                name: "派件入库量占比内容",
+                name: "消息类型占比",
                 data: RealData
         },
         // 边框的设置
@@ -448,6 +476,8 @@ function chart1() {
 
     myChart.setOption(option);
     myChart1.setOption(option);
+    myCharts.setOption(option);
+    myCharts1.setOption(option);
 }
 
 chart1()
@@ -483,7 +513,92 @@ function chart2(chartType) {
         {
             name: '太平镇',
             value: 50
-            }]
+            },
+        {
+            name: '闫家岗农场',
+            value: 0
+        },
+        {
+            name: '群力街道',
+            value: 0
+        },
+        {
+            name: '爱建街道',
+            value: 0
+        },
+        {
+            name: '康安街道',
+            value: 0
+        },
+        {
+            name: '建国街道',
+            value: 0
+        },
+        {
+            name: '正阳和街道',
+            value: 0
+        },
+        {
+            name: '安和街道',
+            value: 0
+        },
+        {
+            name: '安静街道',
+            value: 0
+        },
+        {
+            name: '经纬街道',
+            value: 0
+        },
+        {
+            name: '工程街道',
+            value: 0
+        },
+        {
+            name: '通江街道',
+            value: 0
+        },
+        {
+            name: '斯大林街道',
+            value: 0
+        },
+        {
+            name: '尚志街道',
+            value: 0
+        },
+        {
+            name: '工农街道',
+            value: 0
+        },
+        {
+            name: '城乡路街道',
+            value: 0
+        },
+        {
+            name: '新华街道',
+            value: 0
+        },
+        {
+            name: '共乐街道',
+            value: 0
+        },
+        {
+            name: '抚顺街道',
+            value: 0
+        },
+        {
+            name: '新阳路街道',
+            value: 0
+        },
+        {
+            name: '正阳河街道',
+            value: 0
+        },
+        {
+            name: '兆麟街道',
+            value: 0
+        }
+    ]
     $.ajax({
         type: "post",
         async: false, //同步执行
@@ -505,9 +620,13 @@ function chart2(chartType) {
     });
     var myChart = echarts.init(document.getElementById('gdMap'));
     var myCharts = echarts.init(document.getElementById('gdMaps'));
+    // var myChart1 = echarts.init(document.getElementById('gdMap1'));
+    // var myCharts1 = echarts.init(document.getElementById('gdMaps1'));
     window.addEventListener('resize', function () {
         myChart.resize();
         myCharts.resize();
+        // myChart1.resize();
+        // myCharts1.resize();
     });
     var yMax = 0;
     for (var j = 0; j < data.length; j++) {
@@ -517,6 +636,8 @@ function chart2(chartType) {
     }
         myChart.hideLoading();
         myCharts.hideLoading();
+    // myChart1.hideLoading();
+    // myCharts1.hideLoading();
         var option = {
             animation: true,
             tooltip: {
@@ -546,7 +667,7 @@ function chart2(chartType) {
                     selectedMode: 'multiple',
                     tooltip: {
                         trigger: 'item',
-                        formatter: '{b}<br/>{c} (件)'
+                        formatter: '{b}<br/>{c} (条)'
                     },
                     itemStyle: {
                         normal: {
@@ -575,6 +696,8 @@ function chart2(chartType) {
 
         myChart.setOption(option);
         myCharts.setOption(option);
+    // myChart1.setOption(option);
+    // myCharts1.setOption(option);
 }
 chart2('');
 
@@ -867,34 +990,34 @@ $('#citys').on('click', 'li', function () {
 //寄派件选择
 $("#barType").on('click', 'li', function () {
     $(this).addClass('active').siblings('li').removeClass('active');
-    $('#barTitle').html($(this).html() + '数据');
+    // $('#barTitle').html($(this).html() + '数据');
     $('#tabBtn').data('state', $(this).data('value'));
-    if ($(this).data('value') == 1) {
-        $('.table1').eq(0).show().siblings('table').hide();
-    } else if ($(this).data('value') == 2) {
-        $('.table1').eq(1).show().siblings('table').hide();
-    }
-    chart3($(this).data('value'), 0);
-    chart4(chart4Data, $(this).data('value'), 0);
+    // if ($(this).data('value') == 1) {
+    //     $('.table1').eq(0).show().siblings('table').hide();
+    // } else if ($(this).data('value') == 2) {
+    //     $('.table1').eq(1).show().siblings('table').hide();
+    // }
+    // chart3($(this).data('value'), 0);
+    // chart4(chart4Data, $(this).data('value'), 0);
 })
 
 //寄派件选择
 $("#barTypes").on('click', 'li', function () {
     $(this).addClass('active').siblings('li').removeClass('active');
-    $('#barTitles').html($(this).html() + '数据');
+    // $('#barTitles').html($(this).html() + '数据');
     $('#tabBtns').data('state', $(this).data('value'));
-    if ($(this).data('value') == 1) {
-        $('.table2').eq(0).show().siblings('table').hide();
-    } else if ($(this).data('value') == 2) {
-        $('.table2').eq(1).show().siblings('table').hide();
-    }
-    chart3($(this).data('value'), 1);
-    chart4(chart4Data, $(this).data('value'), 1);
+    // if ($(this).data('value') == 1) {
+    //     $('.table2').eq(0).show().siblings('table').hide();
+    // } else if ($(this).data('value') == 2) {
+    //     $('.table2').eq(1).show().siblings('table').hide();
+    // }
+    // chart3($(this).data('value'), 1);
+    // chart4(chart4Data, $(this).data('value'), 1);
 
 })
 
 
-function chart3(type, chartType) {
+function chart3(type,chartType) {
     var myChart = echarts.init(document.getElementById('chart3'));
     var myCharts = echarts.init(document.getElementById('chart3s'));
     window.addEventListener('resize', function () {
@@ -906,55 +1029,54 @@ function chart3(type, chartType) {
 
     var data; //横坐标数据，不动
     var data_; //模拟数据
-    if (type == 1) {
+
         data_ = [{
-                name: "入库件",
+                name: "通知公告",
                 value: 584
             },
             {
-                name: "滞留件",
+                name: "未读",
                 value: 152
-            }, {
-                name: "丢失件",
+            },
+            {
+                name: "已读",
                 value: 100
             },
             {
-                name: "正常件",
+                name: "廉政提醒",
                 value: 689
             },
             {
-                name: "派送件",
+                name: "未读",
                 value: 200
-            }, {
-                name: "自提件",
+            },
+            {
+                name: "已读",
                 value: 121
-            }, {
-                name: "退签件",
+            },
+            {
+                name: "任务下发",
                 value: 92
             }]
-    } else if (type == 2) {
-        data_ = [{
-                name: "入库件",
-                value: 568
-                }, {
-                name: "丢失件",
-                value: 287
-                }, {
-                name: "滞留件",
-                value: 120
-                },
-            {
-                name: "撤销件",
-                value: 152
-                },
-            {
-                name: "出库件",
-                value: 125
-                }, {
-                name: "正常件",
-                value: 122
-        }]
-    }
+    // $.ajax({
+    //     type: "post",
+    //     async: false, //同步执行
+    //     url: "getChart3Data",
+    //     // data : {},
+    //     dataType: "json", //返回数据形式为json
+    //     success: function (result) {
+    //         if (result) {
+    //
+    //             data_[0].value = parseInt(result.tongzhiweidu) + parseInt(result.tongzhiyidu)
+    //             data_[1].value = result.tongzhiweidu
+    //             data_[2].value = result.tongzhiyidu
+    //             data_[3].value = parseInt(result.lianzhengweidu) + parseInt(result.lianzhengyidu)
+    //             data_[4].value = result.lianzhengweidu
+    //             data_[5].value = result.lianzhengyidu
+    //             data_[6].value = result.renwutiao
+    //         }
+    //     }
+    // });
     var series_data; //绘制图表的数据
     //绘制图表
     var yMax = 0;
@@ -968,39 +1090,34 @@ function chart3(type, chartType) {
         dataShadow.push(yMax * 2);
     }
 
-    if (type == 1) {
-        data = ['入库件', '在库件', '出库件', '退签件', '丢失件'];
+
+        data = ['通知公告', '', '廉政提醒', '', '任务下发'];
 
         if (chartType == '') {
-            $(' .dph-data1').html(data_[0].value);
-            $(' .dph-data2').html(data_[1].value + data_[3].value);
+            $(' .dph-data0').html(data_[0].value);
+            $(' .dph-data1').html(data_[1].value);
+            $(' .dph-data2').html(data_[2].value);
             $(' .dph-data3').html(data_[3].value);
-            $(' .dph-data4').html(data_[2].value);
-            $(' .dph-data5').html(data_[1].value);
-            $(' .dph-data6').html(data_[4].value + data_[5].value);
-            $(' .dph-data7').html(data_[4].value);
-            $(' .dph-data8').html(data_[5].value);
-            $(' .dph-data9').html(data_[6].value);
+            $(' .dph-data4').html(data_[4].value);
+            $(' .dph-data5').html(data_[5].value);
+            $(' .dph-data6').html(data_[6].value);
+
         } else if (chartType == 0) {
-            $('.table1 .dph-data1').html(data_[0].value);
-            $('.table1 .dph-data2').html(data_[1].value + data_[3].value);
+            $('.table1 .dph-data0').html(data_[0].value);
+            $('.table1 .dph-data1').html(data_[1].value);
+            $('.table1 .dph-data2').html(data_[2].value);
             $('.table1 .dph-data3').html(data_[3].value);
-            $('.table1 .dph-data4').html(data_[2].value);
-            $('.table1 .dph-data5').html(data_[1].value);
-            $('.table1 .dph-data6').html(data_[4].value + data_[5].value);
-            $('.table1 .dph-data7').html(data_[4].value);
-            $('.table1 .dph-data8').html(data_[5].value);
-            $('.table1 .dph-data9').html(data_[6].value);
+            $('.table1 .dph-data4').html(data_[4].value);
+            $('.table1 .dph-data5').html(data_[5].value);
+            $('.table1 .dph-data6').html(data_[6].value);
         } else if (chartType == 1) {
-            $('.table2 .dph-data1').html(data_[0].value);
-            $('.table2 .dph-data2').html(data_[1].value + data_[3].value);
-            $('.table2 .dph-data3').html(data_[3].value);
-            $('.table2 .dph-data4').html(data_[2].value);
-            $('.table2 .dph-data5').html(data_[1].value);
-            $('.table2 .dph-data6').html(data_[4].value + data_[5].value);
-            $('.table2 .dph-data7').html(data_[4].value);
-            $('.table2 .dph-data8').html(data_[5].value);
-            $('.table2 .dph-data9').html(data_[6].value);
+            $('.table1 .dph-data0').html(data_[0].value);
+            $('.table1 .dph-data1').html(data_[1].value);
+            $('.table1 .dph-data2').html(data_[2].value);
+            $('.table1 .dph-data3').html(data_[3].value);
+            $('.table1 .dph-data4').html(data_[4].value);
+            $('.table1 .dph-data5').html(data_[5].value);
+            $('.table1 .dph-data6').html(data_[6].value);
         }
 
         series_data = [
@@ -1020,7 +1137,7 @@ function chart3(type, chartType) {
                 animation: false
             },
             {
-                name: '入库件',
+                name: '通知公告',
                 type: 'bar',
                 barGap: '-100%',
                 barWidth: '40%',
@@ -1036,9 +1153,9 @@ function chart3(type, chartType) {
                 data: [data_[0], 0, 0, 0, 0],
             },
             {
-                name: '滞留件',
+                name: '未读',
                 type: 'bar',
-                stack: '在库件',
+                stack: '情况',
                 xAxisIndex: 1,
                 itemStyle: {
                     normal: {
@@ -1051,23 +1168,23 @@ function chart3(type, chartType) {
                 data: [0, data_[1], 0, 0, 0],
             },
             {
-                name: '丢失件',
+                name: '任务下发',
                 type: 'bar',
                 xAxisIndex: 1,
                 itemStyle: {
                     normal: {
-                        color: 'rgba(239,176,19,0.4)'
+                        color: 'rgba(239,176,19,0.9)'
                     },
                     emphasis: {
                         opacity: 1
                     }
                 },
-                data: [0, 0, 0, 0, data_[2]],
+                data: [0, 0, 0, 0, data_[6]],
             },
             {
-                name: '正常件',
+                name: '已读',
                 type: 'bar',
-                stack: '在库件',
+                stack: '情况',
                 xAxisIndex: 1,
                 itemStyle: {
                     normal: {
@@ -1077,12 +1194,12 @@ function chart3(type, chartType) {
                         opacity: 1
                     }
                 },
-                data: [0, data_[3], 0, 0, 0],
+                data: [0, data_[2], 0, 0, 0],
             },
             {
-                name: '派送件',
+                name: '未读',
                 type: 'bar',
-                stack: '出库件',
+                stack: '情况',
                 xAxisIndex: 1,
                 itemStyle: {
                     normal: {
@@ -1092,12 +1209,12 @@ function chart3(type, chartType) {
                         opacity: 1
                     }
                 },
-                data: [0, 0, data_[4], 0, 0],
+                data: [0, 0, 0, data_[4], 0],
             },
             {
-                name: '自提件',
+                name: '已读',
                 type: 'bar',
-                stack: '出库件',
+                stack: '情况',
                 xAxisIndex: 1,
                 itemStyle: {
                     normal: {
@@ -1107,10 +1224,10 @@ function chart3(type, chartType) {
                         opacity: 1
                     }
                 },
-                data: [0, 0, data_[5], 0, 0],
+                data: [0, 0, 0, data_[5], 0],
             },
             {
-                name: '退签件',
+                name: '廉政提醒',
                 type: 'bar',
                 xAxisIndex: 1,
                 itemStyle: {
@@ -1121,148 +1238,10 @@ function chart3(type, chartType) {
                         opacity: 1
                     }
                 },
-                data: [0, 0, 0, data_[6], 0],
+                data: [0, 0, data_[3], 0, 0],
             }
         ]
 
-
-    } else if (type == 2) {
-        data = ['入库件', '在库件', '出库件', '丢失件', '撤销件'];
-        if (chartType == '') {
-            $('.mail-data1').html(data_[0].value);
-            $('.mail-data2').html(data_[2].value + data_[5].value);
-            $('.mail-data3').html(data_[1].value);
-            $('.mail-data4').html(data_[2].value);
-            $('.mail-data5').html(data_[3].value);
-            $('.mail-data6').html(data_[4].value);
-            $('.mail-data7').html(data_[5].value);
-        } else if (chartType == 0) {
-            $('.table1 .mail-data1').html(data_[0].value);
-            $('.table1 .mail-data2').html(data_[2].value + data_[5].value);
-            $('.table1 .mail-data3').html(data_[1].value);
-            $('.table1 .mail-data4').html(data_[2].value);
-            $('.table1 .mail-data5').html(data_[3].value);
-            $('.table1 .mail-data6').html(data_[4].value);
-            $('.table1 .mail-data7').html(data_[5].value);
-        } else if (chartType == 1) {
-            $('.table2 .mail-data1').html(data_[0].value);
-            $('.table2 .mail-data2').html(data_[2].value + data_[5].value);
-            $('.table2 .mail-data3').html(data_[1].value);
-            $('.table2 .mail-data4').html(data_[2].value);
-            $('.table2 .mail-data5').html(data_[3].value);
-            $('.table2 .mail-data6').html(data_[4].value);
-            $('.table2 .mail-data7').html(data_[5].value);
-        }
-
-        series_data = [
-            { // For shadow
-                type: 'bar',
-                barWidth: 20,
-                xAxisIndex: 2,
-                tooltip: {
-                    show: false
-                },
-                itemStyle: {
-                    normal: {
-                        color: 'rgba(14, 148, 235, 0.102)'
-                    }
-                },
-                data: dataShadow,
-                animation: false
-            },
-            {
-                name: '入库件',
-                barGap: '-100%',
-                barWidth: '40%',
-                type: 'bar',
-                xAxisIndex: 1,
-                itemStyle: {
-                    normal: {
-                        color: '#0e94eb'
-                    },
-                    emphasis: {
-                        opacity: 1
-                    }
-                },
-                data: [data_[0], 0, 0, 0, 0],
-            },
-            {
-                name: '正常件',
-                type: 'bar',
-                stack: '在库件',
-                xAxisIndex: 1,
-                itemStyle: {
-                    normal: {
-                        color: 'rgba(239,176,19,.9)'
-                    },
-                    emphasis: {
-                        opacity: 1
-                    }
-                },
-                data: [0, data_[5], 0, 0, 0, 0],
-                },
-            {
-                name: '丢失件',
-                type: 'bar',
-                xAxisIndex: 1,
-                itemStyle: {
-                    normal: {
-                        color: 'rgba(239,176,19,.9)'
-                    },
-                    emphasis: {
-                        opacity: 1
-                    }
-                },
-                data: [0, 0, 0, data_[1], 0],
-                    },
-            {
-                name: '滞留件',
-                type: 'bar',
-                xAxisIndex: 1,
-                stack: '在库件',
-                itemStyle: {
-                    normal: {
-                        color: 'rgba(239,176,19,0.4)'
-                    },
-                    emphasis: {
-                        opacity: 1
-                    }
-                },
-
-                data: [0, data_[2], 0, 0, 0],
-                    },
-            {
-                name: '撤销件',
-                type: 'bar',
-                xAxisIndex: 1,
-                itemStyle: {
-                    normal: {
-                        color: 'rgba(239,176,19,0.3)'
-                    },
-                    emphasis: {
-                        opacity: 1
-                    }
-                },
-                data: [0, 0, 0, 0, data_[3]],
-                    },
-            {
-                name: '出库件',
-                type: 'bar',
-                xAxisIndex: 1,
-                stack: '退签件',
-                itemStyle: {
-                    normal: {
-                        color: 'rgba(196,64,239,0.8)'
-                    },
-                    emphasis: {
-                        opacity: 1
-                    }
-                },
-                data: [0, 0, data_[4], 0, 0],
-                    }
-
-                    ]
-    }
 
     var option = {
         title: '',
@@ -1379,14 +1358,18 @@ function chart3(type, chartType) {
         myCharts.setOption(option);
     } else if (chartType === 0) {
         myChart.clear();
-        myChart.setOption(option);
-    } else if (chartType === 1) {
         myCharts.clear();
+        myChart.setOption(option);
+        myCharts.setOption(option);
+    } else if (chartType === 1) {
+        myChart.clear();
+        myCharts.clear();
+        myChart.setOption(option);
         myCharts.setOption(option);
     }
 }
 
-chart3(1, '')
+chart3(1,'')
     //
     //
     //
@@ -1410,12 +1393,28 @@ $('#dateBtns').on('click', function () {
     }
 })
 
+var daiS = 0
+var yiS = 0
+$.ajax({
+    type: "post",
+    async: false, //同步执行
+    url: "getShenhe2",
+    // data : {},
+    dataType: "json", //返回数据形式为json
+    success: function (result) {
+        if (result) {
+            daiS = result.daiS;
+            yiS = result.yiS;
+        }
+
+    }
+});
 $('#switchBtn').on('click', 'span', function () {
     $(this).addClass('active').siblings().removeClass('active');
     if ($(this).data('datatype') == 'income') {
-        $('#totalProfit').html('123,456.5元');
+        $('#totalProfit').html(daiS);
     } else if ($(this).data('datatype') == 'expend') {
-        $('#totalProfit').html('32,111.4元');
+        $('#totalProfit').html(yiS);
     }
 })
 
@@ -1524,8 +1523,8 @@ var endTimes = {
     }
 };
 
-laydate(startTimes);
-laydate(endTimes);
+// laydate(startTimes);
+// laydate(endTimes);
 
 //点击时间选择器的时候更改样式
 $('#endTime').on('click', function () {
@@ -1554,227 +1553,227 @@ function dateCss() {
 
 
 //chart4Data模拟数据
-var chart4Data = [{
-    'name': "天津市",
-    'value': 178546
-    }, {
-    'name': "湖南省",
-    'value': 125687
-    }, {
-    'name': "福建省",
-    'value': 78452
-    }, {
-    'name': "北京市",
-    'value': 57841
-    }, {
-    'name': "江苏省",
-    'value': 45879
-    }, {
-    'name': "海南",
-    'value': 28584
-    }, {
-    'name': "四川省",
-    'value': 14852
-    }, {
-    'name': "浙江省",
-    'value': 12589
-    }, {
-    'name': "重庆市",
-    'value': 5261
-    }, {
-    'name': "香港特别行政区",
-    'value': 2563
-    }, {
-    'name': "内蒙古",
-    'value': 856
-    }]
-chart4(chart4Data, 1, '');
+// var chart4Data = [{
+//     'name': "天津市",
+//     'value': 178546
+//     }, {
+//     'name': "湖南省",
+//     'value': 125687
+//     }, {
+//     'name': "福建省",
+//     'value': 78452
+//     }, {
+//     'name': "北京市",
+//     'value': 57841
+//     }, {
+//     'name': "江苏省",
+//     'value': 45879
+//     }, {
+//     'name': "海南",
+//     'value': 28584
+//     }, {
+//     'name': "四川省",
+//     'value': 14852
+//     }, {
+//     'name': "浙江省",
+//     'value': 12589
+//     }, {
+//     'name': "重庆市",
+//     'value': 5261
+//     }, {
+//     'name': "香港特别行政区",
+//     'value': 2563
+//     }, {
+//     'name': "内蒙古",
+//     'value': 856
+//     }]
+// chart4(chart4Data, 1, '');
 
-function chart4(data, type, chartType) {
-    var str = '<li><span></span><p>城市</p><p>派件</p></li>';
-    for (var i = 0; i < 10; i++) {
-        str += '<li><span>' + (i + 1) + '</span><p>' + data[i].name + '</p><p>' + data[i].value + '</p></li>';
-    }
-
-    var s_data = [];
-    var myChart = echarts.init(document.getElementById('chart4'));
-    var myCharts = echarts.init(document.getElementById('chart4s'));
-    window.addEventListener('resize', function () {
-        myChart.resize();
-        myCharts.resize();
-    });
-
-
-    function formtGCData(geoData, data, srcNam, dest) {
-        var tGeoDt = [];
-        if (dest) {
-            for (var i = 0, len = data.length; i < len; i++) {
-                if (srcNam != data[i].name) {
-                    tGeoDt.push({
-                        coords: [geoData[srcNam], geoData[data[i].name]],
-                    });
-                }
-            }
-        } else {
-            for (var i = 0, len = data.length; i < len; i++) {
-                if (srcNam != data[i].name) {
-                    tGeoDt.push({
-                        coords: [geoData[data[i].name], geoData[srcNam]],
-                    });
-                }
-            }
-        }
-        return tGeoDt;
-    }
-
-    function formtVData(geoData, data, srcNam) {
-        var tGeoDt = [];
-        for (var i = 0, len = data.length; i < len; i++) {
-            var tNam = data[i].name
-            if (srcNam != tNam) {
-                tGeoDt.push({
-                    name: tNam,
-                    symbolSize: 2,
-                    itemStyle: {
-                        normal: {
-                            color: '#ffeb40',
-                        }
-                    },
-                    value: geoData[tNam]
-                });
-            }
-
-        }
-        tGeoDt.push({
-            name: srcNam,
-            value: geoData[srcNam],
-            symbolSize: 5,
-            itemStyle: {
-                normal: {
-                    color: '#2ef358',
-                }
-            }
-
-        });
-        return tGeoDt;
-    }
-
-    var planePath = 'pin';
-    if (type == 2) {
-        s_data.push({
-            type: 'lines',
-            zlevel: 2,
-            mapType: 'china',
-            symbol: 'none',
-            effect: {
-                show: true,
-                period: 1.5,
-                trailLength: 0.1,
-                //                color: '#ffeb40',
-                color: '#2ef358',
-                symbol: planePath,
-                symbolSize: 6,
-                trailLength: 0.5
-
-            },
-            lineStyle: {
-                normal: {
-                    color: '#2ef358',
-                    width: 1,
-                    opacity: 0.4,
-                    curveness: 0.2
-                }
-            },
-            data: formtGCData(geoCoordMap, data, '珠海', true)
-        })
-
-    } else if (type == 1) {
-        s_data.push({
-            type: 'lines',
-            zlevel: 2,
-            effect: {
-                show: true,
-                period: 1.5,
-                trailLength: 0.1,
-                //                color: '#2ef358',
-                color: '#ffeb40',
-                symbol: planePath,
-                symbolSize: 6,
-                trailLength: 0.5
-            },
-            lineStyle: {
-                normal: {
-                    color: '#ffeb40',
-                    width: 1,
-                    opacity: 0.4,
-                    curveness: 0.2
-                }
-            },
-            data: formtGCData(geoCoordMap, data, '珠海', false)
-        }, {
-
-            type: 'effectScatter',
-            coordinateSystem: 'geo',
-            zlevel: 2,
-            rippleEffect: {
-                period: 4,
-                scale: 2.5,
-                brushType: 'stroke'
-            },
-            symbol: 'none',
-            symbolSize: 4,
-            itemStyle: {
-                normal: {
-                    color: '#fff'
-                }
-            },
-
-            data: formtVData(geoCoordMap, data, '珠海')
-        })
-    }
-
-    var option = {
-        tooltip: {
-            trigger: 'item',
-        },
-        geo: {
-            map: 'china',
-            label: {
-                show: true,
-                position: 'insideLeft',
-                color: 'white',
-                fontSize: '10',
-                emphasis: {
-                    show: true
-                }
-            },
-            roam: true,
-            silent: true,
-            itemStyle: {
-                normal: {
-                    areaColor: 'transparent',
-                    borderColor: '#0e94eb',
-                    shadowBlur: 10,
-                    shadowColor: '#0e94ea'
-                }
-            },
-            left: 10,
-            right: 10
-        },
-        series: s_data
-    };
-    if (chartType === '') {
-        $('.ranking-box').html(str);
-        myChart.setOption(option);
-        myCharts.setOption(option);
-    } else if (chartType === 0) {
-        $('.center-bottom .ranking-box').html(str);
-        myChart.setOption(option);
-    } else if (chartType === 1) {
-        $('.pop-data .ranking-box').html(str);
-        myCharts.setOption(option);
-    }
-}
+// function chart4(data, type, chartType) {
+//     var str = '<li><span></span><p>城市</p><p>派件</p></li>';
+//     for (var i = 0; i < 10; i++) {
+//         str += '<li><span>' + (i + 1) + '</span><p>' + data[i].name + '</p><p>' + data[i].value + '</p></li>';
+//     }
+//
+//     var s_data = [];
+//     var myChart = echarts.init(document.getElementById('chart4'));
+//     var myCharts = echarts.init(document.getElementById('chart4s'));
+//     window.addEventListener('resize', function () {
+//         myChart.resize();
+//         myCharts.resize();
+//     });
+//
+//
+//     function formtGCData(geoData, data, srcNam, dest) {
+//         var tGeoDt = [];
+//         if (dest) {
+//             for (var i = 0, len = data.length; i < len; i++) {
+//                 if (srcNam != data[i].name) {
+//                     tGeoDt.push({
+//                         coords: [geoData[srcNam], geoData[data[i].name]],
+//                     });
+//                 }
+//             }
+//         } else {
+//             for (var i = 0, len = data.length; i < len; i++) {
+//                 if (srcNam != data[i].name) {
+//                     tGeoDt.push({
+//                         coords: [geoData[data[i].name], geoData[srcNam]],
+//                     });
+//                 }
+//             }
+//         }
+//         return tGeoDt;
+//     }
+//
+//     function formtVData(geoData, data, srcNam) {
+//         var tGeoDt = [];
+//         for (var i = 0, len = data.length; i < len; i++) {
+//             var tNam = data[i].name
+//             if (srcNam != tNam) {
+//                 tGeoDt.push({
+//                     name: tNam,
+//                     symbolSize: 2,
+//                     itemStyle: {
+//                         normal: {
+//                             color: '#ffeb40',
+//                         }
+//                     },
+//                     value: geoData[tNam]
+//                 });
+//             }
+//
+//         }
+//         tGeoDt.push({
+//             name: srcNam,
+//             value: geoData[srcNam],
+//             symbolSize: 5,
+//             itemStyle: {
+//                 normal: {
+//                     color: '#2ef358',
+//                 }
+//             }
+//
+//         });
+//         return tGeoDt;
+//     }
+//
+//     var planePath = 'pin';
+//     if (type == 2) {
+//         s_data.push({
+//             type: 'lines',
+//             zlevel: 2,
+//             mapType: 'china',
+//             symbol: 'none',
+//             effect: {
+//                 show: true,
+//                 period: 1.5,
+//                 trailLength: 0.1,
+//                 //                color: '#ffeb40',
+//                 color: '#2ef358',
+//                 symbol: planePath,
+//                 symbolSize: 6,
+//                 trailLength: 0.5
+//
+//             },
+//             lineStyle: {
+//                 normal: {
+//                     color: '#2ef358',
+//                     width: 1,
+//                     opacity: 0.4,
+//                     curveness: 0.2
+//                 }
+//             },
+//             data: formtGCData(geoCoordMap, data, '珠海', true)
+//         })
+//
+//     } else if (type == 1) {
+//         s_data.push({
+//             type: 'lines',
+//             zlevel: 2,
+//             effect: {
+//                 show: true,
+//                 period: 1.5,
+//                 trailLength: 0.1,
+//                 //                color: '#2ef358',
+//                 color: '#ffeb40',
+//                 symbol: planePath,
+//                 symbolSize: 6,
+//                 trailLength: 0.5
+//             },
+//             lineStyle: {
+//                 normal: {
+//                     color: '#ffeb40',
+//                     width: 1,
+//                     opacity: 0.4,
+//                     curveness: 0.2
+//                 }
+//             },
+//             data: formtGCData(geoCoordMap, data, '珠海', false)
+//         }, {
+//
+//             type: 'effectScatter',
+//             coordinateSystem: 'geo',
+//             zlevel: 2,
+//             rippleEffect: {
+//                 period: 4,
+//                 scale: 2.5,
+//                 brushType: 'stroke'
+//             },
+//             symbol: 'none',
+//             symbolSize: 4,
+//             itemStyle: {
+//                 normal: {
+//                     color: '#fff'
+//                 }
+//             },
+//
+//             data: formtVData(geoCoordMap, data, '珠海')
+//         })
+//     }
+//
+//     var option = {
+//         tooltip: {
+//             trigger: 'item',
+//         },
+//         geo: {
+//             map: 'china',
+//             label: {
+//                 show: true,
+//                 position: 'insideLeft',
+//                 color: 'white',
+//                 fontSize: '10',
+//                 emphasis: {
+//                     show: true
+//                 }
+//             },
+//             roam: true,
+//             silent: true,
+//             itemStyle: {
+//                 normal: {
+//                     areaColor: 'transparent',
+//                     borderColor: '#0e94eb',
+//                     shadowBlur: 10,
+//                     shadowColor: '#0e94ea'
+//                 }
+//             },
+//             left: 10,
+//             right: 10
+//         },
+//         series: s_data
+//     };
+//     if (chartType === '') {
+//         $('.ranking-box').html(str);
+//         myChart.setOption(option);
+//         myCharts.setOption(option);
+//     } else if (chartType === 0) {
+//         $('.center-bottom .ranking-box').html(str);
+//         myChart.setOption(option);
+//     } else if (chartType === 1) {
+//         $('.pop-data .ranking-box').html(str);
+//         myCharts.setOption(option);
+//     }
+// }
 
 $('.close-pop').on('click', function () {
     $(this).parent().parent().hide().find('.cont-div').attr('style', 'visibility: hidden');
@@ -1800,7 +1799,7 @@ var time = {
     }
 };
 
-laydate(time);
+// laydate(time);
 
 $('#addT').on('click', function () {
     $('#mineusT').show();
@@ -1845,3 +1844,4 @@ $('#mineusL').on('click', function () {
         $(this).siblings('input:last').remove();
     }
 })
+
