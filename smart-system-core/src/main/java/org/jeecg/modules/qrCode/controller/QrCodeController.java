@@ -29,7 +29,7 @@ import java.util.Objects;
 
 public class QrCodeController extends BaseController{
 
-   private static final String RootPath="E:\\shFiles\\QRCode";
+   private static final String RootPath="/opt/QRCode";
 
    private static final String FileFormat=".png";
 
