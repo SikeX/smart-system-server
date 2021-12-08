@@ -1,6 +1,6 @@
 package org.jeecg.modules.smartJob.util;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.jeecg.modules.smartJob.entity.SmartJob;
 import org.jeecg.modules.smartJob.entity.SysUser;
 import org.jeecg.modules.smartJob.service.ISmartJobService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,10 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Description: 计算执行时间
@@ -23,13 +20,33 @@ public class ComputeTime {
 
     private static ISmartJobService smartJobService;
 
+    public static boolean isFifteen(Date weddingTime) {
+
+        Date now = new Date();
+        long nowLong = now.getTime();
+        long weddingLong = weddingTime.getTime();
+
+        long delta = nowLong - weddingLong;
+        delta /= ONE_MINUTE;
+        delta /= 60;
+        delta /= 24;
+
+        if(delta > 15){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
     @Autowired
     public void setSmartJobService(ISmartJobService smartJobService){
 
         ComputeTime.smartJobService = smartJobService;
     }
 
-    private static final long ONE_MINUTE = 60000L;
+    private static final long ONE_MINUTE = 60000L;  //一分钟
+    private static final long ONE_DAY = 86400000L;     //一天
 
     public long computeDelay(Date day, Date hours){
         return 1L;
@@ -41,31 +58,55 @@ public class ComputeTime {
 
     //每日提醒任务，获取获取第一次执行时间
     public static long loopGetDelayMinutes(String hours){
+
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
         String[] s = hours.split(":");
         int hour = Integer.parseInt(s[0]);
         int minutes = Integer.parseInt(s[1]);
         System.out.println("hour = " + hour + " minute = " + minutes);
 
-        Date date = new Date();
-        int nowHour = date.getHours();
-        int nowMinute = date.getMinutes();
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int nowDay = calendar.get(Calendar.DAY_OF_MONTH);
+        int nowHour = calendar.get(Calendar.HOUR_OF_DAY);
 
-        int delay = hour - nowHour;
-        if(hour >= nowHour){
-            //执行时间在当前小时之后
-            delay = hour - nowHour;
-        }else{
-            delay = 24 - nowHour + hour;
+        Date now = new Date();
+
+        long delay = 0;
+        Date delayDateD = null;
+
+
+        long tem;
+        String delayTime = year+ "-" + month + "-" + nowDay + " " + hours;
+        try {
+            delayDateD = df.parse(delayTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
 
-        if(minutes >= nowMinute){
-            delay = delay * 60 + minutes - nowMinute;
-        }else{
-            delay = delay * 60 - nowMinute + minutes;
-        }
+        delay = delayDateD.getTime() - now.getTime();
 
-        System.out.println("delay = " + delay);
-        return delay;
+        if(delay < 0){
+            //今天执行时间过了
+            //执行时间加一天
+            delayTime = year+ "-" + month + "-" + (nowDay + 1) + " " + hours;
+            try {
+                delayDateD = df.parse(delayTime);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            delay = delayDateD.getTime() - now.getTime();
+            delay = delay / ONE_MINUTE;
+            return delay;
+
+        }else{
+
+            //今天执行时间未过
+            return delay / ONE_MINUTE;
+        }
     }
 
     //延迟任务获取执行时间
@@ -157,6 +198,87 @@ public class ComputeTime {
         userAndPhone.add(phones);
 
         return userAndPhone;
+    }
+
+    //获取婚后报备提醒第一次执行时间
+    public static long getPostDelayTime(Date weddingTime) {
+        //婚礼日期三天后第一次提醒
+
+        long time = weddingTime.getTime() - new Date().getTime();
+        time = time / ONE_MINUTE;
+        if(time < 0){
+            //婚礼结束后才填报
+            //加三天
+//            time = time - 4320L;
+            time /= 60 * 24;
+            return -time;
+        }else{
+            //加三天
+//            time = time + 4320L;
+            time /= 60 * 24;
+            return time;
+        }
+    }
+    public static void setPostFirstTime(SmartJob smartJob, Date weddingTime) {
+
+        long remindTime = weddingTime.getTime();
+        //加三天
+        remindTime += 259200000L;
+
+        //早上八点提醒
+        remindTime += 28800000L;
+
+        Date newDate = new Date();
+        newDate.setTime(remindTime);
+
+        smartJob.setExecuteTimeDay(newDate);
+        smartJob.setExecuteTimeHour("08:00:00");
+    }
+
+    public static long initGetPre(SmartJob s) {
+        Date marrayDate = s.getExecuteTimeDay();
+        Date now = new Date();
+        long marrayDatel = marrayDate.getTime();
+        long nowl = now.getTime();
+
+        long delay = nowl - marrayDatel;
+
+        long tem = 0;
+        if(delay > 0){
+            //婚礼已经举行,立即提醒一次，下次提醒三天后
+            return 0;
+        }else{
+            //婚礼后三天执行
+            delay /= ONE_MINUTE;
+
+            //测试用
+            delay /= 60;
+            delay/= 24;
+
+            return -delay + 3;
+        }
+
+    }
+
+    public static boolean roundThree(Date weddingTime) {
+
+        Date date = new Date();
+        long wedding = weddingTime.getTime();
+        long now = date.getTime();
+
+        long delta = now - wedding;
+
+        delta /= ONE_DAY;
+
+        long round = delta % 3;
+
+        if(round == 0 && delta > 3){
+            //提醒
+            return true;
+        }else{
+            //不提醒
+            return false;
+        }
     }
 
 }

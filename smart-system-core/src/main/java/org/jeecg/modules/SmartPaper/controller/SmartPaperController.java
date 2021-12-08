@@ -86,8 +86,8 @@ public class SmartPaperController extends JeecgController<SmartPaper, ISmartPape
 	@ApiOperation(value="试卷表-添加", notes="试卷表-添加")
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody SmartPaperPage smartPaperPage) {
-		//System.out.println("####################");
-		//System.out.println(smartPaperPage);
+		System.out.println("####################");
+		System.out.println(smartPaperPage);
 		smartPaperPage.setPaperType("1");//添加试卷
 		smartPaperPage.setPaperStatus("0");
 		smartPaperService.insert(smartPaperPage);

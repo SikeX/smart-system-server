@@ -59,16 +59,14 @@ public class SmartCreateAdvicePage {
 	@ApiModelProperty(value = "主要措施")
     private java.lang.String mainSolution;
 	/**删除状态*/
-	@Excel(name = "删除状态", width = 15)
 	@ApiModelProperty(value = "删除状态")
     private java.lang.Integer delFlag;
 	/**单位*/
-	@Excel(name = "单位", width = 15)
+	@Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
 	@ApiModelProperty(value = "单位")
     private java.lang.String departId;
 
 	@ExcelCollection(name="制发建议附件表")
 	@ApiModelProperty(value = "制发建议附件表")
 	private List<SmartCreateAdviceAnnex> smartCreateAdviceAnnexList;
-
 }

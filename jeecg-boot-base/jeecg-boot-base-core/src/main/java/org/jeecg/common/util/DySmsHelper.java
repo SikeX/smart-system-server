@@ -1,6 +1,5 @@
 package org.jeecg.common.util;
 
-//import org.jeecg.common.util.smartSentMsg.service.ISmartSentMsgService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -168,6 +167,7 @@ public class DySmsHelper {
     }
 
     //创蓝智能云平台短信服务，发送模板消息
+    @Deprecated
     public static boolean sendSms(String sendFrom, String sendType, String tittle, String content, String receiver, String receiverPhone) {
 
         map.put("msg", content);//短信内容
@@ -252,6 +252,49 @@ public class DySmsHelper {
 //        return status;
 //        return true;
     }
+
+    //创蓝智能云平台短信服务，发送模板消息
+    public static boolean sendSms(String content, String phone){
+
+//        List<String> phones = getPhones(phone);
+
+        map.put("msg", content);//短信内容
+        map.put("phone", phone);//手机号
+        // map.put("report","true");//是否需要状态报告
+        // map.put("extend","123");//自定义扩展码
+        JSONObject js = (JSONObject) JSONObject.toJSON(map);
+        String reString = sendSmsByPost(sendUrl, js.toString());
+        System.out.println(reString);
+
+        //返回值
+        JSONObject json = JSONObject.parseObject(reString);
+        Map<String, Object> map1 = (Map<String, Object>) json;
+
+        if (map1.get("code").equals("0")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private static List<String> getPhones(String phone) {
+
+        List<String> list = Arrays.asList(phone.split(","));
+
+        List<List<String>> tem = ListUtils.partition(list, 999);
+
+        List<String> phones = new ArrayList<>();
+        int len = tem.size();
+
+        for(int i = 0; i < len; i++){
+            String regEx="[`~!@#$%^&*()+=|{}':;'\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。， 、？]";
+            String temString = tem.get(i).toString().replaceAll(regEx, "");
+            phones.add(temString);
+        }
+
+        return phones;
+    }
+
 
     private static String sendSmsByPost(String path, String postContent) {
         URL url = null;

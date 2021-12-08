@@ -130,6 +130,23 @@ public class SmartVerifyTypeController extends JeecgController<SmartVerifyType, 
 		return Result.OK(smartVerifyType);
 	}
 
+	 /**
+	  * 通过typeName查询
+	  *
+	  * @param name
+	  * @return
+	  */
+	 @AutoLog(value = "审核任务类型编码表-通过typeName查询")
+	 @ApiOperation(value="审核任务类型编码表-通过id查询", notes="审核任务类型编码表-通过id查询")
+	 @GetMapping(value = "/queryByTypeName")
+	 public Result<?> queryByTypeName(@RequestParam(name="typeName",required=true) String typeName) {
+
+		 QueryWrapper<SmartVerifyType> queryWrapper = new QueryWrapper<>();
+		 queryWrapper.eq("type_name", typeName);
+		 String typeDesc = smartVerifyTypeService.getOne(queryWrapper).getTypeDesc();
+		 return Result.OK(typeDesc);
+	 }
+
     /**
     * 导出excel
     *

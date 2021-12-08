@@ -1,6 +1,7 @@
 package org.jeecg.modules.system.controller;
 
 import java.util.*;
+import org.jeecg.common.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,6 +19,7 @@ import org.jeecg.modules.system.model.AnnouncementSendModel;
 import org.jeecg.modules.system.model.TaskManageModel;
 import org.jeecg.modules.system.service.ISysAnnouncementSendService;
 import org.jeecg.modules.system.service.ISysAnnouncementService;
+import org.jeecg.modules.system.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,6 +56,8 @@ public class SysAnnouncementSendController {
 	private ISysAnnouncementService sysAnnouncementService;
 	@Autowired
 	private ISysBaseAPI sysBaseAPI;
+	@Autowired
+	private ISysUserService sysUserService;
 	
 	/**
 	  * 分页列表查询
@@ -276,6 +280,24 @@ public class SysAnnouncementSendController {
 		return result;
 	}
 
+	 @GetMapping(value = "/getMyAnnouncementSendMobile")
+	 public Result<IPage<AnnouncementSendModel>> getMyAnnouncementSendMobile(AnnouncementSendModel announcementSendModel,
+																	   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+																	   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize) {
+		 String type = "mobile";
+		 Result<IPage<AnnouncementSendModel>> result = new Result<IPage<AnnouncementSendModel>>();
+		 LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
+		 String userId = sysUser.getId();
+		 announcementSendModel.setUserId(userId);
+		 announcementSendModel.setPageNo((pageNo-1)*pageSize);
+		 announcementSendModel.setPageSize(pageSize);
+		 Page<AnnouncementSendModel> pageList = new Page<AnnouncementSendModel>(pageNo,pageSize);
+		 pageList = sysAnnouncementSendService.getMyAnnouncementSendPage(pageList, announcementSendModel, type);
+		 result.setResult(pageList);
+		 result.setSuccess(true);
+		 return result;
+	 }
+
 	 @GetMapping(value = "/getSubmitFileList")
 	 public Result<List<String>> getSubmitFileList(@RequestParam(name="anntId") String anntId) {
 		 Result<List<String>> result = new Result<List<String>>();
@@ -358,7 +380,8 @@ public class SysAnnouncementSendController {
 
 	 @GetMapping(value = "/remindAll")
 	 public Result<?> remindAll(SysAnnouncementSend sysAnnouncementSend,
-								@RequestParam(name="anntId", required = true) String anntId) {
+								@RequestParam(name="anntId", required = true) String anntId,
+								@RequestParam(name="type",required = true) String type) {
 
 		 LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
 
@@ -371,20 +394,45 @@ public class SysAnnouncementSendController {
 		 log.info("haha "+String.valueOf(unReadList));
 
 		 List<String> unReadUserList = new ArrayList<>();
+		 List<String> ubReadUserNameList = new ArrayList<>();
+		 List<String> ubReadUserPhoneList = new ArrayList<>();
 
-		 unReadList.forEach(item -> unReadUserList.add(item.getUserId()));
+		 unReadList.forEach(item -> {
+			 unReadUserList.add(item.getUserId());
+		 });
+
+		 unReadUserList.forEach(item -> {
+			 ubReadUserNameList.add(sysUserService.getById(item).getRealname());
+			 ubReadUserPhoneList.add(sysUserService.getById(item).getPhone());
+		 });
+
 
 		 String unReadUsers = String.join(",",unReadUserList);
+		 String unReadUserName = String.join(",",ubReadUserNameList);
+		 String unReadUserPhone = String.join(",",ubReadUserPhoneList);
 
 		 MessageDTO messageDTO = new MessageDTO();
 
 		 messageDTO.setFromUser(sysUser.getUsername());
 		 messageDTO.setToUser(unReadUsers);
 		 messageDTO.setCategory("1");
-		 messageDTO.setTitle("您有未读消息，请尽快查收");
-		 messageDTO.setContent("您有未读消息，请尽快查收");
+		 messageDTO.setTitle("您的"+type+"消息还未查收，请尽快查收");
+		 messageDTO.setContent("您的"+type+"消息还未查收，请尽快查收");
 
 		 sysBaseAPI.sendSysAnnouncementById(messageDTO);
+
+		 // 发送短信提醒
+		 String sendFrom = sysUser.getUsername();
+		 String sendType = "test";  //发送类型，需求不明确，可以先不填
+		 String tittle = "消息未读提醒";	//发送标题
+		 String content = "您的"+type+"消息还未查收，请尽快查收";	//发送内容，请填写已报备的模板内容，带参数的模板，请把参数拼接好
+		 String receiver = unReadUserName;  //接收人，真实姓名
+		 String receiverPhone = unReadUserPhone;  //手机号，真实手机号
+		 //发送给多人请用",”分隔接收人和手机号，例如
+		 //String receiverPhone = "18989898989,19898989898";
+
+		 //发送短信,核心代码
+		 DySmsHelper.sendSms(sendFrom,sendType,tittle,content,receiver,receiverPhone);
 
 		 return Result.OK("提醒成功");
 	 }

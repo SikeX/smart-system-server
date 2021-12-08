@@ -9,4 +9,13 @@
             AND org_code LIKE CONCAT(#{orgCode},'%')
         )
     </select>
+    <select id="getDepAdminByDepId" resultType="java.lang.String">
+        SELECT
+            ur.user_id
+        FROM
+                ( SELECT user_id FROM sys_user_depart WHERE dep_id = #{depId} ) ud
+                    INNER JOIN sys_user_role ur ON ur.user_id = ud.user_id
+        WHERE
+            role_id = 'f6817f48af4fb3af11b9e8bf182f618b'
+    </select>
 </mapper>

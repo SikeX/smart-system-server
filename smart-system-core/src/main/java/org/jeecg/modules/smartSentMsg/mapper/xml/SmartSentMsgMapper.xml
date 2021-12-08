@@ -7,4 +7,5 @@
         from sys_depart, sys_user
         where username = #{sendFrom} and sys_depart.org_code = sys_user.org_code
     </select>
+
 </mapper>

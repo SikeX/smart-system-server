@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.jeecgframework.poi.excel.annotation.ExcelCollection;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.jeecg.common.aspect.annotation.Dict;
@@ -64,15 +65,14 @@ public class SmartCreateAdvice implements Serializable {
     private java.lang.String mainSolution;
 	/**删除状态*/
     @TableLogic
-	@Excel(name = "删除状态", width = 15)
     @ApiModelProperty(value = "删除状态")
     private java.lang.Integer delFlag;
 	/**单位*/
-	@Excel(name = "单位", width = 15)
+    @Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
     @ApiModelProperty(value = "单位")
     private java.lang.String departId;
 
     @Excel(name = "审核状态", width = 15)
-    @ApiModelProperty(value = "单位")
+    @ApiModelProperty(value = "审核状态")
     private java.lang.String verifyStatus;
 }

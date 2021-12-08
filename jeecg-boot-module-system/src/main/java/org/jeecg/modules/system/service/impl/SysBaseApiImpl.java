@@ -86,6 +86,8 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 	private SysDepartMapper departMapper;
 	@Resource
 	private SysCategoryMapper categoryMapper;
+	@Resource
+	private SysDepartRoleMapper sysDepartRoleMapper;
 
 	@Autowired
 	private ISysDataSourceService dataSourceService;
@@ -1278,4 +1280,8 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 		return sysDepartService.getSubDepIdsByDepId(userId);
 	}
 
+	@Override
+	public List<String> getDepAdminByDepId(String depId) {
+		return sysDepartRoleMapper.getDepAdminByDepId(depId);
+	}
 }

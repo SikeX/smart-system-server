@@ -7,7 +7,9 @@ import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.modules.SmartPaper.entity.SmartPeople;
 import org.jeecg.modules.SmartPaper.service.ISmartExamService;
+import org.jeecg.modules.SmartPaper.service.ISmartSurveyService;
 import org.jeecg.modules.SmartPaper.vo.SmartSubmitExamVo;
+import org.jeecg.modules.SmartPaper.vo.SmartSubmitSurveyVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +26,9 @@ import org.springframework.web.bind.annotation.*;
 public class SmartExamController extends JeecgController<SmartPeople, ISmartExamService> {
    @Autowired
    private ISmartExamService smartExamService;
+   @Autowired
+   private ISmartSurveyService smartSurveyService;
+   
    /**
     *
     * 提交试卷
@@ -34,6 +39,19 @@ public class SmartExamController extends JeecgController<SmartPeople, ISmartExam
    public Result submitTestPaper(@RequestBody SmartSubmitExamVo smartSubmitExamVO){
       System.out.println(smartSubmitExamVO);
       Result res = smartExamService.submitTestPaper(smartSubmitExamVO);
+      return res;
+   }
+
+   /**
+    *
+    * 提交调查问卷
+    *
+    */
+   @ApiOperation(value = "提交调查问卷")
+   @PostMapping(value = "/submitTestSurvey" )
+   public Result submitTestSurvey(@RequestBody SmartSubmitSurveyVo smartSubmitSurveyVO){
+      System.out.println(smartSubmitSurveyVO);
+      Result res = smartSurveyService.submitTestSurvey(smartSubmitSurveyVO);
       return res;
    }
 
