@@ -1,5 +1,6 @@
 package org.jeecg.modules.smartPostMarriage.service;
 
+import org.jeecg.modules.smartPostMarriage.entity.SmartPostMarriageReport;
 import org.jeecg.modules.smartPostMarriage.entity.SmartPostMarriageReportFile;
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;

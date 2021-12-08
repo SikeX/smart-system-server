@@ -29,4 +29,5 @@ public interface SmartPostMarriageReportMapper extends BaseMapper<SmartPostMarri
      */
     List<String> getChildrenIdByOrgCode(String orgCode);
 
+    SmartPostMarriageReport getByPreId(String preId);
 }

@@ -4,10 +4,10 @@ import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
 import org.jeecg.common.util.DySmsHelper;
-import org.jeecg.common.util.entity.SmartSentMsg;
 import org.jeecg.modules.smartJob.entity.SmartJob;
 import org.jeecg.modules.smartJob.entity.SysUser;
 import org.jeecg.modules.smartJob.service.ISmartJobService;
+import org.jeecg.modules.smartSentMsg.entity.SmartSentMsg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -64,6 +64,7 @@ public class DelayTask {
      */
     public Timeout addTask(String jobBean, String from, String content ,long delay, String isToAll, String person, String sendType) {
 
+        System.out.println("添加延迟任务 delay = " + delay);
         // 创建一个任务
         TimerTask task = new TimerTask() {
             @Override
@@ -105,7 +106,7 @@ public class DelayTask {
         //在map
         if(null != delTask){
             //取消任务
-            System.out.println("取消任务！");
+            System.out.println("任务取消：" + jobBean);
             return delTask.cancel();
         }else{
             //不在map
@@ -119,6 +120,11 @@ public class DelayTask {
 
         //判断发送类型
         if(sendType.equals(SMS)){
+            //将手机号拼接为String
+//            int len = users.size();
+//            String phones = "";
+
+
             //发送短信
             List<List<String>> infoList = ComputeTime.getNameAndPhone(users);
             System.out.println(infoList.get(0));
@@ -142,6 +148,11 @@ public class DelayTask {
 //                        infoList.get(0).get(i),
                         infoList.get(1).get(i)
                 );
+                SmartSentMsg smartSentMsg = new SmartSentMsg();
+
+
+
+//                smartJobService.saveSMS(smartSentMsg);
             }
 
 
@@ -183,5 +194,49 @@ public class DelayTask {
         }else{
             return;
         }
+    }
+
+    //婚后报备十五日提醒
+    public static Timeout addTask(String jobBean, String content, long delay, String person, String sendType) {
+
+        System.out.println("添加婚后报备提醒 delay = " + delay);
+        // 创建一个任务
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run(Timeout timeout) throws Exception {
+                System.out.println("执行延迟提醒任务" + " ，执行时间：" + LocalDateTime.now());
+
+                //查询是否婚后报备
+                //报备，结束任务
+
+                //未报备，提醒管理员，结束任务
+
+                //遍历openMap，删除当前任务bean
+//                openedMap.remove(jobBean);
+
+                //修改数据据job为null
+                //修改数据库当前任务状态为结束
+                smartJobService.updateStatus(jobBean);
+
+
+
+            }
+        };
+
+
+
+        // 将任务添加到延迟队列中
+        return timer.newTimeout(task, delay, TimeUnit.MINUTES);
+    }
+
+    public static boolean addPostMarray(String jobBean, String from, String content ,long delay, String person, String sendType){
+
+        //添加任务
+        addTask(jobBean, content , delay, person, sendType);
+
+        //添加openMap
+
+
+        return true;
     }
 }
