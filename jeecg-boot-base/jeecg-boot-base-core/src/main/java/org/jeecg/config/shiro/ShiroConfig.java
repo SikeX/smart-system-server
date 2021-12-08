@@ -116,8 +116,10 @@ public class ShiroConfig {
 
         filterChainDefinitionMap.put("/sys/annountCement/show/**", "anon");
         filterChainDefinitionMap.put("/qrCode/generate/v3","anon");
+        filterChainDefinitionMap.put("/sys/common/upload/", "anon");//pdf预览
         filterChainDefinitionMap.put("/smartReportingInformation/**","anon");
-       // filterChainDefinitionMap.put("/sys/upload/**", "anon");//pdf预览
+        /*filterChainDefinitionMap.put("/sys/upload/**", "anon");//pdf预览*/
+
 
 
         //积木报表排除
