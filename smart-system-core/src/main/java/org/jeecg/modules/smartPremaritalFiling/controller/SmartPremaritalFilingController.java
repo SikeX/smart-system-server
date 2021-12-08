@@ -11,6 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.smartJob.entity.SmartJob;
+import org.jeecg.modules.smartJob.service.ISmartJobService;
+import org.jeecg.modules.smartJob.service.imp.SmartJobServiceImpl;
+import org.jeecg.modules.smartJob.util.LoopTask;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
 import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
@@ -162,6 +166,7 @@ public class SmartPremaritalFilingController {
 //        smartPremaritalFilingService.saveMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
 //        smartVerify.addVerifyRecord(smartPremaritalFiling.getId(), verifyType);
 
+
         //审核状态
         Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
         if (isVerify) {
@@ -174,6 +179,15 @@ public class SmartPremaritalFilingController {
             smartPremaritalFiling.setVerifyStatus("3"); // 直接添加，不走审核流程
             smartPremaritalFilingService.saveMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
         }
+
+        //开启婚后报备提醒
+//        LoopTask loopTask = LoopTask.getInstance();
+//        loopTask.addPostMarray(
+//                smartPremaritalFiling.getPeopleId(),
+//                smartPremaritalFiling.getWeddingTime(),
+//                smartPremaritalFiling.getId()
+//        );
+
         return Result.OK("添加成功！");
     }
 
@@ -193,7 +207,15 @@ public class SmartPremaritalFilingController {
         if (smartPremaritalFilingEntity == null) {
             return Result.error("未找到对应数据");
         }
+
+        smartPremaritalFiling.setDepartId(null);
+        smartPremaritalFiling.setCreateTime(null);
         smartPremaritalFilingService.updateMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
+
+        //婚后报备提醒任务编辑
+//        LoopTask loopTask = LoopTask.getInstance();
+//        loopTask.editPostMarray(smartPremaritalFiling);
+
         return Result.OK("编辑成功!");
     }
 
@@ -208,6 +230,13 @@ public class SmartPremaritalFilingController {
     @DeleteMapping(value = "/delete")
     public Result<?> delete(@RequestParam(name = "id", required = true) String id) {
         smartPremaritalFilingService.delMain(id);
+
+        //婚后报备提醒任务删除
+//        LoopTask loopTask = LoopTask.getInstance();
+//        loopTask.deleteJob(id);
+//        ISmartJobService smartJobService = new SmartJobServiceImpl();
+//        smartJobService.updateStatus(id);
+
         return Result.OK("删除成功!");
     }
 

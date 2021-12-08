@@ -27,8 +27,12 @@ public class SmartPostMarriageReportPage {
 	/**主键*/
 	@ApiModelProperty(value = "主键")
 	private java.lang.String id;
+
+	//婚前报备Id
+	private java.lang.String preId;
+
 	/**单位*/
-	@Excel(name = "单位", width = 15)
+	@Excel(name = "单位", width = 15, dictTable ="sys_depart", dicText = "depart_name", dicCode = "id")
 	@ApiModelProperty(value = "单位")
 	private java.lang.String workDepartment;
 	/**人员工号*/
@@ -123,7 +127,6 @@ public class SmartPostMarriageReportPage {
 	@ApiModelProperty(value = "创建时间")
 	private java.util.Date createTime;
 	/**删除状态(0，正常，1，删除）*/
-	@Excel(name = "删除状态(0，正常，1，删除）", width = 15)
 	@ApiModelProperty(value = "删除状态(0，正常，1，删除）")
 	private java.lang.Integer delFlag;
 

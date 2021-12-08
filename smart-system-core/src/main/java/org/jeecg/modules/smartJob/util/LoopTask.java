@@ -9,6 +9,9 @@ import org.jeecg.modules.SmartPunishPeople.entity.SmartPunishPeople;
 import org.jeecg.modules.smartJob.entity.SmartJob;
 import org.jeecg.modules.smartJob.service.ISmartJobService;
 import org.jeecg.modules.smartJob.service.imp.SmartJobServiceImpl;
+import org.jeecg.modules.smartPostMarriage.entity.SmartPostMarriageReport;
+import org.jeecg.modules.smartPremaritalFiling.entity.SmartPremaritalFiling;
+import org.jeecg.modules.smartPremaritalFiling.vo.SmartPremaritalFilingPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -32,11 +35,12 @@ import org.jeecg.modules.smartJob.entity.SysUser;
 public class LoopTask {
 
     private static final int ONEDAY = 1440;
+    private static final int THREEDAY = 4320;
+
     private static final String SMS = "1";  //短信
     private static final String SYS = "4";  //系统
 
     private static ISmartJobService smartJobService;
-
 
 
     @Autowired
@@ -70,6 +74,8 @@ public class LoopTask {
 
     //添加定时任务
     public ScheduledFuture addLoop(String from, String content, long delay, String isToAll, String person, String sendType){
+
+        System.out.println("添加定时任务 delay = " + delay);
         ScheduledFuture future = group.next().scheduleAtFixedRate(() -> {
 
             //逻辑
@@ -88,10 +94,70 @@ public class LoopTask {
         return future;
     }
 
+    /**
+     * 添加婚后报备，每三日提醒
+     * @param content：提醒的内容
+     * @param delay：第一次执行的时间
+     * @return
+     */
+    public ScheduledFuture addLoop(long delay, String content){
+
+
+        System.out.println("添加婚后提醒 delay = " + delay);
+        ScheduledFuture future = group.next().scheduleAtFixedRate(() -> {
+
+            System.out.println("婚后报备提醒执行" + " ，执行时间：" + LocalDateTime.now());
+
+            //逻辑
+            //获取婚前报备表is_report为0的数据
+            List<SmartPremaritalFiling> smartPremaritalFilings = smartJobService.selectNotReport();
+            for(SmartPremaritalFiling s : smartPremaritalFilings){
+
+                //判断婚礼是否已经行
+                Date now = new Date();
+                long wedding = s.getWeddingTime().getTime();
+                long nowL = now.getTime();
+                if((nowL - wedding) < 0){
+                    //婚礼未进行
+                    continue;
+                }
+
+                SmartPostMarriageReport smartPostMarriageReport = smartJobService.selectByPreId(s.getId());
+
+                if(null != smartPostMarriageReport){
+                    //已报备
+                    continue;
+                }else{
+                    //未报备
+                    //判断是否超过15日
+                    boolean isFifteen = ComputeTime.isFifteen(s.getWeddingTime());
+                    if(isFifteen){
+                        //超过
+
+                        //通知管理员
+                    }else{
+                        //未超过
+                        //判断今日是否提醒
+                        boolean re = ComputeTime.roundThree(s.getWeddingTime());
+                        if(re){
+                            //提醒
+                            DySmsHelper.sendSms(content, s.getContactNumber());
+                        }
+                    }
+                }
+            }
+
+        }, delay, ONEDAY, TimeUnit.MINUTES);
+
+        return future;
+    }
+
 
 
     //入党纪念日提醒
     public ScheduledFuture addThePart(String content, long delay, String sendType){
+
+        System.out.println("添加入党纪念日提醒 delay = " + delay);
         ScheduledFuture future = group.next().scheduleAtFixedRate(() -> {
 
 
@@ -105,6 +171,8 @@ public class LoopTask {
 
     //解处分提醒
     public ScheduledFuture addPunish(String content, long delay, String sendType){
+
+        System.out.println("添加解除处分提醒 delay = " + delay);
         ScheduledFuture future = group.next().scheduleAtFixedRate(() -> {
 
             System.out.println("解除处分任务执行！执行！！ 日期：" + new Date());
@@ -248,4 +316,69 @@ public class LoopTask {
             return;
         }
     }
+
+//    public boolean addPostMarray(String peopleId, Date weddingTime, String jobBean){
+//
+//        SmartJob smartJob = new SmartJob();
+//        smartJob.setJobBean(jobBean);
+//
+//        //部门管理人员，暂时写admin
+//        smartJob.setUpdateBy("admin");
+//
+//        smartJob.setToUser(peopleId);
+//        smartJob.setJobType("3");   //婚后报备提醒
+//        smartJob.setIsLoop("0");
+//        smartJob.setIsToAll("1");
+//        smartJob.setType("1");
+//        smartJob.setJobName("婚后报备提醒");
+//        smartJob.setTemplateName("婚后报备提醒模板");
+//        smartJob.setTemplateContent("Complex");
+//
+//        //获取delay
+//        long delay = ComputeTime.getPostDelayTime(weddingTime);
+//        //开启任务
+//        ScheduledFuture future = addLoop(delay, peopleId, smartJob.getJobBean());
+//        //添加任务到openMap
+//        addOpen(smartJob.getJobBean(), future);
+//
+//        //设置时间
+//        ComputeTime.setPostFirstTime(smartJob, weddingTime);
+//
+//        //保存job
+//        smartJobService.save(smartJob);
+//
+//        return true;
+//    }
+
+//    //婚后报备编辑
+//    public void editPostMarray(SmartPremaritalFiling smartPremaritalFiling) {
+//        System.out.println("编辑！");
+//        //取消之前的任务
+//        deleteJob(smartPremaritalFiling.getId());
+//
+//        //重新添加
+//        //从数据库查询任务
+//        SmartJob smartJob = smartJobService.getByBean(smartPremaritalFiling.getId());
+//
+//        //更新任务信息
+//        smartJob.setToUser(smartPremaritalFiling.getId());
+//        smartJob.setJobStatus("开启");
+//
+//        //添加新的提醒
+//        //获取delay
+//        long delay = ComputeTime.getPostDelayTime(smartPremaritalFiling.getWeddingTime());
+//        //开启任务
+//        ScheduledFuture future = addLoop(
+//                delay,
+//                smartPremaritalFiling.getPeopleId(),
+//                smartJob.getJobBean());
+//        //添加任务到openMap
+//        addOpen(smartJob.getJobBean(), future);
+//
+//        //设置时间
+//        ComputeTime.setPostFirstTime(smartJob, smartPremaritalFiling.getWeddingTime());
+//
+//        //保存job
+//        smartJobService.save(smartJob);
+//    }
 }

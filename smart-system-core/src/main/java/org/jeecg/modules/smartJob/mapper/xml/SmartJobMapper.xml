@@ -48,4 +48,40 @@
         where username = #{from} and sys_depart.org_code = sys_user.org_code
     </select>
 
+    <select id="getPreMarrayInfo" resultType="org.jeecg.modules.smartPremaritalFiling.entity.SmartPremaritalFiling">
+        SELECT *
+        from smart_premarital_filing
+        where people_id = #{person}
+    </select>
+
+    <select id="selectPostByName" resultType="org.jeecg.modules.smartPostMarriage.entity.SmartPostMarriageReport">
+        SELECT *
+        from smart_post_marriage_report
+        where person_id = #{peopleId}
+    </select>
+
+    <select id="getPreById" resultType="org.jeecg.modules.smartPremaritalFiling.entity.SmartPremaritalFiling">
+        SELECT *
+        from smart_premarital_filing
+        where id = #{jobBean}
+    </select>
+
+    <select id="selectByPreId" resultType="org.jeecg.modules.smartPostMarriage.entity.SmartPostMarriageReport">
+        SELECT *
+        from smart_post_marriage_report
+        where pre_id = #{preId}
+    </select>
+
+    <select id="getByBean" resultType="org.jeecg.modules.smartJob.entity.SmartJob">
+        SELECT *
+        from smart_job
+        where id = #{id}
+    </select>
+
+    <select id="selectNotReport" resultType="org.jeecg.modules.smartPremaritalFiling.entity.SmartPremaritalFiling">
+        SELECT *
+        from smart_premarital_filing
+        where is_report = "0"
+    </select>
+
 </mapper>

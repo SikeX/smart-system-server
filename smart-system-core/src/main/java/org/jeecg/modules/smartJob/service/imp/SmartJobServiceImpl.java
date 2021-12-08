@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.netty.util.Timeout;
 import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;
-import org.jeecg.common.api.vo.Result;
 import org.jeecg.modules.SmartPunishPeople.entity.SmartPunishPeople;
 import org.jeecg.modules.SmartPunishPeople.mapper.SmartPunishPeopleMapper;
 import org.jeecg.modules.smartJob.entity.JobType;
@@ -15,13 +14,13 @@ import org.jeecg.modules.smartJob.service.ISmartJobService;
 import org.jeecg.modules.smartJob.util.ComputeTime;
 import org.jeecg.modules.smartJob.util.DelayTask;
 import org.jeecg.modules.smartJob.util.LoopTask;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.jeecg.modules.smartPostMarriage.entity.SmartPostMarriageReport;
+import org.jeecg.modules.smartPremaritalFiling.entity.SmartPremaritalFiling;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import javax.annotation.Resource;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -45,13 +44,7 @@ public class SmartJobServiceImpl extends ServiceImpl<SmartJobMapper, SmartJob> i
     @Override
     public boolean edit(SmartJob smartJob, String sendFrom) {
 
-        //查询jobBean
-//        QueryWrapper<SmartJob> queryWrapper = new QueryWrapper<>();
-//        queryWrapper.eq("id", smartJob.getId());
-//        SmartJob smartJob1 = getOne(queryWrapper);
-
-        //从map删除
-        //判断类型
+        //删除以前的job
         if(smartJob.getIsLoop().equals("0")){
             //loop
             loopTask.deleteJob(smartJob.getJobBean());
@@ -61,9 +54,73 @@ public class SmartJobServiceImpl extends ServiceImpl<SmartJobMapper, SmartJob> i
         }
 
 
-
         //重新添加
-        return openJob(smartJob, sendFrom);
+        smartJob.setJobBean();
+        if(smartJob.getJobType().equals(JobType.getTHEPART())){
+
+            //添加入党纪念日
+            ScheduledFuture task = loopTask.addThePart(
+                    smartJob.getTemplateContent(),
+                    ComputeTime.loopGetDelayMinutes(smartJob.getExecuteTimeHour()),
+                    smartJob.getType()
+            );
+            loopTask.addOpen(smartJob.getJobBean(), task);
+            return true;
+
+        }else if(smartJob.getJobType().equals(JobType.getPUNISH())){
+
+            //添加解除处分
+            ScheduledFuture task = loopTask.addPunish(
+                    smartJob.getTemplateContent(),
+                    ComputeTime.loopGetDelayMinutes(smartJob.getExecuteTimeHour()),
+                    smartJob.getType()
+            );
+
+            loopTask.addOpen(smartJob.getJobBean(), task);
+            return true;
+        }else if(smartJob.getJobType().equals(JobType.getPOSTREMIND())){
+            //婚后报备提醒
+            ScheduledFuture task = loopTask.addLoop(
+                    ComputeTime.loopGetDelayMinutes(smartJob.getExecuteTimeHour()),
+                    smartJob.getTemplateContent()
+            );
+            loopTask.addOpen(smartJob.getJobBean(), task);
+            return true;
+        }else{
+            //添加其他类型任务
+            //检查是否需要每日提醒
+            if(smartJob.getIsLoop().equals("0")){
+                //需要，开启loop任务
+                ScheduledFuture task = loopTask.addLoop(
+                        sendFrom,
+                        smartJob.getTemplateContent(),
+                        ComputeTime.loopGetDelayMinutes(smartJob.getExecuteTimeHour()),
+                        smartJob.getIsToAll(),
+                        smartJob.getToUser(),
+                        smartJob.getType()
+                );
+
+                loopTask.addOpen(smartJob.getJobBean(), task);
+                return true;
+            }else{
+                //不需要，开启延迟任务
+                Timeout task = delayTask.addTask(
+                        smartJob.getJobBean(),
+                        sendFrom,
+                        smartJob.getTemplateContent(),
+                        ComputeTime.getDelayTime(smartJob.getExecuteTimeDay(),
+                                smartJob.getExecuteTimeHour()),
+                        smartJob.getIsToAll(),
+                        smartJob.getToUser(),
+                        smartJob.getType()
+                );
+
+                //记录
+                delayTask.addOpen(smartJob.getJobBean(), task);
+                return true;
+            }
+        }
+//        return openJob(smartJob, sendFrom);
 
     }
 
@@ -110,7 +167,24 @@ public class SmartJobServiceImpl extends ServiceImpl<SmartJobMapper, SmartJob> i
                 //开启，返回已开启信息
                 return false;
             }
-        }else{
+        }else if(smartJob.getJobType().equals(JobType.getPOSTREMIND())){
+            //婚后报备提醒
+            QueryWrapper<SmartJob> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("job_type", smartJob.getJobType());
+            SmartJob smartJob1 = getOne(queryWrapper);
+            if(null == smartJob1){
+                //未添加
+                ScheduledFuture task = loopTask.addLoop(
+                        ComputeTime.loopGetDelayMinutes(smartJob.getExecuteTimeHour()),
+                        smartJob.getTemplateContent()
+                );
+                loopTask.addOpen(smartJob.getJobBean(), task);
+                return true;
+            }else{
+                //已开启
+                return false;
+            }
+        }else {
             //添加其他类型任务
             //检查是否需要每日提醒
             if(smartJob.getIsLoop().equals("0")){
@@ -122,7 +196,7 @@ public class SmartJobServiceImpl extends ServiceImpl<SmartJobMapper, SmartJob> i
                         smartJob.getIsToAll(),
                         smartJob.getToUser(),
                         smartJob.getType()
-                        );
+                );
 
                 loopTask.addOpen(smartJob.getJobBean(), task);
                 return true;
@@ -141,9 +215,6 @@ public class SmartJobServiceImpl extends ServiceImpl<SmartJobMapper, SmartJob> i
 
                 //记录
                 delayTask.addOpen(smartJob.getJobBean(), task);
-
-
-
                 return true;
             }
         }
@@ -183,7 +254,6 @@ public class SmartJobServiceImpl extends ServiceImpl<SmartJobMapper, SmartJob> i
         SmartJob smartJob = getOne(queryWrapper);
 
         smartJob.setJobStatus("结束");
-        smartJob.setJobBean("null");
 
         if(updateById(smartJob)){
             System.out.println("延迟任务执行成功，状态更新成功");
@@ -198,6 +268,122 @@ public class SmartJobServiceImpl extends ServiceImpl<SmartJobMapper, SmartJob> i
     @Override
     public String getOrgId(String from) {
         return smartJobMapper.getOrgId(from);
+    }
+
+    @Override
+    public boolean init(SmartJob s, String createBy) {
+        //重新添加
+        if(s.getJobType().equals(JobType.getTHEPART())){
+
+            //添加入党纪念日
+            ScheduledFuture task = loopTask.addThePart(
+                    s.getTemplateContent(),
+                    ComputeTime.loopGetDelayMinutes(s.getExecuteTimeHour()),
+                    s.getType()
+            );
+            loopTask.addOpen(s.getJobBean(), task);
+            return true;
+
+        }else if(s.getJobType().equals(JobType.getPUNISH())){
+
+            //添加解除处分
+            ScheduledFuture task = loopTask.addPunish(
+                    s.getTemplateContent(),
+                    ComputeTime.loopGetDelayMinutes(s.getExecuteTimeHour()),
+                    s.getType()
+            );
+
+            loopTask.addOpen(s.getJobBean(), task);
+            return true;
+        }else{
+            //添加其他类型任务
+            //检查是否需要每日提醒
+            if(s.getIsLoop().equals("0")){
+                //需要，开启loop任务
+                ScheduledFuture task = loopTask.addLoop(
+                        s.getCreateBy(),
+                        s.getTemplateContent(),
+                        ComputeTime.loopGetDelayMinutes(s.getExecuteTimeHour()),
+                        s.getIsToAll(),
+                        s.getToUser(),
+                        s.getType()
+                );
+
+                loopTask.addOpen(s.getJobBean(), task);
+                return true;
+            }else{
+                //不需要，开启延迟任务
+                //判断任务时间是否已过
+                long time = ComputeTime.getDelayTime(s.getExecuteTimeDay(), s.getExecuteTimeHour());
+                if(time < 0){
+                    //任务时间已过，更状态为已完成
+                    s.setJobStatus("结束");
+                }else{
+                    Timeout task = delayTask.addTask(
+                            s.getJobBean(),
+                            s.getCreateBy(),
+                            s.getTemplateContent(),
+                            time,
+                            s.getIsToAll(),
+                            s.getToUser(),
+                            s.getType()
+                    );
+                    //记录
+                    delayTask.addOpen(s.getJobBean(), task);
+                }
+
+                return true;
+            }
+        }
+    }
+
+    @Override
+    //根据人员id查询婚后报备表
+    public SmartPremaritalFiling getPreMarrayInfo(String person) {
+
+        return smartJobMapper.getPreMarrayInfo(person);
+    }
+
+    @Override
+    //判断是否报备
+    public boolean selectPostByName(String peopleId) {
+        SmartPostMarriageReport smartPostMarriageReport = smartJobMapper.selectPostByName(peopleId);
+        if(null != smartPostMarriageReport){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    @Override
+    public SmartPremaritalFiling getPreById(String jobBean) {
+        return smartJobMapper.getPreById(jobBean);
+    }
+
+    @Override
+    public boolean isReport(String preId) {
+        SmartPostMarriageReport smartPostMarriageReport = smartJobMapper.selectByPreId(preId);
+
+        if(null != smartPostMarriageReport){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    @Override
+    public SmartJob getByBean(String id) {
+        return smartJobMapper.getByBean(id);
+    }
+
+    @Override
+    public List<SmartPremaritalFiling> selectNotReport() {
+        return smartJobMapper.selectNotReport();
+    }
+
+    @Override
+    public SmartPostMarriageReport selectByPreId(String id) {
+        return smartJobMapper.selectByPreId(id);
     }
 
 
