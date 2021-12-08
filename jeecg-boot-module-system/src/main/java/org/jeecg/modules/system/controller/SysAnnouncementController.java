@@ -250,30 +250,33 @@ public class SysAnnouncementController {
 					obj.put(WebsocketConst.MSG_ID, sysAnnouncement.getId());
 					obj.put(WebsocketConst.MSG_TXT, sysAnnouncement.getTitile());
 			    	webSocket.sendMessage(obj.toJSONString());
-				} else if (sysAnnouncement.getMsgType().equals(CommonConstant.MSG_TYPE_DEPART)){
-					String departId = sysAnnouncement.getDepartIds();
-					List<String> userNameList = sysBaseAPI.getDeptHeadByDepId(departId);
-//					log.info(String.valueOf(userIdList));
-					String[] userNameArray = new String[userNameList.size()];
-					for(int i = 0; i < userNameList.size(); i++){
-						userNameArray[i] = userNameList.get(i);
-					}
-					List<LoginUser> userList = sysBaseAPI.queryUserByNames(userNameArray);
-					log.info(String.valueOf(userList));
-					String[] userIdArray = new String[userList.size()];
-					for(int i = 0; i < userList.size(); i++){
-						userIdArray[i] = userList.get(i).getId();
-					}
-					log.info(Arrays.toString(userIdArray));
-					JSONObject obj = new JSONObject();
-					obj.put(WebsocketConst.MSG_CMD, WebsocketConst.CMD_USER);
-					obj.put(WebsocketConst.MSG_ID, sysAnnouncement.getId());
-					obj.put(WebsocketConst.MSG_TXT, sysAnnouncement.getTitile());
-					webSocket.sendMessage(userIdArray, obj.toJSONString());
-				} else {
+				}
+//				else if (sysAnnouncement.getMsgType().equals(CommonConstant.MSG_TYPE_DEPART)){
+//					String departId = sysAnnouncement.getDepartIds();
+//					List<String> userNameList = sysBaseAPI.getDeptHeadByDepId(departId);
+////					log.info(String.valueOf(userIdList));
+//					String[] userNameArray = new String[userNameList.size()];
+//					for(int i = 0; i < userNameList.size(); i++){
+//						userNameArray[i] = userNameList.get(i);
+//					}
+//					List<LoginUser> userList = sysBaseAPI.queryUserByNames(userNameArray);
+//					log.info(String.valueOf(userList));
+//					String[] userIdArray = new String[userList.size()];
+//					for(int i = 0; i < userList.size(); i++){
+//						userIdArray[i] = userList.get(i).getId();
+//					}
+//					log.info(Arrays.toString(userIdArray));
+//					JSONObject obj = new JSONObject();
+//					obj.put(WebsocketConst.MSG_CMD, WebsocketConst.CMD_USER);
+//					obj.put(WebsocketConst.MSG_ID, sysAnnouncement.getId());
+//					obj.put(WebsocketConst.MSG_TXT, sysAnnouncement.getTitile());
+//					webSocket.sendMessage(userIdArray, obj.toJSONString());
+//				}
+				else {
 					// 2.插入用户通告阅读标记表记录
 					String userId = sysAnnouncement.getUserIds();
-					String[] userIds = userId.substring(0, (userId.length()-1)).split(",");
+					String[] userIds = userId.split(",",-1);
+					log.info("字符串 "+ Arrays.toString(userIds));
 					JSONObject obj = new JSONObject();
 			    	obj.put(WebsocketConst.MSG_CMD, WebsocketConst.CMD_USER);
 					obj.put(WebsocketConst.MSG_ID, sysAnnouncement.getId());

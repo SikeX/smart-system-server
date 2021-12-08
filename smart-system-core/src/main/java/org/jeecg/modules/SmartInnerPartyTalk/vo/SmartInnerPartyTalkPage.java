@@ -49,6 +49,7 @@ public class SmartInnerPartyTalkPage {
     private java.lang.String sysOrgCode;
 	/**单位ID*/
 	@ApiModelProperty(value = "单位ID")
+	@Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
     private java.lang.String departId;
 	/**会议时间*/
 	@Excel(name = "会议时间", width = 15, format = "yyyy-MM-dd HH:mm:ss")
@@ -109,7 +110,7 @@ public class SmartInnerPartyTalkPage {
 	@ApiModelProperty(value = "记录人姓名")
 	private java.lang.String recorderName;
 	/**删除状态（0，未删除；1，删除）*/
-	@Excel(name = "删除状态（0，未删除；1，删除）", width = 15)
+	/*@Excel(name = "删除状态（0，未删除；1，删除）", width = 15)*/
 	@ApiModelProperty(value = "删除状态（0，未删除；1，删除）")
     private java.lang.Integer delFlag;
 	@ApiModelProperty(value = "审核状态")

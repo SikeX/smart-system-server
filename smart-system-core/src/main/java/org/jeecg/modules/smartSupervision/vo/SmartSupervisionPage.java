@@ -66,11 +66,11 @@ public class SmartSupervisionPage {
 	@ApiModelProperty(value = "创建人员工号")
     private java.lang.String creatorNo;
 
-	@Excel(name = "所属部门", width = 15)
+	@Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
 	@ApiModelProperty(value = "所属部门")
 	private java.lang.String sysOrgCode;
 	/**删除标志位*/
-	@Excel(name = "删除标志位", width = 15)
+
 	@ApiModelProperty(value = "删除标志位")
     private java.lang.Integer delFlag;
 

@@ -346,4 +346,6 @@ public interface ISysBaseAPI extends CommonAPI {
 
     public List<String> getSubDepIdsByDepId(String userId);
 
+    public List<String> getDepAdminByDepId(String depId);
+
 }

@@ -11,4 +11,9 @@
         select id from sys_depart where org_code like #{orgCode}
     </select>
 
+    <select id="getByPreId" resultType="org.jeecg.modules.smartPostMarriage.entity.SmartPostMarriageReport">
+        select *
+        from smart_post_marriage_report where pre_id like #{preId} and del_flag != "1"
+    </select>
+
 </mapper>

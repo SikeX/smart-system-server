@@ -15,9 +15,13 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface SysDepartRoleMapper extends BaseMapper<SysDepartRole> {
     /**
      * 根据用户id，部门id查询可授权所有部门角色
+     *
      * @param orgCode
      * @param userId
      * @return
      */
     public List<SysDepartRole> queryDeptRoleByDeptAndUser(@Param("orgCode") String orgCode, @Param("userId") String userId);
+
+    public List<String> getDepAdminByDepId(@Param("depId") String depId);
+
 }

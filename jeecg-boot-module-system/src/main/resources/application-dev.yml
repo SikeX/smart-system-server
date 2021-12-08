@@ -155,9 +155,9 @@ spring:
         max-wait: -1ms  #最大建立连接等待时间。如果超过此时间将接到异常。设为-1表示无限制。
         min-idle: 0     #最小等待g连接中的数量,设 0 为没有限制
       shutdown-timeout: 100ms
-      password:
+
     port: 6379
-    password: ""
+    password: "123456"
 #mybatis plus 设置
 mybatis-plus:
   mapper-locations: classpath*:org/jeecg/modules/**/xml/*Mapper.xml

@@ -62,7 +62,7 @@ public class SmartTripleImportanceOneGreatnessPacca implements Serializable {
     @ApiModelProperty(value = "参会人员姓名")
     private java.lang.String meetingPeopleName;
 	/**删除状态*/
-	@Excel(name = "删除状态", width = 15)
+
     @ApiModelProperty(value = "删除状态")
     private java.lang.Integer delFlag;
 }
