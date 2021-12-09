@@ -16,9 +16,8 @@ public class TypeCount {
     /**
      * 类型
      */
-    @ApiModelProperty(value = "评分")
-    @Dict(dicCode = "evaluate_grade")
-    private String grade;
+
+    private String keyName;
     /**
      * 该类型数量
      */
