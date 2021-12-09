@@ -1,7 +1,9 @@
 package org.jeecg.modules.SmartPaper.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.jeecg.modules.SmartPaper.entity.SmartPeople;
+import org.jeecg.modules.SmartPaper.vo.ExamPeopleScoreVo;
 
 import java.util.List;
 
@@ -15,4 +17,6 @@ public interface ISmartPeopleService extends IService<SmartPeople> {
 
     List<String> getMyExam(String userId);
     String getMyExamString(String userId);
+
+    Page<ExamPeopleScoreVo> getScoreByExamId(Page<ExamPeopleScoreVo> page, String examId);
 }
