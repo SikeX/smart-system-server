@@ -28,16 +28,21 @@ public class SmartDataSheetFile implements Serializable {
 	/**主键*/
 	@TableId(type = IdType.ASSIGN_ID)
     @ApiModelProperty(value = "主键")
-    private java.lang.String id;
+    private String id;
 	/**文件路径*/
 	@Excel(name = "文件路径", width = 15)
     @ApiModelProperty(value = "文件路径")
-    private java.lang.String file;
+    private String file;
 	/**下载次数*/
 	@Excel(name = "下载次数", width = 15)
     @ApiModelProperty(value = "下载次数")
-    private java.lang.Integer times;
+    private Integer times;
 	/**外键*/
     @ApiModelProperty(value = "外键")
-    private java.lang.String mainId;
+    private String mainId;
+    /**更新日期*/
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(value = "更新日期")
+    private java.util.Date updateTime;
 }

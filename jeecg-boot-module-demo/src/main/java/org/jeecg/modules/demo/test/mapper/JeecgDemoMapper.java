@@ -8,6 +8,7 @@ import org.jeecg.modules.demo.test.entity.JeecgDemo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.jeecg.modules.demo.test.entity.partyUser;
 
 /**
  * @Description: jeecg 测试demo
@@ -41,5 +42,73 @@ public interface JeecgDemoMapper extends BaseMapper<JeecgDemo> {
 	 * @return
 	 */
 	public List<String> queryUserAuth(@Param("userId")String userId,@Param("permsPrefix")String permsPrefix);
+
+	/**
+	 * 查询用户已授权字段
+	 * @param name
+	 * @return
+	 */
+	public String getTopicCount(@Param("name") String name);
+
+	/**
+	 * 查询用户已授权字段
+	 * @param type
+	 * @return
+	 */
+	public String getMessageCount(@Param("type") String type);
+
+	/**
+	 * 查询用户已授权字段
+	 * @return
+	 */
+	public String getShenhe();
+
+	/**
+	 * 查询用户已授权字段
+	 * @return
+	 */
+	public String getTongzhiyidu(@Param("type") String type);
+
+	/**
+	 * 查询用户已授权字段
+	 * @return
+	 */
+	public String getTongzhiweidu(@Param("userId") String userId);
+
+	/**
+	 * 查询用户已授权字段
+	 * @return
+	 */
+	public String getLianzhengyidu(@Param("userId") String userId);
+
+	/**
+	 * 查询用户已授权字段
+	 * @return
+	 */
+	public String getLianzhengweidu(@Param("userId") String userId);
+
+	/**
+	 * 查询用户已授权字段
+	 * @return
+	 */
+	public String getRenwutiao(@Param("userId") String userId);
+
+	/**
+	 * 查询用户已授权字段
+	 * @return
+	 */
+	public String getDaishenhe();
+
+	/**
+	 * 查询用户已授权字段
+	 * @return
+	 */
+	public String getYishenhe();
+
+	/**
+	 * 查询用户已授权字段
+	 * @return
+	 */
+	public List<partyUser> getCloudData(@Param("departId") String departId,@Param("partyDate") String partyDate);
 
 }

@@ -284,13 +284,4 @@ public class JeecgDemoController extends JeecgController<JeecgDemo, IJeecgDemoSe
     }
     /*----------------------------------------外部获取权限示例------------------------------------*/
 
-    @RequestMapping(value = "/getHomeData")
-    @ResponseBody
-    public HashMap<String,Object> getHomeData() {
-//        List<Object> hudong = new ArrayList<>();
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("hudong", 30);
-//        map.put("seriesdata", seriesdata);
-        return map;
-    }
 }

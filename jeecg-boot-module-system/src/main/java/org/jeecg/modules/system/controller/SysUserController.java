@@ -452,7 +452,8 @@ public class SysUserController {
 
     @RequestMapping(value = "/addPeople", method = RequestMethod.POST)
     public Result<SysUser> addPeople(@RequestBody JSONObject jsonObject) {
-        Result<SysUser> result = new Result<SysUser>();
+        System.out.println("系统管理员添加用户111111111111111111111111111111111111111111111111111");
+	    Result<SysUser> result = new Result<SysUser>();
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
         String departId = sysUser.getDepartId();
         if ("".equals(departId)) {

@@ -90,7 +90,7 @@ public class SmartWindowUnitController<ISysDepartService> extends JeecgControlle
 	 * @return
 	 */
 
-	private static final String RootPath="./upload_file/windows";
+	private static final String RootPath="${path.upload}/windows";
 	private static final String FileFormat=".png";
 	private static final ThreadLocal<SimpleDateFormat> LOCALDATEFORMAT=ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyyMMddHHmmss"));
 
@@ -111,7 +111,7 @@ public class SmartWindowUnitController<ISysDepartService> extends JeecgControlle
 //		String windowUnitPid = smartWindowUnitService.getById(departName).getPid();
 //		sysBaseAPI.getParentDepartId()
 		// 1. 根据ID生成二维码，并存储到本地
-		String content = "http://192.168.43.79:3000/SmartEvaluate/modules/SmartEvaluateForm?exeDept="+departName+"&windowsName="+smartWindowUnit.getName()+"&personName=大厅";//exeDept主管部门名称，windowsName窗口名称，personName具体被举报人名，可删除留空判断
+		String content = "http://47.99.39.59:3000/SmartEvaluate/modules/SmartEvaluateForm?exeDept="+departName+"&windowsName="+smartWindowUnit.getName()+"&personName=大厅";//exeDept主管部门名称，windowsName窗口名称，personName具体被举报人名，可删除留空判断
 		BaseResponse response=new BaseResponse(StatusCode.Success);
 		try {
 			final String fileName=LOCALDATEFORMAT.get().format(new Date());
@@ -159,7 +159,7 @@ public class SmartWindowUnitController<ISysDepartService> extends JeecgControlle
 		smartWindowUnitService.removeById(id);
 		return Result.OK("删除成功!");
 	}
-
+	
 	/**
 	 *  批量删除
 	 *
@@ -171,9 +171,9 @@ public class SmartWindowUnitController<ISysDepartService> extends JeecgControlle
 	@DeleteMapping(value = "/deleteBatch")
 	public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
 		this.smartWindowUnitService.removeByIds(Arrays.asList(ids.split(",")));
-		return Result.OK("批量删除成功！");
+		return Result.OK("批量删除成功!");
 	}
-
+	
 	/**
 	 * 通过id查询
 	 *
@@ -199,7 +199,7 @@ public class SmartWindowUnitController<ISysDepartService> extends JeecgControlle
     */
     @RequestMapping(value = "/exportXls")
     public ModelAndView exportXls(HttpServletRequest request, SmartWindowUnit smartWindowUnit) {
-		return super.exportXls(request, smartWindowUnit, SmartWindowUnit.class, "窗口单位");
+        return super.exportXls(request, smartWindowUnit, SmartWindowUnit.class, "窗口单位");
     }
 
     /**
@@ -211,7 +211,7 @@ public class SmartWindowUnitController<ISysDepartService> extends JeecgControlle
     */
     @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
-		return super.importExcel(request, response, SmartWindowUnit.class);
+        return super.importExcel(request, response, SmartWindowUnit.class);
     }
 
 }

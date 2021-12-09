@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.modules.SmartPaper.entity.SmartPeople;
 import org.jeecg.modules.SmartPaper.service.ISmartPeopleService;
+import org.jeecg.modules.SmartPaper.vo.ExamPeopleScoreVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -137,6 +138,21 @@ public class SmartPeopleController extends JeecgController<SmartPeople, ISmartPe
             return Result.error("未找到对应数据");
         }
         return Result.OK(smartPeople);
+    }
+
+    @GetMapping(value = "/getScoreByExamId")
+    public Result<?> getScoreByExamId(@RequestParam(name="examId",required=true) String examId,
+                                      @RequestParam(name="pageNo",defaultValue = "1") Integer pageNo,
+                                      @RequestParam(name="pageSize",defaultValue = "10") Integer pageSize) {
+
+        Result<IPage<ExamPeopleScoreVo>> result = new Result<IPage<ExamPeopleScoreVo>>();
+
+        Page<ExamPeopleScoreVo> pageList = new Page<ExamPeopleScoreVo>(pageNo,pageSize);
+
+        pageList = smartPeopleService.getScoreByExamId(pageList, examId);
+        result.setResult(pageList);
+        result.setSuccess(true);
+        return result;
     }
 
     /**

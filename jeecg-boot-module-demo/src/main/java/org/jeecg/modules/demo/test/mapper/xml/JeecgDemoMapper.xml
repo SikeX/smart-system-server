@@ -6,7 +6,84 @@
 	<select id="getDemoByName" resultType="org.jeecg.modules.demo.test.entity.JeecgDemo">
 		select * from  demo  where name = #{name}
 	</select>
-	
+
+    <!-- 根据镇名查询贴子数 -->
+    <select id="getTopicCount" resultType="java.lang.String">
+        select count(*) from  smart_village_topic
+        where user_id in
+        (select user_id from sys_user_depart
+            where dep_id in
+            (select id from sys_depart as depart1
+                where depart1.business_parent_id in
+                   (select id from sys_depart as depart2
+                       where depart2.depart_name = #{name}))) and status = 1
+    </select>
+
+    <!-- 某类型消息数 -->
+    <select id="getMessageCount" resultType="java.lang.String">
+        select count(*) from sys_announcement
+        where msg_category = #{type} and del_flag = 0
+    </select>
+
+    <!-- 执行第一形态人 -->
+    <select id="getShenhe" resultType="java.lang.String">
+        select count(*) from smart_verify_task
+        where task_type = "执行第一形态人" and flow_status = 1
+    </select>
+
+    <!-- 通知已读 -->
+    <select id="getTongzhiyidu" resultType="java.lang.String">
+        select count(*) from sys_announcement_send as send
+        left join  sys_annoucement as fabu on send.annt_id = fabu.id
+        where send.user_id = #{userId} and send.read_flag = 1 and fabu.msg_category = 1 and fabu.del_flag = 0
+    </select>
+
+    <!-- 通知未读 -->
+    <select id="getTongzhiweidu" resultType="java.lang.String">
+        select count(*) from sys_announcement_send as send
+                                 left join  sys_annoucement as fabu on send.annt_id = fabu.id
+        where send.user_id = #{userId} and send.read_flag = 0 and fabu.msg_category = 1 and fabu.del_flag = 0
+    </select>
+
+    <!-- 廉政已读 -->
+    <select id="getLianzhengyidu" resultType="java.lang.String">
+        select count(*) from sys_announcement_send as send
+                                 left join  sys_annoucement as fabu on send.annt_id = fabu.id
+        where send.user_id = #{userId} and send.read_flag = 1 and fabu.msg_category = 2 and fabu.del_flag = 0
+    </select>
+
+    <!-- 廉政未读 -->
+    <select id="getLianzhengweidu" resultType="java.lang.String">
+        select count(*) from sys_announcement_send as send
+                                 left join  sys_annoucement as fabu on send.annt_id = fabu.id
+        where send.user_id = #{userId} and send.read_flag = 0 and fabu.msg_category = 2 and fabu.del_flag = 0
+    </select>
+
+    <!-- 我的任务 -->
+    <select id="getRenwutiao" resultType="java.lang.String">
+        select count(*) from sys_announcement_send as send
+                                 left join  sys_annoucement as fabu on send.annt_id = fabu.id
+        where send.user_id = #{userId}  and fabu.msg_category = 3 and fabu.del_flag = 0
+    </select>
+
+    <!-- 待审核 -->
+    <select id="getDaishenhe" resultType="java.lang.String">
+        select count(*) from smart_verify_task
+        where flow_status = 2
+    </select>
+
+    <!-- 已审核 -->
+    <select id="getYishenhe" resultType="java.lang.String">
+        select count(*) from smart_verify_task
+        where flow_status = 1
+    </select>
+
+    <!-- 党员纪念日 -->
+    <select id="getCloudData" resultType="org.jeecg.modules.demo.test.entity.partyUser">
+        select username,join_party_date from sys_user
+        where depart_id = #{departId} and del_flag = 0 and status = 1 and join_party_date like #{partyDate}
+    </select>
+
 	<!-- 根据权限sql查询数据集 -->
 	<select id="queryListWithPermission" parameterType="Object" resultType="org.jeecg.modules.demo.test.entity.JeecgDemo">
 		select * from demo where 1=1 ${permissionSql}

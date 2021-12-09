@@ -147,7 +147,7 @@ spring:
 
 #    host: 192.168.1.100
     host: 127.0.0.1
-    #host: 110.42.139.54
+#    host: 110.42.139.54
     lettuce:
       pool:
         max-active: 8   #最大连接数据库连接数,设 -1 为没有限制
@@ -157,7 +157,7 @@ spring:
       shutdown-timeout: 100ms
 
     port: 6379
-    password: "123456"
+#    password: "123456"
 #mybatis plus 设置
 mybatis-plus:
   mapper-locations: classpath*:org/jeecg/modules/**/xml/*Mapper.xml
@@ -171,7 +171,7 @@ mybatis-plus:
       table-underline: true
   configuration:
     # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     # 返回类型为Map,显示null对应的字段
     call-setters-on-nulls: true
 #jeecg专用配置
