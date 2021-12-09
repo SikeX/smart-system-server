@@ -71,10 +71,21 @@ public class SmartChartController extends JeecgController<peopleAvg, ISmartChart
 	}
 	@AutoLog(value = "阳光评廉-按类型统计")
 	@ApiOperation(value="阳光评廉-按类型统计", notes="阳光评廉-按类型统计")
+	@ResponseBody
 	@GetMapping(value = "/countByGrade")
-	public Result<?> countByGrade() {
+	public Result<?> countByGrade(@RequestParam (value="year",required = false) String year) {
 		try{
-			List<TypeCount> list = smartChartService.countByGrade();
+			if(year == null || year.isEmpty()){
+				//获取当前年份
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+				Date date = new Date();
+				year =sdf.format(date);
+			}else{
+				year = year.substring(1,year.length()-1);
+			}
+			System.out.println("ggggggggggggggggggggggg");
+			System.out.println(year);
+			List<TypeCount> list = smartChartService.countByGrade(year);
 			return Result.OK(list);
 		}catch (Exception e){
 			return Result.error("error");

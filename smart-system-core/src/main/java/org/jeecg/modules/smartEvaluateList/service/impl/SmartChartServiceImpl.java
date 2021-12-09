@@ -36,8 +36,8 @@ public class SmartChartServiceImpl extends ServiceImpl<SmartChartMapper, peopleA
     }
 
     @Override
-    public List<TypeCount> countByGrade() {
-        return smartChartMapper.countByGrade();
+    public List<TypeCount> countByGrade(String year) {
+        return smartChartMapper.countByGrade(year);
     }
 
     @Override

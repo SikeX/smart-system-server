@@ -111,7 +111,6 @@ public class SmartInnerPartyTalk implements Serializable {
     @ApiModelProperty(value = "记录人姓名")
     private java.lang.String recorderName;
 	/**删除状态（0，未删除；1，删除）*/
-    @Excel(name = "删除状态", width = 15,dicCode="del_flag")
     @TableLogic
     private java.lang.Integer delFlag;
     @ApiModelProperty(value = "审核状态")

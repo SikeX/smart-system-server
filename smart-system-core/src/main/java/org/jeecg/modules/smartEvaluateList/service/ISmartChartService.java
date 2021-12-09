@@ -25,7 +25,7 @@ public interface ISmartChartService extends IService<peopleAvg> {
      */
     List<MonthCount> countByMonth(String year);
 
-    List<TypeCount> countByGrade();
+    List<TypeCount> countByGrade(String year);
 
     Page<peopleAvg> avgByPeople(Page<peopleAvg> page,String windowsName);
 }

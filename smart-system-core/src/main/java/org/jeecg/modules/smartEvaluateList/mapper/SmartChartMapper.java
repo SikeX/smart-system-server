@@ -24,7 +24,7 @@ public interface SmartChartMapper extends BaseMapper<peopleAvg> {
     */
     List<MonthCount> countByMonth(String year);
 
-    List<TypeCount> countByGrade();
+    List<TypeCount> countByGrade(String year);
 
     List<peopleAvg> avgByPeople(Page<peopleAvg> page, String windowsName);
 }
