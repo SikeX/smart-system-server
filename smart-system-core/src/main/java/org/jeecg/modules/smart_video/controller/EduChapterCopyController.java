@@ -1,8 +1,10 @@
 package org.jeecg.modules.smart_video.controller;
 
+import org.jeecg.common.api.vo.Result;
 import org.jeecg.modules.smart_video.commonutils.R;
 
 import org.jeecg.modules.smart_video.entity.EduChapterCopy;
+import org.jeecg.modules.smart_video.entity.EduCourseCopy;
 import org.jeecg.modules.smart_video.entity.chaptercopy.ChapterCopyVo;
 import org.jeecg.modules.smart_video.service.EduChapterCopyService;
 
@@ -35,11 +37,19 @@ public class EduChapterCopyController {
     @GetMapping("getChapterVideo/{courseId}")
     public R getChapterVideo(
             @ApiParam(name = "courseId", value = "ID", required = true)
-            @PathVariable String courseId){
-
+            @PathVariable String courseId) {
         List<ChapterCopyVo> List = chapterCopyService.getChapterVideoByCourseId(courseId);
+
         return R.ok().data("allChapterVideo", List);
     }
+//    public Result<?> getChapterVideo(@RequestParam(name="courseId",required=true) String courseId) {
+//        List<ChapterCopyVo> List = (java.util.List<ChapterCopyVo>) chapterCopyService.getById(courseId);
+////        EduChapterCopy eduChapterCopy = chapterCopyService.getById(courseId);
+//        if(eduChapterCopy==null) {
+//            return Result.error("未找到对应数据");
+//        }
+//        return Result.OK().data("allChapterVideo", List);
+//    }
 
     //添加
     @ApiOperation(value = "新增课程章节")

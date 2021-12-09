@@ -8,6 +8,7 @@ import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.modules.smart_8regulations_for_reception.entity.Smart_8regulationsForReception;
 import org.jeecg.modules.smart_8regulations_for_reception.service.ISmart_8regulationsForReceptionService;
 import org.jeecg.modules.smart_8regulations_for_reception.vo.Smart_8regulationsForReceptionPage;
+import org.jeecg.modules.smart_data_sheet_new.entity.SmartDataSheetNew;
 import org.jeecg.modules.smart_video.commonutils.R;
 import org.jeecg.modules.smart_video.entity.*;
 
@@ -57,9 +58,16 @@ public class EduCourseCopyController {
     //根据id查询基本信息
     @ApiOperation(value = "根据id查询")
     @GetMapping("getCourseInfo/{courseId}")
-    public R getCourseInfo(@PathVariable String courseId){
-        CoureseCopyInfoVo courseInfoVo=courseCopyService.getCourseInfo(courseId);
-        return R.ok().data("courseInfoVo",courseInfoVo);
+//    public R getCourseInfo(@PathVariable String courseId){
+//        CoureseCopyInfoVo courseInfoVo=courseCopyService.getCourseInfo(courseId);
+//        return R.ok().data("courseInfoVo",courseInfoVo);
+//    }
+    public Result<?> getCourseInfo(@RequestParam(name="courseId",required=true) String courseId) {
+        EduCourseCopy eduCourseCopy = eduCourseCopyService.getById(courseId);
+        if(eduCourseCopy==null) {
+            return Result.error("未找到对应数据");
+        }
+        return Result.OK(eduCourseCopy);
     }
 
     //修改信息

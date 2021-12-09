@@ -60,7 +60,6 @@ public class EduChapterCopyServiceImpl extends ServiceImpl<EduChapterCopyMapper,
                 EduVideoCopy eduVideo =eduVideoList.get(m);
                 //判断小节里面的chapter——id和章节里面id是否一样
                 if(eduVideo.getChapterId().equals(eduChapter.getId())){
-
                     VideoCopyVo videoVo=new VideoCopyVo();
                     BeanUtils.copyProperties(eduVideo, videoVo);
 
@@ -69,6 +68,7 @@ public class EduChapterCopyServiceImpl extends ServiceImpl<EduChapterCopyMapper,
             }
             chapterVo.setChildren(videoVoList);
         }
+
         return finalList;
     }
 

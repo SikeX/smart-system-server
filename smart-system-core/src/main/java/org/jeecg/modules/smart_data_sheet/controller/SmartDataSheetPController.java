@@ -134,7 +134,6 @@ public class SmartDataSheetPController {
 		}
 		String id = smartDataSheetService.getDepartIdByOrgCode(orgCode);
 		smartDataSheetPage.setDepartmentid(id);
-		SmartDataSheet smartTripleImportanceOneGreatness = new SmartDataSheet();
 
 		SmartDataSheet smartDataSheet = new SmartDataSheet();
 		BeanUtils.copyProperties(smartDataSheetPage, smartDataSheet);

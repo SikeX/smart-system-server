@@ -90,7 +90,7 @@ public class SmartWindowUnitController<ISysDepartService> extends JeecgControlle
 	 * @return
 	 */
 
-	private static final String RootPath="D://doc//study//Code//Java//smart-system-server//upload_file//windows";
+	private static final String RootPath="${path.upload}/windows";
 	private static final String FileFormat=".png";
 	private static final ThreadLocal<SimpleDateFormat> LOCALDATEFORMAT=ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyyMMddHHmmss"));
 

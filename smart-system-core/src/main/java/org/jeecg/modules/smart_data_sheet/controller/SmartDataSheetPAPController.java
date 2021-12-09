@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
@@ -44,32 +43,19 @@ import org.jeecg.common.aspect.annotation.AutoLog;
  /**
  * @Description: 资料库
  * @Author: jeecg-boot
- * @Date:   2021-11-11
+ * @Date:   2021-12-07
  * @Version: V1.0
  */
 @Api(tags="资料库")
 @RestController
-@RequestMapping("/smart_data_sheet/smartDataSheet")
+@RequestMapping("/smart_data_sheet/smartDataSheetPAP")
 @Slf4j
-public class SmartDataSheetController {
+public class SmartDataSheetPAPController {
 	@Autowired
 	private ISmartDataSheetService smartDataSheetService;
 	@Autowired
 	private ISmartDataSheetFileService smartDataSheetFileService;
-
-	@Autowired
-	CommonService commonService;
-
-	public Result<?> edit(@RequestBody SmartDataSheetFile smartDataSheetFile) {
-		SmartDataSheetFile newSmartDataSheetFile =
-				smartDataSheetFileService.getById(smartDataSheetFile.getId());
-		int currentCount = newSmartDataSheetFile.getTimes();
-		newSmartDataSheetFile.setTimes(currentCount+1);
-		smartDataSheetFileService.updateById(newSmartDataSheetFile);
-		return Result.OK("更新成功!");
-	}
-
-
+	
 	/**
 	 * 分页列表查询
 	 *
@@ -86,36 +72,27 @@ public class SmartDataSheetController {
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
+		String rule = "eq";
+		// 2. 查询字段
+		String field = "type";
+		HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+		// 获取请求参数中的superQueryParams
+		List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+		// 添加额外查询条件，用于权限控制
+		paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22int%22,%22dictCode%22:%22type_data%22,%22val%22:%22" + 0 + "%22,%22field%22:%22"+field+"%22%7D%5D");
 
-//		String rule = "eq";
-//		// 2. 查询字段
-//		String field = "type";
-////		// 获取登录用户信息，可以用来查询单位部门信息
-////		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-//
-////		// 获取子单位ID
-////		String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
-//
-//		HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
-//		// 获取请求参数中的superQueryParams
-//		List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
-//
-//		// 添加额外查询条件，用于权限控制
-//		paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22int%22,%22dictCode%22:%22type_data%22,%22val%22:%22" + 0 + "%22,%22field%22:%22"+field+"%22%7D%5D");
-////		paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22" + childrenIdString + "%22,%22field%22:%22" + field + "%22%7D%5D");
-////		"%5B%7B%22rule%22:%22"+rule+  "%22,%22type%22:%22int%22,%22dictCode%22:%22type_data%22,%22val%22:%220%22,%22field%22:%22"+field+"%22%7D%5D"
-//		String[] params = new String[paramsList.size()];
-//		paramsList.toArray(params);
-//		map.put("superQueryParams", params);
-//		params = new String[]{"and"};
-//		map.put("superQueryMatchType", params);
+		String[] params = new String[paramsList.size()];
+		paramsList.toArray(params);
+		map.put("superQueryParams", params);
+		params = new String[]{"and"};
+		map.put("superQueryMatchType", params);
 
 		QueryWrapper<SmartDataSheet> queryWrapper = QueryGenerator.initQueryWrapper(smartDataSheet, req.getParameterMap());
 		Page<SmartDataSheet> page = new Page<SmartDataSheet>(pageNo, pageSize);
 		IPage<SmartDataSheet> pageList = smartDataSheetService.page(page, queryWrapper);
 		return Result.OK(pageList);
 	}
-
+	
 	/**
 	 *   添加
 	 *
@@ -126,7 +103,6 @@ public class SmartDataSheetController {
 	@ApiOperation(value="资料库-添加", notes="资料库-添加")
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody SmartDataSheetPage smartDataSheetPage) {
-
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 		String orgCode = sysUser.getOrgCode();
 		if ("".equals(orgCode)) {
@@ -140,7 +116,7 @@ public class SmartDataSheetController {
 		smartDataSheetService.saveMain(smartDataSheet, smartDataSheetPage.getSmartDataSheetFileList());
 		return Result.OK("添加成功！");
 	}
-
+	
 	/**
 	 *  编辑
 	 *
@@ -160,7 +136,7 @@ public class SmartDataSheetController {
 		smartDataSheetService.updateMain(smartDataSheet, smartDataSheetPage.getSmartDataSheetFileList());
 		return Result.OK("编辑成功!");
 	}
-
+	
 	/**
 	 *   通过id删除
 	 *
@@ -174,7 +150,7 @@ public class SmartDataSheetController {
 		smartDataSheetService.delMain(id);
 		return Result.OK("删除成功!");
 	}
-
+	
 	/**
 	 *  批量删除
 	 *
@@ -188,7 +164,7 @@ public class SmartDataSheetController {
 		this.smartDataSheetService.delBatchMain(Arrays.asList(ids.split(",")));
 		return Result.OK("批量删除成功！");
 	}
-
+	
 	/**
 	 * 通过id查询
 	 *
@@ -206,7 +182,7 @@ public class SmartDataSheetController {
 		return Result.OK(smartDataSheet);
 
 	}
-
+	
 	/**
 	 * 通过id查询
 	 *

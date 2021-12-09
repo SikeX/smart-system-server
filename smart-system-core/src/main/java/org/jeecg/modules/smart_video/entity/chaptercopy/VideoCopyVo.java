@@ -11,4 +11,6 @@ public class VideoCopyVo {
     private String title;
     private String videoSourceId;
     private String wordOneUrl;
+    private String wordOneName;
+    private String videoOriginalName;
 }
