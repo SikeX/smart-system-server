@@ -100,6 +100,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/**/*.jpg", "anon");
         filterChainDefinitionMap.put("/**/*.png", "anon");
         filterChainDefinitionMap.put("/**/*.ico", "anon");
+        filterChainDefinitionMap.put("/SmartEvaluate/**","anon");
 
 
         // update-begin--Author:sunjianlei Date:20190813 for：排除字体格式的后缀
