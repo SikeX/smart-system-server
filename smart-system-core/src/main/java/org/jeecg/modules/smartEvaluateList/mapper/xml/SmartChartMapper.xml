@@ -18,7 +18,7 @@
     </select>
     <!--按评分统计-->
     <select id="countByGrade" resultType="org.jeecg.modules.smartEvaluateList.entity.TypeCount">
-        select i.item_text as grade,count(*) as value
+        select i.item_text as keyName,count(*) as value
         from smart_evaluate_window as e,sys_dict as d,sys_dict_item as i
         where e.evaluate_result = i.item_value and d.dict_code = 'evaluate_grade' and i.dict_id = d.id
         and year(evaluate_time)= #{year}
@@ -37,19 +37,19 @@
         order by avgGrade desc
     </select>
     <!--窗口评价次数排行榜-->
-    <select id="windowsRankByCount">
-        select windows_name,count(*) as count
+    <select id="windowsRankByCount" resultType="org.jeecg.modules.smartEvaluateList.entity.TypeCount">
+        select windows_name as keyName,count(*) as value
         from smart_evaluate_window
         where year(evaluate_time)= #{year}
         group by windows_name
-        order by count desc
+        order by value desc
     </select>
     <!--窗口满意度排行榜-->
-    <select id="windowsRankByGrade">
-        select windows_name,avg(evaluate_result) as grade
+    <select id="windowsRankByGrade" resultType="org.jeecg.modules.smartEvaluateList.entity.TypeCount">
+        select windows_name as keyName,avg(evaluate_result) as value
         from smart_evaluate_window
         where year(evaluate_time)= #{year}
         group by windows_name
-        order by grade desc
+        order by value desc
     </select>
 </mapper>

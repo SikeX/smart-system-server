@@ -44,4 +44,14 @@ public class SmartChartServiceImpl extends ServiceImpl<SmartChartMapper, peopleA
     public Page<peopleAvg> avgByPeople(Page<peopleAvg> page, String windowsName){
         return page.setRecords(smartChartMapper.avgByPeople(page,windowsName));
     }
+
+    @Override
+    public List<TypeCount> windowsRankByCount(String year) {
+        return smartChartMapper.windowsRankByCount(year);
+    }
+
+    @Override
+    public List<TypeCount> windowsRankByGrade(String year) {
+        return smartChartMapper.windowsRankByGrade(year);
+    }
 }
