@@ -1,4 +1,4 @@
-package org.jeecg.modules.smart_window_unit.api.response;
+package org.jeecg.modules.smart_window_people.api.response;
 
 /**
  * Created by Administrator on 2020/1/6.

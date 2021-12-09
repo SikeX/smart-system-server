@@ -1,4 +1,4 @@
-package org.jeecg.modules.smart_window_unit.entity;
+package org.jeecg.modules.smart_window_people.entity;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
@@ -18,66 +18,58 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 /**
- * @Description: 窗口单位
+ * @Description: 窗口人员管理
  * @Author: jeecg-boot
  * @Date:   2021-12-02
  * @Version: V1.0
  */
 @Data
-@TableName("smart_window_unit")
+@TableName("smart_window_people")
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="smart_window_unit对象", description="窗口单位")
-public class SmartWindowUnit implements Serializable {
+@ApiModel(value="smart_window_people对象", description="窗口人员管理")
+public class SmartWindowPeople implements Serializable {
     private static final long serialVersionUID = 1L;
 
 	/**主键*/
 	@TableId(type = IdType.ASSIGN_ID)
     @ApiModelProperty(value = "主键")
     private java.lang.String id;
+	/**创建日期*/
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(value = "创建日期")
+    private java.util.Date createTime;
+	/**更新日期*/
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(value = "更新日期")
+    private java.util.Date updateTime;
 	/**删除状态*/
 	@Excel(name = "删除状态", width = 15)
     @ApiModelProperty(value = "删除状态")
-    private java.lang.Integer delFlag;
-	/**单位ID*/
-	@Excel(name = "单位ID", width = 15)
-    @ApiModelProperty(value = "单位ID")
-    private java.lang.String departmentid;
-	/**单位名称*/
-	@Excel(name = "单位名称", width = 15)
-    @ApiModelProperty(value = "单位名称")
-    private java.lang.String name;
-	/**主管单位*/
-	@Excel(name = "主管单位", width = 15, dictTable = "sys_depart", dicText = "depart_name", dicCode = "id")
-	@Dict(dictTable = "sys_depart", dicText = "depart_name", dicCode = "id")
-    @ApiModelProperty(value = "主管单位")
-    private java.lang.String pid;
+    private java.lang.Integer delflag;
+	/**所属窗口单位*/
+	@Excel(name = "所属窗口单位", width = 15, dictTable = "smart_window_unit", dicText = "name", dicCode = "id")
+	@Dict(dictTable = "smart_window_unit", dicText = "name", dicCode = "id")
+    @ApiModelProperty(value = "所属窗口单位")
+    private java.lang.String departmentId;
 	/**负责人*/
 	@Excel(name = "负责人", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
 	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @ApiModelProperty(value = "负责人")
     private java.lang.String principal;
-	/**联系电话*/
-	@Excel(name = "联系电话", width = 15)
-    @ApiModelProperty(value = "联系电话")
-    private java.lang.String phone;
-	/**工作人员*/
-	@Excel(name = "工作人员", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
+	/**窗口人员*/
+	@Excel(name = "窗口人员", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
 	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
-    @ApiModelProperty(value = "工作人员")
-    private java.lang.String people;
+    @ApiModelProperty(value = "窗口人员")
+    private java.lang.String personId;
+	/**联系方式*/
+	@Excel(name = "联系方式", width = 15)
+    @ApiModelProperty(value = "联系方式")
+    private java.lang.String phone;
 	/**二维码*/
 	@Excel(name = "二维码", width = 15)
     @ApiModelProperty(value = "二维码")
     private java.lang.String qrcode;
-	/**创建时间*/
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
-    @ApiModelProperty(value = "创建时间")
-    private java.util.Date createTime;
-	/**更新时间*/
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
-    @ApiModelProperty(value = "更新时间")
-    private java.util.Date updateTime;
 }

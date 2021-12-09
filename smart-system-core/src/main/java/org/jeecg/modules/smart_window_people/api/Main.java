@@ -1,4 +1,4 @@
-package org.jeecg.modules.smart_window_unit.api;/**
+package org.jeecg.modules.smart_window_people.api;/**
  * Created by Administrator on 2020/7/22.
  */
 

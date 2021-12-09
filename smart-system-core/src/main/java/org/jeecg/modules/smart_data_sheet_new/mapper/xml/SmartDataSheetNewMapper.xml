@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.jeecg.modules.smart_window_unit.mapper.SmartWindowUnitMapper">
-
+<mapper namespace="org.jeecg.modules.smart_data_sheet_new.mapper.SmartDataSheetNewMapper">
+    <select id="getDepartIdByOrgCode" resultType="java.lang.String">
+        select id
+        from sys_depart
+        where org_code = #{orgCode}
+    </select>
+    <select id="getChildrenIdByOrgCode" resultType="java.lang.String">
+        select id from sys_depart where org_code like #{orgCode}
+    </select>
     <select id="getDepartNameById" resultType="java.lang.String">
         select depart_name
         from sys_depart
@@ -13,5 +20,4 @@
         from sys_user
         where id = #{id}
     </select>
-
 </mapper>
