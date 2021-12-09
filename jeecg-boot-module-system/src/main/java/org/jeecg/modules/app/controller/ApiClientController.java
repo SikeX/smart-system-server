@@ -345,7 +345,8 @@ public class ApiClientController extends ApiBaseController {
     @PostMapping(value = "/phone")
     public Result<?> parsePhoneNumber(@RequestParam("encryptedData") String encryptedData,
                                       @RequestParam("iv") String iv,
-                                      @RequestParam("sessionKey") String sessionKey) {
+                                      @RequestParam("sessionKey") String sessionKey,
+                                      @RequestParam("token") String token) {
         // 解析出phone number
         String jsonString = Wechat.decrypt(wechatConfig.getAppid(), encryptedData, sessionKey, iv);
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
@@ -362,8 +363,11 @@ public class ApiClientController extends ApiBaseController {
             if (loginResult.isSuccess()) {
                 wxUser.setToken(loginResult.getResult().toString());
             }
+        } else {
+            wxUser.setToken(token);
+            wxUser.setPeopleType("4");
         }
-        if (apiClientService.updateWxUserPhoneById(wxUser.getId(), wxUser.getSysUserId() ,jsonObject.getString("purePhoneNumber"))) {
+        if (apiClientService.updateWxUserPhoneById(wxUser.getId(), wxUser.getSysUserId(), jsonObject.getString("purePhoneNumber"))) {
             return Result.OK(wxUser);
         } else {
             return Result.error("更新错误");
@@ -432,6 +436,7 @@ public class ApiClientController extends ApiBaseController {
      * 微信小程序端输入用户名密码登录，同时更换绑定用户操作也在这里
      *
      * @return
+     * @Deprecate 2021-12-05 弃用这个方法，不会调用
      */
     @ApiOperation(value = "微信-登录接口", notes = "微信小程序端-登录")
     @PostMapping(value = "/wx/login")
