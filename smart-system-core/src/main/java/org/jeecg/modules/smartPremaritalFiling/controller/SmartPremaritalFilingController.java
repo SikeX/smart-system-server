@@ -13,6 +13,10 @@ import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.smartCreateAdvice.entity.SmartCreateAdvice;
+import org.jeecg.modules.smartJob.entity.SmartJob;
+import org.jeecg.modules.smartJob.service.ISmartJobService;
+import org.jeecg.modules.smartJob.service.imp.SmartJobServiceImpl;
+import org.jeecg.modules.smartJob.util.LoopTask;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
 import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
@@ -175,6 +179,7 @@ public class SmartPremaritalFilingController {
 //        smartPremaritalFilingService.saveMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
 //        smartVerify.addVerifyRecord(smartPremaritalFiling.getId(), verifyType);
 
+
         //审核状态
         Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
         if (isVerify) {
@@ -206,6 +211,9 @@ public class SmartPremaritalFilingController {
         if (smartPremaritalFilingEntity == null) {
             return Result.error("未找到对应数据");
         }
+
+        smartPremaritalFiling.setDepartId(null);
+        smartPremaritalFiling.setCreateTime(null);
         smartPremaritalFilingService.updateMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
         return Result.OK("编辑成功!");
     }

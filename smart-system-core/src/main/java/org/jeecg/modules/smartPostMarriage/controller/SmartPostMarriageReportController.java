@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
@@ -70,6 +71,9 @@ public class SmartPostMarriageReportController {
 	 @Autowired
 	 private ISmartVerifyTypeService smartVerifyTypeService;
 
+	 @Autowired
+	 private ISysBaseAPI sysBaseAPI;
+
 
 	 /**
 	  * 分页列表查询
@@ -88,45 +92,58 @@ public class SmartPostMarriageReportController {
 									@RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
 									HttpServletRequest req) {
 
-		 // TODO：规则，下面是 以＊*开始
-		 String rule = "in";
-		 // TODO：查询字段
-		 String field = "workDepartment";
 		 // 获取登录用户信息，可以用来查询单位部门信息
 		 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 		 System.out.println(sysUser.getOrgCode() + "此用户的部门");
-
-		 // 获取子单位ID
-		 String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
-
-		 // 添加查询参数，下面的参数是查询以用户所在部门编码开头的的所有单位数据，即用户所在单位和子单位的信息
-		 // superQueryParams=[{"rule":"right_like","type":"string","dictCode":"","val":"用户所在的部门","field":"departId"}]
-		 HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
-		 // 获取请求参数中的superQueryParams
-		 List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
-		 // 添加额外查询条件，用于权限控制
-		 paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
-				 + childrenIdString
-				 + "%22,%22field%22:%22" + field + "%22%7D%5D");
-		 String[] params = new String[paramsList.size()];
-		 paramsList.toArray(params);
-		 map.put("superQueryParams", params);
-		 params = new String[]{"and"};
-		 map.put("superQueryMatchType", params);
-
-		 QueryWrapper<SmartPostMarriageReport> queryWrapper = QueryGenerator.initQueryWrapper(smartPostMarriageReport, map);
+		 List<String> role = sysBaseAPI.getRolesByUsername(sysUser.getUsername());
 		 Page<SmartPostMarriageReport> page = new Page<SmartPostMarriageReport>(pageNo, pageSize);
-		 IPage<SmartPostMarriageReport> pageList = smartPostMarriageReportService.page(page, queryWrapper);
 
-		 List<String> departIds = pageList.getRecords().stream().map(SmartPostMarriageReport::getWorkDepartment).collect(Collectors.toList());
-		 if (departIds != null && departIds.size() > 0) {
-			 Map<String, String> useDepNames = commonService.getDepNamesByIds(departIds);
-			 pageList.getRecords().forEach(item -> {
-				 item.setWorkDepartment(useDepNames.get(item.getWorkDepartment()));
-			 });
-		 }
+	 	if(role.contains("CommonUser")){
+	 		//普通用户权限控制，只能看到自己的数据
+	 		QueryWrapper<SmartPostMarriageReport> queryWrapper = new QueryWrapper<SmartPostMarriageReport>();
+	 		queryWrapper.eq("create_by", sysUser.getUsername());
+			IPage<SmartPostMarriageReport> pageList = smartPostMarriageReportService.page(page, queryWrapper);
+			return Result.OK(pageList);
+		}else{
+			// TODO：规则，下面是 以＊*开始
+			String rule = "in";
+			// TODO：查询字段
+			String field = "workDepartment";
 
-		 return Result.OK(pageList);
+
+			// 获取子单位ID
+			String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
+
+			// 添加查询参数，下面的参数是查询以用户所在部门编码开头的的所有单位数据，即用户所在单位和子单位的信息
+			// superQueryParams=[{"rule":"right_like","type":"string","dictCode":"","val":"用户所在的部门","field":"departId"}]
+			HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+			// 获取请求参数中的superQueryParams
+			List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+			// 添加额外查询条件，用于权限控制
+			paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+					+ childrenIdString
+					+ "%22,%22field%22:%22" + field + "%22%7D%5D");
+			String[] params = new String[paramsList.size()];
+			paramsList.toArray(params);
+			map.put("superQueryParams", params);
+			params = new String[]{"and"};
+			map.put("superQueryMatchType", params);
+
+			QueryWrapper<SmartPostMarriageReport> queryWrapper = QueryGenerator.initQueryWrapper(smartPostMarriageReport, map);
+//			Page<SmartPostMarriageReport> page = new Page<SmartPostMarriageReport>(pageNo, pageSize);
+			IPage<SmartPostMarriageReport> pageList = smartPostMarriageReportService.page(page, queryWrapper);
+
+			List<String> departIds = pageList.getRecords().stream().map(SmartPostMarriageReport::getWorkDepartment).collect(Collectors.toList());
+			if (departIds != null && departIds.size() > 0) {
+				Map<String, String> useDepNames = commonService.getDepNamesByIds(departIds);
+				pageList.getRecords().forEach(item -> {
+					item.setWorkDepartment(useDepNames.get(item.getWorkDepartment()));
+				});
+			}
+
+			return Result.OK(pageList);
+		}
+
 	 }
 
 	 /**
@@ -140,10 +157,19 @@ public class SmartPostMarriageReportController {
 	 @PostMapping(value = "/add")
 	 public Result<?> add(@RequestBody SmartPostMarriageReportPage smartPostMarriageReportPage) {
 
+	 	//判断有没有填报
+		 SmartPostMarriageReport smartPostMarriageReport1 = smartPostMarriageReportService.getByPreId(
+		 		smartPostMarriageReportPage.getPreId()
+		 );
+		 if(null != smartPostMarriageReport1){
+		 	return Result.error("请勿重复报备！");
+		 }
+
 	 	//审核功能
 	 	smartVerify.addVerifyRecord(smartPostMarriageReportPage.getId(),verifyType);
 
 		 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
 		 String orgCode = sysUser.getOrgCode();
 		 if ("".equals(orgCode)) {
 			 return Result.error("本用户没有操作权限！");

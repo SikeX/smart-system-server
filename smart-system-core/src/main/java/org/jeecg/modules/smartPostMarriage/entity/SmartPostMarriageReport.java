@@ -31,6 +31,13 @@ public class SmartPostMarriageReport implements Serializable {
     @TableId(type = IdType.ASSIGN_ID)
     @ApiModelProperty(value = "主键")
     private java.lang.String id;
+
+    //婚前报备Id
+    private java.lang.String preId;
+
+    /**创建人*/
+    @ApiModelProperty(value = "创建人")
+    private java.lang.String createBy;
     /**人员工号*/
     @Excel(name = "人员id", width = 15 )
     @ApiModelProperty(value = "人员id")

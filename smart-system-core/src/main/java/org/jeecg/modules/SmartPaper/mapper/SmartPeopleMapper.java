@@ -2,8 +2,11 @@ package org.jeecg.modules.SmartPaper.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.ibatis.annotations.Param;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.modules.SmartPaper.entity.SmartPeople;
+import org.jeecg.modules.SmartPaper.vo.ExamPeopleScoreVo;
 
 import javax.xml.crypto.Data;
 import java.util.Date;
@@ -24,4 +27,6 @@ public interface SmartPeopleMapper extends BaseMapper<SmartPeople> {
     Integer getGrade(String userId, String examId);
     //更新成绩
     void updateGrade(String userId, String examId, int grade, Date date);
+
+    List<ExamPeopleScoreVo> getScoreByExamId(Page<ExamPeopleScoreVo> page, @Param("examId") String examId);
 }

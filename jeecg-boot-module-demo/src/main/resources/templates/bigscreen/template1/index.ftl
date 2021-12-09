@@ -13,7 +13,6 @@
 
 
     <script language="javascript" type="text/javascript" src="${base}/bigscreen/template1/js/jquery.min.js"></script>
-    <script language="javascript" type="text/javascript" src="${base}/bigscreen/template1/js/jquery.easyui.min.js"></script>
     <script language="javascript" type="text/javascript" src="${base}/bigscreen/template1/js/echarts.min.js"></script>
     <script language="javascript" type="text/javascript" src="${base}/bigscreen/template1/js/echarts-wordcloud.js"></script>
     <script language="javascript" type="text/javascript" src="${base}/bigscreen/template1/js/china.js"></script>

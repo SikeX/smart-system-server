@@ -1,7 +1,5 @@
 package org.jeecg.common.util;
 
-//import org.jeecg.common.util.smartSentMsg.service.ISmartSentMsgService;
-import org.jeecg.common.util.entity.SmartSentMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -255,8 +253,10 @@ public class DySmsHelper {
 //        return true;
     }
 
-    //创蓝智能云平台短信服务，发送模板消息，保存到数据库
+    //创蓝智能云平台短信服务，发送模板消息
     public static boolean sendSms(String content, String phone){
+
+//        List<String> phones = getPhones(phone);
 
         map.put("msg", content);//短信内容
         map.put("phone", phone);//手机号
@@ -277,58 +277,22 @@ public class DySmsHelper {
         }
     }
 
-    //创蓝智能云平台短信服务，发送模板消息，保存到数据库
-    public static boolean sendSms(List<SmartSentMsg> smartSentMsgs){
+    private static List<String> getPhones(String phone) {
 
-        Map<String, String> ContentAndPhones = getInfo(smartSentMsgs);
+        List<String> list = Arrays.asList(phone.split(","));
 
-        for(String key : ContentAndPhones.keySet()){
-            //发送短信
-            map.put("msg", key);//短信内容
-            map.put("phone", map.get(key));//手机号
-            System.out.println(map.get(key));
-            // map.put("report","true");//是否需要状态报告
-            // map.put("extend","123");//自定义扩展码
-            JSONObject js = (JSONObject) JSONObject.toJSON(map);
-            String reString = sendSmsByPost(sendUrl, js.toString());
-            System.out.println(reString);
+        List<List<String>> tem = ListUtils.partition(list, 999);
 
-            //返回值
-            JSONObject json = JSONObject.parseObject(reString);
-            Map<String, Object> map1 = (Map<String, Object>) json;
-
-            if (map1.get("code").equals("0")) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-
-
-
-
-        return true;
-    }
-
-    private static Map<String, String> getInfo(List<SmartSentMsg> smartSentMsgs) {
-
-        Map<String, String> ContentAndPhones = new HashMap<String, String>();
-
-        int len = smartSentMsgs.size();
+        List<String> phones = new ArrayList<>();
+        int len = tem.size();
 
         for(int i = 0; i < len; i++){
-            if(ContentAndPhones.containsKey(smartSentMsgs.get(i).getContent())){
-                 String phone = ContentAndPhones.get(smartSentMsgs.get(i).getContent());
-
-                 phone += "," + smartSentMsgs.get(i).getReceiverPhone();
-                 ContentAndPhones.put(smartSentMsgs.get(i).getContent(), phone);
-            }else{
-                ContentAndPhones.put(smartSentMsgs.get(i).getContent(), smartSentMsgs.get(i).getReceiverPhone());
-            }
+            String regEx="[`~!@#$%^&*()+=|{}':;'\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。， 、？]";
+            String temString = tem.get(i).toString().replaceAll(regEx, "");
+            phones.add(temString);
         }
 
-        return ContentAndPhones;
+        return phones;
     }
 
 

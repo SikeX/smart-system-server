@@ -93,7 +93,10 @@ public class SmartEvaluateMeetingController {
 		String field = "departId";
 		// 获取登录用户信息，可以用来查询单位部门信息
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-
+//		String username = sysUser.getUsername();
+//
+//		// 获取用户角色
+//		List<String> role = sysBaseAPI.getRolesByUsername(username);
 		// 获取子单位ID
 		String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
 

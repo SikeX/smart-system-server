@@ -84,4 +84,9 @@ public class SmartPostMarriageReportServiceImpl extends ServiceImpl<SmartPostMar
 		return smartPostMarriageReportMapper.getChildrenIdByOrgCode(orgCode);
 	}
 
+	@Override
+	public SmartPostMarriageReport getByPreId(String preId) {
+		return smartPostMarriageReportMapper.getByPreId(preId);
+	}
+
 }

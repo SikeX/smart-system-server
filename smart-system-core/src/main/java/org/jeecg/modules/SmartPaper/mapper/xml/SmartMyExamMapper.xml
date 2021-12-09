@@ -15,7 +15,13 @@
         <result property="examGrade" column="exam_grade" jdbcType="INTEGER"/>
     </resultMap>
 <select id="getMyAllExam" resultMap="SmartMyExamVo">
-    select smart_exam_information.id as id,paper_id,exam_name,exam_starttime,exam_endtime,exam_grade from smart_people,smart_exam_information
+    select smart_exam_information.id as id,
+           paper_id,
+           exam_name,
+           exam_starttime,
+           exam_endtime,
+           exam_grade
+    from smart_people,smart_exam_information
     where smart_people.exam_id =smart_exam_information.id
       and smart_people.person_id = #{userId} and smart_exam_information.del_flag = 0
       <if test="examName != null and examName != ''">
