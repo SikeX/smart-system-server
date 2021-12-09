@@ -111,7 +111,7 @@ public class SmartWindowUnitController<ISysDepartService> extends JeecgControlle
 //		String windowUnitPid = smartWindowUnitService.getById(departName).getPid();
 //		sysBaseAPI.getParentDepartId()
 		// 1. 根据ID生成二维码，并存储到本地
-		String content = "http://192.168.1.100/:3000/SmartEvaluate/modules/SmartEvaluateForm?exeDept="+departName+"&windowsName="+smartWindowUnit.getName()+"&personName=大厅";//exeDept主管部门名称，windowsName窗口名称，personName具体被举报人名，可删除留空判断
+		String content = "http://47.99.39.59:3000/SmartEvaluate/modules/SmartEvaluateForm?exeDept="+departName+"&windowsName="+smartWindowUnit.getName()+"&personName=大厅";//exeDept主管部门名称，windowsName窗口名称，personName具体被举报人名，可删除留空判断
 		BaseResponse response=new BaseResponse(StatusCode.Success);
 		try {
 			final String fileName=LOCALDATEFORMAT.get().format(new Date());

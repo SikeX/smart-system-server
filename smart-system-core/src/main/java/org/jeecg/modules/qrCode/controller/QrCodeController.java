@@ -72,7 +72,6 @@ public class QrCodeController extends BaseController{
     @GetMapping(value="generate/v3")
     public BaseResponse generateV3(String content,HttpServletResponse servletResponse){
         BaseResponse response=new BaseResponse(StatusCode.Success);
-
         try {
            //将生成的二维码文件存放于文件目录中
             final String fileName=LOCALDATEFORMAT.get().format(new Date());
