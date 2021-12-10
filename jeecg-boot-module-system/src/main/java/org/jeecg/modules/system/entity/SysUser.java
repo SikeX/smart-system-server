@@ -121,7 +121,7 @@ public class SysUser implements Serializable {
     /**
      * 删除状态（0，正常，1已删除）
      */
-    @Excel(name = "删除状态", width = 15,dicCode="del_flag")
+   /* @Excel(name = "删除状态", width = 15,dicCode="del_flag")*/
     @TableLogic
     private Integer delFlag;
 

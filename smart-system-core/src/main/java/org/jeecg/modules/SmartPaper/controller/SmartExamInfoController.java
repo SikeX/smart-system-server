@@ -67,8 +67,15 @@ public class SmartExamInfoController extends JeecgController<SmartExamInformatio
                                   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
                                   HttpServletRequest req) {
        QueryWrapper<SmartExamInformation> queryWrapper = QueryGenerator.initQueryWrapper(smartExamInformation, req.getParameterMap());
+       String oldExamName = smartExamInformation.getExamName();
+       String examName = "";
+       if(oldExamName == null || oldExamName.equals("")){
+           examName = oldExamName;
+       }else {
+           examName = oldExamName.replace('*','%');
+       }
        Page<SmartExamInformation> page = new Page<SmartExamInformation>(pageNo, pageSize);
-       IPage<SmartExamInformation> pageList = smartExamInformationService.page(page, queryWrapper);
+       IPage<SmartExamInformation> pageList = smartExamInformationService.getAllExam(page,examName);;
        return Result.OK(pageList);
    }
     @AutoLog(value = "个人考试信息表-分页列表查询")

@@ -15,18 +15,18 @@
         <result property="examGrade" column="exam_grade" jdbcType="INTEGER"/>
     </resultMap>
 <select id="getMyAllExam" resultMap="SmartMyExamVo">
-    select smart_exam_information.id as id,
+    select e.id as id,
            paper_id,
            exam_name,
            exam_starttime,
            exam_endtime,
            exam_grade
-    from smart_people,smart_exam_information
-    where smart_people.exam_id =smart_exam_information.id
-      and smart_people.person_id = #{userId} and smart_exam_information.del_flag = 0
+    from smart_people pe left join smart_exam_information e on pe.exam_id =e.id
+    left join smart_paper pa on pa.id = e.paper_id
+    where pe.person_id = #{userId} and pa.paper_type = 1
       <if test="examName != null and examName != ''">
           and exam_name like #{examName}
       </if>
-    order by smart_exam_information.create_time desc
+    order by e.create_time desc
 </select>
 </mapper>
