@@ -26,14 +26,25 @@
     </select>
     <!--人员平均分-->
     <select id="avgByPeople" resultMap="PeopleAvg">
-        select avg(e.evaluate_result) as avgGrade,e.person_name
+        select avg(e.evaluate_result) as avgGrade,e.person_name,e.windows_name,e.exe_dept
         from smart_evaluate_window as e
         <where>
             <if test="windowsName != null and windowsName != ''">
                  e.windows_name like #{windowsName}
             </if>
         </where>
-        group by e.person_name
+        group by e.exe_dept,e.windows_name,e.person_name
+        order by avgGrade desc
+    </select>
+    <select id="windowsByGrade" resultMap="PeopleAvg">
+        select avg(e.evaluate_result) as avgGrade, e.windows_name,e.exe_dept
+        from smart_evaluate_window as e
+        <where>
+            <if test="windowsName != null and windowsName != ''">
+                e.windows_name like #{windowsName}
+            </if>
+        </where>
+        group by e.exe_dept,e.windows_name
         order by avgGrade desc
     </select>
     <!--窗口评价次数排行榜-->
