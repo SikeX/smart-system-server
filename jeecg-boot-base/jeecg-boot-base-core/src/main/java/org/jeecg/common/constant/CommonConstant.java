@@ -135,6 +135,7 @@ public interface CommonConstant {
      */
     public static final String MSG_CATEGORY_1 = "1";
     public static final String MSG_CATEGORY_2 = "2";
+    public static final String MSG_CATEGORY_3 = "3";
     
     /**
      * 是否配置菜单的数据权限 1是0否

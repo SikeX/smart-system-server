@@ -44,8 +44,8 @@ public class SmartSupervisionPage {
 	@ApiModelProperty(value = "更新日期")
     private java.util.Date updateTime;
 	/**所属部门*/
-	@Excel(name = "部门ID", width = 15)
-	@ApiModelProperty(value = "部门id")
+	@Excel(name="所属部门",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
+	@ApiModelProperty(value = "部门")
     private java.lang.String departId;
 	/**标题*/
 	@Excel(name = "标题", width = 15)
@@ -66,11 +66,11 @@ public class SmartSupervisionPage {
 	@ApiModelProperty(value = "创建人员工号")
     private java.lang.String creatorNo;
 
-	@Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
+//	@Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
 	@ApiModelProperty(value = "所属部门")
 	private java.lang.String sysOrgCode;
-	/**删除标志位*/
 
+	/**删除标志位*/
 	@ApiModelProperty(value = "删除标志位")
     private java.lang.Integer delFlag;
 

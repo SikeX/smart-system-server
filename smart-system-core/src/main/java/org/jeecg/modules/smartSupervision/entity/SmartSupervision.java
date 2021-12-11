@@ -48,7 +48,8 @@ public class SmartSupervision implements Serializable {
     @ApiModelProperty(value = "更新日期")
     private java.util.Date updateTime;
 	/**所属部门*/
-	@Excel(name = "部门ID", width = 15)
+
+    @Excel(name="负责部门",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
     @ApiModelProperty(value = "所属部门")
     private java.lang.String departId;
 	/**标题*/
@@ -70,7 +71,7 @@ public class SmartSupervision implements Serializable {
     @ApiModelProperty(value = "创建人员工号")
     private java.lang.String creatorNo;
     /**创建人员工号*/
-    @Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
+    @Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "orgCode")
     @ApiModelProperty(value = "所属部门")
     private java.lang.String sysOrgCode;
 	/**删除标志位*/
