@@ -124,7 +124,10 @@ public class SmartJobController extends JeecgController<SmartJob, ISmartJobServi
 
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
-        smartJobService.edit(smartJob, sysUser.getUsername());
+        boolean isSuccess = smartJobService.edit(smartJob, sysUser.getUsername());
+        if(!isSuccess){
+            return Result.error("任务已存在！");
+        }
 
         //更新状态
         smartJob.setJobStatus("开启");
