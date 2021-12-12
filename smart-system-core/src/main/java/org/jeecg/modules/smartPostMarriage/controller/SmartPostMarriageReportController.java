@@ -197,6 +197,9 @@ public class SmartPostMarriageReportController {
 			 smartPostMarriageReportService.saveMain(smartPostMarriageReport, smartPostMarriageReportPage.getSmartPostMarriageReportFileList());
 		 }
 
+		 //更改婚前报备isReport为"1"
+		 smartPostMarriageReportService.editPreIsReport(smartPostMarriageReportPage.getPreId());
+
 		 return Result.OK("添加成功！");
 	 }
 
@@ -232,7 +235,16 @@ public class SmartPostMarriageReportController {
 	 @ApiOperation(value = "8项规定婚后报备表-通过id删除", notes = "8项规定婚后报备表-通过id删除")
 	 @DeleteMapping(value = "/delete")
 	 public Result<?> delete(@RequestParam(name = "id", required = true) String id) {
-		 smartPostMarriageReportService.delMain(id);
+
+		 //修改preId为0
+		 //查询婚后数据，获取婚前id
+		 QueryWrapper<SmartPostMarriageReport> queryWrapper = new QueryWrapper<>();
+		 queryWrapper.eq("id", id);
+		 SmartPostMarriageReport smartPostMarriageReport = smartPostMarriageReportService.getOne(queryWrapper);
+		 smartPostMarriageReportService.setPreIsReport(smartPostMarriageReport.getPreId());
+
+	 	smartPostMarriageReportService.delMain(id);
+
 		 return Result.OK("删除成功!");
 	 }
 
@@ -246,8 +258,22 @@ public class SmartPostMarriageReportController {
 	 @ApiOperation(value = "8项规定婚后报备表-批量删除", notes = "8项规定婚后报备表-批量删除")
 	 @DeleteMapping(value = "/deleteBatch")
 	 public Result<?> deleteBatch(@RequestParam(name = "ids", required = true) String ids) {
-		 this.smartPostMarriageReportService.delBatchMain(Arrays.asList(ids.split(",")));
-		 return Result.OK("批量删除成功！");
+
+	 	//更新pre表的is_report为”0“
+		 List<String> tem = Arrays.asList(ids.split(","));
+		 List<SmartPostMarriageReport> list = smartPostMarriageReportService.listByIds(tem);
+
+		 for(SmartPostMarriageReport s : list){
+			 //修改preId为0
+			 //查询婚后数据，获取婚前id
+			 if(null != s.getPreId()){
+				 smartPostMarriageReportService.setPreIsReport(s.getPreId());
+			 }
+		 }
+
+		 //删除
+	 	this.smartPostMarriageReportService.delBatchMain(Arrays.asList(ids.split(",")));
+	 	return Result.OK("批量删除成功！");
 	 }
 
 	 /**

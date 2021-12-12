@@ -44,52 +44,182 @@ public class SmartJobServiceImpl extends ServiceImpl<SmartJobMapper, SmartJob> i
     @Override
     public boolean edit(SmartJob smartJob, String sendFrom) {
 
-        //删除以前的job
-        if(smartJob.getIsLoop().equals("0")){
-            //loop
-            loopTask.deleteJob(smartJob.getJobBean());
-        }else{
-            //delay
-            delayTask.deleteTask(smartJob.getJobBean());
-        }
-
-
         //重新添加
-        smartJob.setJobBean();
         if(smartJob.getJobType().equals(JobType.getTHEPART())){
 
-            //添加入党纪念日
-            ScheduledFuture task = loopTask.addThePart(
-                    smartJob.getTemplateContent(),
-                    ComputeTime.loopGetDelayMinutes(smartJob.getExecuteTimeHour()),
-                    smartJob.getType()
-            );
-            loopTask.addOpen(smartJob.getJobBean(), task);
-            return true;
+            //检查入党纪念日任务和当前编辑任务id是否相同
+            QueryWrapper<SmartJob> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("job_type", smartJob.getJobType());
+            SmartJob smartJob1 = getOne(queryWrapper);
+
+            if(null != smartJob1 && smartJob1.getId().equals(smartJob.getId())){
+
+                //删除以前的job
+                if(smartJob.getIsLoop().equals("0")){
+                    //loop
+                    loopTask.deleteJob(smartJob.getJobBean());
+                }else{
+                    //delay
+                    delayTask.deleteTask(smartJob.getJobBean());
+                }
+
+                smartJob.setJobBean();
+
+                //添加入党纪念日
+                ScheduledFuture task = loopTask.addThePart(
+                        smartJob.getTemplateContent(),
+                        ComputeTime.loopGetDelayMinutes(smartJob.getExecuteTimeHour()),
+                        smartJob.getType()
+                );
+                loopTask.addOpen(smartJob.getJobBean(), task);
+                return true;
+            }else if(null == smartJob1){
+
+                //删除以前的job
+                if(smartJob.getIsLoop().equals("0")){
+                    //loop
+                    loopTask.deleteJob(smartJob.getJobBean());
+                }else{
+                    //delay
+                    delayTask.deleteTask(smartJob.getJobBean());
+                }
+
+                smartJob.setJobBean();
+
+                //添加入党纪念日，修改
+                ScheduledFuture task = loopTask.addThePart(
+                        smartJob.getTemplateContent(),
+                        ComputeTime.loopGetDelayMinutes(smartJob.getExecuteTimeHour()),
+                        smartJob.getType()
+                );
+                loopTask.addOpen(smartJob.getJobBean(), task);
+                return true;
+            }else{
+                return false;
+            }
 
         }else if(smartJob.getJobType().equals(JobType.getPUNISH())){
 
-            //添加解除处分
-            ScheduledFuture task = loopTask.addPunish(
-                    smartJob.getTemplateContent(),
-                    ComputeTime.loopGetDelayMinutes(smartJob.getExecuteTimeHour()),
-                    smartJob.getType()
-            );
+            //检查解除处分任务是否开启
+            QueryWrapper<SmartJob> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("job_type", smartJob.getJobType());
+            SmartJob smartJob1 = getOne(queryWrapper);
 
-            loopTask.addOpen(smartJob.getJobBean(), task);
-            return true;
+            if(null != smartJob1 && smartJob.getId().equals(smartJob1.getId())){
+
+                //删除以前的job
+                if(smartJob.getIsLoop().equals("0")){
+                    //loop
+                    loopTask.deleteJob(smartJob.getJobBean());
+                }else{
+                    //delay
+                    delayTask.deleteTask(smartJob.getJobBean());
+                }
+
+                smartJob.setJobBean();
+
+                //添加解除处分,修改
+                ScheduledFuture task = loopTask.addPunish(
+                        smartJob.getTemplateContent(),
+                        ComputeTime.loopGetDelayMinutes(smartJob.getExecuteTimeHour()),
+                        smartJob.getType()
+                );
+
+                loopTask.addOpen(smartJob.getJobBean(), task);
+                return true;
+            }else if(null == smartJob1){
+
+                //删除以前的job
+                if(smartJob.getIsLoop().equals("0")){
+                    //loop
+                    loopTask.deleteJob(smartJob.getJobBean());
+                }else{
+                    //delay
+                    delayTask.deleteTask(smartJob.getJobBean());
+                }
+
+                smartJob.setJobBean();
+
+                //添加
+                //添加解除处分,修改
+                ScheduledFuture task = loopTask.addPunish(
+                        smartJob.getTemplateContent(),
+                        ComputeTime.loopGetDelayMinutes(smartJob.getExecuteTimeHour()),
+                        smartJob.getType()
+                );
+
+                loopTask.addOpen(smartJob.getJobBean(), task);
+                return true;
+            }else{
+                return false;
+            }
         }else if(smartJob.getJobType().equals(JobType.getPOSTREMIND())){
+
             //婚后报备提醒
-            ScheduledFuture task = loopTask.addLoop(
-                    ComputeTime.loopGetDelayMinutes(smartJob.getExecuteTimeHour()),
-                    smartJob.getTemplateContent()
-            );
-            loopTask.addOpen(smartJob.getJobBean(), task);
-            return true;
+            QueryWrapper<SmartJob> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("job_type", smartJob.getJobType());
+            SmartJob smartJob1 = getOne(queryWrapper);
+
+            if(null != smartJob1 & smartJob.getId().equals(smartJob1.getId())){
+
+                //删除以前的job
+                if(smartJob.getIsLoop().equals("0")){
+                    //loop
+                    loopTask.deleteJob(smartJob.getJobBean());
+                }else{
+                    //delay
+                    delayTask.deleteTask(smartJob.getJobBean());
+                }
+
+                smartJob.setJobBean();
+
+                //婚后报备提醒,修改
+                ScheduledFuture task = loopTask.addLoop(
+                        ComputeTime.loopGetDelayMinutes(smartJob.getExecuteTimeHour()),
+                        smartJob.getTemplateContent()
+                );
+                loopTask.addOpen(smartJob.getJobBean(), task);
+                return true;
+            }else if(null == smartJob1){
+
+                //删除以前的job
+                if(smartJob.getIsLoop().equals("0")){
+                    //loop
+                    loopTask.deleteJob(smartJob.getJobBean());
+                }else{
+                    //delay
+                    delayTask.deleteTask(smartJob.getJobBean());
+                }
+
+                smartJob.setJobBean();
+
+                //添加
+                //婚后报备提醒
+                ScheduledFuture task = loopTask.addLoop(
+                        ComputeTime.loopGetDelayMinutes(smartJob.getExecuteTimeHour()),
+                        smartJob.getTemplateContent()
+                );
+                loopTask.addOpen(smartJob.getJobBean(), task);
+                return true;
+            }else{
+                return false;
+            }
         }else{
             //添加其他类型任务
             //检查是否需要每日提醒
             if(smartJob.getIsLoop().equals("0")){
+
+                //删除以前的job
+                if(smartJob.getIsLoop().equals("0")){
+                    //loop
+                    loopTask.deleteJob(smartJob.getJobBean());
+                }else{
+                    //delay
+                    delayTask.deleteTask(smartJob.getJobBean());
+                }
+
+                smartJob.setJobBean();
+
                 //需要，开启loop任务
                 ScheduledFuture task = loopTask.addLoop(
                         sendFrom,
@@ -103,6 +233,18 @@ public class SmartJobServiceImpl extends ServiceImpl<SmartJobMapper, SmartJob> i
                 loopTask.addOpen(smartJob.getJobBean(), task);
                 return true;
             }else{
+
+                //删除以前的job
+                if(smartJob.getIsLoop().equals("0")){
+                    //loop
+                    loopTask.deleteJob(smartJob.getJobBean());
+                }else{
+                    //delay
+                    delayTask.deleteTask(smartJob.getJobBean());
+                }
+
+                smartJob.setJobBean();
+
                 //不需要，开启延迟任务
                 Timeout task = delayTask.addTask(
                         smartJob.getJobBean(),
@@ -120,8 +262,6 @@ public class SmartJobServiceImpl extends ServiceImpl<SmartJobMapper, SmartJob> i
                 return true;
             }
         }
-//        return openJob(smartJob, sendFrom);
-
     }
 
     @Override
@@ -256,7 +396,7 @@ public class SmartJobServiceImpl extends ServiceImpl<SmartJobMapper, SmartJob> i
         smartJob.setJobStatus("结束");
 
         if(updateById(smartJob)){
-            System.out.println("延迟任务执行成功，状态更新成功");
+            log.info("延迟任务执行成功，状态更新成功! job = " + smartJob.getJobBean());
         }
     }
 
