@@ -348,4 +348,12 @@ public interface ISysBaseAPI extends CommonAPI {
 
     public List<String> getDepAdminByDepId(String depId);
 
+    /**
+     * 2021-12-12 @Author CabbSir
+     * 根据roleId 查询所有管理员id list
+     * @param roleId
+     * @return
+     */
+    List<String> getSysUserListByRole(String roleId);
+
 }
