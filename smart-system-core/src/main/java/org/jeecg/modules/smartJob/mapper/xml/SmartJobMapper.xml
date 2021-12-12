@@ -19,6 +19,7 @@
             join_party_date is not null
             and MONTH(join_party_date) = MONTH(NOW())
             and DAY(join_party_date) = DAY(NOW())
+            and people_type = "1"
     </select>
 
     <select id="getUsers" resultType="org.jeecg.modules.smartJob.entity.SysUser">
@@ -81,7 +82,7 @@
     <select id="selectNotReport" resultType="org.jeecg.modules.smartPremaritalFiling.entity.SmartPremaritalFiling">
         SELECT *
         from smart_premarital_filing
-        where is_report = "0"
+        where is_report = "0" and del_flag != "1"
     </select>
 
 </mapper>

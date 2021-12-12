@@ -131,8 +131,8 @@ public class CommentController {
     }
 
 
-    @AutoLog(value = "八项规定监督检查表-编辑")
-    @ApiOperation(value="八项规定监督检查表-编辑", notes="八项规定监督检查表-编辑")
+    @AutoLog(value = "村情互动评论-编辑")
+    @ApiOperation(value="村情互动评论-编辑", notes="八项规定监督检查表-编辑")
     @PutMapping(value = "/edit")
     public Result<?> edit(@RequestBody CommentVo commentVo) {
         SmartVillageComment smartVillageComment = new SmartVillageComment();

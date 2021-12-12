@@ -49,7 +49,7 @@ public class AnnouncementSendModel implements Serializable {
 	/**大小*/
 	private java.lang.Integer pageSize;
     /**
-     * 消息类型1:通知公告2:系统消息
+     * 消息类型1:通知公告2:系统消息:任务下发
      */
     private java.lang.String msgCategory;
 	/**
@@ -81,10 +81,13 @@ public class AnnouncementSendModel implements Serializable {
 
 	private String fileList;
 
+	@Excel(name = "发送人数", width = 15)
 	private Integer sendCount;
 
+	@Excel(name = "已读人数", width = 15)
 	private Integer readCount;
 
+	@Excel(name = "发送部门", width = 15)
 	private String senderDepart;
 
 	private String username;

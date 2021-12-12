@@ -1,5 +1,6 @@
 package org.jeecg.modules.smartEvaluateList.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.jeecg.modules.SmartPaper.vo.SmartMyExamVo;
@@ -32,4 +33,6 @@ public interface ISmartChartService extends IService<peopleAvg> {
     List<TypeCount> windowsRankByCount(String year);
 
     List<TypeCount> windowsRankByGrade(String year);
+
+    IPage<peopleAvg> windowsByGrade(Page<peopleAvg> page, String windowsName);
 }

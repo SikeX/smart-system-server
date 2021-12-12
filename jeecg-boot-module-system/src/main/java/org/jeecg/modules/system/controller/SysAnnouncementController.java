@@ -375,7 +375,7 @@ public class SysAnnouncementController {
 		Page<SysAnnouncement> sysMsgList = new Page<SysAnnouncement>(0,5);
 		sysMsgList = sysAnnouncementService.querySysCementPageByUserId(sysMsgList,userId,"2");//系统消息
 		Page<SysAnnouncement> taskMsgList = new Page<SysAnnouncement>(0,5);
-		taskMsgList = sysAnnouncementService.querySysCementPageByUserId(taskMsgList,userId,"3");//通知公告消息
+		taskMsgList = sysAnnouncementService.querySysCementPageByUserId(taskMsgList,userId,"3");//任务下发消息
 		Map<String,Object> sysMsgMap = new HashMap<String, Object>();
 		sysMsgMap.put("sysMsgList", sysMsgList.getRecords());
 		sysMsgMap.put("sysMsgTotal", sysMsgList.getTotal());
