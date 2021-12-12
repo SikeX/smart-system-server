@@ -19,7 +19,7 @@ import java.util.Collection;
  * @Date:   2021-11-10
  * @Version: V1.0
  */
-@Service
+@Service("SmartPostMarriageReportServiceImpl")
 public class SmartPostMarriageReportServiceImpl extends ServiceImpl<SmartPostMarriageReportMapper, SmartPostMarriageReport> implements ISmartPostMarriageReportService {
 
 	@Autowired
@@ -87,6 +87,21 @@ public class SmartPostMarriageReportServiceImpl extends ServiceImpl<SmartPostMar
 	@Override
 	public SmartPostMarriageReport getByPreId(String preId) {
 		return smartPostMarriageReportMapper.getByPreId(preId);
+	}
+
+	@Override
+	public void editPreIsReport(String preId) {
+		smartPostMarriageReportMapper.editPreIsReport(preId);
+	}
+
+	@Override
+	public void setPreIsReport(String preId) {
+		smartPostMarriageReportMapper.setPreIsReport(preId);
+	}
+
+	@Override
+	public void setDelFlagByPreId(String preId) {
+		smartPostMarriageReportMapper.setDelFlagByPreId(preId);
 	}
 
 }
