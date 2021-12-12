@@ -3,6 +3,7 @@ package org.jeecg.modules.smartReportingInformation.service.impl;
 import org.jeecg.modules.smartReportingInformation.entity.SmartReportingInformation;
 import org.jeecg.modules.smartReportingInformation.entity.SmartReportingSurvey;
 import org.jeecg.modules.smartReportingInformation.entity.SmartReportingDescription;
+import org.jeecg.modules.smartReportingInformation.entity.SysRole;
 import org.jeecg.modules.smartReportingInformation.mapper.SmartReportingSurveyMapper;
 import org.jeecg.modules.smartReportingInformation.mapper.SmartReportingDescriptionMapper;
 import org.jeecg.modules.smartReportingInformation.mapper.SmartReportingInformationMapper;
@@ -95,5 +96,16 @@ public class SmartReportingInformationServiceImpl extends ServiceImpl<SmartRepor
 			smartReportingInformationMapper.deleteById(id);
 		}
 	}
+
+	@Override
+	public List<SmartReportingInformation> sendInformation() {
+		return smartReportingInformationMapper.sendInformation();
+	}
+
+	@Override
+	public List<SysRole> getUser() {
+		return smartReportingInformationMapper.getUser();
+	}
+
 
 }
