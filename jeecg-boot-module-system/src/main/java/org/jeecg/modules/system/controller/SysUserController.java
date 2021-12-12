@@ -262,14 +262,17 @@ public class SysUserController {
             String phone = user.getPhone();
             String username = user.getUsername();
             //设置初始账号：手机号
-            if(username == null){
-                user.setPassword(phone);
+            if(username == null || username.isEmpty()){
+                user.setUsername(phone);
             }
             //设置初始密码
             String password = user.getPassword();
-            if(password == null){
+            if(password == null || password.isEmpty()){
                 user.setPassword("123456");
             }
+            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+            System.out.println(username);
+            System.out.println(password);
 			String salt = oConvertUtils.randomGen(8);
 			user.setSalt(salt);
 			String passwordEncode = PasswordUtil.encrypt(user.getUsername(), user.getPassword(), salt);

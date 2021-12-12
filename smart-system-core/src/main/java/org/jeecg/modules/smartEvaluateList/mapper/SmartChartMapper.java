@@ -51,4 +51,6 @@ public interface SmartChartMapper extends BaseMapper<peopleAvg> {
      *
      */
     List<TypeCount> windowsRankByGrade(String year);
+
+    List<peopleAvg> windowsByGrade(Page<peopleAvg> page, String windowsName);
 }
