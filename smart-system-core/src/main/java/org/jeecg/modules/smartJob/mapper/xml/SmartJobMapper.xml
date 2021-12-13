@@ -40,7 +40,7 @@
     <select id="initGetTasks" resultType="org.jeecg.modules.smartJob.entity.SmartJob">
         SELECT *
         from smart_job
-        where job_status = '开启'
+        where job_status = '0'
     </select>
 
     <select id="getOrgId" resultType="java.lang.String">

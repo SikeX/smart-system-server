@@ -72,7 +72,7 @@ public class TaskInit {
                     s.getTemplateContent()
             );
             loopTask.addOpen(s.getJobBean(), task);
-        }else{
+        }else if(s.getJobType().equals(JobType.getCUSTOMIZED())){
             //添加其他类型任务
             //检查是否需要每日提醒
             if(s.getIsLoop().equals("0")){

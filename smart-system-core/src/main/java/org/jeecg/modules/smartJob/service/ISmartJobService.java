@@ -47,4 +47,6 @@ public interface ISmartJobService extends IService<SmartJob> {
     List<SmartPremaritalFiling> selectNotReport();
 
     SmartPostMarriageReport selectByPreId(String id);
+
+    void changeJobStatus(SmartJob smartJob);
 }
