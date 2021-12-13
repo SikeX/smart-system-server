@@ -204,7 +204,7 @@ public class SmartJobServiceImpl extends ServiceImpl<SmartJobMapper, SmartJob> i
             }else{
                 return false;
             }
-        }else{
+        }else if(smartJob.getJobType().equals(JobType.getCUSTOMIZED())){
             //添加其他类型任务
             //检查是否需要每日提醒
             if(smartJob.getIsLoop().equals("0")){
@@ -261,13 +261,14 @@ public class SmartJobServiceImpl extends ServiceImpl<SmartJobMapper, SmartJob> i
                 delayTask.addOpen(smartJob.getJobBean(), task);
                 return true;
             }
+        }else{
+            return true;
         }
     }
 
     @Override
     public boolean openJob(SmartJob smartJob, String sendFrom) {
 
-        smartJob.setJobBean();
         if(smartJob.getJobType().equals(JobType.getTHEPART())){
             //检查入党纪念日任务是否开启
             QueryWrapper<SmartJob> queryWrapper = new QueryWrapper<>();
@@ -324,7 +325,7 @@ public class SmartJobServiceImpl extends ServiceImpl<SmartJobMapper, SmartJob> i
                 //已开启
                 return false;
             }
-        }else {
+        }else if(smartJob.getJobType().equals(JobType.getCUSTOMIZED())){
             //添加其他类型任务
             //检查是否需要每日提醒
             if(smartJob.getIsLoop().equals("0")){
@@ -357,6 +358,8 @@ public class SmartJobServiceImpl extends ServiceImpl<SmartJobMapper, SmartJob> i
                 delayTask.addOpen(smartJob.getJobBean(), task);
                 return true;
             }
+        }else{
+            return true;
         }
     }
 
@@ -387,13 +390,12 @@ public class SmartJobServiceImpl extends ServiceImpl<SmartJobMapper, SmartJob> i
 
     @Override
     public void updateStatus(String jobBean) {
-        //修改数据据job为null
         //修改数据库当前任务状态为结束
         QueryWrapper<SmartJob> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("job_bean", jobBean);
         SmartJob smartJob = getOne(queryWrapper);
 
-        smartJob.setJobStatus("结束");
+        smartJob.setJobStatus("1");
 
         if(updateById(smartJob)){
             log.info("延迟任务执行成功，状态更新成功! job = " + smartJob.getJobBean());
@@ -457,7 +459,7 @@ public class SmartJobServiceImpl extends ServiceImpl<SmartJobMapper, SmartJob> i
                 long time = ComputeTime.getDelayTime(s.getExecuteTimeDay(), s.getExecuteTimeHour());
                 if(time < 0){
                     //任务时间已过，更状态为已完成
-                    s.setJobStatus("结束");
+                    s.setJobStatus("1");
                 }else{
                     Timeout task = delayTask.addTask(
                             s.getJobBean(),
@@ -526,5 +528,87 @@ public class SmartJobServiceImpl extends ServiceImpl<SmartJobMapper, SmartJob> i
         return smartJobMapper.selectByPreId(id);
     }
 
+    @Override
+    public void changeJobStatus(SmartJob smartJob) {
+        if(smartJob.getJobType().equals(JobType.getTHEPART())){
+            //检查入党纪念日任务是否开启
+            QueryWrapper<SmartJob> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("job_type", smartJob.getJobType());
+            SmartJob smartJob1 = getOne(queryWrapper);
 
+            if(smartJob.getId().equals(smartJob1.getId())){
+                //未开启，添加loop任务，
+                ScheduledFuture task = loopTask.addThePart(
+                        smartJob.getTemplateContent(),
+                        ComputeTime.loopGetDelayMinutes(smartJob.getExecuteTimeHour()),
+                        smartJob.getType()
+                );
+
+                loopTask.addOpen(smartJob.getJobBean(), task);
+            }
+        }else if(smartJob.getJobType().equals(JobType.getPUNISH())){
+            //检查解除处分任务是否开启
+            QueryWrapper<SmartJob> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("job_type", smartJob.getJobType());
+            SmartJob smartJob1 = getOne(queryWrapper);
+            if(smartJob.getId().equals(smartJob1.getId())){
+                //未开启，添加loop任务，
+                ScheduledFuture task = loopTask.addPunish(
+                        smartJob.getTemplateContent(),
+                        ComputeTime.loopGetDelayMinutes(smartJob.getExecuteTimeHour()),
+                        smartJob.getType()
+                );
+
+                loopTask.addOpen(smartJob.getJobBean(), task);
+            }else{
+                //开启
+            }
+        }else if(smartJob.getJobType().equals(JobType.getPOSTREMIND())){
+            //婚后报备提醒
+            QueryWrapper<SmartJob> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("job_type", smartJob.getJobType());
+            SmartJob smartJob1 = getOne(queryWrapper);
+            if(smartJob.getId().equals(smartJob1.getId())){
+                //未添加
+                ScheduledFuture task = loopTask.addLoop(
+                        ComputeTime.loopGetDelayMinutes(smartJob.getExecuteTimeHour()),
+                        smartJob.getTemplateContent()
+                );
+                loopTask.addOpen(smartJob.getJobBean(), task);
+            }else{
+                //已开启
+            }
+        }else if(smartJob.getJobType().equals(JobType.getCUSTOMIZED())){
+            //添加自定义类型任务
+            //检查是否需要每日提醒
+            if(smartJob.getIsLoop().equals("0")){
+                //需要，开启loop任务
+                ScheduledFuture task = loopTask.addLoop(
+                        smartJob.getCreateBy(),
+                        smartJob.getTemplateContent(),
+                        ComputeTime.loopGetDelayMinutes(smartJob.getExecuteTimeHour()),
+                        smartJob.getIsToAll(),
+                        smartJob.getToUser(),
+                        smartJob.getType()
+                );
+
+                loopTask.addOpen(smartJob.getJobBean(), task);
+            }else{
+                //不需要，开启延迟任务
+                Timeout task = delayTask.addTask(
+                        smartJob.getJobBean(),
+                        smartJob.getCreateBy(),
+                        smartJob.getTemplateContent(),
+                        ComputeTime.getDelayTime(smartJob.getExecuteTimeDay(),
+                                smartJob.getExecuteTimeHour()),
+                        smartJob.getIsToAll(),
+                        smartJob.getToUser(),
+                        smartJob.getType()
+                );
+
+                //记录
+                delayTask.addOpen(smartJob.getJobBean(), task);
+            }
+        }
+    }
 }
