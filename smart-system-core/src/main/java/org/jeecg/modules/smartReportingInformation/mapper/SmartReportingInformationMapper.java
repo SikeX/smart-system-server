@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.jeecg.modules.smartReportingInformation.entity.SmartReportingInformation;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.jeecg.modules.smartReportingInformation.entity.SysRole;
 
 /**
  * @Description: 举报信息表
@@ -14,4 +15,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface SmartReportingInformationMapper extends BaseMapper<SmartReportingInformation> {
 
+    List<SmartReportingInformation> sendInformation();
+    List<SysRole> getUser();
 }
