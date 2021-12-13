@@ -11,4 +11,8 @@
     and sys_user.id=sys_user_role.user_id
      and sys_role.id=sys_user_role.role_id
 </select>
+<select id="getStatus" resultType="org.jeecg.modules.smartReportingInformation.entity.SmartJob">
+    select job_status from smart_job
+    where job_name like '%举报%'
+</select>
 </mapper>

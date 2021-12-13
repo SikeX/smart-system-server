@@ -1,10 +1,7 @@
 package org.jeecg.modules.smartReportingInformation.service;
 
-import org.jeecg.modules.smartReportingInformation.entity.SmartReportingSurvey;
-import org.jeecg.modules.smartReportingInformation.entity.SmartReportingDescription;
-import org.jeecg.modules.smartReportingInformation.entity.SmartReportingInformation;
+import org.jeecg.modules.smartReportingInformation.entity.*;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.jeecg.modules.smartReportingInformation.entity.SysRole;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -42,4 +39,5 @@ public interface ISmartReportingInformationService extends IService<SmartReporti
 
     List<SmartReportingInformation> sendInformation();
 	List<SysRole> getUser();
+	SmartJob getStatus();
 }
