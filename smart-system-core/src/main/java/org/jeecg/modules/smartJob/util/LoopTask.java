@@ -187,6 +187,11 @@ public class LoopTask {
 
             log.info("\n入党纪念日任务！执行！！ 日期：" + new Date());
             anniversaryRe(content, sendType);
+            Set<String> keySet = openedMap.keySet();
+            for(String s : keySet){
+                ScheduledFuture future1 = openedMap.get(s);
+                System.out.println(future1.getDelay(TimeUnit.MINUTES));
+            }
 
         }, delay, ONEDAY, TimeUnit.MINUTES);
 
@@ -204,11 +209,15 @@ public class LoopTask {
 
         }, delay, ONEDAY, TimeUnit.MINUTES);
 
+        future.getDelay(TimeUnit.MINUTES);
+
         return future;
     }
 
 
     public boolean deleteJob(String jobBean) {
+
+        log.info("loopTask openedMap keySet: " + openedMap.keySet());
 
         //移除
         ScheduledFuture task = openedMap.remove(jobBean);

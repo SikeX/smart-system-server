@@ -101,7 +101,7 @@ public class DelayTask {
 
     public boolean deleteTask(String jobBean){
         //关闭任务
-        System.out.println(openedMap.keySet());
+        log.info("delayTask openedMap keySet: " + openedMap.keySet());
         Timeout delTask = openedMap.remove(jobBean);
 
         //在map
