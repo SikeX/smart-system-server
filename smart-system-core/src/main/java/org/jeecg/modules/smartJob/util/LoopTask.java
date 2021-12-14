@@ -5,6 +5,8 @@ import io.netty.channel.DefaultEventLoopGroup;
 import io.netty.channel.EventLoopGroup;
 import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;
+import org.jeecg.common.api.dto.message.MessageDTO;
+import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.modules.SmartPunishPeople.entity.SmartPunishPeople;
 import org.jeecg.modules.smartJob.entity.SmartJob;
 import org.jeecg.modules.smartJob.service.ISmartJobService;
@@ -44,11 +46,13 @@ public class LoopTask {
 
     private static ISmartJobService smartJobService;
     private static ISmartSentMsgService smartSentMsgService;
+    private static ISysBaseAPI sysBaseAPI;
 
     @Autowired
-    public void setSmartJobService(ISmartJobService smartJobService, ISmartSentMsgService smartSentMsgService){
+    public void setSmartJobService(ISmartJobService smartJobService, ISmartSentMsgService smartSentMsgService, ISysBaseAPI sysBaseAPI){
         LoopTask.smartJobService = smartJobService;
         LoopTask.smartSentMsgService = smartSentMsgService;
+        LoopTask.sysBaseAPI = sysBaseAPI;
     }
 
     //创建时间循环组
@@ -167,6 +171,16 @@ public class LoopTask {
 
                             //保存
                             smartSentMsgService.save(smartSentMsg);
+
+                            SysUser toUser = smartJobService.getPeopleInfo(s.getPeopleId());
+                            //发送站内信
+                            MessageDTO messageDTO=new MessageDTO();
+                            messageDTO.setTitle("婚后报备提醒");
+                            messageDTO.setContent("您好，请于婚礼结束15日内填写婚后报备信息。");
+                            messageDTO.setFromUser("admin");
+                            messageDTO.setToUser(toUser.getUsername());
+                            messageDTO.setCategory("1");
+                            sysBaseAPI.sendSysAnnouncement(messageDTO);
                         }
                     }
                 }
@@ -266,6 +280,15 @@ public class LoopTask {
 
         }else if(sendType.equals(SYS)){
             //发送系统消息
+//            for(SmartPunishPeople s : list){
+//                MessageDTO messageDTO=new MessageDTO();
+//                messageDTO.setTitle("其他");
+//                messageDTO.setContent(content);
+//                messageDTO.setFromUser(from);
+//                messageDTO.setToUser(s.getUsername());
+//                messageDTO.setCategory("1");
+//                sysBaseAPI.sendSysAnnouncement(messageDTO);
+//            }
         }else{
             return;
         }
@@ -302,6 +325,16 @@ public class LoopTask {
 
         }else if(sendType.equals(SYS)){
             //发送系统消息
+            //发送站内信
+            for(SysUser s : sysUsers){
+                MessageDTO messageDTO=new MessageDTO();
+                messageDTO.setTitle("入党纪念日提醒");
+                messageDTO.setContent(content);
+                messageDTO.setFromUser("admin");
+                messageDTO.setToUser(s.getUsername());
+                messageDTO.setCategory("1");
+                sysBaseAPI.sendSysAnnouncement(messageDTO);
+            }
         }else{
             return;
         }
@@ -339,6 +372,16 @@ public class LoopTask {
 
         }else if(sendType.equals(SYS)){
             //系统消息
+            //发送站内信
+            for(SysUser s : list){
+                MessageDTO messageDTO=new MessageDTO();
+                messageDTO.setTitle("其他");
+                messageDTO.setContent(content);
+                messageDTO.setFromUser(from);
+                messageDTO.setToUser(s.getUsername());
+                messageDTO.setCategory("1");
+                sysBaseAPI.sendSysAnnouncement(messageDTO);
+            }
         }else{
             return;
         }
@@ -376,6 +419,15 @@ public class LoopTask {
 
         }else if(sendType.equals(SYS)){
             //发送系统消息
+            for(SysUser s : list){
+                MessageDTO messageDTO=new MessageDTO();
+                messageDTO.setTitle("其他");
+                messageDTO.setContent(content);
+                messageDTO.setFromUser(from);
+                messageDTO.setToUser(s.getUsername());
+                messageDTO.setCategory("1");
+                sysBaseAPI.sendSysAnnouncement(messageDTO);
+            }
         }else{
             return;
         }
