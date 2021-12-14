@@ -10,7 +10,10 @@ import lombok.Data;
  */
 @Data
 public class ExamPeopleScoreVo {
+    private String examId;
+    private String examName;
+    private String deptId;
+    private String deptName;
     private String personName;
-
     private Integer examGrade;
 }

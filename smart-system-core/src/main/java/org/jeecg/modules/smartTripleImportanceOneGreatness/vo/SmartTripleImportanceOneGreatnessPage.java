@@ -1,5 +1,6 @@
 package org.jeecg.modules.smartTripleImportanceOneGreatness.vo;
 
+import java.io.Serializable;
 import java.util.List;
 import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatness;
 import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatnessPacca;
@@ -23,7 +24,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @Data
 @ApiModel(value="smart_triple_importance_one_greatnessPage对象", description="三重一大表")
-public class SmartTripleImportanceOneGreatnessPage {
+public class SmartTripleImportanceOneGreatnessPage implements Serializable {
 
 	/**主键*/
 	@ApiModelProperty(value = "主键")

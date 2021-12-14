@@ -54,9 +54,11 @@ public class SmartExamInformation implements Serializable {
     @ApiModelProperty(value = "所属部门")
     private String sysOrgCode;
 	/**试卷ID*/
-	@Excel(name = "试卷ID", width = 15)
+
     @ApiModelProperty(value = "试卷ID")
     private String paperId;
+    @ApiModelProperty(value = "试卷类型")
+    private String paperType;
 	/**考试名称*/
 	@Excel(name = "考试名称", width = 15)
     @ApiModelProperty(value = "考试名称")

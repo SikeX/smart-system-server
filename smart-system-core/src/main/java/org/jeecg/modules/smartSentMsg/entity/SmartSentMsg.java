@@ -73,4 +73,8 @@ public class SmartSentMsg implements Serializable {
 	@Excel(name = "标题", width = 15)
     @ApiModelProperty(value = "标题")
     private java.lang.String tittle;
+    /**发送状态*/
+    @Excel(name = "发送状态", width = 15)
+    @ApiModelProperty(value = "发送状态")
+    private java.lang.String status;
 }

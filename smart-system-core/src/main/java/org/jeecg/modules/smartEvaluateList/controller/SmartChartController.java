@@ -10,6 +10,7 @@ import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.smartEvaluateList.entity.MonthCount;
 import org.jeecg.modules.smartEvaluateList.entity.SmartEvaluateWindow;
 import org.jeecg.modules.smartEvaluateList.entity.TypeCount;
@@ -60,7 +61,7 @@ public class SmartChartController extends JeecgController<peopleAvg, ISmartChart
 			}else{
 				year = year.substring(1,year.length()-1);
 			}
-			System.out.println("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
+			//System.out.println("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
 			System.out.println(year);
 			List<MonthCount> list = smartChartService.countByMonth(year);
 			return Result.OK(list);
@@ -72,9 +73,19 @@ public class SmartChartController extends JeecgController<peopleAvg, ISmartChart
 	@AutoLog(value = "阳光评廉-按类型统计")
 	@ApiOperation(value="阳光评廉-按类型统计", notes="阳光评廉-按类型统计")
 	@GetMapping(value = "/countByGrade")
-	public Result<?> countByGrade() {
+	public Result<?> countByGrade(@RequestParam (value="year",required = false) String year) {
 		try{
-			List<TypeCount> list = smartChartService.countByGrade();
+			if(year == null || year.isEmpty()){
+				//获取当前年份
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+				Date date = new Date();
+				year =sdf.format(date);
+			}else{
+				year = year.substring(1,year.length()-1);
+			}
+			//System.out.println("ggggggggggggggggggggggg");
+			System.out.println(year);
+			List<TypeCount> list = smartChartService.countByGrade(year);
 			return Result.OK(list);
 		}catch (Exception e){
 			return Result.error("error");
@@ -90,6 +101,33 @@ public class SmartChartController extends JeecgController<peopleAvg, ISmartChart
 								 HttpServletRequest req) {
 		try{
 			String oldWindowsName = peopleAvg.getWindowsName();
+			System.out.println(oldWindowsName);
+			String windowsName = "";
+			if(oldWindowsName == null || oldWindowsName.equals("")){
+				windowsName = oldWindowsName;
+			}else {
+				windowsName = oldWindowsName.replace('*','%');
+			}
+			QueryWrapper<peopleAvg> queryWrapper = QueryGenerator.initQueryWrapper(peopleAvg, req.getParameterMap());
+			System.out.println("OOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+			System.out.println(ParamsUtil.getSuperQueryParams(req.getParameterMap()));
+			Page<peopleAvg> page = new Page<peopleAvg>(pageNo, pageSize);
+			IPage<peopleAvg> pageList = smartChartService.avgByPeople(page,windowsName);
+			return Result.OK(pageList);
+		}catch (Exception e){
+			return Result.error("error");
+		}
+
+	}
+	@AutoLog(value = "阳光评廉-窗口评分均值")
+	@ApiOperation(value="阳光评廉-窗口评分均值", notes="阳光评廉-窗口评分均值")
+	@GetMapping(value = "/windowsByGrade")
+	public Result<?> windowsByGrade(peopleAvg peopleAvg,
+								 @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+								 @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+								 HttpServletRequest req) {
+		try{
+			String oldWindowsName = peopleAvg.getWindowsName();
 			System.out.println("OOOOOOOOOOOOOOOOOOOOOOOOOOOO");
 			System.out.println(oldWindowsName);
 			String windowsName = "";
@@ -100,8 +138,53 @@ public class SmartChartController extends JeecgController<peopleAvg, ISmartChart
 			}
 			QueryWrapper<peopleAvg> queryWrapper = QueryGenerator.initQueryWrapper(peopleAvg, req.getParameterMap());
 			Page<peopleAvg> page = new Page<peopleAvg>(pageNo, pageSize);
-			IPage<peopleAvg> pageList = smartChartService.avgByPeople(page,windowsName);
+			IPage<peopleAvg> pageList = smartChartService.windowsByGrade(page,windowsName);
 			return Result.OK(pageList);
+		}catch (Exception e){
+			return Result.error("error");
+		}
+
+	}
+	@AutoLog(value = "阳光评廉-统计窗口评价次数")
+	@ApiOperation(value="阳光评廉-统计窗口评价次数", notes="阳光评廉-统计窗口评价次数")
+	@GetMapping(value = "/windowsRankByCount")
+	public Result<?> windowsRankByCount(@RequestParam (value="year",required = false) String year) {
+		try{
+			if(year == null || year.isEmpty()){
+				//获取当前年份
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+				Date date = new Date();
+				year =sdf.format(date);
+			}else{
+				year = year.substring(1,year.length()-1);
+			}
+			System.out.println("ggggggggggggggggggggggg");
+			System.out.println(year);
+			List<TypeCount> rankCountlist = smartChartService.windowsRankByCount(year);
+			return Result.OK(rankCountlist);
+		}catch (Exception e){
+			return Result.error("error");
+		}
+
+	}
+	@AutoLog(value = "阳光评廉-统计窗口评价次数")
+	@ApiOperation(value="阳光评廉-统计窗口评价次数", notes="阳光评廉-统计窗口评价次数")
+	@ResponseBody
+	@GetMapping(value = "/windowsRankByGrade")
+	public Result<?> windowsRankByGrade(@RequestParam (value="year",required = false) String year) {
+		try{
+			if(year == null || year.isEmpty()){
+				//获取当前年份
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+				Date date = new Date();
+				year =sdf.format(date);
+			}else{
+				year = year.substring(1,year.length()-1);
+			}
+			System.out.println("pppppppppppppppppppp");
+			System.out.println(year);
+			List<TypeCount> list = smartChartService.windowsRankByGrade(year);
+			return Result.OK(list);
 		}catch (Exception e){
 			return Result.error("error");
 		}

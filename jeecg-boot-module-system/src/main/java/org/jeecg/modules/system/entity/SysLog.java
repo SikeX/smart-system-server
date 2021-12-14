@@ -109,4 +109,6 @@ public class SysLog implements Serializable {
 	@Dict(dicCode = "operate_type")
 	private Integer operateType;
 
+	private String exportFile;
+
 }

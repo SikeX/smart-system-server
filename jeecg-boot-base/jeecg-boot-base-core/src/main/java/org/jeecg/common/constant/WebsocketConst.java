@@ -58,4 +58,10 @@ public class WebsocketConst {
      */
     public static final String NEWS_PUBLISH = "publish";
 
+    /**
+     * 2021-12-12 @Author CabbSir
+     * 新增消息类型 举报信息
+     */
+    public static final String CMD_REPORT = "report";
+
 }

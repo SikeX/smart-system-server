@@ -1,5 +1,6 @@
 package org.jeecg.common.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Component;
  * 备注:Demo工程编码采用UTF-8
  * 国际短信发送请勿参照此DEMO
  */
+@Slf4j
 @Component
 public class DySmsHelper {
 
@@ -254,17 +256,20 @@ public class DySmsHelper {
     }
 
     //创蓝智能云平台短信服务，发送模板消息
-    public static boolean sendSms(String content, String phone){
+    public static boolean sendSms(String content, String phones){
 
 //        List<String> phones = getPhones(phone);
+        log.info("\nsendSms");
+        log.info("\ncontent : " + content);
+        log.info("\nphones : " + phones);
 
         map.put("msg", content);//短信内容
-        map.put("phone", phone);//手机号
+        map.put("phone", phones);//手机号
         // map.put("report","true");//是否需要状态报告
         // map.put("extend","123");//自定义扩展码
         JSONObject js = (JSONObject) JSONObject.toJSON(map);
         String reString = sendSmsByPost(sendUrl, js.toString());
-        System.out.println(reString);
+        log.info("\n" + reString);
 
         //返回值
         JSONObject json = JSONObject.parseObject(reString);
