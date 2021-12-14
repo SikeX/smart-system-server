@@ -9,7 +9,9 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.hutool.core.util.ObjectUtil;
 import org.jeecg.common.system.api.ISysBaseAPI;
+import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
@@ -72,6 +74,8 @@ public class SmartTripleImportanceOneGreatnessController {
 	private ISmartVerifyTypeService smartVerifyTypeService;
 	@Autowired
 	private ISysBaseAPI sysBaseAPI;
+	@Autowired
+	private BaseCommonService baseCommonService;
 
 	/**
 	 * 分页列表查询
@@ -302,19 +306,60 @@ public class SmartTripleImportanceOneGreatnessController {
     /**
     * 导出excel
     *
-    * @param request
+    * @param req
     * @param smartTripleImportanceOneGreatness
     */
     @RequestMapping(value = "/exportXls")
-    public ModelAndView exportXls(HttpServletRequest request, SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness) {
+    public ModelAndView exportXls(HttpServletRequest req,HttpServletResponse response,
+								  SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness) throws IOException {
+
+       // 获取登录用户信息，可以用来查询单位部门信息
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+		String username = sysUser.getUsername();
+
+		//获取用户角色
+		List<String> role = sysBaseAPI.getRolesByUsername(username);
+		List<SmartTripleImportanceOneGreatness> queryList=new ArrayList<SmartTripleImportanceOneGreatness>();
+
+		if (role.contains("CommonUser")) {
+			QueryWrapper<SmartTripleImportanceOneGreatness> queryWrapper = new QueryWrapper<>();
+			queryWrapper.eq("create_by", username);
+			queryList=smartTripleImportanceOneGreatnessService.list(queryWrapper);
+
+		} else {
+			// 1. 规则，下面是 以**开始
+			String rule = "in";
+			// 2. 查询字段
+			String field = "documentid";
+
+
+			// 获取子单位ID
+			String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
+
+			HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+			// 获取请求参数中的superQueryParams
+			List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+
+			// 添加额外查询条件，用于权限控制
+			paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+					+ childrenIdString
+					+ "%22,%22field%22:%22" + field + "%22%7D%5D");
+			String[] params = new String[paramsList.size()];
+			paramsList.toArray(params);
+			map.put("superQueryParams", params);
+			params = new String[]{"and"};
+			map.put("superQueryMatchType", params);
+
+			QueryWrapper<SmartTripleImportanceOneGreatness> queryWrapper = QueryGenerator.initQueryWrapper(smartTripleImportanceOneGreatness, map);
+			queryList=smartTripleImportanceOneGreatnessService.list(queryWrapper);
+		}
       // Step.1 组装查询条件查询数据
-      QueryWrapper<SmartTripleImportanceOneGreatness> queryWrapper = QueryGenerator.initQueryWrapper(smartTripleImportanceOneGreatness, request.getParameterMap());
-      LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
       //Step.2 获取导出数据
-      List<SmartTripleImportanceOneGreatness> queryList = smartTripleImportanceOneGreatnessService.list(queryWrapper);
+
       // 过滤选中数据
-      String selections = request.getParameter("selections");
+      String selections = req.getParameter("selections");
       List<SmartTripleImportanceOneGreatness> smartTripleImportanceOneGreatnessList = new ArrayList<SmartTripleImportanceOneGreatness>();
       if(oConvertUtils.isEmpty(selections)) {
           smartTripleImportanceOneGreatnessList = queryList;
@@ -341,7 +386,12 @@ public class SmartTripleImportanceOneGreatnessController {
       mv.addObject(NormalExcelConstants.CLASS, SmartTripleImportanceOneGreatnessPage.class);
       mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("三重一大表数据", "导出人:"+sysUser.getRealname(), "三重一大表"));
       mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
-      return mv;
+      // List深拷贝，否则返回前端会没数据
+		List<SmartTripleImportanceOneGreatnessPage> newPageList = ObjectUtil.cloneByStream(pageList);
+		 baseCommonService.addExportLog(mv.getModel(), "三重一大", req, response);
+		 mv.addObject(NormalExcelConstants.DATA_LIST, newPageList);
+        return mv;
+
     }
 
     /**
