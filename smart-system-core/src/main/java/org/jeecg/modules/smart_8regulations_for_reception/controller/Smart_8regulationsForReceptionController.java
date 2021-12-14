@@ -7,6 +7,9 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.hutool.core.util.ObjectUtil;
+import org.jeecg.common.system.api.ISysBaseAPI;
+import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.smart_8regulations_for_reception.entity.*;
@@ -66,7 +69,8 @@ public class Smart_8regulationsForReceptionController {
 
 	@Autowired
 	CommonService commonService;
-
+	private BaseCommonService baseCommonService;
+	private ISysBaseAPI sysBaseAPI;
 
 	@AutoLog(value = "更新文件下载次数")
 	@ApiOperation(value="更新文件下载次数", notes="更新文件下载次数")
@@ -276,42 +280,84 @@ public class Smart_8regulationsForReceptionController {
     /**
     * 导出excel
     *
-    * @param request
+    * @param req
     * @param smart_8regulationsForReception
     */
     @RequestMapping(value = "/exportXls")
-    public ModelAndView exportXls(HttpServletRequest request, Smart_8regulationsForReception smart_8regulationsForReception) {
-      // Step.1 组装查询条件查询数据
-      QueryWrapper<Smart_8regulationsForReception> queryWrapper = QueryGenerator.initQueryWrapper(smart_8regulationsForReception, request.getParameterMap());
-      LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+	public ModelAndView exportXls(HttpServletRequest req,HttpServletResponse response, Smart_8regulationsForReception smart_8regulationsForReception) throws Exception {
 
-      //Step.2 获取导出数据
-      List<Smart_8regulationsForReception> queryList = smart_8regulationsForReceptionService.list(queryWrapper);
-      // 过滤选中数据
-      String selections = request.getParameter("selections");
-      List<Smart_8regulationsForReception> smart_8regulationsForReceptionList = new ArrayList<Smart_8regulationsForReception>();
-      if(oConvertUtils.isEmpty(selections)) {
-          smart_8regulationsForReceptionList = queryList;
-      }else {
-          List<String> selectionList = Arrays.asList(selections.split(","));
-          smart_8regulationsForReceptionList = queryList.stream().filter(item -> selectionList.contains(item.getId())).collect(Collectors.toList());
-      }
+		// 获取登录用户信息，可以用来查询单位部门信息
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
-      // Step.3 组装pageList
-      List<Smart_8regulationsForReceptionPage> pageList = new ArrayList<Smart_8regulationsForReceptionPage>();
-      for (Smart_8regulationsForReception main : smart_8regulationsForReceptionList) {
-          Smart_8regulationsForReceptionPage vo = new Smart_8regulationsForReceptionPage();
-          BeanUtils.copyProperties(main, vo);
-          List<Smart_8regulationsForReceptionStaff> smart_8regulationsForReceptionStaffList = smart_8regulationsForReceptionStaffService.selectByMainId(main.getId());
-          vo.setSmart_8regulationsForReceptionStaffList(smart_8regulationsForReceptionStaffList);
-          List<Smart_8regulationsForReceptiondStaff> smart_8regulationsForReceptiondStaffList = smart_8regulationsForReceptiondStaffService.selectByMainId(main.getId());
-          vo.setSmart_8regulationsForReceptiondStaffList(smart_8regulationsForReceptiondStaffList);
-          List<Smart_8regulationsForReceptionActivity> smart_8regulationsForReceptionActivityList = smart_8regulationsForReceptionActivityService.selectByMainId(main.getId());
-          vo.setSmart_8regulationsForReceptionActivityList(smart_8regulationsForReceptionActivityList);
-          List<Smart_8regulationsForReceptionAppendix> smart_8regulationsForReceptionAppendixList = smart_8regulationsForReceptionAppendixService.selectByMainId(main.getId());
-          vo.setSmart_8regulationsForReceptionAppendixList(smart_8regulationsForReceptionAppendixList);
-          pageList.add(vo);
-      }
+		String username = sysUser.getUsername();
+
+// 获取用户角色
+		List<String> role = sysBaseAPI.getRolesByUsername(username);
+
+		List<Smart_8regulationsForReception> queryList = new ArrayList<Smart_8regulationsForReception>();
+
+
+// 如果是普通用户，则只能看到自己创建的数据
+		if(role.contains("CommonUser")) {
+			QueryWrapper<Smart_8regulationsForReception> queryWrapper = new QueryWrapper<>();
+			queryWrapper.eq("create_by",username);
+			queryList = smart_8regulationsForReceptionService.list(queryWrapper);
+		} else {
+			// 1. 规则，下面是 以**开始
+			String rule = "in";
+			// 2. 查询字段
+			String field = "departId";
+
+			// 获取子单位ID
+			String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
+
+			HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+			// 获取请求参数中的superQueryParams
+			List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+
+			// 添加额外查询条件，用于权限控制
+			paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+					+ childrenIdString
+					+ "%22,%22field%22:%22" + field + "%22%7D%5D");
+			String[] params = new String[paramsList.size()];
+			paramsList.toArray(params);
+			map.put("superQueryParams", params);
+			params = new String[]{"and"};
+			map.put("superQueryMatchType", params);
+			QueryWrapper<Smart_8regulationsForReception> queryWrapper = QueryGenerator.initQueryWrapper(smart_8regulationsForReception, map);
+
+			queryList = smart_8regulationsForReceptionService.list(queryWrapper);
+		}
+		// Step.1 组装查询条件查询数据
+
+		//Step.2 获取导出数据
+		// 过滤选中数据
+		String selections = req.getParameter("selections");
+		List<Smart_8regulationsForReception> smart_8regulationsForReceptionList = new ArrayList<Smart_8regulationsForReception>();
+		if(oConvertUtils.isEmpty(selections)) {
+			smart_8regulationsForReceptionList = queryList;
+		}else {
+			List<String> selectionList = Arrays.asList(selections.split(","));
+			smart_8regulationsForReceptionList = queryList.stream().filter(item -> selectionList.contains(item.getId())).collect(Collectors.toList());
+		}
+
+// Step.3 组装pageList
+		List<Smart_8regulationsForReceptionPage> pageList = new ArrayList<Smart_8regulationsForReceptionPage>();
+		for (Smart_8regulationsForReception main : smart_8regulationsForReceptionList) {
+			Smart_8regulationsForReceptionPage vo = new Smart_8regulationsForReceptionPage();
+			BeanUtils.copyProperties(main, vo);
+			List<Smart_8regulationsForReceptionStaff> smart_8regulationsForReceptionStaffList = smart_8regulationsForReceptionStaffService.selectByMainId(main.getId());
+			vo.setSmart_8regulationsForReceptionStaffList(smart_8regulationsForReceptionStaffList);
+			List<Smart_8regulationsForReceptiondStaff> smart_8regulationsForReceptiondStaffList = smart_8regulationsForReceptiondStaffService.selectByMainId(main.getId());
+			vo.setSmart_8regulationsForReceptiondStaffList(smart_8regulationsForReceptiondStaffList);
+			List<Smart_8regulationsForReceptionActivity> smart_8regulationsForReceptionActivityList = smart_8regulationsForReceptionActivityService.selectByMainId(main.getId());
+			vo.setSmart_8regulationsForReceptionActivityList(smart_8regulationsForReceptionActivityList);
+			List<Smart_8regulationsForReceptionAppendix> smart_8regulationsForReceptionAppendixList = smart_8regulationsForReceptionAppendixService.selectByMainId(main.getId());
+			vo.setSmart_8regulationsForReceptionAppendixList(smart_8regulationsForReceptionAppendixList);
+			pageList.add(vo);
+		}
+
+		//
 
       // Step.4 AutoPoi 导出Excel
       ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
@@ -319,7 +365,15 @@ public class Smart_8regulationsForReceptionController {
       mv.addObject(NormalExcelConstants.CLASS, Smart_8regulationsForReceptionPage.class);
       mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("八项规定公务接待数据", "导出人:"+sysUser.getRealname(), "八项规定公务接待"));
       mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
-      return mv;
+
+		// List深拷贝，否则返回前端会没数据
+		List<Smart_8regulationsForReceptionPage> newPageList = ObjectUtil.cloneByStream(pageList);
+
+		baseCommonService.addExportLog(mv.getModel(), "八项规定公务接待", req, response);
+
+		mv.addObject(NormalExcelConstants.DATA_LIST, newPageList);
+
+		return mv;
     }
 
     /**

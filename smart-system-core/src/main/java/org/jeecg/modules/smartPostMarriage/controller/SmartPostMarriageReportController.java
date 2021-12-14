@@ -9,9 +9,13 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.hutool.core.util.ObjectUtil;
 import org.jeecg.common.system.api.ISysBaseAPI;
+import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.smartCreateAdvice.entity.SmartCreateAdvice;
+import org.jeecg.modules.smartCreateAdvice.vo.SmartCreateAdvicePage;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
 import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
@@ -59,6 +63,9 @@ public class SmartPostMarriageReportController {
 	 private ISmartPostMarriageReportService smartPostMarriageReportService;
 	 @Autowired
 	 private ISmartPostMarriageReportFileService smartPostMarriageReportFileService;
+
+	 @Autowired
+	 private BaseCommonService baseCommonService;
 
 	 @Autowired
 	 CommonService commonService;
@@ -311,19 +318,60 @@ public class SmartPostMarriageReportController {
 	 /**
 	  * 导出excel
 	  *
-	  * @param request
+	  * @param req
 	  * @param smartPostMarriageReport
 	  */
 	 @RequestMapping(value = "/exportXls")
-	 public ModelAndView exportXls(HttpServletRequest request, SmartPostMarriageReport smartPostMarriageReport) {
+	 public ModelAndView exportXls(HttpServletRequest req, HttpServletResponse response, SmartPostMarriageReport smartPostMarriageReport) throws IOException {
 		 // Step.1 组装查询条件查询数据
-		 QueryWrapper<SmartPostMarriageReport> queryWrapper = QueryGenerator.initQueryWrapper(smartPostMarriageReport, request.getParameterMap());
+//		 QueryWrapper<SmartPostMarriageReport> queryWrapper = QueryGenerator.initQueryWrapper(smartPostMarriageReport, request.getParameterMap());
+
+		 //获取登录用户信息
 		 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		 String username = sysUser.getUsername();
+
+		 // 获取用户角色
+		 List<String> role = sysBaseAPI.getRolesByUsername(username);
+		 List<SmartPostMarriageReport> queryList = new ArrayList<SmartPostMarriageReport>();
+
+		 if(role.contains("CommonUser")) {
+			 QueryWrapper<SmartPostMarriageReport> queryWrapper = new QueryWrapper<>();
+			 queryWrapper.eq("create_by", username);
+			 queryList = smartPostMarriageReportService.list(queryWrapper);
+		 }else{
+			 // TODO：规则，下面是 以＊*开始
+			 String rule = "in";
+			 // TODO：查询字段
+			 String field = "workDepartment";
+
+
+			 // 获取子单位ID
+			 String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
+
+			 // 添加查询参数，下面的参数是查询以用户所在部门编码开头的的所有单位数据，即用户所在单位和子单位的信息
+			 // superQueryParams=[{"rule":"right_like","type":"string","dictCode":"","val":"用户所在的部门","field":"departId"}]
+			 HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+			 // 获取请求参数中的superQueryParams
+			 List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+			 // 添加额外查询条件，用于权限控制
+			 paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+					 + childrenIdString
+					 + "%22,%22field%22:%22" + field + "%22%7D%5D");
+			 String[] params = new String[paramsList.size()];
+			 paramsList.toArray(params);
+			 map.put("superQueryParams", params);
+			 params = new String[]{"and"};
+			 map.put("superQueryMatchType", params);
+
+			 QueryWrapper<SmartPostMarriageReport> queryWrapper = QueryGenerator.initQueryWrapper(smartPostMarriageReport, map);
+			 queryList = smartPostMarriageReportService.list(queryWrapper);
+			}
+
+		 // Step.1 组装查询条件查询数据
 
 		 //Step.2 获取导出数据
-		 List<SmartPostMarriageReport> queryList = smartPostMarriageReportService.list(queryWrapper);
 		 // 过滤选中数据
-		 String selections = request.getParameter("selections");
+		 String selections = req.getParameter("selections");
 		 List<SmartPostMarriageReport> smartPostMarriageReportList = new ArrayList<SmartPostMarriageReport>();
 		 if (oConvertUtils.isEmpty(selections)) {
 			 smartPostMarriageReportList = queryList;
@@ -348,6 +396,14 @@ public class SmartPostMarriageReportController {
 		 mv.addObject(NormalExcelConstants.CLASS, SmartPostMarriageReportPage.class);
 		 mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("8项规定婚后报备表数据", "导出人:" + sysUser.getRealname(), "8项规定婚后报备表"));
 		 mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
+
+		 // List深拷贝，否则返回前端会没数据
+		 List<SmartPostMarriageReportPage> newPageList = ObjectUtil.cloneByStream(pageList);
+
+		 baseCommonService.addExportLog(mv.getModel(), "婚后报备", req, response);
+
+		 mv.addObject(NormalExcelConstants.DATA_LIST, newPageList);
+
 		 return mv;
 	 }
 

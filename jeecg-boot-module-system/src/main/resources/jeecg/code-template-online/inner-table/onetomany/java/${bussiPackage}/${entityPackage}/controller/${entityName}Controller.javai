@@ -1,4 +1,4 @@
-package ${bussiPackage}.${entityPackage}.controller;
+package ${bussiPackage}.${entityPackage}.org.jeecg.modules.smart_video_player.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;

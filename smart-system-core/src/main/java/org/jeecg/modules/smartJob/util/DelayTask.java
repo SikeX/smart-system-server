@@ -4,6 +4,8 @@ import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
 import lombok.extern.slf4j.Slf4j;
+import org.jeecg.common.api.dto.message.MessageDTO;
+import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.util.DySmsHelper;
 import org.jeecg.modules.smartJob.entity.SmartJob;
 import org.jeecg.modules.smartJob.entity.SysUser;
@@ -31,13 +33,16 @@ public class DelayTask {
 
     private static ISmartJobService smartJobService;
     private static ISmartSentMsgService smartSentMsgService;
+    private static ISysBaseAPI sysBaseAPI;
 
     @Autowired
-    public void setSmartJobService(ISmartJobService smartJobService, ISmartSentMsgService smartSentMsgService){
+    public void setSmartJobService(ISmartJobService smartJobService, ISmartSentMsgService smartSentMsgService, ISysBaseAPI sysBaseAPI){
 
         DelayTask.smartJobService = smartJobService;
 
         DelayTask.smartSentMsgService = smartSentMsgService;
+
+        DelayTask.sysBaseAPI = sysBaseAPI;
     }
 
     // 创建延迟任务实例
@@ -148,6 +153,16 @@ public class DelayTask {
 
         }else if(sendType.equals(SYS)){
             //发送系统消息
+            //发送站内信
+            for(SysUser s : users){
+                MessageDTO messageDTO=new MessageDTO();
+                messageDTO.setTitle("其他");
+                messageDTO.setContent(content);
+                messageDTO.setFromUser(from);
+                messageDTO.setToUser(s.getUsername());
+                messageDTO.setCategory("1");
+                sysBaseAPI.sendSysAnnouncement(messageDTO);
+            }
 
         }else{
             return;
@@ -185,6 +200,16 @@ public class DelayTask {
 
         }else if(sendType.equals(SYS)){
             //发送系统消息
+            //发送站内信
+            for(SysUser s : users){
+                MessageDTO messageDTO=new MessageDTO();
+                messageDTO.setTitle("其他");
+                messageDTO.setContent(content);
+                messageDTO.setFromUser(from);
+                messageDTO.setToUser(s.getUsername());
+                messageDTO.setCategory("1");
+                sysBaseAPI.sendSysAnnouncement(messageDTO);
+            }
         }else{
             return;
         }
