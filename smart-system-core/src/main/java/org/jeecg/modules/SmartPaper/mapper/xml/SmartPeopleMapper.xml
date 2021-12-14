@@ -22,6 +22,18 @@
         select IFNULL(exam_grade,-1) as exam_grade  from smart_people
         where exam_id = #{examId} and person_id = #{userId}
     </select>
+    <select id="getScoreByExamId" parameterType="java.lang.String"
+            resultType="org.jeecg.modules.SmartPaper.vo.ExamPeopleScoreVo">
+        SELECT
+            sp.person_name,
+            sp.exam_grade
+        FROM
+            smart_exam_information se
+                LEFT JOIN smart_people sp ON se.id = sp.exam_id
+        WHERE se.paper_id = #{examId}
+        order by sp.exam_grade desc
+    </select>
+
     <update id="updateGrade">
         update smart_people
         set exam_grade = #{grade},submit_time = #{date} where exam_id = #{examId} and person_id = #{userId}

@@ -1,11 +1,11 @@
 package org.jeecg.modules.smart_window_unit.entity;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -14,16 +14,19 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 import org.jeecg.common.aspect.annotation.Dict;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.UnsupportedEncodingException;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * @Description: 窗口单位
  * @Author: jeecg-boot
- * @Date:   2021-11-11
+ * @Date:   2021-12-02
  * @Version: V1.0
  */
 @Data
 @TableName("smart_window_unit")
+@Accessors(chain = true)
+@EqualsAndHashCode(callSuper = false)
 @ApiModel(value="smart_window_unit对象", description="窗口单位")
 public class SmartWindowUnit implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -33,9 +36,9 @@ public class SmartWindowUnit implements Serializable {
     @ApiModelProperty(value = "主键")
     private java.lang.String id;
 	/**删除状态*/
-	@Excel(name = "删除状态", width = 15,dicCode = "del_flag")
-	@TableLogic
-	private  InterruptedException delFlag;
+	@Excel(name = "删除状态", width = 15)
+    @ApiModelProperty(value = "删除状态")
+    private java.lang.Integer delFlag;
 	/**单位ID*/
 	@Excel(name = "单位ID", width = 15)
     @ApiModelProperty(value = "单位ID")
@@ -54,6 +57,10 @@ public class SmartWindowUnit implements Serializable {
 	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @ApiModelProperty(value = "负责人")
     private java.lang.String principal;
+    /**负责人Name*/
+    @Excel(name = "负责人姓名", width = 15)
+    @ApiModelProperty(value = "负责人姓名")
+    private java.lang.String principalName;
 	/**联系电话*/
 	@Excel(name = "联系电话", width = 15)
     @ApiModelProperty(value = "联系电话")
@@ -67,12 +74,14 @@ public class SmartWindowUnit implements Serializable {
 	@Excel(name = "二维码", width = 15)
     @ApiModelProperty(value = "二维码")
     private java.lang.String qrcode;
-	/**是否有子节点*/
-	@Excel(name = "是否有子节点", width = 15, dicCode = "yn")
-	@Dict(dicCode = "yn")
-    @ApiModelProperty(value = "是否有子节点")
-    private java.lang.String hasChild;
 	/**创建时间*/
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     @ApiModelProperty(value = "创建时间")
-    private java.lang.String createTime;
+    private java.util.Date createTime;
+	/**更新时间*/
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @ApiModelProperty(value = "更新时间")
+    private java.util.Date updateTime;
 }

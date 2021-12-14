@@ -7,3 +7,4 @@ rebel.xml
 **/target
 **/.DS_Store
 /files/
+**/logs/

@@ -54,4 +54,10 @@ public interface ISmartPostMarriageReportService extends IService<SmartPostMarri
 	List<String> getChildrenIdByOrgCode(String orgCode);
 
     SmartPostMarriageReport getByPreId(String preId);
+
+    void editPreIsReport(String preId);
+
+	void setPreIsReport(String preId);
+
+    void setDelFlagByPreId(String id);
 }

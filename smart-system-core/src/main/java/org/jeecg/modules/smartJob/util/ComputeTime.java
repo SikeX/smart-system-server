@@ -1,8 +1,11 @@
 package org.jeecg.modules.smartJob.util;
 
+import org.apache.commons.collections4.ListUtils;
+import org.jeecg.modules.SmartPunishPeople.entity.SmartPunishPeople;
 import org.jeecg.modules.smartJob.entity.SmartJob;
 import org.jeecg.modules.smartJob.entity.SysUser;
 import org.jeecg.modules.smartJob.service.ISmartJobService;
+import org.jeecg.modules.smartSentMsg.entity.SmartSentMsg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -38,7 +41,6 @@ public class ComputeTime {
         }
     }
 
-
     @Autowired
     public void setSmartJobService(ISmartJobService smartJobService){
 
@@ -48,14 +50,6 @@ public class ComputeTime {
     private static final long ONE_MINUTE = 60000L;  //一分钟
     private static final long ONE_DAY = 86400000L;     //一天
 
-    public long computeDelay(Date day, Date hours){
-        return 1L;
-    }
-
-    public long computeDelay(Date hours){
-        return 1L;
-    }
-
     //每日提醒任务，获取获取第一次执行时间
     public static long loopGetDelayMinutes(String hours){
 
@@ -64,7 +58,6 @@ public class ComputeTime {
         String[] s = hours.split(":");
         int hour = Integer.parseInt(s[0]);
         int minutes = Integer.parseInt(s[1]);
-        System.out.println("hour = " + hour + " minute = " + minutes);
 
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -272,12 +265,145 @@ public class ComputeTime {
 
         long round = delta % 3;
 
-        if(round == 0 && delta > 3){
+        if(round == 0 && delta >= 3){
             //提醒
             return true;
         }else{
             //不提醒
             return false;
+        }
+    }
+
+    //入党纪念日获取电话和msgs
+    public static Map<String, Object> getPhoneList(List<SysUser> sysUsers, String content, String sendType, String sendFrom, String tittle) {
+
+        String orgId = smartJobService.getOrgId(sendFrom);
+
+        //返回值
+        Map<String, Object> map = new HashMap<>();
+
+        //划分为每份999,短信一次提交最多发送10000个号码
+        List<List<SysUser>> tem = ListUtils.partition(sysUsers, 999);
+
+        List<String> temPhones = new ArrayList<>();
+        List<List<SmartSentMsg>> temMsg = new ArrayList<>();
+
+        //获取电话号码和smartSentMsg
+        for(int i = 0; i < tem.size(); i++){
+            String phones = null;
+            List<SmartSentMsg> smartSentMsgs = new ArrayList<>();
+            for(int j = 0; j < tem.get(i).size(); j++){
+                if(null != tem.get(i).get(j).getPhone()){
+
+                    SmartSentMsg smartSentMsg = getSmartSentMsg(
+                            sendType,
+                            sendFrom,
+                            orgId,
+                            tem.get(i).get(j).getRealname(),
+                            tittle,
+                            content
+                    );
+
+                    //收集手机号
+                    if(null == phones){
+                        phones = tem.get(i).get(j).getPhone();
+                        smartSentMsg.setReceiverPhone(tem.get(i).get(j).getPhone());
+                    }else{
+                        phones += "," + tem.get(i).get(j).getPhone();
+                        smartSentMsg.setReceiverPhone(tem.get(i).get(j).getPhone());
+                    }
+
+                    //收集smartSentMsg
+                    smartSentMsgs.add(smartSentMsg);
+                }
+            }
+            //暂存
+            temPhones.add(phones);
+            temMsg.add(smartSentMsgs);
+        }
+
+        map.put("phones", temPhones);
+        map.put("Msgs", temMsg);
+
+        return map;
+    }
+
+    //解除处分获取phone和Msgs
+    public static Map<String, Object> getPunoshPhoneList(List<SmartPunishPeople> punishPeople, String content, String sendType, String sendFrom, String tittle) {
+
+        String orgId = smartJobService.getOrgId(sendFrom);
+
+        //返回值
+        Map<String, Object> map = new HashMap<>();
+
+        //划分为每份999,短信一次提交最多发送10000个号码
+        List<List<SmartPunishPeople>> tem = ListUtils.partition(punishPeople, 999);
+
+        List<String> temPhones = new ArrayList<>();
+        List<List<SmartSentMsg>> temMsg = new ArrayList<>();
+
+        //获取电话号码和smartSentMsg
+        for(int i = 0; i < tem.size(); i++){
+            String phones = null;
+            List<SmartSentMsg> smartSentMsgs = new ArrayList<>();
+            for(int j = 0; j < tem.get(i).size(); j++){
+                if(null != tem.get(i).get(j).getPhone()){
+
+                    SmartSentMsg smartSentMsg = getSmartSentMsg(
+                            sendType,
+                            sendFrom,
+                            orgId,
+                            tem.get(i).get(j).getPunishName(),
+                            tittle,
+                            content
+                    );
+
+                    //收集手机号
+                    if(null == phones){
+                        phones = tem.get(i).get(j).getPhone();
+                        smartSentMsg.setReceiverPhone(tem.get(i).get(j).getPhone());
+                    }else{
+                        phones += "," + tem.get(i).get(j).getPhone();
+                        smartSentMsg.setReceiverPhone(tem.get(i).get(j).getPhone());
+                    }
+
+                    //收集smartSentMsg
+                    smartSentMsgs.add(smartSentMsg);
+                }
+            }
+            //暂存
+            temPhones.add(phones);
+            temMsg.add(smartSentMsgs);
+        }
+
+        map.put("phones", temPhones);
+        map.put("Msgs", temMsg);
+
+        return map;
+    }
+
+    private static SmartSentMsg getSmartSentMsg(String sendType, String sendFrom, String orgId, String receiver, String tittle, String content){
+
+        Date date = new Date();
+
+        SmartSentMsg smartSentMsg = new SmartSentMsg();
+        smartSentMsg.setSendType(sendType);
+        smartSentMsg.setSendFrom(sendFrom);
+        smartSentMsg.setSysOrgCode(orgId);
+        smartSentMsg.setReceiver(receiver);
+        smartSentMsg.setTittle(tittle);
+        smartSentMsg.setSendTime(date);
+        smartSentMsg.setContent(content);
+        //默认成功，失败再改
+        smartSentMsg.setStatus("0");
+
+        return smartSentMsg;
+    }
+
+    //短信发送失败，修改状态
+    public static void changeStatus(List<SmartSentMsg> smartSentMsgs) {
+        for(SmartSentMsg s : smartSentMsgs){
+            s.setStatus("1");
         }
     }
 

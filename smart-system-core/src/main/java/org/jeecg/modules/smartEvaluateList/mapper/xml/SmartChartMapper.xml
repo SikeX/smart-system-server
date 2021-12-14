@@ -18,21 +18,49 @@
     </select>
     <!--按评分统计-->
     <select id="countByGrade" resultType="org.jeecg.modules.smartEvaluateList.entity.TypeCount">
-        select i.item_text as grade,count(*) as value
+        select i.item_text as keyName,count(*) as value
         from smart_evaluate_window as e,sys_dict as d,sys_dict_item as i
         where e.evaluate_result = i.item_value and d.dict_code = 'evaluate_grade' and i.dict_id = d.id
+        and year(evaluate_time)= #{year}
         group by e.evaluate_result,i.item_text
     </select>
     <!--人员平均分-->
     <select id="avgByPeople" resultMap="PeopleAvg">
-        select avg(e.evaluate_result) as avgGrade,e.person_name
+        select avg(e.evaluate_result) as avgGrade,e.person_name,e.windows_name,e.exe_dept
         from smart_evaluate_window as e
         <where>
             <if test="windowsName != null and windowsName != ''">
                  e.windows_name like #{windowsName}
             </if>
         </where>
-        group by e.person_name
+        group by e.exe_dept,e.windows_name,e.person_name
         order by avgGrade desc
+    </select>
+    <select id="windowsByGrade" resultMap="PeopleAvg">
+        select avg(e.evaluate_result) as avgGrade, e.windows_name,e.exe_dept
+        from smart_evaluate_window as e
+        <where>
+            <if test="windowsName != null and windowsName != ''">
+                e.windows_name like #{windowsName}
+            </if>
+        </where>
+        group by e.exe_dept,e.windows_name
+        order by avgGrade desc
+    </select>
+    <!--窗口评价次数排行榜-->
+    <select id="windowsRankByCount" resultType="org.jeecg.modules.smartEvaluateList.entity.TypeCount">
+        select windows_name as keyName,count(*) as value
+        from smart_evaluate_window
+        where year(evaluate_time)= #{year}
+        group by windows_name
+        order by value desc
+    </select>
+    <!--窗口满意度排行榜-->
+    <select id="windowsRankByGrade" resultType="org.jeecg.modules.smartEvaluateList.entity.TypeCount">
+        select windows_name as keyName,avg(evaluate_result) as value
+        from smart_evaluate_window
+        where year(evaluate_time)= #{year}
+        group by windows_name
+        order by value desc
     </select>
 </mapper>

@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 */
 @Api(tags="考试表")
 @RestController
-@RequestMapping("/SmartPaper/smartExam")
+@RequestMapping("/SmartPaper/smartSubmit")
 @Slf4j
 public class SmartExamController extends JeecgController<SmartPeople, ISmartExamService> {
    @Autowired

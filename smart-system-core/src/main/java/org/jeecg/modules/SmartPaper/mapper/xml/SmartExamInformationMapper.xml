@@ -1,5 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.SmartPaper.mapper.SmartExamInformationMapper">
+    <resultMap id="deptExamRank" type="org.jeecg.modules.SmartPaper.vo.DeptExamRankVo">
+        <result property="examId" column="exam_id" jdbcType="VARCHAR"/>
+        <result property="examName" column="exam_name" jdbcType="VARCHAR"/>
+        <result property="deptId" column="dep_id" jdbcType="VARCHAR"/>
+        <result property="deptName" column="depart_name" jdbcType="VARCHAR"/>
+        <result property="deptAvgGrade" column="dept_avg_grade" jdbcType="FLOAT"/>
+        <result property="count" column="count" jdbcType="INTEGER"/>
+    </resultMap>
+    <select id="getAllExam" resultType="org.jeecg.modules.SmartPaper.entity.SmartExamInformation">
+        select i.* from smart_exam_information i,smart_paper p
+        where i.paper_id = p.id and p.paper_type = 1 and i.del_flag = 0
+        <if test="examName != null and examName != ''">
+            and exam_name like #{examName}
+        </if>
+        order by i.create_time desc
+    </select>
+<!--单位排名-->
+    <select id="deptExamRank" resultMap="deptExamRank">
+        select exam_id ,exam_name ,dep_id,avg(exam_grade) as dept_avg_grade,depart_name,count(person_id) as count
+        from smart_people p left join sys_user su on p.person_id = su.id
+        left join sys_user_depart d on d.user_id = su.id left join smart_exam_information e on e.id =p.exam_id
+        left join sys_depart sd on sd.id = d.dep_id
+        <where>
+              <choose>
+                    <when test="examId != null and examId != ''">
+                        e.id = #{examId}
+                    </when>
+              <otherwise>
+                    e.id=
+                    (select e.id  from smart_exam_information e
+                    WHERE e.exam_endtime <![CDATA[<=]]> NOW()
+                    order by e.exam_endtime desc
+                    LIMIT 1)
+              </otherwise>
+              </choose>
+        </where>
+        group by dep_id,exam_id
+        order by dept_avg_grade desc
+    </select>
+    <!--个人排名-->
+    <select id="peopleExamRank" parameterType="java.lang.String"
+            resultType="org.jeecg.modules.SmartPaper.vo.ExamPeopleScoreVo">
+        SELECT
+        person_name,exam_grade,depart_name as dept_name,exam_name,dep_id as dept_id
+        FROM
+        smart_exam_information se
+        LEFT JOIN smart_people p ON se.id = p.exam_id
+        left join sys_user su on p.person_id = su.id
+        left join sys_user_depart d on d.user_id = su.id
+        left join sys_depart sd on sd.id = d.dep_id
+        <where>
+            <choose>
+                <when test="examId != null and examId != ''">
+                    se.id = #{examId}
+                </when>
+                <otherwise>
+                    se.id=
+                    (select se.id  from smart_exam_information se
+                    WHERE se.exam_endtime <![CDATA[<=]]> NOW()
+                    order by se.exam_endtime desc
+                    LIMIT 1)
+                </otherwise>
+            </choose>
+        </where>
+        order by p.exam_grade desc
+    </select>
 
 </mapper>
