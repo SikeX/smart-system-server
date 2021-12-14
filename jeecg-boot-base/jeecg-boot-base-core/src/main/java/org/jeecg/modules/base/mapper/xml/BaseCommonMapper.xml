@@ -4,7 +4,8 @@
 
     <!-- 保存日志11 -->
     <insert id="saveLog" parameterType="Object">
-        insert into sys_log (id, log_type, log_content, method, operate_type, request_param, ip, userid, username, cost_time, create_time)
+        insert into sys_log (id, log_type, log_content, method, operate_type, request_param, ip, userid, username,
+                             cost_time, create_time, export_file)
         values(
             #{dto.id,jdbcType=VARCHAR},
             #{dto.logType,jdbcType=INTEGER},
@@ -16,7 +17,8 @@
             #{dto.userid,jdbcType=VARCHAR},
             #{dto.username,jdbcType=VARCHAR},
             #{dto.costTime,jdbcType=BIGINT},
-            #{dto.createTime,jdbcType=TIMESTAMP}
+            #{dto.createTime,jdbcType=TIMESTAMP},
+            #{dto.exportFile,jdbcType=VARCHAR}
         )
     </insert>
 
