@@ -55,6 +55,7 @@ public class SmartReleaseServiceImpl extends ServiceImpl<SmartReleaseMapper, Sma
         String[] users = user.split(",");
         System.out.println(users[0]);
         smartExamInfo.setPaperId(paperId);
+        smartExamInfo.setPaperType("1");
         String paperName = (smartPaperMapper.getPaperById(paperId)).getPaperName();
         smartExamInfo.setExamName(paperName);
         //更新试卷状态
@@ -89,6 +90,7 @@ public class SmartReleaseServiceImpl extends ServiceImpl<SmartReleaseMapper, Sma
         String[] users = user.split(",");
         System.out.println(users[0]);
         smartExamInfo.setPaperId(paperId);
+        smartExamInfo.setPaperType("2");
         String paperName = (smartPaperMapper.getPaperById(paperId)).getPaperName();
         smartExamInfo.setExamName(paperName);
         //更新试卷状态

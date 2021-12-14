@@ -31,8 +31,8 @@
             smart_exam_information se
                 LEFT JOIN smart_people sp ON se.id = sp.exam_id
         WHERE se.paper_id = #{examId}
+        order by sp.exam_grade desc
     </select>
-
 
     <update id="updateGrade">
         update smart_people
