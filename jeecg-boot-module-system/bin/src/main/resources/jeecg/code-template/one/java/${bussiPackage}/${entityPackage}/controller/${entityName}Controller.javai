@@ -1,4 +1,4 @@
-package ${bussiPackage}.${entityPackage}.controller;
+package ${bussiPackage}.${entityPackage}.org.jeecg.modules.smart_video_player.controller;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +19,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.common.system.base.org.jeecg.modules.smart_video_player.controller.JeecgController;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
