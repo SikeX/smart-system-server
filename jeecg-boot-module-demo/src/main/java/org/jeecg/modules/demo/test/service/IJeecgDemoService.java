@@ -6,6 +6,8 @@ import org.jeecg.modules.demo.test.entity.JeecgDemo;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.jeecg.modules.demo.test.entity.partyUser;
+import org.jeecg.modules.demo.test.vo.SysDepartTreeModel;
+import org.jeecg.modules.demo.test.vo.DepartIdModel;
 
 import java.util.List;
 
@@ -87,31 +89,31 @@ public interface IJeecgDemoService extends JeecgService<JeecgDemo> {
 	 * 获取通知未读数
 	 * @return
 	 */
-	String getTongzhiweidu(String userId);
+	String getTongzhiweidu();
 
 	/**
 	 * 获取通知已读数
 	 * @return
 	 */
-	String getTongzhiyidu(String userId);
+	String getTongzhiyidu();
 
 	/**
 	 * 获取廉政未读数
 	 * @return
 	 */
-	String getLianzhengweidu(String userId);
+	String getLianzhengweidu();
 
 	/**
 	 * 获取廉政已读数
 	 * @return
 	 */
-	String getLianzhengyidu(String userId);
+	String getLianzhengyidu();
 
 	/**
 	 * 获取我的任务数
 	 * @return
 	 */
-	String getRenwutiao(String userId);
+	String getRenwutiao();
 
 	/**
 	 * 获取我的任务数
@@ -129,5 +131,7 @@ public interface IJeecgDemoService extends JeecgService<JeecgDemo> {
 	 * 获取我的任务数
 	 * @return
 	 */
-	List<partyUser> getCloudData(String departId);
+	List<partyUser> getCloudData();
+
+
 }

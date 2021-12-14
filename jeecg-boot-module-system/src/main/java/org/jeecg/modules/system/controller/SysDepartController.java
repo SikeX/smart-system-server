@@ -105,6 +105,8 @@ public class SysDepartController {
 //				list = sysDepartService.queryTreeList();
 //			}
 			List<SysDepartTreeModel> list = sysDepartService.queryTreeList();
+//			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//			System.out.println(list);
 			res.setResult(list);
 			res.setSuccess(true);
 		} catch (Exception e) {

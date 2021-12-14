@@ -327,13 +327,11 @@ function chart1() {
     });
     var myChart = echarts.init(document.getElementById('pie'));
     var myChart1 = echarts.init(document.getElementById('pie1'));
-    var myCharts = echarts.init(document.getElementById('gdMap1'));
-    var myCharts1 = echarts.init(document.getElementById('gdMaps1'));
+
     window.addEventListener('resize', function () {
         myChart.resize();
         myChart1.resize();
-        myCharts.resize();
-        myCharts1.resize();
+
     });
 
     var str = '';
@@ -476,8 +474,7 @@ function chart1() {
 
     myChart.setOption(option);
     myChart1.setOption(option);
-    myCharts.setOption(option);
-    myCharts1.setOption(option);
+
 }
 
 chart1()
@@ -912,6 +909,8 @@ var cityName = [{
 
 addCityBtn(cityName);
 
+
+
 function addCityBtn(data) {
     var li_con = '';
     for (var i = 0; i < data.length; i++) {
@@ -966,7 +965,6 @@ $('.city-btn').on('click', 'li', function () {
 
 })
 
-
 $('#city').on('click', 'li', function () {
     $(this).addClass('active').siblings('li').removeClass('active');
     $('.center-bottom .ranking-box').hide();
@@ -974,6 +972,17 @@ $('#city').on('click', 'li', function () {
         $('#titleQ').html('<span>' + $(this).html() + '</span>到珠海');
     } else if ($("#barType").find('.active').data('value') == 2) {
         $('#titleQ').html('珠海到<span>' + $(this).html() + '</span>')
+    }
+})
+
+$('#barType').on('click', 'li', function () {
+    $(this).addClass('active').siblings('li').removeClass('active');
+    if ($("#barType").find('.active').data('value') == 1) {
+        $('#chart-container2').hide();
+        $('#chart-container').show();
+    } else if ($("#barType").find('.active').data('value') == 2) {
+        $('#chart-container').hide();
+        $('#chart-container2').show();
     }
 })
 
@@ -999,6 +1008,7 @@ $("#barType").on('click', 'li', function () {
     // }
     // chart3($(this).data('value'), 0);
     // chart4(chart4Data, $(this).data('value'), 0);
+    // newchart4( $(this).data('value'));
 })
 
 //寄派件选择
@@ -1013,7 +1023,7 @@ $("#barTypes").on('click', 'li', function () {
     // }
     // chart3($(this).data('value'), 1);
     // chart4(chart4Data, $(this).data('value'), 1);
-
+    // newchart4( $(this).data('value'));
 })
 
 
@@ -1058,25 +1068,25 @@ function chart3(type,chartType) {
                 name: "任务下发",
                 value: 92
             }]
-    // $.ajax({
-    //     type: "post",
-    //     async: false, //同步执行
-    //     url: "getChart3Data",
-    //     // data : {},
-    //     dataType: "json", //返回数据形式为json
-    //     success: function (result) {
-    //         if (result) {
-    //
-    //             data_[0].value = parseInt(result.tongzhiweidu) + parseInt(result.tongzhiyidu)
-    //             data_[1].value = result.tongzhiweidu
-    //             data_[2].value = result.tongzhiyidu
-    //             data_[3].value = parseInt(result.lianzhengweidu) + parseInt(result.lianzhengyidu)
-    //             data_[4].value = result.lianzhengweidu
-    //             data_[5].value = result.lianzhengyidu
-    //             data_[6].value = result.renwutiao
-    //         }
-    //     }
-    // });
+    $.ajax({
+        type: "post",
+        async: false, //同步执行
+        url: "getChart3Data",
+        // data : {},
+        dataType: "json", //返回数据形式为json
+        success: function (result) {
+            if (result) {
+
+                data_[0].value = parseInt(result.tongzhiweidu) + parseInt(result.tongzhiyidu)
+                data_[1].value = result.tongzhiweidu
+                data_[2].value = result.tongzhiyidu
+                data_[3].value = parseInt(result.lianzhengweidu) + parseInt(result.lianzhengyidu)
+                data_[4].value = result.lianzhengweidu
+                data_[5].value = result.lianzhengyidu
+                data_[6].value = result.renwutiao
+            }
+        }
+    });
     var series_data; //绘制图表的数据
     //绘制图表
     var yMax = 0;
@@ -1457,98 +1467,98 @@ $('#tabBtns').on('click', function () {
 
 
 //时间选择器
-var startV = '';
-var endV = '';
-laydate.skin('danlan');
-var startTime = {
-    elem: '#startTime',
-    format: 'YYYY-MM-DD',
-    min: '1997-01-01', //设定最小日期为当前日期
-    max: laydate.now(), //最大日期
-    istime: true,
-    istoday: true,
-    fixed: false,
-    choose: function (datas) {
-        startV = datas;
-        endTime.min = datas; //开始日选好后，重置结束日的最小日期
-    }
-};
-var endTime = {
-    elem: '#endTime',
-    format: 'YYYY-MM-DD',
-    min: laydate.now(),
-    max: laydate.now(),
-    istime: true,
-    istoday: true,
-    fixed: false,
-    choose: function (datas) {
-        //        startTime.max = datas; //结束日选好后，重置开始日的最大日期
-        endV = datas;
-    }
-};
-
-laydate(startTime);
-laydate(endTime);
-
-//时间选择器
-var startVs = '';
-var endVs = '';
-laydate.skin('danlan');
-var startTimes = {
-    elem: '#startTimes',
-    format: 'YYYY-MM-DD',
-    min: '1997-01-01', //设定最小日期为当前日期
-    max: '2099-06-16', //最大日期
-    istime: true,
-    istoday: true,
-    fixed: false,
-    choose: function (datas) {
-        startVs = datas;
-        endTimes.min = datas; //开始日选好后，重置结束日的最小日期
-        setQgData($('#barTypes').parent().parent(), 1);
-    }
-};
-var endTimes = {
-    elem: '#endTimes',
-    format: 'YYYY-MM-DD',
-    min: laydate.now(),
-    max: laydate.now(),
-    istime: true,
-    istoday: true,
-    fixed: false,
-    choose: function (datas) {
-        //        startTime.max = datas; //结束日选好后，重置开始日的最大日期
-        endVs = datas;
-        setQgData($('#barTypes').parent().parent(), 1);
-    }
-};
+// var startV = '';
+// var endV = '';
+// laydate.skin('danlan');
+// var startTime = {
+//     elem: '#startTime',
+//     format: 'YYYY-MM-DD',
+//     min: '1997-01-01', //设定最小日期为当前日期
+//     max: laydate.now(), //最大日期
+//     istime: true,
+//     istoday: true,
+//     fixed: false,
+//     choose: function (datas) {
+//         startV = datas;
+//         endTime.min = datas; //开始日选好后，重置结束日的最小日期
+//     }
+// };
+// var endTime = {
+//     elem: '#endTime',
+//     format: 'YYYY-MM-DD',
+//     min: laydate.now(),
+//     max: laydate.now(),
+//     istime: true,
+//     istoday: true,
+//     fixed: false,
+//     choose: function (datas) {
+//         //        startTime.max = datas; //结束日选好后，重置开始日的最大日期
+//         endV = datas;
+//     }
+// };
+//
+// laydate(startTime);
+// laydate(endTime);
+//
+// //时间选择器
+// var startVs = '';
+// var endVs = '';
+// laydate.skin('danlan');
+// var startTimes = {
+//     elem: '#startTimes',
+//     format: 'YYYY-MM-DD',
+//     min: '1997-01-01', //设定最小日期为当前日期
+//     max: '2099-06-16', //最大日期
+//     istime: true,
+//     istoday: true,
+//     fixed: false,
+//     choose: function (datas) {
+//         startVs = datas;
+//         endTimes.min = datas; //开始日选好后，重置结束日的最小日期
+//         setQgData($('#barTypes').parent().parent(), 1);
+//     }
+// };
+// var endTimes = {
+//     elem: '#endTimes',
+//     format: 'YYYY-MM-DD',
+//     min: laydate.now(),
+//     max: laydate.now(),
+//     istime: true,
+//     istoday: true,
+//     fixed: false,
+//     choose: function (datas) {
+//         //        startTime.max = datas; //结束日选好后，重置开始日的最大日期
+//         endVs = datas;
+//         setQgData($('#barTypes').parent().parent(), 1);
+//     }
+// };
 
 // laydate(startTimes);
 // laydate(endTimes);
 
 //点击时间选择器的时候更改样式
-$('#endTime').on('click', function () {
-    dateCss();
-})
-
-$('#end').on('click', function () {
-    dateCss();
-})
+// $('#endTime').on('click', function () {
+//     dateCss();
+// })
+//
+// $('#end').on('click', function () {
+//     dateCss();
+// })
 
 
 //更改日期插件的样式
-function dateCss() {
-    var arr = $('#laydate_box').attr('style').split(';');
-    var cssStr =
-        'position:absolute;right:0;';
-    for (var i = 0; i < arr.length; i++) {
-        if (arr[i].indexOf('top') != -1) {
-            cssStr += arr[i];
-        }
-    }
-
-    $('#laydate_box').attr('style', cssStr);
-}
+// function dateCss() {
+//     var arr = $('#laydate_box').attr('style').split(';');
+//     var cssStr =
+//         'position:absolute;right:0;';
+//     for (var i = 0; i < arr.length; i++) {
+//         if (arr[i].indexOf('top') != -1) {
+//             cssStr += arr[i];
+//         }
+//     }
+//
+//     $('#laydate_box').attr('style', cssStr);
+// }
 
 
 
