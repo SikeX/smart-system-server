@@ -9,17 +9,17 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import cn.hutool.core.util.ObjectUtil;
 import org.jeecg.common.system.api.ISysBaseAPI;
+import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.smartCreateAdvice.entity.SmartCreateAdvice;
+import org.jeecg.modules.smartCreateAdvice.vo.SmartCreateAdvicePage;
 import org.jeecg.modules.smartJob.entity.SmartJob;
 import org.jeecg.modules.smartJob.service.ISmartJobService;
 import org.jeecg.modules.smartJob.service.imp.SmartJobServiceImpl;
 import org.jeecg.modules.smartJob.util.LoopTask;
-import org.jeecg.modules.smartPostMarriage.entity.SmartPostMarriageReport;
-import org.jeecg.modules.smartPostMarriage.service.ISmartPostMarriageReportService;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
 import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
@@ -69,10 +69,8 @@ public class SmartPremaritalFilingController {
     private ISmartPremaritalFilingService smartPremaritalFilingService;
     @Autowired
     private ISmartPremaritalFilingAppService smartPremaritalFilingAppService;
-
     @Autowired
-    ISmartPostMarriageReportService smartPostMarriageReportService;
-
+    private BaseCommonService baseCommonService;
     @Autowired
     CommonService commonService;
 
@@ -234,11 +232,6 @@ public class SmartPremaritalFilingController {
     @ApiOperation(value = "8项规定婚前报备表-通过id删除", notes = "8项规定婚前报备表-通过id删除")
     @DeleteMapping(value = "/delete")
     public Result<?> delete(@RequestParam(name = "id", required = true) String id) {
-
-        //根据preId设置婚后del_flag = "1"
-        smartPostMarriageReportService.setDelFlagByPreId(id);
-
-        //删除数据
         smartPremaritalFilingService.delMain(id);
         return Result.OK("删除成功!");
     }
@@ -253,13 +246,6 @@ public class SmartPremaritalFilingController {
     @ApiOperation(value = "8项规定婚前报备表-批量删除", notes = "8项规定婚前报备表-批量删除")
     @DeleteMapping(value = "/deleteBatch")
     public Result<?> deleteBatch(@RequestParam(name = "ids", required = true) String ids) {
-
-        //根据preId设置婚后del_flag = "1"
-        List<String> tem = Arrays.asList(ids.split(","));
-        for(String s : tem){
-            smartPostMarriageReportService.setDelFlagByPreId(s);
-        }
-
         this.smartPremaritalFilingService.delBatchMain(Arrays.asList(ids.split(",")));
         return Result.OK("批量删除成功！");
     }
@@ -301,19 +287,50 @@ public class SmartPremaritalFilingController {
     /**
      * 导出excel
      *
-     * @param request
+     * @param req
      * @param smartPremaritalFiling
      */
     @RequestMapping(value = "/exportXls")
-    public ModelAndView exportXls(HttpServletRequest request, SmartPremaritalFiling smartPremaritalFiling) {
+    public ModelAndView exportXls(HttpServletRequest req, HttpServletResponse response, SmartPremaritalFiling smartPremaritalFiling) throws Exception {
         // Step.1 组装查询条件查询数据
-        QueryWrapper<SmartPremaritalFiling> queryWrapper = QueryGenerator.initQueryWrapper(smartPremaritalFiling, request.getParameterMap());
+        //QueryWrapper<SmartPremaritalFiling> queryWrapper = QueryGenerator.initQueryWrapper(smartPremaritalFiling, request.getParameterMap());
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+        String username = sysUser.getUsername();
+
+        //获取用户角色
+        List<String> role = sysBaseAPI.getRolesByUsername(username);
+        List<SmartPremaritalFiling> queryList = new ArrayList<SmartPremaritalFiling>();
+
+        // 如果是普通用户，则只能看到自己创建的数据
+        if (role.contains("CommonUser")) {
+            QueryWrapper<SmartPremaritalFiling> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("create_by", username);
+            queryList = smartPremaritalFilingService.list(queryWrapper);
+        } else {
+            // 1. 规则，下面是 以**开始
+            String rule = "in";
+            // 2. 查询字段
+            String field = "departId";
+            // 获取子单位ID
+            String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
+            HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+            // 获取请求参数中的superQueryParams
+            List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+            // 添加额外查询条件，用于权限控制
+            paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22 " + childrenIdString + "%22,%22field%22:%22" + field + "%22%7D%5D");
+            String[] params = new String[paramsList.size()];
+            paramsList.toArray(params);
+            map.put("superQueryParams", params);
+            params = new String[]{"and"};
+            map.put("superQueryMatchType", params);
+            QueryWrapper<SmartPremaritalFiling> queryWrapper = QueryGenerator.initQueryWrapper(smartPremaritalFiling, map);
+            queryList = smartPremaritalFilingService.list(queryWrapper);
+        }
+
 
         //Step.2 获取导出数据
-        List<SmartPremaritalFiling> queryList = smartPremaritalFilingService.list(queryWrapper);
         // 过滤选中数据
-        String selections = request.getParameter("selections");
+        String selections = req.getParameter("selections");
         List<SmartPremaritalFiling> smartPremaritalFilingList = new ArrayList<SmartPremaritalFiling>();
         if (oConvertUtils.isEmpty(selections)) {
             smartPremaritalFilingList = queryList;
@@ -324,7 +341,8 @@ public class SmartPremaritalFilingController {
 
         // Step.3 组装pageList
         List<SmartPremaritalFilingPage> pageList = new ArrayList<SmartPremaritalFilingPage>();
-        for (SmartPremaritalFiling main : smartPremaritalFilingList) {
+        for (
+                SmartPremaritalFiling main : smartPremaritalFilingList) {
             SmartPremaritalFilingPage vo = new SmartPremaritalFilingPage();
             BeanUtils.copyProperties(main, vo);
             List<SmartPremaritalFilingApp> smartPremaritalFilingAppList = smartPremaritalFilingAppService.selectByMainId(main.getId());
@@ -338,6 +356,10 @@ public class SmartPremaritalFilingController {
         mv.addObject(NormalExcelConstants.CLASS, SmartPremaritalFilingPage.class);
         mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("8项规定婚前报备表数据", "导出人:" + sysUser.getRealname(), "8项规定婚前报备表"));
         mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
+        // List深拷贝，否则返回前端会没数据
+        List<SmartPremaritalFilingPage> newPageList = ObjectUtil.cloneByStream(pageList);
+        baseCommonService.addExportLog(mv.getModel(), "8项规定婚前报备表", req, response);
+        mv.addObject(NormalExcelConstants.DATA_LIST, newPageList);
         return mv;
     }
 
