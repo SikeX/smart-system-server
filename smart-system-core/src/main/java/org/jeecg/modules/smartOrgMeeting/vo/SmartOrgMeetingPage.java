@@ -31,7 +31,7 @@ public class SmartOrgMeetingPage {
 	@ApiModelProperty(value = "主键")
     private java.lang.String id;
 	/**单位*/
-	@Excel(name = "单位", width = 15)
+	@Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
 	@ApiModelProperty(value = "单位")
     private java.lang.String departId;
 	/**会议名称*/
@@ -93,7 +93,7 @@ public class SmartOrgMeetingPage {
 	@ApiModelProperty(value = "创建时间")
     private java.util.Date createTime;
 	/**删除状态（0，正常，1已删除）*/
-	@Excel(name = "删除状态（0，正常，1已删除）", width = 15)
+
 	@TableLogic
 	@ApiModelProperty(value = "删除状态（0，正常，1已删除）")
     private java.lang.Integer delFlag;
