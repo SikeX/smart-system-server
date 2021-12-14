@@ -1,5 +1,6 @@
 package org.jeecg.modules.smartSupervision.vo;
 
+import java.io.Serializable;
 import java.util.List;
 import org.jeecg.modules.smartSupervision.entity.SmartSupervision;
 import org.jeecg.modules.smartSupervision.entity.SmartSupervisionAnnex;
@@ -22,7 +23,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @Data
 @ApiModel(value="smart_supervisionPage对象", description="八项规定监督检查表")
-public class SmartSupervisionPage {
+public class SmartSupervisionPage implements Serializable {
 
 	/**主键*/
 	@ApiModelProperty(value = "主键")
