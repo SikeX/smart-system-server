@@ -256,17 +256,19 @@ public class SysUserController {
         if (id == null) {
             return result.error500("没有找到部门！");
         }
-        //纪委管理员可以选择角色，单位管理员默认为单位非管理员
+        //纪委管理员可以选择角色和单位，单位管理员默认为单位非管理员，只能添加本部门人员
         String selectedRoles = "";
+        String selectedDeparts="";
         if(role.contains("CCDIAdmin")){
             selectedRoles = jsonObject.getString("selectedroles");
+            selectedDeparts = jsonObject.getString("selecteddeparts");
         }
 		else {
             selectedRoles = "1465163864583323650";
+            //单位管理员-设置部门，只能添加本部门人员
+            selectedDeparts = id;
         }
-		/*String selectedDeparts = jsonObject.getString("selecteddeparts");*/
-		//设置部门，只能添加本部门人员
-		String selectedDepart = id;
+
 		try {
 			SysUser user = JSON.parseObject(jsonObject.toJSONString(), SysUser.class);
 			user.setDepartId(id);
@@ -295,8 +297,7 @@ public class SysUserController {
 			user.setStatus(1);
 			user.setDelFlag(CommonConstant.DEL_FLAG_0);
 			// 保存用户走一个service 保证事务
-            //sysUserService.saveUser(user, selectedRoles, selectedDeparts);
-            sysUserService.saveUser(user, selectedRoles, selectedDepart);//只能添加本部门人员
+            sysUserService.saveUser(user, selectedRoles, selectedDeparts);
 			result.success("添加成功！");
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
