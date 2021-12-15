@@ -1,6 +1,7 @@
 package org.jeecg.modules.system.controller;
 
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -24,6 +25,7 @@ import org.jeecg.common.util.ImportExcelUtil;
 import org.jeecg.common.util.PasswordUtil;
 import org.jeecg.common.util.RedisUtil;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.SmartFirstFormPeople.entity.SmartFirstFormPeople;
 import org.jeecg.modules.SmartInnerPartyTalk.entity.SmartInnerPartyTalk;
 import org.jeecg.modules.SmartPunishPeople.entity.SmartPunishPeople;
 import org.jeecg.modules.base.service.BaseCommonService;
@@ -41,6 +43,7 @@ import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.ImportParams;
 import org.jeecgframework.poi.excel.view.JeecgEntityExcelView;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -96,6 +99,8 @@ public class SysUserController {
 	private RedisUtil redisUtil;
     @Autowired
     private CommonService commonService;
+    @Autowired
+    private BaseCommonService baseCommon_Service;
 
     @Value("${jeecg.path.upload}")
     private String upLoadPath;
@@ -780,17 +785,99 @@ public class SysUserController {
     /**
      * 导出excel
      *
-     * @param request
+     * @param req
      * @param sysUser
      */
     @RequestMapping(value = "/exportXls")
-    public ModelAndView exportXls(SysUser sysUser,HttpServletRequest request) {
-        // Step.1 组装查询条件
-        QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(sysUser, request.getParameterMap());
+    public ModelAndView exportXls(HttpServletRequest req,
+                                  HttpServletResponse response,SysUser sysUser)throws Exception {
+        // 获取登录用户信息，可以用来查询单位部门信息
+        LoginUser currentUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+        String username = currentUser.getUsername();
+
+        // 获取用户角色
+        List<String> role = sysBaseAPI.getRolesByUsername(username);
+
+        List<SysUser> queryList = new ArrayList<SysUser>();
+
+
+        // 如果是普通用户，则只能看到自己创建的数据
+        if(role.contains("CommonUser")) {
+            QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("create_by",username);
+            queryList = sysUserService.list(queryWrapper);
+        }
+        else {
+            // 1. 规则，下面是 以**开始
+            String rule = "in";
+            // 2. 查询字段
+            String field = "departId";
+
+            // 获取子单位ID
+            String childrenIdString = commonService.getChildrenIdStringByOrgCode(currentUser.getOrgCode());
+
+            HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+            // 获取请求参数中的superQueryParams
+            List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+
+            // 添加额外查询条件，用于权限控制
+            paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+                    + childrenIdString
+                    + "%22,%22field%22:%22" + field + "%22%7D%5D");
+            String[] params = new String[paramsList.size()];
+            paramsList.toArray(params);
+            map.put("superQueryParams", params);
+            params = new String[]{"and"};
+            map.put("superQueryMatchType", params);
+            QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(sysUser, map);
+
+            queryList = sysUserService.list(queryWrapper);
+        }
+
+
+        // Step.1 组装查询条件查询数据
+
+        //Step.2 获取导出数据
+        // 过滤选中数据
+        String selections = req.getParameter("selections");
+        List<SysUser> sysUserList = new ArrayList<SysUser>();
+        if(oConvertUtils.isEmpty(selections)) {
+            sysUserList = queryList;
+        }else {
+            List<String> selectionList = Arrays.asList(selections.split(","));
+            sysUserList = queryList.stream().filter(item -> selectionList.contains(item.getId())).collect(Collectors.toList());
+        }
+
+        // Step.3 组装pageList
+        List<SysUser> pageList = new ArrayList<SysUser>();
+        for (SysUser main : sysUserList) {
+            SysUser vo = new SysUser();
+            BeanUtils.copyProperties(main, vo);
+            pageList.add(vo);
+        }
+
+        // Step.4 AutoPoi 导出Excel
+        ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
+        mv.addObject(NormalExcelConstants.FILE_NAME, "人员列表");
+        mv.addObject(NormalExcelConstants.CLASS, SysUser.class);
+        mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("人员数据", "导出人:"+currentUser.getRealname(), "人员表"));
+        mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
+
+        // List深拷贝，否则返回前端会没数据
+        List<SysUser> newPageList = ObjectUtil.cloneByStream(pageList);
+
+        baseCommon_Service.addExportLog(mv.getModel(), "人员", req, response);
+
+        mv.addObject(NormalExcelConstants.DATA_LIST, newPageList);
+
+        return mv;
+       /* // Step.1 组装查询条件
+
         //Step.2 AutoPoi 导出Excel
         ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
         //update-begin--Author:kangxiaolin  Date:20180825 for：[03]用户导出，如果选择数据则只导出相关数据--------------------
-        String selections = request.getParameter("selections");
+        String selections = req.getParameter("selections");
        if(!oConvertUtils.isEmpty(selections)){
            queryWrapper.in("id",selections.split(","));
        }
@@ -805,7 +892,7 @@ public class SysUserController {
         exportParams.setImageBasePath(upLoadPath);
         mv.addObject(NormalExcelConstants.PARAMS, exportParams);
         mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
-        return mv;
+        return mv;*/
     }
 
     /**
@@ -837,7 +924,7 @@ public class SysUserController {
                     //设置初始账号
                     if (StringUtils.isBlank(sysUserExcel.getUsername())) {
                         //账号默认为手机号
-                        sysUserExcel.setPassword(sysUserExcel.getPhone());
+                        sysUserExcel.setUsername(sysUserExcel.getPhone());
                     }
                     //设置默认密码
                     if (StringUtils.isBlank(sysUserExcel.getPassword())) {

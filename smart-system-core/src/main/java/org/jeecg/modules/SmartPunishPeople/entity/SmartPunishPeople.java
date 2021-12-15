@@ -56,7 +56,6 @@ public class SmartPunishPeople implements Serializable {
     @ApiModelProperty(value = "所属部门")
     private java.lang.String sysOrgCode;
 	/**处分人ID*/
-	@Excel(name = "处分人ID", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "id")
 	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "id")
     @ApiModelProperty(value = "处分人ID")
     private java.lang.String punishId;
@@ -65,14 +64,17 @@ public class SmartPunishPeople implements Serializable {
     @ApiModelProperty(value = "处分人姓名")
     private java.lang.String punishName;
 	/**单位ID*/
-    @ApiModelProperty(value = "单位ID")
+    /*@Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")*/
+    @ApiModelProperty(value = "单位")
     private java.lang.String departId;
 	/**单位*/
-	@Excel(name = "单位", width = 15)
+    @Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
+    @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
     @ApiModelProperty(value = "单位")
-    private java.lang.String departName;
+    private java.lang.String departCode;
 	/**职务*/
-	@Excel(name = "职务", width = 15)
+    @Excel(name = "职务", width = 15,dictTable ="sys_position",dicText = "name",dicCode = "code")
+    @Dict(dictTable ="sys_position",dicText = "name",dicCode = "code")
     @ApiModelProperty(value = "职务")
     private java.lang.String position;
 	/**职级*/
@@ -102,11 +104,9 @@ public class SmartPunishPeople implements Serializable {
     @ApiModelProperty(value = "解除处分时间")
     private java.util.Date removeTime;
     /**处分状态*/
-    @Excel(name = "处分状态", width = 15,dicCode="punish_statu")
     @Dict(dicCode = "punish_statu")
     private java.lang.Integer statu;
     /**删除状态*/
-    @Excel(name = "删除状态", width = 15,dicCode="del_flag")
     @TableLogic
     private java.lang.Integer delFlag;
 }

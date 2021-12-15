@@ -3,14 +3,14 @@
 <mapper namespace="org.jeecg.modules.smartThreeMeetingOneLesson.mapper.SmartThreeMeetingOneLessonParticipantsMapper">
 
 	<delete id="deleteByMainId" parameterType="java.lang.String">
-		DELETE 
-		FROM  smart_three_meeting_one_lesson_participants 
-		WHERE
-			 parent_table_id = #{mainId} 	</delete>
-	
-	<select id="selectByMainId" parameterType="java.lang.String" resultType="org.jeecg.modules.smartThreeMeetingOneLesson.entity.SmartThreeMeetingOneLessonParticipants">
-		SELECT * 
+		DELETE
 		FROM  smart_three_meeting_one_lesson_participants
 		WHERE
-			 parent_table_id = #{mainId} 	</select>
+			parent_table_id = #{mainId} 	</delete>
+
+	<select id="selectByMainId" parameterType="java.lang.String" resultType="org.jeecg.modules.smartThreeMeetingOneLesson.entity.SmartThreeMeetingOneLessonParticipants">
+		SELECT *
+		FROM  smart_three_meeting_one_lesson_participants
+		WHERE
+			parent_table_id = #{mainId} 	</select>
 </mapper>

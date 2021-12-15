@@ -1,5 +1,6 @@
 package org.jeecg.modules.SmartInnerPartyTalk.vo;
 
+import java.io.Serializable;
 import java.util.List;
 import org.jeecg.modules.SmartInnerPartyTalk.entity.SmartInnerPartyTalk;
 import org.jeecg.modules.SmartInnerPartyTalk.entity.SmartInnerPartyPacpa;
@@ -23,7 +24,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @Data
 @ApiModel(value="smart_inner_party_talkPage对象", description="党内谈话表")
-public class SmartInnerPartyTalkPage {
+public class SmartInnerPartyTalkPage implements Serializable {
 
 	/**主键*/
 	@ApiModelProperty(value = "主键")

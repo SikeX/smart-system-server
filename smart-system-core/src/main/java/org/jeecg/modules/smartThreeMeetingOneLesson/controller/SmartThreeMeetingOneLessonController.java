@@ -9,8 +9,17 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.hutool.core.util.ObjectUtil;
+import org.jeecg.common.system.api.ISysBaseAPI;
+import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatness;
+import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatnessDescription;
+import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatnessPacca;
+import org.jeecg.modules.smartTripleImportanceOneGreatness.vo.SmartTripleImportanceOneGreatnessPage;
+import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
+import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -43,7 +52,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.jeecg.common.aspect.annotation.AutoLog;
 
- /**
+/**
  * @Description: 三会一课
  * @Author: jeecg-boot
  * @Date:   2021-11-14
@@ -61,8 +70,18 @@ public class SmartThreeMeetingOneLessonController {
 	@Autowired
 	private ISmartThreeMeetingOneLessonAnnexService smartThreeMeetingOneLessonAnnexService;
 
-	 @Autowired
-	 CommonService commonService;
+	@Autowired
+	CommonService commonService;
+	@Autowired
+	private SmartVerify smartVerify;
+	public String verifyType="三会一课";
+	@Autowired
+	private ISmartVerifyTypeService smartVerifyTypeService;
+
+	@Autowired
+	private ISysBaseAPI sysBaseAPI;
+	@Autowired
+	private BaseCommonService baseCommonService;
 
 	/**
 	 * 分页列表查询
@@ -83,9 +102,17 @@ public class SmartThreeMeetingOneLessonController {
 		// 1. 规则，下面是 以**开始
 		String rule = "in";
 		// 2. 查询字段
-		String field = "departId";
+		String field = "departmentId";
 		// 获取登录用户信息，可以用来查询单位部门信息
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+		System.out.println("++++++++++++++++++");
+		System.out.println(sysUser.getOrgCode());
+		System.out.println("++++++++++++++++++");
+
+		if ("".equals(sysUser.getOrgCode())) {
+			return Result.error("没有权限");
+		}
 
 		// 获取子单位ID
 		String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
@@ -98,15 +125,23 @@ public class SmartThreeMeetingOneLessonController {
 		paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
 				+ childrenIdString
 				+ "%22,%22field%22:%22" + field + "%22%7D%5D");
+//		System.out.println("++++++++++++++++++");
+//		System.out.println(paramsList);
+//		System.out.println("++++++++++++++++++");
 		String[] params = new String[paramsList.size()];
 		paramsList.toArray(params);
 		map.put("superQueryParams", params);
 		params = new String[]{"and"};
 		map.put("superQueryMatchType", params);
 
-		QueryWrapper<SmartThreeMeetingOneLesson> queryWrapper = QueryGenerator.initQueryWrapper(smartThreeMeetingOneLesson, req.getParameterMap());
+//		QueryWrapper<SmartThreeMeetingOneLesson> queryWrapper = QueryGenerator.initQueryWrapper(smartThreeMeetingOneLesson, req.getParameterMap());
+//		Page<SmartThreeMeetingOneLesson> page = new Page<SmartThreeMeetingOneLesson>(pageNo, pageSize);
+//		IPage<SmartThreeMeetingOneLesson> pageList = smartThreeMeetingOneLessonService.page(page, queryWrapper);
+
+		QueryWrapper<SmartThreeMeetingOneLesson> queryWrapper = QueryGenerator.initQueryWrapper(smartThreeMeetingOneLesson, map);
 		Page<SmartThreeMeetingOneLesson> page = new Page<SmartThreeMeetingOneLesson>(pageNo, pageSize);
 		IPage<SmartThreeMeetingOneLesson> pageList = smartThreeMeetingOneLessonService.page(page, queryWrapper);
+
 
 		List<String> departIds = pageList.getRecords().stream().map(SmartThreeMeetingOneLesson::getDepartmentId).collect(Collectors.toList());
 		if (departIds != null && departIds.size() > 0) {
@@ -118,7 +153,7 @@ public class SmartThreeMeetingOneLessonController {
 
 		return Result.OK(pageList);
 	}
-	
+
 	/**
 	 *   添加
 	 *
@@ -142,11 +177,31 @@ public class SmartThreeMeetingOneLessonController {
 			return Result.error("没有找到部门！");
 		}
 		smartThreeMeetingOneLesson.setDepartmentId(id);
+//		smartThreeMeetingOneLessonService.saveMain(smartThreeMeetingOneLesson, smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonParticipantsList(),smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonAnnexList());
 
-		smartThreeMeetingOneLessonService.saveMain(smartThreeMeetingOneLesson, smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonParticipantsList(),smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonAnnexList());
+		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
+		if(isVerify){
+			smartThreeMeetingOneLessonService.saveMain(
+					smartThreeMeetingOneLesson,
+					smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonParticipantsList(),
+					smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonAnnexList());
+			String recordId = smartThreeMeetingOneLesson.getId();
+			smartVerify.addVerifyRecord(recordId,verifyType);
+			smartThreeMeetingOneLesson.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+			smartThreeMeetingOneLessonService.updateById(smartThreeMeetingOneLesson); }
+		else {
+			// 设置审核状态为免审
+			smartThreeMeetingOneLesson.setVerifyStatus("3");
+			// 直接添加，不走审核流程
+			smartThreeMeetingOneLessonService.saveMain(
+					smartThreeMeetingOneLesson,
+					smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonParticipantsList(),
+					smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonAnnexList());
+		}
+
 		return Result.OK("添加成功！");
 	}
-	
+
 	/**
 	 *  编辑
 	 *
@@ -168,7 +223,7 @@ public class SmartThreeMeetingOneLessonController {
 		smartThreeMeetingOneLessonService.updateMain(smartThreeMeetingOneLesson, smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonParticipantsList(),smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonAnnexList());
 		return Result.OK("编辑成功!");
 	}
-	
+
 	/**
 	 *   通过id删除
 	 *
@@ -182,7 +237,7 @@ public class SmartThreeMeetingOneLessonController {
 		smartThreeMeetingOneLessonService.delMain(id);
 		return Result.OK("删除成功!");
 	}
-	
+
 	/**
 	 *  批量删除
 	 *
@@ -196,7 +251,7 @@ public class SmartThreeMeetingOneLessonController {
 		this.smartThreeMeetingOneLessonService.delBatchMain(Arrays.asList(ids.split(",")));
 		return Result.OK("批量删除成功！");
 	}
-	
+
 	/**
 	 * 通过id查询
 	 *
@@ -214,7 +269,7 @@ public class SmartThreeMeetingOneLessonController {
 		return Result.OK(smartThreeMeetingOneLesson);
 
 	}
-	
+
 	/**
 	 * 通过id查询
 	 *
@@ -242,102 +297,151 @@ public class SmartThreeMeetingOneLessonController {
 		return Result.OK(smartThreeMeetingOneLessonAnnexList);
 	}
 
-    /**
-    * 导出excel
-    *
-    * @param request
-    * @param smartThreeMeetingOneLesson
-    */
-    @RequestMapping(value = "/exportXls")
-    public ModelAndView exportXls(HttpServletRequest request, SmartThreeMeetingOneLesson smartThreeMeetingOneLesson) {
-      // Step.1 组装查询条件查询数据
-      QueryWrapper<SmartThreeMeetingOneLesson> queryWrapper = QueryGenerator.initQueryWrapper(smartThreeMeetingOneLesson, request.getParameterMap());
-      LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+	/**
+	 * 导出excel
+	 *
+	 * @param req
+	 * @param smartThreeMeetingOneLesson
+	 */
+	@RequestMapping(value = "/exportXls")
+	public ModelAndView exportXls(HttpServletRequest req,HttpServletResponse response,
+								  SmartThreeMeetingOneLesson smartThreeMeetingOneLesson) throws IOException {
 
-      //Step.2 获取导出数据
-      List<SmartThreeMeetingOneLesson> queryList = smartThreeMeetingOneLessonService.list(queryWrapper);
-      // 过滤选中数据
-      String selections = request.getParameter("selections");
-      List<SmartThreeMeetingOneLesson> smartThreeMeetingOneLessonList = new ArrayList<SmartThreeMeetingOneLesson>();
-      if(oConvertUtils.isEmpty(selections)) {
-          smartThreeMeetingOneLessonList = queryList;
-      }else {
-          List<String> selectionList = Arrays.asList(selections.split(","));
-          smartThreeMeetingOneLessonList = queryList.stream().filter(item -> selectionList.contains(item.getId())).collect(Collectors.toList());
-      }
+		// 获取登录用户信息，可以用来查询单位部门信息
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
-      // Step.3 组装pageList
-      List<SmartThreeMeetingOneLessonPage> pageList = new ArrayList<SmartThreeMeetingOneLessonPage>();
-      for (SmartThreeMeetingOneLesson main : smartThreeMeetingOneLessonList) {
-          SmartThreeMeetingOneLessonPage vo = new SmartThreeMeetingOneLessonPage();
-          BeanUtils.copyProperties(main, vo);
-          List<SmartThreeMeetingOneLessonParticipants> smartThreeMeetingOneLessonParticipantsList = smartThreeMeetingOneLessonParticipantsService.selectByMainId(main.getId());
-          vo.setSmartThreeMeetingOneLessonParticipantsList(smartThreeMeetingOneLessonParticipantsList);
-          List<SmartThreeMeetingOneLessonAnnex> smartThreeMeetingOneLessonAnnexList = smartThreeMeetingOneLessonAnnexService.selectByMainId(main.getId());
-          vo.setSmartThreeMeetingOneLessonAnnexList(smartThreeMeetingOneLessonAnnexList);
-          pageList.add(vo);
-      }
+		String username = sysUser.getUsername();
 
-      // Step.4 AutoPoi 导出Excel
-      ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
-      mv.addObject(NormalExcelConstants.FILE_NAME, "三会一课列表");
-      mv.addObject(NormalExcelConstants.CLASS, SmartThreeMeetingOneLessonPage.class);
-      mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("三会一课数据", "导出人:"+sysUser.getRealname(), "三会一课"));
-      mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
-      return mv;
-    }
+		//获取用户角色
+		List<String> role = sysBaseAPI.getRolesByUsername(username);
+		List<SmartThreeMeetingOneLesson> queryList=new ArrayList<SmartThreeMeetingOneLesson>();
 
-    /**
-    * 通过excel导入数据
-    *
-    * @param request
-    * @param response
-    * @return
-    */
-    @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
-    public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
-      MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-      Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
-      for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
-          MultipartFile file = entity.getValue();// 获取上传文件对象
-          ImportParams params = new ImportParams();
-          params.setTitleRows(2);
-          params.setHeadRows(1);
-          params.setNeedSave(true);
-          try {
-              List<SmartThreeMeetingOneLessonPage> list = ExcelImportUtil.importExcel(file.getInputStream(), SmartThreeMeetingOneLessonPage.class, params);
-              for (SmartThreeMeetingOneLessonPage page : list) {
-                  SmartThreeMeetingOneLesson po = new SmartThreeMeetingOneLesson();
-                  BeanUtils.copyProperties(page, po);
-                  smartThreeMeetingOneLessonService.saveMain(po, page.getSmartThreeMeetingOneLessonParticipantsList(),page.getSmartThreeMeetingOneLessonAnnexList());
-              }
-              return Result.OK("文件导入成功！数据行数:" + list.size());
-          } catch (Exception e) {
-              log.error(e.getMessage(),e);
-              return Result.error("文件导入失败:"+e.getMessage());
-          } finally {
-              try {
-                  file.getInputStream().close();
-              } catch (IOException e) {
-                  e.printStackTrace();
-              }
-          }
-      }
-      return Result.OK("文件导入失败！");
-    }
+		if (role.contains("CommonUser")) {
+			QueryWrapper<SmartThreeMeetingOneLesson> queryWrapper = new QueryWrapper<>();
+			queryWrapper.eq("create_by", username);
+			queryList=smartThreeMeetingOneLessonService.list(queryWrapper);
 
-	 @AutoLog(value = "更新文件下载次数")
-	 @ApiOperation(value = "更新文件下载次数", notes = "更新文件下载次数")
-	 @PutMapping(value = "/downloadCount")
-	 public Result<?> downloadCount(@RequestBody SmartThreeMeetingOneLessonAnnex smartThreeMeetingOneLessonAnnex) {
-		 SmartThreeMeetingOneLessonAnnex newSmartThreeMeetingOneLessonAnnex = smartThreeMeetingOneLessonAnnexService.getById(smartThreeMeetingOneLessonAnnex.getId());
-		 if (newSmartThreeMeetingOneLessonAnnex == null) {
-			 return Result.error("未找到对应数据");
-		 }
-		 Integer downloadCount = newSmartThreeMeetingOneLessonAnnex.getDownloadTimes();
-		 newSmartThreeMeetingOneLessonAnnex.setDownloadTimes(downloadCount + 1);
-		 smartThreeMeetingOneLessonAnnexService.updateById(newSmartThreeMeetingOneLessonAnnex);
-		 return Result.OK("更新成功!");
-	 }
+		} else {
+			// 1. 规则，下面是 以**开始
+			String rule = "in";
+			// 2. 查询字段
+			String field = "departmentId";
+
+
+			// 获取子单位ID
+			String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
+
+			HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+			// 获取请求参数中的superQueryParams
+			List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+
+			// 添加额外查询条件，用于权限控制
+			paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+					+ childrenIdString
+					+ "%22,%22field%22:%22" + field + "%22%7D%5D");
+			String[] params = new String[paramsList.size()];
+			paramsList.toArray(params);
+			map.put("superQueryParams", params);
+			params = new String[]{"and"};
+			map.put("superQueryMatchType", params);
+
+			QueryWrapper<SmartThreeMeetingOneLesson> queryWrapper = QueryGenerator.initQueryWrapper(smartThreeMeetingOneLesson, map);
+			queryList=smartThreeMeetingOneLessonService.list(queryWrapper);
+		}
+
+		// Step.1 组装查询条件查询数据
+
+		//Step.2 获取导出数据
+
+		// 过滤选中数据
+		String selections = req.getParameter("selections");
+		List<SmartThreeMeetingOneLesson> smartThreeMeetingOneLessonList = new ArrayList<SmartThreeMeetingOneLesson>();
+		if(oConvertUtils.isEmpty(selections)) {
+			smartThreeMeetingOneLessonList = queryList;
+		}else {
+			List<String> selectionList = Arrays.asList(selections.split(","));
+			smartThreeMeetingOneLessonList = queryList.stream().filter(item -> selectionList.contains(item.getId())).collect(Collectors.toList());
+		}
+
+		// Step.3 组装pageList
+		List<SmartThreeMeetingOneLessonPage> pageList = new ArrayList<SmartThreeMeetingOneLessonPage>();
+		for (SmartThreeMeetingOneLesson main : smartThreeMeetingOneLessonList) {
+			SmartThreeMeetingOneLessonPage vo = new SmartThreeMeetingOneLessonPage();
+			BeanUtils.copyProperties(main, vo);
+			List<SmartThreeMeetingOneLessonParticipants> smartThreeMeetingOneLessonParticipantsList = smartThreeMeetingOneLessonParticipantsService.selectByMainId(main.getId());
+			vo.setSmartThreeMeetingOneLessonParticipantsList(smartThreeMeetingOneLessonParticipantsList);
+			List<SmartThreeMeetingOneLessonAnnex> smartThreeMeetingOneLessonAnnexList = smartThreeMeetingOneLessonAnnexService.selectByMainId(main.getId());
+			vo.setSmartThreeMeetingOneLessonAnnexList(smartThreeMeetingOneLessonAnnexList);
+			pageList.add(vo);
+		}
+
+		// Step.4 AutoPoi 导出Excel
+		ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
+		mv.addObject(NormalExcelConstants.FILE_NAME, "三会一课列表");
+		mv.addObject(NormalExcelConstants.CLASS, SmartThreeMeetingOneLessonPage.class);
+		mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("三会一课表数据", "导出人:"+sysUser.getRealname(), "三会一课表"));
+		mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
+
+		// List深拷贝，否则返回前端会没数据
+		List<SmartThreeMeetingOneLessonPage> newPageList = ObjectUtil.cloneByStream(pageList);
+		baseCommonService.addExportLog(mv.getModel(), "三重一大", req, response);
+		mv.addObject(NormalExcelConstants.DATA_LIST, newPageList);
+		return mv;
+
+
+	}
+
+	/**
+	 * 通过excel导入数据
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/importExcel", method = RequestMethod.POST)
+	public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
+		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+		Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
+		for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
+			MultipartFile file = entity.getValue();// 获取上传文件对象
+			ImportParams params = new ImportParams();
+			params.setTitleRows(2);
+			params.setHeadRows(1);
+			params.setNeedSave(true);
+			try {
+				List<SmartThreeMeetingOneLessonPage> list = ExcelImportUtil.importExcel(file.getInputStream(), SmartThreeMeetingOneLessonPage.class, params);
+				for (SmartThreeMeetingOneLessonPage page : list) {
+					SmartThreeMeetingOneLesson po = new SmartThreeMeetingOneLesson();
+					BeanUtils.copyProperties(page, po);
+					smartThreeMeetingOneLessonService.saveMain(po, page.getSmartThreeMeetingOneLessonParticipantsList(),page.getSmartThreeMeetingOneLessonAnnexList());
+				}
+				return Result.OK("文件导入成功！数据行数:" + list.size());
+			} catch (Exception e) {
+				log.error(e.getMessage(),e);
+				return Result.error("文件导入失败:"+e.getMessage());
+			} finally {
+				try {
+					file.getInputStream().close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return Result.OK("文件导入失败！");
+	}
+
+	@AutoLog(value = "更新文件下载次数")
+	@ApiOperation(value = "更新文件下载次数", notes = "更新文件下载次数")
+	@PutMapping(value = "/downloadCount")
+	public Result<?> downloadCount(@RequestBody SmartThreeMeetingOneLessonAnnex smartThreeMeetingOneLessonAnnex) {
+		SmartThreeMeetingOneLessonAnnex newSmartThreeMeetingOneLessonAnnex = smartThreeMeetingOneLessonAnnexService.getById(smartThreeMeetingOneLessonAnnex.getId());
+		if (newSmartThreeMeetingOneLessonAnnex == null) {
+			return Result.error("未找到对应数据");
+		}
+		Integer downloadCount = newSmartThreeMeetingOneLessonAnnex.getDownloadTimes();
+		newSmartThreeMeetingOneLessonAnnex.setDownloadTimes(downloadCount + 1);
+		smartThreeMeetingOneLessonAnnexService.updateById(newSmartThreeMeetingOneLessonAnnex);
+		return Result.OK("更新成功!");
+	}
 
 }
