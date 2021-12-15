@@ -229,6 +229,115 @@ public class LoginController {
 	}
 
 	/**
+	 * 验证手机号码获取验证码
+	 *
+	 * @param jsonObject
+	 * @return
+	 */
+	@PostMapping(value = "/getVerifyCode")
+	public Result<String> getVerifyCode(@RequestBody JSONObject jsonObject) {
+		Result<String> result = new Result<String>();
+		String mobile = jsonObject.get("mobile").toString();
+		//手机号模式 验证模式: "0"  更改模式: "1"
+		String smsmode=jsonObject.get("smsmode").toString();
+		log.info(mobile);
+		if(oConvertUtils.isEmpty(mobile)){
+			result.setMessage("手机号不允许为空！");
+			result.setSuccess(false);
+			return result;
+		}
+		redisUtil.del(mobile);
+
+		LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
+
+		//随机数
+		String captcha = RandomUtil.randomNumbers(6);
+		JSONObject obj = new JSONObject();
+		obj.put("code", captcha);
+		try {
+			boolean b = false;
+			// 验证手机号码
+			if ("0".equals(smsmode)) {
+				// 验证手机号码模式
+				if (!mobile.equals(sysUser.getPhone())) {
+					result.setMessage("验证的手机号码不属于该登录用户！");
+					result.setSuccess(false);
+					return result;
+				}
+				b = DySmsHelper.sendSms(mobile, obj, DySmsEnum.LOGIN_TEMPLATE_CODE);
+			} else {
+				// 更新手机号码
+				b = DySmsHelper.sendSms(mobile, obj, DySmsEnum.LOGIN_TEMPLATE_CODE);
+			}
+
+			if (b == false) {
+				result.setMessage("短信验证码发送失败,请稍后重试");
+				result.setSuccess(false);
+				return result;
+			}
+			//验证码10分钟内有效
+			redisUtil.set(mobile, captcha, 600);
+			result.setSuccess(true);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.error500(" 短信接口未配置，请联系管理员！");
+			return result;
+		}
+		return result;
+	}
+
+	/**
+	 * 登录成功验证手机号码
+	 *
+	 * @param jsonObject
+	 * @return
+	 */
+	@ApiOperation("手机号验证接口")
+	@PostMapping("/phoneVerify")
+	public Result<JSONObject> phoneVerify(@RequestBody JSONObject jsonObject) {
+		Result<JSONObject> result = new Result<JSONObject>();
+		String phone = jsonObject.getString("mobile");
+		String smsmode=jsonObject.get("smsmode").toString();
+
+		// 校验用户有效性
+		LoginUser loginUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
+
+		SysUser sysUser = sysUserService.getById(loginUser.getId());
+
+		String captcha = jsonObject.getString("captcha");
+		Object code = redisUtil.get(phone);
+		if (code == null) {
+			result.setMessage("请先获取验证码");
+			result.setSuccess(false);
+			return result;
+		}
+		if (!captcha.equals(code)) {
+			result.setMessage("验证码错误");
+			result.setSuccess(false);
+			return result;
+		}
+		// 验证成功后删除验证码
+		redisUtil.set(phone, captcha,600);
+		if ("1".equals(smsmode)) {
+			// 更新手机号码
+			sysUser.setPhone(phone);
+		}
+		sysUser.setLastVerifyTime(new Date());
+		sysUserService.updateById(sysUser);
+		// 返回信息
+		JSONObject obj = new JSONObject();
+		obj.put("smscode", captcha);
+		obj.put("username", sysUser.getUsername());
+		result.setResult(obj);
+		result.success("手机号码验证成功");
+		// 添加日志
+		//baseCommonService.addLog("用户名: " + sysUser.getUsername() + ",验证手机号码成功！", CommonConstant.LOG_TYPE_1, null);
+
+		return result;
+	}
+
+	/**
 	 * 短信登录接口
 	 * 
 	 * @param jsonObject
@@ -396,6 +505,26 @@ public class LoginController {
 		// 设置token缓存有效时间
 		redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, token);
 		redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME * 2 / 1000);
+		// 获取用户是否需要验证手机号码,以及是否首次登录需要修改密码
+		Date lastVerifyTime = sysUser.getLastVerifyTime();
+		Boolean verify = false;
+		Boolean firstLogin = false;
+		if (oConvertUtils.isEmpty(lastVerifyTime)) {
+			verify = true;
+			firstLogin = true;
+		} else {
+			Date now = new Date();
+			long nowTime = now.getTime();
+			long lastTime = lastVerifyTime.getTime();
+			long interval = nowTime - lastTime;
+			interval = interval / (24 * 60 * 60 * 1000);
+			// 如果距离上次验证大于30天则需重新验证
+			if (interval >= 30) {
+				verify = true;
+			}
+		}
+		obj.put("verifyPhone", verify);
+		obj.put("firstLogin", firstLogin);
 		obj.put("token", token);
 		obj.put("userInfo", sysUser);
 		obj.put("sysAllDictItems", sysDictService.queryAllDictItems());
