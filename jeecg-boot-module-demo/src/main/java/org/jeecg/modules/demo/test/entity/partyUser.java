@@ -1,28 +1,34 @@
 package org.jeecg.modules.demo.test.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class partyUser {
-    String username;
-    Date partyYear;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 
-    public String getUserName()
-    {
-        return this.username;
-    }
+@Data
+@TableName("sys_user")
+public class partyUser implements Serializable {
+    String realname;
+    Date joinPartyDate;
 
-    public void setUserName(String username)
-    {
-        this.username = username;
-    }
-
-    public Date getPartyYear()
-    {
-        return this.partyYear;
-    }
-
-    public void setPartyYear(Date partyYear)
-    {
-        this.partyYear = partyYear;
-    }
+//    public String getRealname()
+//    {
+//        return this.realname;
+//    }
+//
+//    public void setRealname(String realname)
+//    {
+//        this.realname = realname;
+//    }
+//
+//    public Date getPartyYear()
+//    {
+//        return this.partyYear;
+//    }
+//
+//    public void setPartyYear(Date partyYear)
+//    {
+//        this.partyYear = partyYear;
+//    }
 }

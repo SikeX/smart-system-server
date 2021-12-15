@@ -3,18 +3,22 @@ package org.jeecg.modules.demo.test.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.common.system.util.JwtUtil;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.modules.demo.test.entity.Cloud;
 import org.jeecg.modules.demo.test.entity.JeecgDemo;
 import org.jeecg.modules.demo.test.entity.partyUser;
 import org.jeecg.modules.demo.test.service.IJeecgDemoService;
+import org.jeecg.modules.demo.test.service.IJeecgDemoServiceTwo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,12 +32,15 @@ import java.util.List;
  * @Version:V1.0
  */
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("/test/bigScreen/templat")
 public class BigScreenTemplatController extends JeecgController<JeecgDemo, IJeecgDemoService> {
 
     @Autowired
     private IJeecgDemoService jeecgDemoService;
+
+    @Autowired
+    private IJeecgDemoServiceTwo jeecgDemoServiceTwo;
 
     /**
      * @param modelAndView
@@ -79,7 +86,7 @@ public class BigScreenTemplatController extends JeecgController<JeecgDemo, IJeec
         modelAndView.addObject("thisyear",thisyear);
 //        // 获取登录用户信息，可以用来查询用户ID
 //        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-        modelAndView.addObject("daishenhe",jeecgDemoService.getYishenhe());
+        modelAndView.addObject("daishenhe",jeecgDemoService.getDaishenhe());
         modelAndView.addObject("yishenhe",jeecgDemoService.getYishenhe());
 
         return modelAndView;
@@ -110,13 +117,17 @@ public class BigScreenTemplatController extends JeecgController<JeecgDemo, IJeec
     @ResponseBody
     public HashMap<String,Object> getChart3Data() {
         HashMap<String, Object> map = new HashMap<>();
-        // 获取登录用户信息，可以用来查询用户ID
-        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-        map.put("tongzhiweidu", jeecgDemoService.getTongzhiweidu(sysUser.getId()));
-        map.put("tongzhiyidu", jeecgDemoService.getTongzhiyidu(sysUser.getId()));
-        map.put("lianzhengyidu", jeecgDemoService.getLianzhengyidu(sysUser.getId()));
-        map.put("lianzhengweidu", jeecgDemoService.getLianzhengweidu(sysUser.getId()));
-        map.put("renwutiao", jeecgDemoService.getRenwutiao(sysUser.getId()));
+        map.put("tongzhiweidu", jeecgDemoService.getTongzhiweidu());
+        map.put("tongzhiyidu", jeecgDemoService.getTongzhiyidu());
+        map.put("lianzhengyidu", jeecgDemoService.getLianzhengyidu());
+        map.put("lianzhengweidu", jeecgDemoService.getLianzhengweidu());
+        map.put("renwutiao", jeecgDemoService.getRenwutiao());
+        System.out.println("-----------------------------------------------------------------获取条形统计图数据");
+        System.out.println(jeecgDemoService.getTongzhiweidu());
+        System.out.println(jeecgDemoService.getTongzhiyidu());
+        System.out.println(jeecgDemoService.getLianzhengyidu());
+        System.out.println(jeecgDemoService.getLianzhengweidu());
+        System.out.println(jeecgDemoService.getRenwutiao());
         return map;
     }
 
@@ -124,7 +135,7 @@ public class BigScreenTemplatController extends JeecgController<JeecgDemo, IJeec
     @ResponseBody
     public HashMap<String,Object> getShenhe() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("daishenhe",jeecgDemoService.getYishenhe());
+        map.put("daishenhe",jeecgDemoService.getDaishenhe());
         map.put("yishenhe",jeecgDemoService.getYishenhe());
         return map;
     }
@@ -133,7 +144,7 @@ public class BigScreenTemplatController extends JeecgController<JeecgDemo, IJeec
     @ResponseBody
     public HashMap<String,Object> getShenhe2() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("daiS",jeecgDemoService.getYishenhe());
+        map.put("daiS",jeecgDemoService.getDaishenhe());
         map.put("yiS",jeecgDemoService.getYishenhe());
         return map;
     }
@@ -143,20 +154,35 @@ public class BigScreenTemplatController extends JeecgController<JeecgDemo, IJeec
     public HashMap<String,Object> getCloudData() {
         HashMap<String, Object> map = new HashMap<>();
         // 获取登录用户信息，可以用来查询用户ID
-        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-        List<partyUser> userList = this.jeecgDemoService.getCloudData(sysUser.getDepartId());
+//        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+//        System.out.println(sysUser.getDepartId());
+//        String username = JwtUtil.getUserNameByToken(req);
+//        System.out.println(username);
+        List<partyUser> userList = this.jeecgDemoService.getCloudData();
         List<Cloud> cloudList = new ArrayList<>();
         if(userList != null) {
             for (partyUser user : userList) {
-                Cloud cloud = null;
-                cloud.setName(user.getUserName());
+                Cloud cloud = new Cloud();
+                cloud.setName(user.getRealname());
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy");
-                String partyYear = formatter.format(user.getPartyYear()).toString();
+                String partyYear = formatter.format(user.getJoinPartyDate());
                 cloud.setValue(partyYear);
                 cloudList.add(cloud);
             }
         }
+        System.out.println("-----------------------------------------------------------------获取入党纪念日数据");
+        System.out.println(userList);
+        System.out.println(cloudList);
         map.put("data", cloudList);
+        return map;
+    }
+
+    @RequestMapping(value = "/getDepartTree")
+    @ResponseBody
+    public HashMap<String,Object> getDepartTree() {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("naturalData",jeecgDemoServiceTwo.getNaturalTree());
+        map.put("workData",jeecgDemoServiceTwo.getWorkTree());
         return map;
     }
 }

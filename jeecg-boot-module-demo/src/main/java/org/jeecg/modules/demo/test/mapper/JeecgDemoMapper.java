@@ -67,31 +67,31 @@ public interface JeecgDemoMapper extends BaseMapper<JeecgDemo> {
 	 * 查询用户已授权字段
 	 * @return
 	 */
-	public String getTongzhiyidu(@Param("type") String type);
+	public String getTongzhiyidu();
 
 	/**
 	 * 查询用户已授权字段
 	 * @return
 	 */
-	public String getTongzhiweidu(@Param("userId") String userId);
+	public String getTongzhiweidu();
 
 	/**
 	 * 查询用户已授权字段
 	 * @return
 	 */
-	public String getLianzhengyidu(@Param("userId") String userId);
+	public String getLianzhengyidu();
 
 	/**
 	 * 查询用户已授权字段
 	 * @return
 	 */
-	public String getLianzhengweidu(@Param("userId") String userId);
+	public String getLianzhengweidu();
 
 	/**
 	 * 查询用户已授权字段
 	 * @return
 	 */
-	public String getRenwutiao(@Param("userId") String userId);
+	public String getRenwutiao();
 
 	/**
 	 * 查询用户已授权字段
@@ -109,6 +109,6 @@ public interface JeecgDemoMapper extends BaseMapper<JeecgDemo> {
 	 * 查询用户已授权字段
 	 * @return
 	 */
-	public List<partyUser> getCloudData(@Param("departId") String departId,@Param("partyDate") String partyDate);
+	public List<partyUser> getCloudData(@Param("partyDate") String partyDate);
 
 }
