@@ -23,7 +23,7 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
-    
+
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
@@ -49,18 +49,18 @@
       </div>
 
       <a-table
-        ref="table"
-        size="middle"
-        bordered
-        rowKey="id"
-        class="j-table-force-nowrap"
-        :scroll="{x:true}"
-        :columns="columns"
-        :dataSource="dataSource"
-        :pagination="ipagination"
-        :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-        @change="handleTableChange">
+          ref="table"
+          size="middle"
+          bordered
+          rowKey="id"
+          class="j-table-force-nowrap"
+          :scroll="{x:true}"
+          :columns="columns"
+          :dataSource="dataSource"
+          :pagination="ipagination"
+          :loading="loading"
+          :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+          @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
           <div v-html="text"></div>
@@ -72,12 +72,12 @@
         <template slot="fileSlot" slot-scope="text">
           <span v-if="!text" style="font-size: 12px;font-style: italic;">无文件</span>
           <a-button
-            v-else
-            :ghost="true"
-            type="primary"
-            icon="download"
-            size="small"
-            @click="downloadFile(text)">
+              v-else
+              :ghost="true"
+              type="primary"
+              icon="download"
+              size="small"
+              @click="downloadFile(text)">
             下载
           </a-button>
         </template>
@@ -110,137 +110,137 @@
 
 <script>
 
-  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartThreeMeetingOneLessonModal from './modules/SmartThreeMeetingOneLessonModal'
-  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
-  import '@/assets/less/TableExpand.less'
+import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+import SmartThreeMeetingOneLessonModal from './modules/SmartThreeMeetingOneLessonModal'
+import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
+import '@/assets/less/TableExpand.less'
 
-  export default {
-    name: "SmartThreeMeetingOneLessonList",
-    mixins:[JeecgListMixin],
-    components: {
-      SmartThreeMeetingOneLessonModal
-    },
-    data () {
-      return {
-        description: '三会一课管理页面',
-        // 表头
-        columns: [
-          {
-            title: '#',
-            dataIndex: '',
-            key:'rowIndex',
-            width:60,
-            align:"center",
-            customRender:function (t,r,index) {
-              return parseInt(index)+1;
-            }
-          },
-          {
-            title:'单位',
-            align:"center",
-            dataIndex: 'departmentId'
-          },
-          {
-            title:'主持人工号',
-            align:"center",
-            dataIndex: 'hostNumber'
-          },
-          {
-            title:'记录人工号',
-            align:"center",
-            dataIndex: 'recorderNumber'
-          },
-          {
-            title:'地点',
-            align:"center",
-            dataIndex: 'place'
-          },
-          {
-            title:'时间',
-            align:"center",
-            dataIndex: 'time'
-          },
-          {
-            title:'类型',
-            align:"center",
-            dataIndex: 'type_dictText'
-          },
-          {
-            title:'主题',
-            align:"center",
-            dataIndex: 'theme'
-          },
-          {
-            title:'内容摘要',
-            align:"center",
-            dataIndex: 'content'
-          },
-          {
-            title:'备注',
-            align:"center",
-            dataIndex: 'remark'
-          },
-          {
-            title:'创建人工号',
-            align:"center",
-            dataIndex: 'founderNumber'
-          },
-          {
-            title:'创建日期',
-            align:"center",
-            dataIndex: 'createTime'
-          },
-          {
-            title: '操作',
-            dataIndex: 'action',
-            align:"center",
-            fixed:"right",
-            width:147,
-            scopedSlots: { customRender: 'action' },
+export default {
+  name: "SmartThreeMeetingOneLessonList",
+  mixins:[JeecgListMixin],
+  components: {
+    SmartThreeMeetingOneLessonModal
+  },
+  data () {
+    return {
+      description: '三会一课管理页面',
+      // 表头
+      columns: [
+        {
+          title: '#',
+          dataIndex: '',
+          key:'rowIndex',
+          width:60,
+          align:"center",
+          customRender:function (t,r,index) {
+            return parseInt(index)+1;
           }
-        ],
-        url: {
-          list: "/smartThreeMeetingOneLesson/smartThreeMeetingOneLesson/list",
-          delete: "/smartThreeMeetingOneLesson/smartThreeMeetingOneLesson/delete",
-          deleteBatch: "/smartThreeMeetingOneLesson/smartThreeMeetingOneLesson/deleteBatch",
-          exportXlsUrl: "/smartThreeMeetingOneLesson/smartThreeMeetingOneLesson/exportXls",
-          importExcelUrl: "smartThreeMeetingOneLesson/smartThreeMeetingOneLesson/importExcel",
-          
         },
-        dictOptions:{},
-        superFieldList:[],
-      }
-    },
-    created() {
-      this.getSuperFieldList();
-    },
-    computed: {
-      importExcelUrl: function(){
-        return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
-      }
-    },
-    methods: {
-      initDictConfig(){
+        {
+          title:'单位',
+          align:"center",
+          dataIndex: 'departmentId'
+        },
+        {
+          title:'主持人工号',
+          align:"center",
+          dataIndex: 'hostNumber'
+        },
+        {
+          title:'记录人工号',
+          align:"center",
+          dataIndex: 'recorderNumber'
+        },
+        {
+          title:'地点',
+          align:"center",
+          dataIndex: 'place'
+        },
+        {
+          title:'时间',
+          align:"center",
+          dataIndex: 'time'
+        },
+        {
+          title:'类型',
+          align:"center",
+          dataIndex: 'type_dictText'
+        },
+        {
+          title:'主题',
+          align:"center",
+          dataIndex: 'theme'
+        },
+        {
+          title:'内容摘要',
+          align:"center",
+          dataIndex: 'content'
+        },
+        {
+          title:'备注',
+          align:"center",
+          dataIndex: 'remark'
+        },
+        {
+          title:'创建人工号',
+          align:"center",
+          dataIndex: 'founderNumber'
+        },
+        {
+          title:'创建日期',
+          align:"center",
+          dataIndex: 'createTime'
+        },
+        {
+          title: '操作',
+          dataIndex: 'action',
+          align:"center",
+          fixed:"right",
+          width:147,
+          scopedSlots: { customRender: 'action' },
+        }
+      ],
+      url: {
+        list: "/smartThreeMeetingOneLesson/smartThreeMeetingOneLesson/list",
+        delete: "/smartThreeMeetingOneLesson/smartThreeMeetingOneLesson/delete",
+        deleteBatch: "/smartThreeMeetingOneLesson/smartThreeMeetingOneLesson/deleteBatch",
+        exportXlsUrl: "/smartThreeMeetingOneLesson/smartThreeMeetingOneLesson/exportXls",
+        importExcelUrl: "smartThreeMeetingOneLesson/smartThreeMeetingOneLesson/importExcel",
+
       },
-      getSuperFieldList(){
-        let fieldList=[];
-         fieldList.push({type:'string',value:'departmentId',text:'单位',dictCode:''})
-         fieldList.push({type:'string',value:'hostNumber',text:'主持人工号',dictCode:''})
-         fieldList.push({type:'string',value:'recorderNumber',text:'记录人工号',dictCode:''})
-         fieldList.push({type:'string',value:'place',text:'地点',dictCode:''})
-         fieldList.push({type:'datetime',value:'time',text:'时间'})
-         fieldList.push({type:'string',value:'type',text:'类型',dictCode:'shyk'})
-         fieldList.push({type:'string',value:'theme',text:'主题',dictCode:''})
-         fieldList.push({type:'Text',value:'content',text:'内容摘要',dictCode:''})
-         fieldList.push({type:'string',value:'remark',text:'备注',dictCode:''})
-         fieldList.push({type:'string',value:'founderNumber',text:'创建人工号',dictCode:''})
-         fieldList.push({type:'datetime',value:'createTime',text:'创建日期'})
-        this.superFieldList = fieldList
-      }
+      dictOptions:{},
+      superFieldList:[],
+    }
+  },
+  created() {
+    this.getSuperFieldList();
+  },
+  computed: {
+    importExcelUrl: function(){
+      return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
+    }
+  },
+  methods: {
+    initDictConfig(){
+    },
+    getSuperFieldList(){
+      let fieldList=[];
+      fieldList.push({type:'string',value:'departmentId',text:'单位',dictCode:''})
+      fieldList.push({type:'string',value:'hostNumber',text:'主持人工号',dictCode:''})
+      fieldList.push({type:'string',value:'recorderNumber',text:'记录人工号',dictCode:''})
+      fieldList.push({type:'string',value:'place',text:'地点',dictCode:''})
+      fieldList.push({type:'datetime',value:'time',text:'时间'})
+      fieldList.push({type:'string',value:'type',text:'类型',dictCode:'shyk'})
+      fieldList.push({type:'string',value:'theme',text:'主题',dictCode:''})
+      fieldList.push({type:'Text',value:'content',text:'内容摘要',dictCode:''})
+      fieldList.push({type:'string',value:'remark',text:'备注',dictCode:''})
+      fieldList.push({type:'string',value:'founderNumber',text:'创建人工号',dictCode:''})
+      fieldList.push({type:'datetime',value:'createTime',text:'创建日期'})
+      this.superFieldList = fieldList
     }
   }
+}
 </script>
 <style scoped>
-  @import '~@assets/less/common.less';
+@import '~@assets/less/common.less';
 </style>
