@@ -25,33 +25,33 @@ import java.io.UnsupportedEncodingException;
 public class SmartThreeMeetingOneLessonAnnex implements Serializable {
     private static final long serialVersionUID = 1L;
 
-	/**主键*/
-	@TableId(type = IdType.ASSIGN_ID)
+    /**主键*/
+    @TableId(type = IdType.ASSIGN_ID)
     @ApiModelProperty(value = "主键")
     private java.lang.String id;
-	/**主表id*/
+    /**主表id*/
     @ApiModelProperty(value = "主表id")
     private java.lang.String parentTableId;
-	/**序号*/
-	@Excel(name = "序号", width = 15)
+    /**序号*/
+    @Excel(name = "序号", width = 15)
     @ApiModelProperty(value = "序号")
     private java.lang.Integer serialNumber;
-	/**附件说明*/
-	@Excel(name = "附件说明", width = 15)
+    /**附件说明*/
+    @Excel(name = "附件说明", width = 15)
     @ApiModelProperty(value = "附件说明")
     private java.lang.String fileDescription;
-	/**附件文件路径*/
-	@Excel(name = "附件文件路径", width = 15)
+    /**附件文件路径*/
+    @Excel(name = "附件文件路径", width = 15)
     @ApiModelProperty(value = "附件文件路径")
     private java.lang.String fileLocation;
-	/**上传时间*/
-	@Excel(name = "上传时间", width = 15, format = "yyyy-MM-dd")
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
+    /**上传时间*/
+    @Excel(name = "上传时间", width = 15, format = "yyyy-MM-dd")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @ApiModelProperty(value = "上传时间")
     private java.util.Date uploadTime;
-	/**下载次数*/
-	@Excel(name = "下载次数", width = 15)
+    /**下载次数*/
+    @Excel(name = "下载次数", width = 15)
     @ApiModelProperty(value = "下载次数")
     private java.lang.Integer downloadTimes;
 }

@@ -9,6 +9,9 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.hutool.core.util.ObjectUtil;
+import org.jeecg.common.system.api.ISysBaseAPI;
+import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
@@ -72,6 +75,10 @@ public class SmartDemocraticLifeMeetingController {
     public String verifyType = "民主生活会";
 	@Autowired
 	CommonService commonService;
+	@Autowired
+	private ISysBaseAPI sysBaseAPI;
+	@Autowired
+	private BaseCommonService baseCommonService;
 
 	/**
 	 * 分页列表查询
@@ -267,15 +274,94 @@ public class SmartDemocraticLifeMeetingController {
 	/**
 	 * 导出excel
 	 *
-	 * @param request
+	 * @param req
 	 * @param smartDemocraticLifeMeeting
 	 */
 	@RequestMapping(value = "/exportXls")
-	public ModelAndView exportXls(HttpServletRequest request, SmartDemocraticLifeMeeting smartDemocraticLifeMeeting) {
+	public ModelAndView exportXls(HttpServletRequest req, SmartDemocraticLifeMeeting smartDemocraticLifeMeeting, HttpServletResponse response) throws Exception {
 		// Step.1 组装查询条件查询数据
-		QueryWrapper<SmartDemocraticLifeMeeting> queryWrapper = QueryGenerator.initQueryWrapper(smartDemocraticLifeMeeting, request.getParameterMap());
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		String username = sysUser.getUsername();
+		// 获取用户角色
+		List<String> role = sysBaseAPI.getRolesByUsername(username);
 
+		List<SmartDemocraticLifeMeeting> queryList = new ArrayList<SmartDemocraticLifeMeeting>();
+
+		if(role.contains("CommonUser")) {
+			QueryWrapper<SmartDemocraticLifeMeeting> queryWrapper = QueryGenerator.initQueryWrapper(smartDemocraticLifeMeeting, req.getParameterMap());
+
+			queryWrapper.eq("create_by",username);
+			queryList = smartDemocraticLifeMeetingService.list(queryWrapper);
+		} else {
+			// 1. 规则，下面是 以**开始
+			String rule = "in";
+			// 2. 查询字段
+			String field = "departId";
+
+			// 获取子单位ID
+			String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
+
+			HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+			// 获取请求参数中的superQueryParams
+			List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+
+			// 添加额外查询条件，用于权限控制
+			paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+					+ childrenIdString
+					+ "%22,%22field%22:%22" + field + "%22%7D%5D");
+			String[] params = new String[paramsList.size()];
+			paramsList.toArray(params);
+			map.put("superQueryParams", params);
+			params = new String[]{"and"};
+			map.put("superQueryMatchType", params);
+			QueryWrapper<SmartDemocraticLifeMeeting> queryWrapper = QueryGenerator.initQueryWrapper(smartDemocraticLifeMeeting, map);
+
+			queryList = smartDemocraticLifeMeetingService.list(queryWrapper);
+		}
+
+		// Step.1 组装查询条件查询数据
+
+		//Step.2 获取导出数据
+		// 过滤选中数据
+		String selections = req.getParameter("selections");
+		List<SmartDemocraticLifeMeeting> smartDemocraticLifeMeetingList = new ArrayList<SmartDemocraticLifeMeeting>();
+		if(oConvertUtils.isEmpty(selections)) {
+			smartDemocraticLifeMeetingList = queryList;
+		}else {
+			List<String> selectionList = Arrays.asList(selections.split(","));
+			smartDemocraticLifeMeetingList = queryList.stream().filter(item -> selectionList.contains(item.getId())).collect(Collectors.toList());
+		}
+
+		// Step.3 组装pageList
+		List<SmartDemocraticLifeMeetingPage> pageList = new ArrayList<SmartDemocraticLifeMeetingPage>();
+		for (SmartDemocraticLifeMeeting main : smartDemocraticLifeMeetingList) {
+			SmartDemocraticLifeMeetingPage vo = new SmartDemocraticLifeMeetingPage();
+			BeanUtils.copyProperties(main, vo);
+			List<SmartDemocraticLifeEnclosure> smartCreateAdviceAnnexList = smartDemocraticLifeEnclosureService.selectByMainId(main.getId());
+			List<SmartDemocraticLifePeople> smartDemocraticLifePeopleList = smartDemocraticLifePeopleService.selectByMainId(main.getId());
+			vo.setSmartDemocraticLifeEnclosureList(smartCreateAdviceAnnexList);
+			vo.setSmartDemocraticLifePeopleList(smartDemocraticLifePeopleList);
+			pageList.add(vo);
+		}
+
+		// Step.4 AutoPoi 导出Excel
+		ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
+		mv.addObject(NormalExcelConstants.FILE_NAME, "民主生活会表列表");
+		mv.addObject(NormalExcelConstants.CLASS, SmartDemocraticLifeMeetingPage.class);
+		mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("民主生活会表数据", "导出人:" + sysUser.getRealname(), "民主生活会表"));
+		mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
+
+		// List深拷贝，否则返回前端会没数据
+		List<SmartDemocraticLifeMeetingPage> newPageList = ObjectUtil.cloneByStream(pageList);
+
+		baseCommonService.addExportLog(mv.getModel(), "民主生活会", req, response);
+
+		mv.addObject(NormalExcelConstants.DATA_LIST, newPageList);
+
+		return mv;
+
+
+		/*
 		//Step.2 获取导出数据
 		List<SmartDemocraticLifeMeeting> queryList = smartDemocraticLifeMeetingService.list(queryWrapper);
 		// 过滤选中数据
@@ -307,6 +393,8 @@ public class SmartDemocraticLifeMeetingController {
 		mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("民主生活会表数据", "导出人:" + sysUser.getRealname(), "民主生活会表"));
 		mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
 		return mv;
+
+		 */
 	}
 
 	/**

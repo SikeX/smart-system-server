@@ -1,5 +1,6 @@
 package org.jeecg.modules.smartDemocraticLifeMeeting.vo;
 
+import java.io.Serializable;
 import java.util.List;
 import org.jeecg.modules.smartDemocraticLifeMeeting.entity.SmartDemocraticLifeMeeting;
 import org.jeecg.modules.smartDemocraticLifeMeeting.entity.SmartDemocraticLifePeople;
@@ -23,7 +24,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @Data
 @ApiModel(value="smart_democratic_life_meetingPage对象", description="民主生活会表")
-public class SmartDemocraticLifeMeetingPage {
+public class SmartDemocraticLifeMeetingPage implements Serializable {
 
 	/**主键*/
 	@ApiModelProperty(value = "主键")

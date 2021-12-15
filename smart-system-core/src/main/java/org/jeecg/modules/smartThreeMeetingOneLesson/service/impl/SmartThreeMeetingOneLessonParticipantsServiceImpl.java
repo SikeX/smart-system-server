@@ -16,10 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @Service
 public class SmartThreeMeetingOneLessonParticipantsServiceImpl extends ServiceImpl<SmartThreeMeetingOneLessonParticipantsMapper, SmartThreeMeetingOneLessonParticipants> implements ISmartThreeMeetingOneLessonParticipantsService {
-	
+
 	@Autowired
 	private SmartThreeMeetingOneLessonParticipantsMapper smartThreeMeetingOneLessonParticipantsMapper;
-	
+
 	@Override
 	public List<SmartThreeMeetingOneLessonParticipants> selectByMainId(String mainId) {
 		return smartThreeMeetingOneLessonParticipantsMapper.selectByMainId(mainId);
