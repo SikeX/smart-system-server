@@ -1284,4 +1284,9 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 	public List<String> getDepAdminByDepId(String depId) {
 		return sysDepartRoleMapper.getDepAdminByDepId(depId);
 	}
+
+	@Override
+	public List<String> getSysUserListByRole(String roleId) {
+		return sysUserRoleMapper.getSysUserListByRole(roleId);
+	}
 }

@@ -375,7 +375,7 @@ public class SysAnnouncementController {
 		Page<SysAnnouncement> sysMsgList = new Page<SysAnnouncement>(0,5);
 		sysMsgList = sysAnnouncementService.querySysCementPageByUserId(sysMsgList,userId,"2");//系统消息
 		Page<SysAnnouncement> taskMsgList = new Page<SysAnnouncement>(0,5);
-		taskMsgList = sysAnnouncementService.querySysCementPageByUserId(taskMsgList,userId,"3");//通知公告消息
+		taskMsgList = sysAnnouncementService.querySysCementPageByUserId(taskMsgList,userId,"3");//任务下发消息
 		Map<String,Object> sysMsgMap = new HashMap<String, Object>();
 		sysMsgMap.put("sysMsgList", sysMsgList.getRecords());
 		sysMsgMap.put("sysMsgTotal", sysMsgList.getTotal());
@@ -396,16 +396,18 @@ public class SysAnnouncementController {
      */
     @RequestMapping(value = "/exportXls")
     public ModelAndView exportXls(SysAnnouncement sysAnnouncement,HttpServletRequest request) {
+
+		LoginUser user = (LoginUser) SecurityUtils.getSubject().getPrincipal();
         // Step.1 组装查询条件
         LambdaQueryWrapper<SysAnnouncement> queryWrapper = new LambdaQueryWrapper<SysAnnouncement>(sysAnnouncement);
         //Step.2 AutoPoi 导出Excel
         ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
-		queryWrapper.eq(SysAnnouncement::getDelFlag,CommonConstant.DEL_FLAG_0);
+		queryWrapper.eq(SysAnnouncement::getDelFlag,CommonConstant.DEL_FLAG_0).eq(SysAnnouncement::getSender,user.getUsername());
         List<SysAnnouncement> pageList = sysAnnouncementService.list(queryWrapper);
         //导出文件名称
         mv.addObject(NormalExcelConstants.FILE_NAME, "系统通告列表");
         mv.addObject(NormalExcelConstants.CLASS, SysAnnouncement.class);
-        LoginUser user = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
         mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("系统通告列表数据", "导出人:"+user.getRealname(), "导出信息"));
         mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
         return mv;

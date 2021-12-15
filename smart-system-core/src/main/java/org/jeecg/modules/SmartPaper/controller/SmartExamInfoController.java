@@ -18,11 +18,15 @@ import org.jeecg.modules.SmartPaper.service.ISmartExamInfoService;
 import org.jeecg.modules.SmartPaper.service.ISmartMyExamService;
 import org.jeecg.modules.SmartPaper.service.ISmartPaperService;
 import org.jeecg.modules.SmartPaper.service.ISmartPeopleService;
+import org.jeecg.modules.SmartPaper.vo.DeptExamRankVo;
+import org.jeecg.modules.SmartPaper.vo.ExamPeopleScoreVo;
 import org.jeecg.modules.SmartPaper.vo.SmartMyExamVo;
 import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.smartEvaluateList.entity.peopleAvg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -67,15 +71,16 @@ public class SmartExamInfoController extends JeecgController<SmartExamInformatio
                                   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
                                   HttpServletRequest req) {
        QueryWrapper<SmartExamInformation> queryWrapper = QueryGenerator.initQueryWrapper(smartExamInformation, req.getParameterMap());
-       String oldExamName = smartExamInformation.getExamName();
+       /*String oldExamName = smartExamInformation.getExamName();
        String examName = "";
        if(oldExamName == null || oldExamName.equals("")){
            examName = oldExamName;
        }else {
            examName = oldExamName.replace('*','%');
-       }
+       }*/
        Page<SmartExamInformation> page = new Page<SmartExamInformation>(pageNo, pageSize);
-       IPage<SmartExamInformation> pageList = smartExamInformationService.getAllExam(page,examName);;
+       //IPage<SmartExamInformation> pageList = smartExamInformationService.getAllExam(page,examId);
+       IPage<SmartExamInformation> pageList = smartExamInformationService.page(page,queryWrapper);
        return Result.OK(pageList);
    }
     @AutoLog(value = "个人考试信息表-分页列表查询")
@@ -236,4 +241,66 @@ public class SmartExamInfoController extends JeecgController<SmartExamInformatio
        return super.importExcel(request, response, SmartExamInformation.class);
    }
 
+
+    /**
+     *考试-单位排名
+     *
+     * @param
+     * @return
+     */
+    @AutoLog(value = "考试-单位排名")
+    @ApiOperation(value="考试-单位排名", notes="考试-单位排名")
+    @GetMapping(value = "/deptExamRank")
+    public Result<?> deptExamRank(DeptExamRankVo deptExamRankVo,
+                                  @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+                                  @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+                                  HttpServletRequest req) {
+        try {
+            String examId = deptExamRankVo.getExamId();
+            //System.out.println("###############################");
+           // System.out.println(examId);
+            if (examId != null && !examId.isEmpty()) {
+                if (examId.startsWith(",")) {
+                    System.out.println("process");
+                    examId = examId.substring(1);
+                }
+            }
+            Page<DeptExamRankVo> page = new Page<DeptExamRankVo>(pageNo, pageSize);
+            IPage<DeptExamRankVo> pageList = smartExamInformationService.deptExamRank(page,examId);
+            return Result.OK(pageList);
+        }catch (Exception e){
+            return Result.error("error");
+        }
+    }
+
+    /**
+     *考试-单位排名
+     *
+     * @param
+     * @return
+     */
+    @AutoLog(value = "考试-个人排名")
+    @ApiOperation(value="考试-个人排名", notes="考试-个人排名")
+    @GetMapping(value = "/peopleExamRank")
+    public Result<?> peopleExamRank(ExamPeopleScoreVo examPeopleScoreVo,
+                                    @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+                                    @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+                                    HttpServletRequest req) {
+        try {
+            String examId = examPeopleScoreVo.getExamId();
+            //System.out.println("###############################");
+            // System.out.println(examId);
+            if (examId != null && !examId.isEmpty()) {
+                if (examId.startsWith(",")) {
+                    System.out.println("process");
+                    examId = examId.substring(1);
+                }
+            }
+            Page<ExamPeopleScoreVo> page = new Page<ExamPeopleScoreVo>(pageNo, pageSize);
+            IPage<ExamPeopleScoreVo> pageList = smartExamInformationService.peopleExamRank(page,examId);
+            return Result.OK(pageList);
+        }catch (Exception e){
+            return Result.error("error");
+        }
+    }
 }

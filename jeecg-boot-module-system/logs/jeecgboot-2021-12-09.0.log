@@ -44,8 +44,8 @@
 2021-12-09 09:36:30.078 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'redisConnectionFactory' of type [org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
 2021-12-09 09:36:30.082 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'shiroConfig' of type [org.jeecg.config.shiro.ShiroConfig$$EnhancerBySpringCGLIB$$64dd0185] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
 2021-12-09 09:36:30.235 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'shiroRealm' of type [org.jeecg.config.shiro.ShiroRealm] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
-2021-12-09 09:36:31.156 [main] INFO  org.jeecg.config.shiro.ShiroConfig:219 - ===============(1)¥¥Ω®ª∫¥Êπ‹¿Ì∆˜RedisCacheManager
-2021-12-09 09:36:31.188 [main] INFO  org.jeecg.config.shiro.ShiroConfig:237 - ===============(2)¥¥Ω®RedisManager,¡¨Ω”Redis..
+2021-12-09 09:36:31.156 [main] INFO  org.jeecg.config.shiro.ShiroConfig:219 - ===============(1)ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩRedisCacheManager
+2021-12-09 09:36:31.188 [main] INFO  org.jeecg.config.shiro.ShiroConfig:237 - ===============(2)ÔøΩÔøΩÔøΩÔøΩRedisManager,ÔøΩÔøΩÔøΩÔøΩRedis..
 2021-12-09 09:36:31.222 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'redisManager' of type [org.crazycake.shiro.RedisManager] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
 2021-12-09 09:36:31.228 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'securityManager' of type [org.apache.shiro.web.mgt.DefaultWebSecurityManager] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
 2021-12-09 09:36:31.478 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'authorizationAttributeSourceAdvisor' of type [org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
@@ -84,9 +84,9 @@
 2021-12-09 09:36:51.386 [main] INFO  org.quartz.core.QuartzScheduler:2293 - JobFactory set to: org.springframework.scheduling.quartz.SpringBeanJobFactory@4d2a1da3
 2021-12-09 09:36:53.270 [main] INFO  o.j.m.jmreport.config.JimuReportConfiguration:55 -  --- Init JimuReport Config --- 
 2021-12-09 09:36:59.948 [main] INFO  o.s.b.actuate.endpoint.web.EndpointLinksResolver:58 - Exposing 2 endpoint(s) beneath base path '/actuator'
-2021-12-09 09:37:00.175 [main] INFO  org.jeecg.config.init.CodeGenerateDbConfig:46 -  ¥˙¬Î…˙≥…∆˜ ˝æ›ø‚¡¨Ω”£¨ π”√application.ymlµƒDB≈‰÷√ ###################
+2021-12-09 09:37:00.175 [main] INFO  org.jeecg.config.init.CodeGenerateDbConfig:46 -  ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ›øÔøΩÔøΩÔøΩÔøΩ”£ÔøΩ πÔøΩÔøΩapplication.ymlÔøΩÔøΩDBÔøΩÔøΩÔøΩÔøΩ ###################
 2021-12-09 09:37:00.246 [main] INFO  s.d.s.w.WebMvcPropertySourcedRequestMappingHandlerMapping:69 - Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2ControllerWebMvc#getDocumentation(String, HttpServletRequest)]
-2021-12-09 09:37:00.382 [main] INFO  o.j.modules.jmreport.config.JmReportExecutorConfig:21 - ---¥¥Ω®œﬂ≥Ã≥ÿ---
+2021-12-09 09:37:00.382 [main] INFO  o.j.modules.jmreport.config.JmReportExecutorConfig:21 - ---ÔøΩÔøΩÔøΩÔøΩÔøΩﬂ≥Ã≥ÔøΩ---
 2021-12-09 09:37:00.385 [main] INFO  o.s.scheduling.concurrent.ThreadPoolTaskExecutor:181 - Initializing ExecutorService
 2021-12-09 09:37:00.388 [main] INFO  o.s.scheduling.concurrent.ThreadPoolTaskExecutor:181 - Initializing ExecutorService 'jmReportTaskExecutor'
 2021-12-09 09:37:03.157 [main] INFO  o.s.scheduling.concurrent.ThreadPoolTaskScheduler:181 - Initializing ExecutorService 'taskScheduler'
@@ -382,7 +382,7 @@
 	Application Jeecg-Boot is running! Access URLs:
 	Local: 		http://localhost:8080/smart-system/
 	External: 	http://192.168.31.86:8080/smart-system/
-	SwaggerŒƒµµ: 	http://192.168.31.86:8080/smart-system/doc.html
+	SwaggerÔøΩƒµÔøΩ: 	http://192.168.31.86:8080/smart-system/doc.html
 ----------------------------------------------------------
 2021-12-09 09:37:11.669 [http-nio-8080-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/smart-system]:173 - Initializing Spring DispatcherServlet 'dispatcherServlet'
 2021-12-09 09:37:11.669 [http-nio-8080-exec-2] INFO  org.springframework.web.servlet.DispatcherServlet:525 - Initializing Servlet 'dispatcherServlet'
@@ -455,7 +455,7 @@ Caused by: javax.crypto.AEADBadTagException: Tag mismatch!
 	at javax.crypto.Cipher.doFinal(Cipher.java:2168)
 	at org.apache.shiro.crypto.JcaCipherService.crypt(JcaCipherService.java:459)
 	... 55 common frames omitted
-2021-12-09 09:37:12.191 [http-nio-8080-exec-2] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - °æwebsocketœ˚œ¢°ø”––¬µƒ¡¨Ω”£¨◊‹ ˝Œ™:1
+2021-12-09 09:37:12.191 [http-nio-8080-exec-2] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ¬µÔøΩÔøΩÔøΩÔøΩ”£ÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:1
 2021-12-09 09:37:40.809 [http-nio-8080-exec-10] WARN  org.apache.shiro.mgt.AbstractRememberMeManager:449 - There was a failure while trying to retrieve remembered principals.  This could be due to a configuration problem or corrupted principals.  This could also be due to a recently changed encryption key, if you are using a shiro.ini file, this property would be 'securityManager.rememberMeManager.cipherKey' see: http://shiro.apache.org/web.html#Web-RememberMeServices. The remembered identity will be forgotten and not used for this request.
 2021-12-09 09:37:40.810 [http-nio-8080-exec-10] WARN  org.apache.shiro.mgt.DefaultSecurityManager:618 - Delegate RememberMeManager instance of type [org.apache.shiro.web.mgt.CookieRememberMeManager] threw an exception during getRememberedPrincipals().
 org.apache.shiro.crypto.CryptoException: Unable to execute 'doFinal' with cipher instance [javax.crypto.Cipher@4ae0cbdc].
@@ -524,10 +524,10 @@ Caused by: javax.crypto.AEADBadTagException: Tag mismatch!
 	at javax.crypto.Cipher.doFinal(Cipher.java:2168)
 	at org.apache.shiro.crypto.JcaCipherService.crypt(JcaCipherService.java:459)
 	... 55 common frames omitted
-2021-12-09 09:37:40.832 [http-nio-8080-exec-10] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - °æwebsocketœ˚œ¢°ø”––¬µƒ¡¨Ω”£¨◊‹ ˝Œ™:2
-2021-12-09 09:37:41.463 [http-nio-8080-exec-7] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:null,≈≈–Ú∑Ω Ω:null
-2021-12-09 09:37:41.767 [http-nio-8080-exec-7] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---∏ﬂº∂≤È—Ø≤Œ ˝-->[creatorId eq string null 1468620732370694146]
-2021-12-09 09:37:41.769 [http-nio-8080-exec-7] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --≤È—ØπÊ‘Ú-->creator_id = 1468620732370694146
+2021-12-09 09:37:40.832 [http-nio-8080-exec-10] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ¬µÔøΩÔøΩÔøΩÔøΩ”£ÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:2
+2021-12-09 09:37:41.463 [http-nio-8080-exec-7] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:null,ÔøΩÔøΩÔøΩÔøΩ Ω:null
+2021-12-09 09:37:41.767 [http-nio-8080-exec-7] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---ÔøΩﬂºÔøΩÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->[creatorId eq string null 1468620732370694146]
+2021-12-09 09:37:41.769 [http-nio-8080-exec-7] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --ÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->creator_id = 1468620732370694146
 2021-12-09 09:37:53.650 [http-nio-8080-exec-1] WARN  org.apache.shiro.mgt.AbstractRememberMeManager:449 - There was a failure while trying to retrieve remembered principals.  This could be due to a configuration problem or corrupted principals.  This could also be due to a recently changed encryption key, if you are using a shiro.ini file, this property would be 'securityManager.rememberMeManager.cipherKey' see: http://shiro.apache.org/web.html#Web-RememberMeServices. The remembered identity will be forgotten and not used for this request.
 2021-12-09 09:37:53.652 [http-nio-8080-exec-1] WARN  org.apache.shiro.mgt.DefaultSecurityManager:618 - Delegate RememberMeManager instance of type [org.apache.shiro.web.mgt.CookieRememberMeManager] threw an exception during getRememberedPrincipals().
 org.apache.shiro.crypto.CryptoException: Unable to execute 'doFinal' with cipher instance [javax.crypto.Cipher@474ddf5c].
@@ -2162,8 +2162,8 @@ Caused by: javax.crypto.AEADBadTagException: Tag mismatch!
 	... 55 common frames omitted
 2021-12-09 09:37:55.988 [http-nio-8080-exec-8] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - null
 java.lang.NullPointerException: null
-	at org.jeecg.modules.demo.test.controller.BigScreenTemplatController.getCloudData(BigScreenTemplatController.java:147)
-	at org.jeecg.modules.demo.test.controller.BigScreenTemplatController$$FastClassBySpringCGLIB$$ad0cc1eb.invoke(<generated>)
+	at org.jeecg.modules.demo.test.org.jeecg.modules.smart_video_player.controller.BigScreenTemplatController.getCloudData(BigScreenTemplatController.java:147)
+	at org.jeecg.modules.demo.test.org.jeecg.modules.smart_video_player.controller.BigScreenTemplatController$$FastClassBySpringCGLIB$$ad0cc1eb.invoke(<generated>)
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
@@ -2183,7 +2183,7 @@ java.lang.NullPointerException: null
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-	at org.jeecg.modules.demo.test.controller.BigScreenTemplatController$$EnhancerBySpringCGLIB$$9a68e0c.getCloudData(<generated>)
+	at org.jeecg.modules.demo.test.org.jeecg.modules.smart_video_player.controller.BigScreenTemplatController$$EnhancerBySpringCGLIB$$9a68e0c.getCloudData(<generated>)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -2273,9 +2273,9 @@ java.lang.NullPointerException: null
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.lang.Thread.run(Unknown Source)
-2021-12-09 09:38:04.359 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:38:06.672 [http-nio-8080-exec-2] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:38:06.673 [http-nio-8080-exec-2] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---∏ﬂº∂≤È—Ø≤Œ ˝-->[id in string null ]
+2021-12-09 09:38:04.359 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:38:06.672 [http-nio-8080-exec-2] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:38:06.673 [http-nio-8080-exec-2] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---ÔøΩﬂºÔøΩÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->[id in string null ]
 2021-12-09 09:38:06.683 [http-nio-8080-exec-2] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:96)
@@ -2292,8 +2292,8 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:687)
 	at org.jeecg.modules.SmartPaper.service.impl.SmartMyExamServiceImpl$$EnhancerBySpringCGLIB$$408707a5.getMyAllExam(<generated>)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
@@ -2324,7 +2324,7 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -2456,10 +2456,10 @@ Caused by: org.apache.ibatis.binding.BindingException: Parameter 'examName' not 
 	at java.lang.reflect.Method.invoke(Unknown Source)
 	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427)
 	... 134 common frames omitted
-2021-12-09 09:38:07.630 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --≤È—ØπÊ‘Ú-->paper_type = 2
-2021-12-09 09:38:07.632 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:38:10.374 [http-nio-8080-exec-8] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:38:10.375 [http-nio-8080-exec-8] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---∏ﬂº∂≤È—Ø≤Œ ˝-->[id in string null ]
+2021-12-09 09:38:07.630 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --ÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->paper_type = 2
+2021-12-09 09:38:07.632 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:38:10.374 [http-nio-8080-exec-8] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:38:10.375 [http-nio-8080-exec-8] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---ÔøΩﬂºÔøΩÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->[id in string null ]
 2021-12-09 09:38:10.378 [http-nio-8080-exec-8] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:96)
@@ -2476,8 +2476,8 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:687)
 	at org.jeecg.modules.SmartPaper.service.impl.SmartMyExamServiceImpl$$EnhancerBySpringCGLIB$$408707a5.getMyAllExam(<generated>)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
@@ -2508,7 +2508,7 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -2640,12 +2640,12 @@ Caused by: org.apache.ibatis.binding.BindingException: Parameter 'examName' not 
 	at java.lang.reflect.Method.invoke(Unknown Source)
 	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427)
 	... 134 common frames omitted
-2021-12-09 09:38:12.657 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --≤È—ØπÊ‘Ú-->paper_type = 2
-2021-12-09 09:38:12.660 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:38:27.515 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --≤È—ØπÊ‘Ú-->paper_type = 2
-2021-12-09 09:38:27.516 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:38:43.837 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:38:43.838 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---∏ﬂº∂≤È—Ø≤Œ ˝-->[id in string null ]
+2021-12-09 09:38:12.657 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --ÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->paper_type = 2
+2021-12-09 09:38:12.660 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:38:27.515 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --ÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->paper_type = 2
+2021-12-09 09:38:27.516 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:38:43.837 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:38:43.838 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---ÔøΩﬂºÔøΩÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->[id in string null ]
 2021-12-09 09:38:43.842 [http-nio-8080-exec-9] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:96)
@@ -2662,8 +2662,8 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:687)
 	at org.jeecg.modules.SmartPaper.service.impl.SmartMyExamServiceImpl$$EnhancerBySpringCGLIB$$408707a5.getMyAllExam(<generated>)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
@@ -2693,7 +2693,7 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -2824,8 +2824,8 @@ Caused by: org.apache.ibatis.binding.BindingException: Parameter 'examName' not 
 	at java.lang.reflect.Method.invoke(Unknown Source)
 	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427)
 	... 133 common frames omitted
-2021-12-09 09:38:51.189 [http-nio-8080-exec-2] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:38:51.190 [http-nio-8080-exec-2] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---∏ﬂº∂≤È—Ø≤Œ ˝-->[id in string null ]
+2021-12-09 09:38:51.189 [http-nio-8080-exec-2] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:38:51.190 [http-nio-8080-exec-2] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---ÔøΩﬂºÔøΩÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->[id in string null ]
 2021-12-09 09:38:51.192 [http-nio-8080-exec-2] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:96)
@@ -2842,8 +2842,8 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:687)
 	at org.jeecg.modules.SmartPaper.service.impl.SmartMyExamServiceImpl$$EnhancerBySpringCGLIB$$408707a5.getMyAllExam(<generated>)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
@@ -2873,7 +2873,7 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -3004,8 +3004,8 @@ Caused by: org.apache.ibatis.binding.BindingException: Parameter 'examName' not 
 	at java.lang.reflect.Method.invoke(Unknown Source)
 	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427)
 	... 133 common frames omitted
-2021-12-09 09:38:52.389 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:38:52.390 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---∏ﬂº∂≤È—Ø≤Œ ˝-->[id in string null ]
+2021-12-09 09:38:52.389 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:38:52.390 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---ÔøΩﬂºÔøΩÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->[id in string null ]
 2021-12-09 09:38:52.392 [http-nio-8080-exec-1] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:96)
@@ -3022,8 +3022,8 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:687)
 	at org.jeecg.modules.SmartPaper.service.impl.SmartMyExamServiceImpl$$EnhancerBySpringCGLIB$$408707a5.getMyAllExam(<generated>)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
@@ -3053,7 +3053,7 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -3184,10 +3184,10 @@ Caused by: org.apache.ibatis.binding.BindingException: Parameter 'examName' not 
 	at java.lang.reflect.Method.invoke(Unknown Source)
 	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427)
 	... 133 common frames omitted
-2021-12-09 09:39:33.933 [http-nio-8080-exec-6] INFO  o.jeecg.modules.system.controller.LoginController:141 -  ”√ªß√˚:  ΩÃ”˝æ÷µ•Œªπ‹¿Ì‘±,ÕÀ≥ˆ≥…π¶£° 
-2021-12-09 09:39:34.467 [http-nio-8080-exec-2] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - °æwebsocketœ˚œ¢°ø¡¨Ω”∂œø™£¨◊‹ ˝Œ™:1
-2021-12-09 09:39:34.989 [http-nio-8080-exec-10] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - java.io.IOException: ƒ„µƒ÷˜ª˙÷–µƒ»Ìº˛÷–÷π¡À“ª∏ˆ“—Ω®¡¢µƒ¡¨Ω”°£
-org.apache.catalina.connector.ClientAbortException: java.io.IOException: ƒ„µƒ÷˜ª˙÷–µƒ»Ìº˛÷–÷π¡À“ª∏ˆ“—Ω®¡¢µƒ¡¨Ω”°£
+2021-12-09 09:39:33.933 [http-nio-8080-exec-6] INFO  o.jeecg.modules.system.org.jeecg.modules.smart_video_player.controller.LoginController:141 -  ÔøΩ√ªÔøΩÔøΩÔøΩ:  ÔøΩÔøΩÔøΩÔøΩÔøΩ÷µÔøΩŒªÔøΩÔøΩÔøΩÔøΩ‘±,ÔøΩÀ≥ÔøΩÔøΩ…πÔøΩÔøΩÔøΩ
+2021-12-09 09:39:34.467 [http-nio-8080-exec-2] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ”∂œøÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:1
+2021-12-09 09:39:34.989 [http-nio-8080-exec-10] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - java.io.IOException: ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ–µÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ÷πÔøΩÔøΩ“ªÔøΩÔøΩÔøΩ—ΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ”°ÔøΩ
+org.apache.catalina.connector.ClientAbortException: java.io.IOException: ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ–µÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ÷πÔøΩÔøΩ“ªÔøΩÔøΩÔøΩ—ΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ”°ÔøΩ
 	at org.apache.catalina.connector.OutputBuffer.doFlush(OutputBuffer.java:309)
 	at org.apache.catalina.connector.OutputBuffer.flush(OutputBuffer.java:272)
 	at org.apache.catalina.connector.CoyoteOutputStream.flush(CoyoteOutputStream.java:118)
@@ -3278,7 +3278,7 @@ org.apache.catalina.connector.ClientAbortException: java.io.IOException: ƒ„µƒ÷˜ª
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.lang.Thread.run(Unknown Source)
-Caused by: java.io.IOException: ƒ„µƒ÷˜ª˙÷–µƒ»Ìº˛÷–÷π¡À“ª∏ˆ“—Ω®¡¢µƒ¡¨Ω”°£
+Caused by: java.io.IOException: ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ–µÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ÷πÔøΩÔøΩ“ªÔøΩÔøΩÔøΩ—ΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ”°ÔøΩ
 	at sun.nio.ch.SocketDispatcher.write0(Native Method)
 	at sun.nio.ch.SocketDispatcher.write(Unknown Source)
 	at sun.nio.ch.IOUtil.writeFromNativeBuffer(Unknown Source)
@@ -3301,7 +3301,7 @@ Caused by: java.io.IOException: ƒ„µƒ÷˜ª˙÷–µƒ»Ìº˛÷–÷π¡À“ª∏ˆ“—Ω®¡¢µƒ¡¨Ω”°£
 	at org.apache.catalina.connector.OutputBuffer.doFlush(OutputBuffer.java:305)
 	... 89 common frames omitted
 2021-12-09 09:39:35.024 [http-nio-8080-exec-10] WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver:414 - Failure in @ExceptionHandler org.jeecg.common.exception.JeecgBootExceptionHandler#handleException(Exception)
-org.apache.catalina.connector.ClientAbortException: java.io.IOException: ƒ„µƒ÷˜ª˙÷–µƒ»Ìº˛÷–÷π¡À“ª∏ˆ“—Ω®¡¢µƒ¡¨Ω”°£
+org.apache.catalina.connector.ClientAbortException: java.io.IOException: ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ–µÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ÷πÔøΩÔøΩ“ªÔøΩÔøΩÔøΩ—ΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ”°ÔøΩ
 	at org.apache.catalina.connector.OutputBuffer.doFlush(OutputBuffer.java:309)
 	at org.apache.catalina.connector.OutputBuffer.flush(OutputBuffer.java:272)
 	at org.apache.catalina.connector.CoyoteOutputStream.flush(CoyoteOutputStream.java:118)
@@ -3398,7 +3398,7 @@ org.apache.catalina.connector.ClientAbortException: java.io.IOException: ƒ„µƒ÷˜ª
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.lang.Thread.run(Unknown Source)
-Caused by: java.io.IOException: ƒ„µƒ÷˜ª˙÷–µƒ»Ìº˛÷–÷π¡À“ª∏ˆ“—Ω®¡¢µƒ¡¨Ω”°£
+Caused by: java.io.IOException: ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ–µÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ÷πÔøΩÔøΩ“ªÔøΩÔøΩÔøΩ—ΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ”°ÔøΩ
 	at sun.nio.ch.SocketDispatcher.write0(Native Method)
 	at sun.nio.ch.SocketDispatcher.write(Unknown Source)
 	at sun.nio.ch.IOUtil.writeFromNativeBuffer(Unknown Source)
@@ -3489,10 +3489,10 @@ Caused by: javax.crypto.AEADBadTagException: Tag mismatch!
 	at javax.crypto.Cipher.doFinal(Cipher.java:2168)
 	at org.apache.shiro.crypto.JcaCipherService.crypt(JcaCipherService.java:459)
 	... 55 common frames omitted
-2021-12-09 09:39:51.330 [http-nio-8080-exec-10] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - °æwebsocketœ˚œ¢°ø”––¬µƒ¡¨Ω”£¨◊‹ ˝Œ™:2
-2021-12-09 09:39:51.619 [http-nio-8080-exec-3] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:39:51.620 [http-nio-8080-exec-3] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---∏ﬂº∂≤È—Ø≤Œ ˝-->[id in string null 1467381365744496641]
-2021-12-09 09:39:51.621 [http-nio-8080-exec-3] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --≤È—ØπÊ‘Ú-->id IN 1467381365744496641
+2021-12-09 09:39:51.330 [http-nio-8080-exec-10] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ¬µÔøΩÔøΩÔøΩÔøΩ”£ÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:2
+2021-12-09 09:39:51.619 [http-nio-8080-exec-3] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:39:51.620 [http-nio-8080-exec-3] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---ÔøΩﬂºÔøΩÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->[id in string null 1467381365744496641]
+2021-12-09 09:39:51.621 [http-nio-8080-exec-3] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --ÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->id IN 1467381365744496641
 2021-12-09 09:39:51.626 [http-nio-8080-exec-3] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:96)
@@ -3509,8 +3509,8 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:687)
 	at org.jeecg.modules.SmartPaper.service.impl.SmartMyExamServiceImpl$$EnhancerBySpringCGLIB$$408707a5.getMyAllExam(<generated>)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
@@ -3540,7 +3540,7 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -3671,11 +3671,11 @@ Caused by: org.apache.ibatis.binding.BindingException: Parameter 'examName' not 
 	at java.lang.reflect.Method.invoke(Unknown Source)
 	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427)
 	... 133 common frames omitted
-2021-12-09 09:40:07.921 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:41:26.441 [http-nio-8080-exec-9] INFO  o.j.m.system.controller.SysPermissionController:439 - ======Ω«…´ ⁄»®≥…π¶=====∫ƒ ±:329∫¡√Î
-2021-12-09 09:41:34.925 [http-nio-8080-exec-8] INFO  o.jeecg.modules.system.controller.LoginController:141 -  ”√ªß√˚:  sike,ÕÀ≥ˆ≥…π¶£° 
-2021-12-09 09:41:35.421 [http-nio-8080-exec-9] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - °æwebsocketœ˚œ¢°ø¡¨Ω”∂œø™£¨◊‹ ˝Œ™:1
-2021-12-09 09:41:44.310 [http-nio-8080-exec-7] INFO  o.j.c.modules.redis.writer.JeecgRedisCacheWriter:104 - redis remove key:sys:cache:user::ÊïôËÇ≤Â±?Âçï‰ΩçÁÆ°ÁêÜÂë?
+2021-12-09 09:40:07.921 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:41:26.441 [http-nio-8080-exec-9] INFO  o.j.m.system.org.jeecg.modules.smart_video_player.controller.SysPermissionController:439 - ======ÔøΩÔøΩ…´ÔøΩÔøΩ»®ÔøΩ…πÔøΩ=====ÔøΩÔøΩ ±:329ÔøΩÔøΩÔøΩÔøΩ
+2021-12-09 09:41:34.925 [http-nio-8080-exec-8] INFO  o.jeecg.modules.system.org.jeecg.modules.smart_video_player.controller.LoginController:141 -  ÔøΩ√ªÔøΩÔøΩÔøΩ:  sike,ÔøΩÀ≥ÔøΩÔøΩ…πÔøΩÔøΩÔøΩ
+2021-12-09 09:41:35.421 [http-nio-8080-exec-9] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ”∂œøÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:1
+2021-12-09 09:41:44.310 [http-nio-8080-exec-7] INFO  o.j.c.modules.redis.writer.JeecgRedisCacheWriter:104 - redis remove key:sys:cache:user::ÊïôËÇ≤ÔøΩ?Âçï‰ΩçÁÆ°ÁêÜÔøΩ?
 2021-12-09 09:41:46.576 [http-nio-8080-exec-6] WARN  org.apache.shiro.mgt.AbstractRememberMeManager:449 - There was a failure while trying to retrieve remembered principals.  This could be due to a configuration problem or corrupted principals.  This could also be due to a recently changed encryption key, if you are using a shiro.ini file, this property would be 'securityManager.rememberMeManager.cipherKey' see: http://shiro.apache.org/web.html#Web-RememberMeServices. The remembered identity will be forgotten and not used for this request.
 2021-12-09 09:41:46.578 [http-nio-8080-exec-6] WARN  org.apache.shiro.mgt.DefaultSecurityManager:618 - Delegate RememberMeManager instance of type [org.apache.shiro.web.mgt.CookieRememberMeManager] threw an exception during getRememberedPrincipals().
 org.apache.shiro.crypto.CryptoException: Unable to execute 'doFinal' with cipher instance [javax.crypto.Cipher@3b9a1f05].
@@ -3745,7 +3745,7 @@ Caused by: javax.crypto.AEADBadTagException: Tag mismatch!
 	at org.apache.shiro.crypto.JcaCipherService.crypt(JcaCipherService.java:459)
 	... 55 common frames omitted
 2021-12-09 09:41:46.585 [http-nio-8080-exec-2] WARN  org.apache.shiro.mgt.AbstractRememberMeManager:449 - There was a failure while trying to retrieve remembered principals.  This could be due to a configuration problem or corrupted principals.  This could also be due to a recently changed encryption key, if you are using a shiro.ini file, this property would be 'securityManager.rememberMeManager.cipherKey' see: http://shiro.apache.org/web.html#Web-RememberMeServices. The remembered identity will be forgotten and not used for this request.
-2021-12-09 09:41:46.592 [http-nio-8080-exec-6] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - °æwebsocketœ˚œ¢°ø”––¬µƒ¡¨Ω”£¨◊‹ ˝Œ™:2
+2021-12-09 09:41:46.592 [http-nio-8080-exec-6] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ¬µÔøΩÔøΩÔøΩÔøΩ”£ÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:2
 2021-12-09 09:41:46.589 [http-nio-8080-exec-2] WARN  org.apache.shiro.mgt.DefaultSecurityManager:618 - Delegate RememberMeManager instance of type [org.apache.shiro.web.mgt.CookieRememberMeManager] threw an exception during getRememberedPrincipals().
 org.apache.shiro.crypto.CryptoException: Unable to execute 'doFinal' with cipher instance [javax.crypto.Cipher@2eb77a38].
 	at org.apache.shiro.crypto.JcaCipherService.crypt(JcaCipherService.java:462)
@@ -5379,8 +5379,8 @@ Caused by: javax.crypto.AEADBadTagException: Tag mismatch!
 	... 55 common frames omitted
 2021-12-09 09:41:48.568 [http-nio-8080-exec-6] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - null
 java.lang.NullPointerException: null
-	at org.jeecg.modules.demo.test.controller.BigScreenTemplatController.getCloudData(BigScreenTemplatController.java:147)
-	at org.jeecg.modules.demo.test.controller.BigScreenTemplatController$$FastClassBySpringCGLIB$$ad0cc1eb.invoke(<generated>)
+	at org.jeecg.modules.demo.test.org.jeecg.modules.smart_video_player.controller.BigScreenTemplatController.getCloudData(BigScreenTemplatController.java:147)
+	at org.jeecg.modules.demo.test.org.jeecg.modules.smart_video_player.controller.BigScreenTemplatController$$FastClassBySpringCGLIB$$ad0cc1eb.invoke(<generated>)
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
@@ -5399,7 +5399,7 @@ java.lang.NullPointerException: null
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-	at org.jeecg.modules.demo.test.controller.BigScreenTemplatController$$EnhancerBySpringCGLIB$$9a68e0c.getCloudData(<generated>)
+	at org.jeecg.modules.demo.test.org.jeecg.modules.smart_video_player.controller.BigScreenTemplatController$$EnhancerBySpringCGLIB$$9a68e0c.getCloudData(<generated>)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -5489,8 +5489,8 @@ java.lang.NullPointerException: null
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.lang.Thread.run(Unknown Source)
-2021-12-09 09:42:02.703 [http-nio-8080-exec-2] INFO  o.jeecg.modules.system.controller.LoginController:141 -  ”√ªß√˚:  ΩÃ”˝æ÷µ•Œªπ‹¿Ì‘±,ÕÀ≥ˆ≥…π¶£° 
-2021-12-09 09:42:03.070 [http-nio-8080-exec-5] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - °æwebsocketœ˚œ¢°ø¡¨Ω”∂œø™£¨◊‹ ˝Œ™:1
+2021-12-09 09:42:02.703 [http-nio-8080-exec-2] INFO  o.jeecg.modules.system.org.jeecg.modules.smart_video_player.controller.LoginController:141 -  ÔøΩ√ªÔøΩÔøΩÔøΩ:  ÔøΩÔøΩÔøΩÔøΩÔøΩ÷µÔøΩŒªÔøΩÔøΩÔøΩÔøΩ‘±,ÔøΩÀ≥ÔøΩÔøΩ…πÔøΩÔøΩÔøΩ
+2021-12-09 09:42:03.070 [http-nio-8080-exec-5] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ”∂œøÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:1
 2021-12-09 09:42:16.309 [http-nio-8080-exec-2] INFO  o.j.c.modules.redis.writer.JeecgRedisCacheWriter:104 - redis remove key:sys:cache:user::sike
 2021-12-09 09:42:19.069 [http-nio-8080-exec-5] WARN  org.apache.shiro.mgt.AbstractRememberMeManager:449 - There was a failure while trying to retrieve remembered principals.  This could be due to a configuration problem or corrupted principals.  This could also be due to a recently changed encryption key, if you are using a shiro.ini file, this property would be 'securityManager.rememberMeManager.cipherKey' see: http://shiro.apache.org/web.html#Web-RememberMeServices. The remembered identity will be forgotten and not used for this request.
 2021-12-09 09:42:19.070 [http-nio-8080-exec-5] WARN  org.apache.shiro.mgt.DefaultSecurityManager:618 - Delegate RememberMeManager instance of type [org.apache.shiro.web.mgt.CookieRememberMeManager] threw an exception during getRememberedPrincipals().
@@ -5628,7 +5628,7 @@ Caused by: javax.crypto.AEADBadTagException: Tag mismatch!
 	at javax.crypto.Cipher.doFinal(Cipher.java:2168)
 	at org.apache.shiro.crypto.JcaCipherService.crypt(JcaCipherService.java:459)
 	... 55 common frames omitted
-2021-12-09 09:42:19.145 [http-nio-8080-exec-7] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - °æwebsocketœ˚œ¢°ø”––¬µƒ¡¨Ω”£¨◊‹ ˝Œ™:2
+2021-12-09 09:42:19.145 [http-nio-8080-exec-7] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ¬µÔøΩÔøΩÔøΩÔøΩ”£ÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:2
 2021-12-09 09:42:19.765 [http-nio-8080-exec-6] WARN  org.apache.shiro.mgt.AbstractRememberMeManager:449 - There was a failure while trying to retrieve remembered principals.  This could be due to a configuration problem or corrupted principals.  This could also be due to a recently changed encryption key, if you are using a shiro.ini file, this property would be 'securityManager.rememberMeManager.cipherKey' see: http://shiro.apache.org/web.html#Web-RememberMeServices. The remembered identity will be forgotten and not used for this request.
 2021-12-09 09:42:19.766 [http-nio-8080-exec-6] WARN  org.apache.shiro.mgt.DefaultSecurityManager:618 - Delegate RememberMeManager instance of type [org.apache.shiro.web.mgt.CookieRememberMeManager] threw an exception during getRememberedPrincipals().
 org.apache.shiro.crypto.CryptoException: Unable to execute 'doFinal' with cipher instance [javax.crypto.Cipher@45d2c160].
@@ -6107,8 +6107,8 @@ Caused by: javax.crypto.AEADBadTagException: Tag mismatch!
 	... 55 common frames omitted
 2021-12-09 09:42:20.929 [http-nio-8080-exec-7] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - null
 java.lang.NullPointerException: null
-	at org.jeecg.modules.demo.test.controller.BigScreenTemplatController.getCloudData(BigScreenTemplatController.java:147)
-	at org.jeecg.modules.demo.test.controller.BigScreenTemplatController$$FastClassBySpringCGLIB$$ad0cc1eb.invoke(<generated>)
+	at org.jeecg.modules.demo.test.org.jeecg.modules.smart_video_player.controller.BigScreenTemplatController.getCloudData(BigScreenTemplatController.java:147)
+	at org.jeecg.modules.demo.test.org.jeecg.modules.smart_video_player.controller.BigScreenTemplatController$$FastClassBySpringCGLIB$$ad0cc1eb.invoke(<generated>)
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
@@ -6127,7 +6127,7 @@ java.lang.NullPointerException: null
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-	at org.jeecg.modules.demo.test.controller.BigScreenTemplatController$$EnhancerBySpringCGLIB$$9a68e0c.getCloudData(<generated>)
+	at org.jeecg.modules.demo.test.org.jeecg.modules.smart_video_player.controller.BigScreenTemplatController$$EnhancerBySpringCGLIB$$9a68e0c.getCloudData(<generated>)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -6217,7 +6217,7 @@ java.lang.NullPointerException: null
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.lang.Thread.run(Unknown Source)
-2021-12-09 09:42:26.658 [http-nio-8080-exec-6] INFO  o.j.m.system.controller.SysPermissionController:84 - ======ªÒ»°»´≤ø≤Àµ• ˝æ›=====∫ƒ ±:442∫¡√Î
+2021-12-09 09:42:26.658 [http-nio-8080-exec-6] INFO  o.j.m.system.org.jeecg.modules.smart_video_player.controller.SysPermissionController:84 - ======ÔøΩÔøΩ»°»´ÔøΩÔøΩÔøΩÀµÔøΩÔøΩÔøΩÔøΩÔøΩ=====ÔøΩÔøΩ ±:442ÔøΩÔøΩÔøΩÔøΩ
 2021-12-09 09:49:20.588 [http-nio-8080-exec-7] WARN  org.apache.shiro.mgt.AbstractRememberMeManager:449 - There was a failure while trying to retrieve remembered principals.  This could be due to a configuration problem or corrupted principals.  This could also be due to a recently changed encryption key, if you are using a shiro.ini file, this property would be 'securityManager.rememberMeManager.cipherKey' see: http://shiro.apache.org/web.html#Web-RememberMeServices. The remembered identity will be forgotten and not used for this request.
 2021-12-09 09:49:20.589 [http-nio-8080-exec-7] WARN  org.apache.shiro.mgt.DefaultSecurityManager:618 - Delegate RememberMeManager instance of type [org.apache.shiro.web.mgt.CookieRememberMeManager] threw an exception during getRememberedPrincipals().
 org.apache.shiro.crypto.CryptoException: Unable to execute 'doFinal' with cipher instance [javax.crypto.Cipher@708e0520].
@@ -6286,13 +6286,13 @@ Caused by: javax.crypto.AEADBadTagException: Tag mismatch!
 	at javax.crypto.Cipher.doFinal(Cipher.java:2168)
 	at org.apache.shiro.crypto.JcaCipherService.crypt(JcaCipherService.java:459)
 	... 55 common frames omitted
-2021-12-09 09:49:20.611 [http-nio-8080-exec-7] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - °æwebsocketœ˚œ¢°ø”––¬µƒ¡¨Ω”£¨◊‹ ˝Œ™:3
-2021-12-09 09:49:20.984 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:null,≈≈–Ú∑Ω Ω:null
-2021-12-09 09:49:20.985 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---∏ﬂº∂≤È—Ø≤Œ ˝-->[creatorId eq string null 1455364232132874242]
-2021-12-09 09:49:21.004 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --≤È—ØπÊ‘Ú-->creator_id = 1455364232132874242
-2021-12-09 09:49:55.517 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:49:55.517 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---∏ﬂº∂≤È—Ø≤Œ ˝-->[id in string null 1467381365744496641]
-2021-12-09 09:49:55.518 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --≤È—ØπÊ‘Ú-->id IN 1467381365744496641
+2021-12-09 09:49:20.611 [http-nio-8080-exec-7] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ¬µÔøΩÔøΩÔøΩÔøΩ”£ÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:3
+2021-12-09 09:49:20.984 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:null,ÔøΩÔøΩÔøΩÔøΩ Ω:null
+2021-12-09 09:49:20.985 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---ÔøΩﬂºÔøΩÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->[creatorId eq string null 1455364232132874242]
+2021-12-09 09:49:21.004 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --ÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->creator_id = 1455364232132874242
+2021-12-09 09:49:55.517 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:49:55.517 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---ÔøΩﬂºÔøΩÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->[id in string null 1467381365744496641]
+2021-12-09 09:49:55.518 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --ÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->id IN 1467381365744496641
 2021-12-09 09:49:55.520 [http-nio-8080-exec-1] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:96)
@@ -6309,8 +6309,8 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:687)
 	at org.jeecg.modules.SmartPaper.service.impl.SmartMyExamServiceImpl$$EnhancerBySpringCGLIB$$408707a5.getMyAllExam(<generated>)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
@@ -6340,7 +6340,7 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -6471,9 +6471,9 @@ Caused by: org.apache.ibatis.binding.BindingException: Parameter 'examName' not 
 	at java.lang.reflect.Method.invoke(Unknown Source)
 	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427)
 	... 133 common frames omitted
-2021-12-09 09:53:08.423 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:53:08.424 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---∏ﬂº∂≤È—Ø≤Œ ˝-->[id in string null 1467381365744496641]
-2021-12-09 09:53:08.424 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --≤È—ØπÊ‘Ú-->id IN 1467381365744496641
+2021-12-09 09:53:08.423 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:53:08.424 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---ÔøΩﬂºÔøΩÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->[id in string null 1467381365744496641]
+2021-12-09 09:53:08.424 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --ÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->id IN 1467381365744496641
 2021-12-09 09:53:08.426 [http-nio-8080-exec-9] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:96)
@@ -6490,8 +6490,8 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:687)
 	at org.jeecg.modules.SmartPaper.service.impl.SmartMyExamServiceImpl$$EnhancerBySpringCGLIB$$408707a5.getMyAllExam(<generated>)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
@@ -6521,7 +6521,7 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -6652,7 +6652,7 @@ Caused by: org.apache.ibatis.binding.BindingException: Parameter 'examName' not 
 	at java.lang.reflect.Method.invoke(Unknown Source)
 	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427)
 	... 133 common frames omitted
-2021-12-09 09:54:43.552 [http-nio-8080-exec-4] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - °æwebsocketœ˚œ¢°ø¡¨Ω”∂œø™£¨◊‹ ˝Œ™:2
+2021-12-09 09:54:43.552 [http-nio-8080-exec-4] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ”∂œøÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:2
 2021-12-09 09:54:50.138 [http-nio-8080-exec-6] WARN  org.apache.shiro.mgt.AbstractRememberMeManager:449 - There was a failure while trying to retrieve remembered principals.  This could be due to a configuration problem or corrupted principals.  This could also be due to a recently changed encryption key, if you are using a shiro.ini file, this property would be 'securityManager.rememberMeManager.cipherKey' see: http://shiro.apache.org/web.html#Web-RememberMeServices. The remembered identity will be forgotten and not used for this request.
 2021-12-09 09:54:50.140 [http-nio-8080-exec-6] WARN  org.apache.shiro.mgt.DefaultSecurityManager:618 - Delegate RememberMeManager instance of type [org.apache.shiro.web.mgt.CookieRememberMeManager] threw an exception during getRememberedPrincipals().
 org.apache.shiro.crypto.CryptoException: Unable to execute 'doFinal' with cipher instance [javax.crypto.Cipher@1fcf863d].
@@ -6721,10 +6721,10 @@ Caused by: javax.crypto.AEADBadTagException: Tag mismatch!
 	at javax.crypto.Cipher.doFinal(Cipher.java:2168)
 	at org.apache.shiro.crypto.JcaCipherService.crypt(JcaCipherService.java:459)
 	... 55 common frames omitted
-2021-12-09 09:54:50.155 [http-nio-8080-exec-6] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - °æwebsocketœ˚œ¢°ø”––¬µƒ¡¨Ω”£¨◊‹ ˝Œ™:3
-2021-12-09 09:54:50.430 [http-nio-8080-exec-10] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:54:50.431 [http-nio-8080-exec-10] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---∏ﬂº∂≤È—Ø≤Œ ˝-->[id in string null 1467381365744496641]
-2021-12-09 09:54:50.432 [http-nio-8080-exec-10] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --≤È—ØπÊ‘Ú-->id IN 1467381365744496641
+2021-12-09 09:54:50.155 [http-nio-8080-exec-6] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ¬µÔøΩÔøΩÔøΩÔøΩ”£ÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:3
+2021-12-09 09:54:50.430 [http-nio-8080-exec-10] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:54:50.431 [http-nio-8080-exec-10] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---ÔøΩﬂºÔøΩÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->[id in string null 1467381365744496641]
+2021-12-09 09:54:50.432 [http-nio-8080-exec-10] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --ÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->id IN 1467381365744496641
 2021-12-09 09:54:50.436 [http-nio-8080-exec-10] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:96)
@@ -6741,8 +6741,8 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:687)
 	at org.jeecg.modules.SmartPaper.service.impl.SmartMyExamServiceImpl$$EnhancerBySpringCGLIB$$408707a5.getMyAllExam(<generated>)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
@@ -6772,7 +6772,7 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -6904,9 +6904,9 @@ Caused by: org.apache.ibatis.binding.BindingException: Parameter 'examName' not 
 	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427)
 	... 133 common frames omitted
 2021-12-09 09:59:56.163 [SpringContextShutdownHook] INFO  org.quartz.core.QuartzScheduler:585 - Scheduler MyScheduler_$_Sike-TB1639013811319 paused.
-2021-12-09 09:59:56.368 [SpringContextShutdownHook] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - °æwebsocketœ˚œ¢°ø¡¨Ω”∂œø™£¨◊‹ ˝Œ™:2
-2021-12-09 09:59:56.369 [SpringContextShutdownHook] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - °æwebsocketœ˚œ¢°ø¡¨Ω”∂œø™£¨◊‹ ˝Œ™:1
-2021-12-09 09:59:56.370 [SpringContextShutdownHook] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - °æwebsocketœ˚œ¢°ø¡¨Ω”∂œø™£¨◊‹ ˝Œ™:0
+2021-12-09 09:59:56.368 [SpringContextShutdownHook] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ”∂œøÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:2
+2021-12-09 09:59:56.369 [SpringContextShutdownHook] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ”∂œøÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:1
+2021-12-09 09:59:56.370 [SpringContextShutdownHook] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ”∂œøÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:0
 2021-12-09 09:59:56.413 [SpringContextShutdownHook] INFO  o.s.scheduling.concurrent.ThreadPoolTaskScheduler:218 - Shutting down ExecutorService 'taskScheduler'
 2021-12-09 09:59:56.415 [SpringContextShutdownHook] INFO  o.s.scheduling.concurrent.ThreadPoolTaskExecutor:218 - Shutting down ExecutorService 'jmReportTaskExecutor'
 2021-12-09 09:59:56.420 [SpringContextShutdownHook] INFO  o.s.scheduling.quartz.SchedulerFactoryBean:845 - Shutting down Quartz Scheduler
@@ -6917,3 +6917,551 @@ Caused by: org.apache.ibatis.binding.BindingException: Parameter 'examName' not 
 2021-12-09 09:59:56.437 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource:2029 - {dataSource-1} closing ...
 2021-12-09 09:59:56.447 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource:2101 - {dataSource-1} closed
 2021-12-09 09:59:56.447 [SpringContextShutdownHook] INFO  c.b.dynamic.datasource.DynamicRoutingDataSource:221 - dynamic-datasource all closed success,bye
+2021-12-09 10:11:05.517 [background-preinit] INFO  org.hibernate.validator.internal.util.Version:21 - HV000001: Hibernate Validator 6.1.6.Final
+2021-12-09 10:11:06.388 [main] INFO  org.jeecg.JeecgSystemApplication:55 - Starting JeecgSystemApplication v2.4.6 on Sike-TB with PID 64160 (D:\code\project\smart-system-server\jeecg-boot-module-system\target\jeecg-boot-module-system-2.4.6.jar started by sike in D:\code\project\smart-system-server\jeecg-boot-module-system\target)
+2021-12-09 10:11:06.390 [main] INFO  org.jeecg.JeecgSystemApplication:655 - The following profiles are active: prod
+2021-12-09 10:11:09.349 [background-preinit] WARN  o.s.h.converter.json.Jackson2ObjectMapperBuilder:127 - For Jackson Kotlin classes support please add "com.fasterxml.jackson.module:jackson-module-kotlin" to the classpath
+2021-12-09 10:11:23.058 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate:249 - Multiple Spring Data modules found, entering strict repository configuration mode!
+2021-12-09 10:11:23.061 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate:127 - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2021-12-09 10:11:23.409 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate:187 - Finished Spring Data repository scanning in 328ms. Found 0 Redis repository interfaces.
+2021-12-09 10:11:23.981 [main] INFO  o.j.minidao.auto.MinidaoAutoConfiguration:23 -  ******************* init miniDao config [ begin ] *********************** 
+2021-12-09 10:11:23.981 [main] INFO  o.j.minidao.auto.MinidaoAutoConfiguration:25 -  ------ minidao.base-package ------- org.jeecg.modules.jmreport.*
+2021-12-09 10:11:23.983 [main] INFO  o.j.minidao.auto.MinidaoAutoConfiguration:42 -  *******************  init miniDao config  [ end ] *********************** 
+2021-12-09 10:11:24.150 [main] INFO  o.j.minidao.factory.MiniDaoClassPathMapperScanner:48 - register minidao name is { org.jeecg.modules.jmreport.desreport.dao.JimuReportDao }
+2021-12-09 10:11:24.152 [main] INFO  o.j.minidao.factory.MiniDaoClassPathMapperScanner:48 - register minidao name is { org.jeecg.modules.jmreport.desreport.dao.JimuReportDataSourceDao }
+2021-12-09 10:11:24.152 [main] INFO  o.j.minidao.factory.MiniDaoClassPathMapperScanner:48 - register minidao name is { org.jeecg.modules.jmreport.desreport.dao.JimuReportDbDao }
+2021-12-09 10:11:24.152 [main] INFO  o.j.minidao.factory.MiniDaoClassPathMapperScanner:48 - register minidao name is { org.jeecg.modules.jmreport.desreport.dao.JimuReportDbFieldDao }
+2021-12-09 10:11:24.153 [main] INFO  o.j.minidao.factory.MiniDaoClassPathMapperScanner:48 - register minidao name is { org.jeecg.modules.jmreport.desreport.dao.JimuReportDbParamDao }
+2021-12-09 10:11:24.153 [main] INFO  o.j.minidao.factory.MiniDaoClassPathMapperScanner:48 - register minidao name is { org.jeecg.modules.jmreport.desreport.dao.JimuReportDictDao }
+2021-12-09 10:11:24.153 [main] INFO  o.j.minidao.factory.MiniDaoClassPathMapperScanner:48 - register minidao name is { org.jeecg.modules.jmreport.desreport.dao.JimuReportDictItemDao }
+2021-12-09 10:11:24.154 [main] INFO  o.j.minidao.factory.MiniDaoClassPathMapperScanner:48 - register minidao name is { org.jeecg.modules.jmreport.desreport.dao.JimuReportLinkDao }
+2021-12-09 10:11:24.154 [main] INFO  o.j.minidao.factory.MiniDaoClassPathMapperScanner:48 - register minidao name is { org.jeecg.modules.jmreport.desreport.dao.JimuReportMapDao }
+2021-12-09 10:11:24.155 [main] INFO  o.j.minidao.factory.MiniDaoClassPathMapperScanner:48 - register minidao name is { org.jeecg.modules.jmreport.desreport.dao.JimuReportShareDao }
+2021-12-09 10:11:25.740 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean '(inner bean)#3e10dc6' of type [org.jeecgframework.minidao.aop.MiniDaoHandler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:25.765 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'jimuReportDao' of type [org.jeecgframework.minidao.factory.MiniDaoBeanFactory] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:25.767 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean '(inner bean)#3e10dc6#1' of type [org.jeecgframework.minidao.aop.MiniDaoHandler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:25.769 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'jimuReportDataSourceDao' of type [org.jeecgframework.minidao.factory.MiniDaoBeanFactory] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:25.771 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean '(inner bean)#3e10dc6#2' of type [org.jeecgframework.minidao.aop.MiniDaoHandler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:25.772 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'jimuReportDbDao' of type [org.jeecgframework.minidao.factory.MiniDaoBeanFactory] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:25.774 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean '(inner bean)#3e10dc6#3' of type [org.jeecgframework.minidao.aop.MiniDaoHandler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:25.775 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'jimuReportDbFieldDao' of type [org.jeecgframework.minidao.factory.MiniDaoBeanFactory] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:25.777 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean '(inner bean)#3e10dc6#4' of type [org.jeecgframework.minidao.aop.MiniDaoHandler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:25.779 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'jimuReportDbParamDao' of type [org.jeecgframework.minidao.factory.MiniDaoBeanFactory] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:25.782 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean '(inner bean)#3e10dc6#5' of type [org.jeecgframework.minidao.aop.MiniDaoHandler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:25.783 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'jimuReportDictDao' of type [org.jeecgframework.minidao.factory.MiniDaoBeanFactory] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:25.785 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean '(inner bean)#3e10dc6#6' of type [org.jeecgframework.minidao.aop.MiniDaoHandler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:25.787 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'jimuReportDictItemDao' of type [org.jeecgframework.minidao.factory.MiniDaoBeanFactory] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:25.788 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean '(inner bean)#3e10dc6#7' of type [org.jeecgframework.minidao.aop.MiniDaoHandler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:25.789 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'jimuReportLinkDao' of type [org.jeecgframework.minidao.factory.MiniDaoBeanFactory] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:25.791 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean '(inner bean)#3e10dc6#8' of type [org.jeecgframework.minidao.aop.MiniDaoHandler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:25.792 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'jimuReportMapDao' of type [org.jeecgframework.minidao.factory.MiniDaoBeanFactory] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:25.793 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean '(inner bean)#3e10dc6#9' of type [org.jeecgframework.minidao.aop.MiniDaoHandler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:25.795 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'jimuReportShareDao' of type [org.jeecgframework.minidao.factory.MiniDaoBeanFactory] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:25.877 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'spring.redis-org.springframework.boot.autoconfigure.data.redis.RedisProperties' of type [org.springframework.boot.autoconfigure.data.redis.RedisProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:25.886 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'org.springframework.boot.autoconfigure.data.redis.LettuceConnectionConfiguration' of type [org.springframework.boot.autoconfigure.data.redis.LettuceConnectionConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:26.375 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'lettuceClientResources' of type [io.lettuce.core.resource.DefaultClientResources] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:26.588 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'redisConnectionFactory' of type [org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:26.591 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'shiroConfig' of type [org.jeecg.config.shiro.ShiroConfig$$EnhancerBySpringCGLIB$$64dd0185] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:26.752 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'shiroRealm' of type [org.jeecg.config.shiro.ShiroRealm] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:27.524 [main] INFO  org.jeecg.config.shiro.ShiroConfig:219 - ===============(1)¥¥Ω®ª∫¥Êπ‹¿Ì∆˜RedisCacheManager
+2021-12-09 10:11:27.555 [main] INFO  org.jeecg.config.shiro.ShiroConfig:237 - ===============(2)¥¥Ω®RedisManager,¡¨Ω”Redis..
+2021-12-09 10:11:27.588 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'redisManager' of type [org.crazycake.shiro.RedisManager] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:27.617 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'securityManager' of type [org.apache.shiro.web.mgt.DefaultWebSecurityManager] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:27.864 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'authorizationAttributeSourceAdvisor' of type [org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:28.693 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'spring.datasource.dynamic-com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties' of type [com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:28.702 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAutoConfiguration' of type [com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAutoConfiguration$$EnhancerBySpringCGLIB$$6f2f2a5d] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:28.713 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'dsProcessor' of type [com.baomidou.dynamic.datasource.processor.DsHeaderProcessor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:28.755 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'redisConfig' of type [org.jeecg.common.modules.redis.config.RedisConfig$$EnhancerBySpringCGLIB$$823f11b5] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:28.841 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'org.apache.shiro.spring.boot.autoconfigure.ShiroBeanAutoConfiguration' of type [org.apache.shiro.spring.boot.autoconfigure.ShiroBeanAutoConfiguration$$EnhancerBySpringCGLIB$$18b9973c] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:28.855 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'eventBus' of type [org.apache.shiro.event.support.DefaultEventBus] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-12-09 10:11:29.915 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer:108 - Tomcat initialized with port(s): 8080 (http)
+2021-12-09 10:11:29.936 [main] INFO  org.apache.coyote.http11.Http11NioProtocol:173 - Initializing ProtocolHandler ["http-nio-8080"]
+2021-12-09 10:11:29.937 [main] INFO  org.apache.catalina.core.StandardService:173 - Starting service [Tomcat]
+2021-12-09 10:11:29.938 [main] INFO  org.apache.catalina.core.StandardEngine:173 - Starting Servlet engine: [Apache Tomcat/9.0.39]
+2021-12-09 10:11:30.188 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/smart-system]:173 - Initializing Spring embedded WebApplicationContext
+2021-12-09 10:11:30.189 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext:285 - Root WebApplicationContext: initialization completed in 23384 ms
+2021-12-09 10:11:36.090 [main] INFO  com.alibaba.druid.pool.DruidDataSource:994 - {dataSource-1,master} inited
+2021-12-09 10:11:36.092 [main] INFO  c.b.dynamic.datasource.DynamicRoutingDataSource:132 - dynamic-datasource - load a datasource named [master] success
+2021-12-09 10:11:36.092 [main] INFO  c.b.dynamic.datasource.DynamicRoutingDataSource:237 - dynamic-datasource initial loaded [1] datasource,primary datasource named [master]
+2021-12-09 10:11:44.459 [main] INFO  org.jeecg.common.modules.redis.config.RedisConfig:76 -  --- redis config init --- 
+2021-12-09 10:11:47.766 [main] INFO  org.quartz.impl.StdSchedulerFactory:1220 - Using default implementation for ThreadExecutor
+2021-12-09 10:11:47.788 [main] INFO  org.quartz.simpl.SimpleThreadPool:268 - Job execution threads will use class loader of thread: main
+2021-12-09 10:11:47.839 [main] INFO  org.quartz.core.SchedulerSignalerImpl:61 - Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+2021-12-09 10:11:47.839 [main] INFO  org.quartz.core.QuartzScheduler:229 - Quartz Scheduler v.2.3.2 created.
+2021-12-09 10:11:47.845 [main] INFO  o.s.scheduling.quartz.LocalDataSourceJobStore:672 - Using db table-based data access locking (synchronization).
+2021-12-09 10:11:47.848 [main] INFO  o.s.scheduling.quartz.LocalDataSourceJobStore:145 - JobStoreCMT initialized.
+2021-12-09 10:11:47.850 [main] INFO  org.quartz.core.QuartzScheduler:294 - Scheduler meta-data: Quartz Scheduler (v2.3.2) 'MyScheduler' with instanceId 'Sike-TB1639015907787'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
+  Using job-store 'org.springframework.scheduling.quartz.LocalDataSourceJobStore' - which supports persistence. and is clustered.
+
+2021-12-09 10:11:47.850 [main] INFO  org.quartz.impl.StdSchedulerFactory:1374 - Quartz scheduler 'MyScheduler' initialized from an externally provided properties instance.
+2021-12-09 10:11:47.850 [main] INFO  org.quartz.impl.StdSchedulerFactory:1378 - Quartz scheduler version: 2.3.2
+2021-12-09 10:11:47.851 [main] INFO  org.quartz.core.QuartzScheduler:2293 - JobFactory set to: org.springframework.scheduling.quartz.SpringBeanJobFactory@8bffb8b
+2021-12-09 10:11:49.649 [main] INFO  o.j.m.jmreport.config.JimuReportConfiguration:55 -  --- Init JimuReport Config --- 
+2021-12-09 10:11:56.010 [main] INFO  o.s.b.actuate.endpoint.web.EndpointLinksResolver:58 - Exposing 2 endpoint(s) beneath base path '/actuator'
+2021-12-09 10:11:56.249 [main] INFO  org.jeecg.config.init.CodeGenerateDbConfig:46 -  ¥˙¬Î…˙≥…∆˜ ˝æ›ø‚¡¨Ω”£¨ π”√application.ymlµƒDB≈‰÷√ ###################
+2021-12-09 10:11:56.319 [main] INFO  s.d.s.w.WebMvcPropertySourcedRequestMappingHandlerMapping:69 - Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2ControllerWebMvc#getDocumentation(String, HttpServletRequest)]
+2021-12-09 10:11:56.476 [main] INFO  o.j.modules.jmreport.config.JmReportExecutorConfig:21 - ---¥¥Ω®œﬂ≥Ã≥ÿ---
+2021-12-09 10:11:56.479 [main] INFO  o.s.scheduling.concurrent.ThreadPoolTaskExecutor:181 - Initializing ExecutorService
+2021-12-09 10:11:56.481 [main] INFO  o.s.scheduling.concurrent.ThreadPoolTaskExecutor:181 - Initializing ExecutorService 'jmReportTaskExecutor'
+2021-12-09 10:11:59.166 [main] INFO  o.s.scheduling.concurrent.ThreadPoolTaskScheduler:181 - Initializing ExecutorService 'taskScheduler'
+2021-12-09 10:11:59.304 [main] INFO  org.apache.coyote.http11.Http11NioProtocol:173 - Starting ProtocolHandler ["http-nio-8080"]
+2021-12-09 10:11:59.459 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer:220 - Tomcat started on port(s): 8080 (http) with context path '/smart-system'
+2021-12-09 10:11:59.460 [main] INFO  s.d.s.web.plugins.DocumentationPluginsBootstrapper:93 - Documentation plugins bootstrapped
+2021-12-09 10:11:59.466 [main] INFO  s.d.s.web.plugins.DocumentationPluginsBootstrapper:79 - Found 1 custom documentation plugin(s)
+2021-12-09 10:11:59.956 [main] INFO  s.d.spring.web.scanners.ApiListingReferenceScanner:44 - Scanning for api listing references
+2021-12-09 10:12:00.213 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_1
+2021-12-09 10:12:00.229 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_1
+2021-12-09 10:12:00.232 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_1
+2021-12-09 10:12:00.234 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_1
+2021-12-09 10:12:00.237 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_1
+2021-12-09 10:12:00.240 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_1
+2021-12-09 10:12:00.252 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_2
+2021-12-09 10:12:00.266 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_2
+2021-12-09 10:12:00.276 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_2
+2021-12-09 10:12:00.298 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_3
+2021-12-09 10:12:00.323 [http-nio-8080-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/smart-system]:173 - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2021-12-09 10:12:00.324 [http-nio-8080-exec-2] INFO  org.springframework.web.servlet.DispatcherServlet:525 - Initializing Servlet 'dispatcherServlet'
+2021-12-09 10:12:00.338 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_3
+2021-12-09 10:12:00.341 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_2
+2021-12-09 10:12:00.344 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_2
+2021-12-09 10:12:00.349 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_3
+2021-12-09 10:12:00.356 [http-nio-8080-exec-2] INFO  org.springframework.web.servlet.DispatcherServlet:547 - Completed initialization in 31 ms
+2021-12-09 10:12:00.370 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_2
+2021-12-09 10:12:00.530 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: loginUsingPOST_1
+2021-12-09 10:12:00.585 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_4
+2021-12-09 10:12:00.589 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_3
+2021-12-09 10:12:00.592 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_3
+2021-12-09 10:12:00.595 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_4
+2021-12-09 10:12:00.602 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_5
+2021-12-09 10:12:00.606 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_3
+2021-12-09 10:12:00.620 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_4
+2021-12-09 10:12:00.643 [http-nio-8080-exec-2] WARN  org.apache.shiro.mgt.AbstractRememberMeManager:449 - There was a failure while trying to retrieve remembered principals.  This could be due to a configuration problem or corrupted principals.  This could also be due to a recently changed encryption key, if you are using a shiro.ini file, this property would be 'securityManager.rememberMeManager.cipherKey' see: http://shiro.apache.org/web.html#Web-RememberMeServices. The remembered identity will be forgotten and not used for this request.
+2021-12-09 10:12:00.653 [http-nio-8080-exec-2] WARN  org.apache.shiro.mgt.DefaultSecurityManager:618 - Delegate RememberMeManager instance of type [org.apache.shiro.web.mgt.CookieRememberMeManager] threw an exception during getRememberedPrincipals().
+org.apache.shiro.crypto.CryptoException: Unable to execute 'doFinal' with cipher instance [javax.crypto.Cipher@3e479c2f].
+	at org.apache.shiro.crypto.JcaCipherService.crypt(JcaCipherService.java:462)
+	at org.apache.shiro.crypto.JcaCipherService.crypt(JcaCipherService.java:445)
+	at org.apache.shiro.crypto.JcaCipherService.decrypt(JcaCipherService.java:390)
+	at org.apache.shiro.crypto.JcaCipherService.decrypt(JcaCipherService.java:382)
+	at org.apache.shiro.mgt.AbstractRememberMeManager.decrypt(AbstractRememberMeManager.java:482)
+	at org.apache.shiro.mgt.AbstractRememberMeManager.convertBytesToPrincipals(AbstractRememberMeManager.java:419)
+	at org.apache.shiro.mgt.AbstractRememberMeManager.getRememberedPrincipals(AbstractRememberMeManager.java:386)
+	at org.apache.shiro.mgt.DefaultSecurityManager.getRememberedIdentity(DefaultSecurityManager.java:613)
+	at org.apache.shiro.mgt.DefaultSecurityManager.resolvePrincipals(DefaultSecurityManager.java:501)
+	at org.apache.shiro.mgt.DefaultSecurityManager.createSubject(DefaultSecurityManager.java:347)
+	at org.apache.shiro.subject.Subject$Builder.buildSubject(Subject.java:845)
+	at org.apache.shiro.web.subject.WebSubject$Builder.buildWebSubject(WebSubject.java:148)
+	at org.apache.shiro.web.servlet.AbstractShiroFilter.createSubject(AbstractShiroFilter.java:292)
+	at org.apache.shiro.web.servlet.AbstractShiroFilter.doFilterInternal(AbstractShiroFilter.java:359)
+	at org.apache.shiro.web.servlet.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:125)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at com.alibaba.druid.support.http.WebStatFilter.doFilter(WebStatFilter.java:124)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.boot.actuate.web.trace.servlet.HttpTraceFilter.doFilterInternal(HttpTraceFilter.java:88)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:202)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:542)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:143)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:374)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:868)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1590)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: javax.crypto.AEADBadTagException: Tag mismatch!
+	at com.sun.crypto.provider.GaloisCounterMode.decryptFinal(GaloisCounterMode.java:620)
+	at com.sun.crypto.provider.CipherCore.finalNoPadding(CipherCore.java:1116)
+	at com.sun.crypto.provider.CipherCore.fillOutputBuffer(CipherCore.java:1053)
+	at com.sun.crypto.provider.CipherCore.doFinal(CipherCore.java:853)
+	at com.sun.crypto.provider.AESCipher.engineDoFinal(AESCipher.java:446)
+	at javax.crypto.Cipher.doFinal(Cipher.java:2168)
+	at org.apache.shiro.crypto.JcaCipherService.crypt(JcaCipherService.java:459)
+	... 55 common frames omitted
+2021-12-09 10:12:00.674 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_5
+2021-12-09 10:12:00.677 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_4
+2021-12-09 10:12:00.682 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_4
+2021-12-09 10:12:00.687 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_6
+2021-12-09 10:12:00.691 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_7
+2021-12-09 10:12:00.694 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_4
+2021-12-09 10:12:00.703 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_5
+2021-12-09 10:12:00.719 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_6
+2021-12-09 10:12:00.722 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_5
+2021-12-09 10:12:00.725 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_5
+2021-12-09 10:12:00.730 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_8
+2021-12-09 10:12:00.734 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_5
+2021-12-09 10:12:00.741 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_6
+2021-12-09 10:12:00.766 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_7
+2021-12-09 10:12:00.770 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_6
+2021-12-09 10:12:00.775 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_6
+2021-12-09 10:12:00.781 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_9
+2021-12-09 10:12:00.785 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_6
+2021-12-09 10:12:00.796 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_7
+2021-12-09 10:12:00.832 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_8
+2021-12-09 10:12:00.836 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_7
+2021-12-09 10:12:00.839 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_7
+2021-12-09 10:12:00.843 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: downloadCountUsingPUT_1
+2021-12-09 10:12:00.849 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_10
+2021-12-09 10:12:00.853 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_7
+2021-12-09 10:12:00.864 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_8
+2021-12-09 10:12:00.882 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_9
+2021-12-09 10:12:00.887 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_8
+2021-12-09 10:12:00.891 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_8
+2021-12-09 10:12:00.896 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_11
+2021-12-09 10:12:00.900 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_8
+2021-12-09 10:12:00.904 [http-nio-8080-exec-2] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - °æwebsocketœ˚œ¢°ø”––¬µƒ¡¨Ω”£¨◊‹ ˝Œ™:1
+2021-12-09 10:12:00.915 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_9
+2021-12-09 10:12:00.982 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_10
+2021-12-09 10:12:00.985 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_9
+2021-12-09 10:12:00.991 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_9
+2021-12-09 10:12:00.998 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_12
+2021-12-09 10:12:01.002 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_9
+2021-12-09 10:12:01.014 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_10
+2021-12-09 10:12:01.053 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_11
+2021-12-09 10:12:01.057 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_10
+2021-12-09 10:12:01.059 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_10
+2021-12-09 10:12:01.064 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: downloadCountUsingPUT_2
+2021-12-09 10:12:01.068 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_13
+2021-12-09 10:12:01.070 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_10
+2021-12-09 10:12:01.082 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_11
+2021-12-09 10:12:01.114 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_12
+2021-12-09 10:12:01.120 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_11
+2021-12-09 10:12:01.123 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_11
+2021-12-09 10:12:01.127 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_14
+2021-12-09 10:12:01.130 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_11
+2021-12-09 10:12:01.140 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_12
+2021-12-09 10:12:01.154 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_13
+2021-12-09 10:12:01.157 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_12
+2021-12-09 10:12:01.160 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_12
+2021-12-09 10:12:01.163 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_15
+2021-12-09 10:12:01.166 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_12
+2021-12-09 10:12:01.175 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_13
+2021-12-09 10:12:01.201 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_14
+2021-12-09 10:12:01.206 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_13
+2021-12-09 10:12:01.208 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_13
+2021-12-09 10:12:01.211 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_16
+2021-12-09 10:12:01.215 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_17
+2021-12-09 10:12:01.219 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_13
+2021-12-09 10:12:01.229 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_14
+2021-12-09 10:12:01.250 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_15
+2021-12-09 10:12:01.255 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_14
+2021-12-09 10:12:01.260 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_14
+2021-12-09 10:12:01.264 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_18
+2021-12-09 10:12:01.267 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_14
+2021-12-09 10:12:01.279 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_15
+2021-12-09 10:12:01.295 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_16
+2021-12-09 10:12:01.305 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_15
+2021-12-09 10:12:01.309 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_15
+2021-12-09 10:12:01.314 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_19
+2021-12-09 10:12:01.321 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_15
+2021-12-09 10:12:01.330 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_16
+2021-12-09 10:12:01.339 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_17
+2021-12-09 10:12:01.343 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_16
+2021-12-09 10:12:01.346 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_16
+2021-12-09 10:12:01.349 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_20
+2021-12-09 10:12:01.352 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_16
+2021-12-09 10:12:01.363 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_17
+2021-12-09 10:12:01.384 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_18
+2021-12-09 10:12:01.388 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_17
+2021-12-09 10:12:01.391 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_17
+2021-12-09 10:12:01.395 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: downloadCountUsingPUT_3
+2021-12-09 10:12:01.399 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_21
+2021-12-09 10:12:01.403 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_17
+2021-12-09 10:12:01.414 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_18
+2021-12-09 10:12:01.442 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_19
+2021-12-09 10:12:01.453 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_18
+2021-12-09 10:12:01.458 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_18
+2021-12-09 10:12:01.472 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_22
+2021-12-09 10:12:01.482 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_18
+2021-12-09 10:12:01.506 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_19
+2021-12-09 10:12:01.528 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_20
+2021-12-09 10:12:01.532 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_19
+2021-12-09 10:12:01.536 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_19
+2021-12-09 10:12:01.540 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_23
+2021-12-09 10:12:01.545 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_19
+2021-12-09 10:12:01.557 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_20
+2021-12-09 10:12:01.580 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_21
+2021-12-09 10:12:01.583 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_20
+2021-12-09 10:12:01.587 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_20
+2021-12-09 10:12:01.590 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_24
+2021-12-09 10:12:01.595 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_25
+2021-12-09 10:12:01.598 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_20
+2021-12-09 10:12:01.608 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_21
+2021-12-09 10:12:01.631 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_22
+2021-12-09 10:12:01.634 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_21
+2021-12-09 10:12:01.636 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_21
+2021-12-09 10:12:01.641 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_26
+2021-12-09 10:12:01.645 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_27
+2021-12-09 10:12:01.648 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_21
+2021-12-09 10:12:01.656 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_22
+2021-12-09 10:12:01.666 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_23
+2021-12-09 10:12:01.669 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_22
+2021-12-09 10:12:01.672 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_22
+2021-12-09 10:12:01.675 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_28
+2021-12-09 10:12:01.678 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_22
+2021-12-09 10:12:01.684 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_23
+2021-12-09 10:12:01.715 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_24
+2021-12-09 10:12:01.720 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_23
+2021-12-09 10:12:01.726 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_23
+2021-12-09 10:12:01.731 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_29
+2021-12-09 10:12:01.735 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_23
+2021-12-09 10:12:01.747 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_24
+2021-12-09 10:12:01.763 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_25
+2021-12-09 10:12:01.766 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_24
+2021-12-09 10:12:01.771 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_24
+2021-12-09 10:12:01.775 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_30
+2021-12-09 10:12:01.778 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_24
+2021-12-09 10:12:01.787 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_25
+2021-12-09 10:12:01.796 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_26
+2021-12-09 10:12:01.799 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_25
+2021-12-09 10:12:01.805 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_25
+2021-12-09 10:12:01.809 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_31
+2021-12-09 10:12:01.813 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_25
+2021-12-09 10:12:01.820 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_26
+2021-12-09 10:12:01.836 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_27
+2021-12-09 10:12:01.840 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_26
+2021-12-09 10:12:01.843 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_26
+2021-12-09 10:12:01.846 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_32
+2021-12-09 10:12:01.851 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_33
+2021-12-09 10:12:01.853 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_26
+2021-12-09 10:12:01.864 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_27
+2021-12-09 10:12:01.875 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_28
+2021-12-09 10:12:01.878 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_27
+2021-12-09 10:12:01.881 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_27
+2021-12-09 10:12:01.884 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteReleaseUsingPOST_1
+2021-12-09 10:12:01.887 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_34
+2021-12-09 10:12:01.891 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_27
+2021-12-09 10:12:01.894 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_28
+2021-12-09 10:12:01.903 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageMyListUsingGET_1
+2021-12-09 10:12:01.913 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_29
+2021-12-09 10:12:01.916 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_28
+2021-12-09 10:12:01.918 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_28
+2021-12-09 10:12:01.921 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_35
+2021-12-09 10:12:01.923 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_28
+2021-12-09 10:12:01.929 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_29
+2021-12-09 10:12:01.942 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_30
+2021-12-09 10:12:01.943 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_29
+2021-12-09 10:12:01.945 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_29
+2021-12-09 10:12:01.947 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: downloadCountUsingPUT_4
+2021-12-09 10:12:01.949 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_36
+2021-12-09 10:12:01.951 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_29
+2021-12-09 10:12:01.958 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_30
+2021-12-09 10:12:01.974 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_31
+2021-12-09 10:12:01.976 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_30
+2021-12-09 10:12:01.978 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_30
+2021-12-09 10:12:01.980 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_37
+2021-12-09 10:12:01.983 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_38
+2021-12-09 10:12:01.986 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_30
+2021-12-09 10:12:01.991 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_31
+2021-12-09 10:12:02.002 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_32
+2021-12-09 10:12:02.004 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_31
+2021-12-09 10:12:02.006 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_31
+2021-12-09 10:12:02.008 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_39
+2021-12-09 10:12:02.011 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_31
+2021-12-09 10:12:02.021 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_32
+2021-12-09 10:12:02.033 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_33
+2021-12-09 10:12:02.036 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_32
+2021-12-09 10:12:02.038 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_32
+2021-12-09 10:12:02.040 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_40
+2021-12-09 10:12:02.042 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_32
+2021-12-09 10:12:02.052 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_33
+2021-12-09 10:12:02.061 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_34
+2021-12-09 10:12:02.064 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_33
+2021-12-09 10:12:02.065 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_33
+2021-12-09 10:12:02.068 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_41
+2021-12-09 10:12:02.070 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_33
+2021-12-09 10:12:02.078 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_34
+2021-12-09 10:12:02.097 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_35
+2021-12-09 10:12:02.099 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_34
+2021-12-09 10:12:02.101 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_34
+2021-12-09 10:12:02.104 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_42
+2021-12-09 10:12:02.105 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_34
+2021-12-09 10:12:02.110 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_35
+2021-12-09 10:12:02.115 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_36
+2021-12-09 10:12:02.121 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_36
+2021-12-09 10:12:02.124 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_35
+2021-12-09 10:12:02.127 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_35
+2021-12-09 10:12:02.130 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_43
+2021-12-09 10:12:02.132 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_35
+2021-12-09 10:12:02.137 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_37
+2021-12-09 10:12:02.144 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_37
+2021-12-09 10:12:02.146 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_36
+2021-12-09 10:12:02.148 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_36
+2021-12-09 10:12:02.151 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_44
+2021-12-09 10:12:02.153 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_36
+2021-12-09 10:12:02.159 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_38
+2021-12-09 10:12:02.165 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_38
+2021-12-09 10:12:02.168 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_37
+2021-12-09 10:12:02.170 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_37
+2021-12-09 10:12:02.172 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_45
+2021-12-09 10:12:02.174 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_37
+2021-12-09 10:12:02.179 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_39
+2021-12-09 10:12:02.186 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_39
+2021-12-09 10:12:02.189 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_38
+2021-12-09 10:12:02.191 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_38
+2021-12-09 10:12:02.193 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_46
+2021-12-09 10:12:02.194 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_38
+2021-12-09 10:12:02.199 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_40
+2021-12-09 10:12:02.212 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_40
+2021-12-09 10:12:02.214 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_39
+2021-12-09 10:12:02.216 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_39
+2021-12-09 10:12:02.219 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_47
+2021-12-09 10:12:02.221 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_39
+2021-12-09 10:12:02.227 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_41
+2021-12-09 10:12:02.244 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_42
+2021-12-09 10:12:02.247 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_40
+2021-12-09 10:12:02.257 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_41
+2021-12-09 10:12:02.259 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_40
+2021-12-09 10:12:02.263 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_48
+2021-12-09 10:12:02.270 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_40
+2021-12-09 10:12:02.282 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_42
+2021-12-09 10:12:02.285 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_41
+2021-12-09 10:12:02.288 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_41
+2021-12-09 10:12:02.292 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_49
+2021-12-09 10:12:02.294 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_50
+2021-12-09 10:12:02.298 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_41
+2021-12-09 10:12:02.307 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_43
+2021-12-09 10:12:02.319 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_43
+2021-12-09 10:12:02.321 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_42
+2021-12-09 10:12:02.324 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_42
+2021-12-09 10:12:02.328 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_51
+2021-12-09 10:12:02.331 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_42
+2021-12-09 10:12:02.337 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_44
+2021-12-09 10:12:02.348 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_44
+2021-12-09 10:12:02.351 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteUsingDELETE_43
+2021-12-09 10:12:02.355 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: deleteBatchUsingDELETE_43
+2021-12-09 10:12:02.358 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: editUsingPUT_52
+2021-12-09 10:12:02.361 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryByIdUsingGET_43
+2021-12-09 10:12:02.369 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_45
+2021-12-09 10:12:02.377 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: addUsingPOST_45
+2021-12-09 10:12:02.384 [main] INFO  s.d.s.w.r.operation.CachingOperationNameGenerator:41 - Generating unique operation named: queryPageListUsingGET_46
+2021-12-09 10:12:02.519 [main] INFO  o.s.scheduling.quartz.SchedulerFactoryBean:727 - Starting Quartz Scheduler now
+2021-12-09 10:12:02.908 [http-nio-8080-exec-4] WARN  org.apache.shiro.mgt.AbstractRememberMeManager:449 - There was a failure while trying to retrieve remembered principals.  This could be due to a configuration problem or corrupted principals.  This could also be due to a recently changed encryption key, if you are using a shiro.ini file, this property would be 'securityManager.rememberMeManager.cipherKey' see: http://shiro.apache.org/web.html#Web-RememberMeServices. The remembered identity will be forgotten and not used for this request.
+2021-12-09 10:12:02.909 [http-nio-8080-exec-4] WARN  org.apache.shiro.mgt.DefaultSecurityManager:618 - Delegate RememberMeManager instance of type [org.apache.shiro.web.mgt.CookieRememberMeManager] threw an exception during getRememberedPrincipals().
+org.apache.shiro.crypto.CryptoException: Unable to execute 'doFinal' with cipher instance [javax.crypto.Cipher@4746ee53].
+	at org.apache.shiro.crypto.JcaCipherService.crypt(JcaCipherService.java:462)
+	at org.apache.shiro.crypto.JcaCipherService.crypt(JcaCipherService.java:445)
+	at org.apache.shiro.crypto.JcaCipherService.decrypt(JcaCipherService.java:390)
+	at org.apache.shiro.crypto.JcaCipherService.decrypt(JcaCipherService.java:382)
+	at org.apache.shiro.mgt.AbstractRememberMeManager.decrypt(AbstractRememberMeManager.java:482)
+	at org.apache.shiro.mgt.AbstractRememberMeManager.convertBytesToPrincipals(AbstractRememberMeManager.java:419)
+	at org.apache.shiro.mgt.AbstractRememberMeManager.getRememberedPrincipals(AbstractRememberMeManager.java:386)
+	at org.apache.shiro.mgt.DefaultSecurityManager.getRememberedIdentity(DefaultSecurityManager.java:613)
+	at org.apache.shiro.mgt.DefaultSecurityManager.resolvePrincipals(DefaultSecurityManager.java:501)
+	at org.apache.shiro.mgt.DefaultSecurityManager.createSubject(DefaultSecurityManager.java:347)
+	at org.apache.shiro.subject.Subject$Builder.buildSubject(Subject.java:845)
+	at org.apache.shiro.web.subject.WebSubject$Builder.buildWebSubject(WebSubject.java:148)
+	at org.apache.shiro.web.servlet.AbstractShiroFilter.createSubject(AbstractShiroFilter.java:292)
+	at org.apache.shiro.web.servlet.AbstractShiroFilter.doFilterInternal(AbstractShiroFilter.java:359)
+	at org.apache.shiro.web.servlet.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:125)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at com.alibaba.druid.support.http.WebStatFilter.doFilter(WebStatFilter.java:124)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.boot.actuate.web.trace.servlet.HttpTraceFilter.doFilterInternal(HttpTraceFilter.java:88)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:202)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:542)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:143)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:374)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:868)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1590)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: javax.crypto.AEADBadTagException: Tag mismatch!
+	at com.sun.crypto.provider.GaloisCounterMode.decryptFinal(GaloisCounterMode.java:620)
+	at com.sun.crypto.provider.CipherCore.finalNoPadding(CipherCore.java:1116)
+	at com.sun.crypto.provider.CipherCore.fillOutputBuffer(CipherCore.java:1053)
+	at com.sun.crypto.provider.CipherCore.doFinal(CipherCore.java:853)
+	at com.sun.crypto.provider.AESCipher.engineDoFinal(AESCipher.java:446)
+	at javax.crypto.Cipher.doFinal(Cipher.java:2168)
+	at org.apache.shiro.crypto.JcaCipherService.crypt(JcaCipherService.java:459)
+	... 55 common frames omitted
+2021-12-09 10:12:02.923 [http-nio-8080-exec-4] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - °æwebsocketœ˚œ¢°ø”––¬µƒ¡¨Ω”£¨◊‹ ˝Œ™:2
+2021-12-09 10:12:04.520 [main] INFO  org.quartz.core.QuartzScheduler:547 - Scheduler MyScheduler_$_Sike-TB1639015907787 started.
+2021-12-09 10:12:04.558 [main] INFO  org.jeecg.JeecgSystemApplication:61 - Started JeecgSystemApplication in 62.021 seconds (JVM running for 63.969)
+2021-12-09 10:12:04.568 [main] INFO  org.jeecg.JeecgSystemApplication:47 - 
+----------------------------------------------------------
+	Application Jeecg-Boot is running! Access URLs:
+	Local: 		http://localhost:8080/smart-system/
+	External: 	http://192.168.31.86:8080/smart-system/
+	SwaggerŒƒµµ: 	http://192.168.31.86:8080/smart-system/doc.html
+----------------------------------------------------------
+2021-12-09 10:12:12.395 [http-nio-8080-exec-7] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
+2021-12-09 10:12:12.698 [http-nio-8080-exec-7] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---∏ﬂº∂≤È—Ø≤Œ ˝-->[id in string null 1467381365744496641]
+2021-12-09 10:12:12.701 [http-nio-8080-exec-7] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --≤È—ØπÊ‘Ú-->id IN 1467381365744496641
+2021-12-09 10:12:22.855 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --≤È—ØπÊ‘Ú-->paper_type = 2
+2021-12-09 10:12:22.857 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
+2021-12-09 10:12:24.515 [http-nio-8080-exec-3] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
+2021-12-09 10:12:24.516 [http-nio-8080-exec-3] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---∏ﬂº∂≤È—Ø≤Œ ˝-->[id in string null 1467381365744496641]
+2021-12-09 10:12:24.517 [http-nio-8080-exec-3] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --≤È—ØπÊ‘Ú-->id IN 1467381365744496641
+2021-12-09 10:12:28.241 [SpringContextShutdownHook] INFO  org.quartz.core.QuartzScheduler:585 - Scheduler MyScheduler_$_Sike-TB1639015907787 paused.
+2021-12-09 10:12:28.466 [SpringContextShutdownHook] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - °æwebsocketœ˚œ¢°ø¡¨Ω”∂œø™£¨◊‹ ˝Œ™:1
+2021-12-09 10:12:28.467 [SpringContextShutdownHook] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - °æwebsocketœ˚œ¢°ø¡¨Ω”∂œø™£¨◊‹ ˝Œ™:0
+2021-12-09 10:12:28.508 [SpringContextShutdownHook] INFO  o.s.scheduling.concurrent.ThreadPoolTaskScheduler:218 - Shutting down ExecutorService 'taskScheduler'
+2021-12-09 10:12:28.510 [SpringContextShutdownHook] INFO  o.s.scheduling.concurrent.ThreadPoolTaskExecutor:218 - Shutting down ExecutorService 'jmReportTaskExecutor'
+2021-12-09 10:12:28.516 [SpringContextShutdownHook] INFO  o.s.scheduling.quartz.SchedulerFactoryBean:845 - Shutting down Quartz Scheduler
+2021-12-09 10:12:28.516 [SpringContextShutdownHook] INFO  org.quartz.core.QuartzScheduler:666 - Scheduler MyScheduler_$_Sike-TB1639015907787 shutting down.
+2021-12-09 10:12:28.517 [SpringContextShutdownHook] INFO  org.quartz.core.QuartzScheduler:585 - Scheduler MyScheduler_$_Sike-TB1639015907787 paused.
+2021-12-09 10:12:28.518 [SpringContextShutdownHook] INFO  org.quartz.core.QuartzScheduler:740 - Scheduler MyScheduler_$_Sike-TB1639015907787 shutdown complete.
+2021-12-09 10:12:28.529 [SpringContextShutdownHook] INFO  c.b.dynamic.datasource.DynamicRoutingDataSource:217 - dynamic-datasource start closing ....
+2021-12-09 10:12:28.532 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource:2029 - {dataSource-1} closing ...
+2021-12-09 10:12:28.542 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource:2101 - {dataSource-1} closed
+2021-12-09 10:12:28.542 [SpringContextShutdownHook] INFO  c.b.dynamic.datasource.DynamicRoutingDataSource:221 - dynamic-datasource all closed success,bye

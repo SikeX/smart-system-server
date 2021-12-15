@@ -49,6 +49,8 @@ public class LogDTO implements Serializable {
     /**操作人用户账户*/
     private String userid;
 
+    private String exportFile;
+
     public LogDTO(){
 
     }
@@ -64,5 +66,12 @@ public class LogDTO implements Serializable {
         this.logType = logType;
         this.operateType = operatetype;
         this.loginUser = loginUser;
+    }
+
+    public LogDTO(String logContent, Integer logType, Integer operatetype, String exportFile){
+        this.logContent = logContent;
+        this.logType = logType;
+        this.operateType = operatetype;
+        this.exportFile = exportFile;
     }
 }

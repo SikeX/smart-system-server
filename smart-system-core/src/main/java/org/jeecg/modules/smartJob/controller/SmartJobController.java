@@ -101,6 +101,7 @@ public class SmartJobController extends JeecgController<SmartJob, ISmartJobServi
 
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
+        smartJob.setJobBean();
         boolean isExist = smartJobService.openJob(smartJob, sysUser.getUsername());
         if(isExist){
             smartJobService.save(smartJob);
@@ -124,10 +125,13 @@ public class SmartJobController extends JeecgController<SmartJob, ISmartJobServi
 
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
-        smartJobService.edit(smartJob, sysUser.getUsername());
+        boolean isSuccess = smartJobService.edit(smartJob, sysUser.getUsername());
+        if(!isSuccess){
+            return Result.error("任务已存在！");
+        }
 
         //更新状态
-        smartJob.setJobStatus("开启");
+        smartJob.setJobStatus("0");
         smartJobService.updateById(smartJob);
         return Result.OK("编辑成功!");
     }
@@ -215,5 +219,34 @@ public class SmartJobController extends JeecgController<SmartJob, ISmartJobServi
     @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
         return super.importExcel(request, response, SmartJob.class);
+    }
+
+    @AutoLog(value = "定时任务信息表-修改状态")
+    @ApiOperation(value="定时任务信息表-修改状态", notes="定时任务信息表-修改状态")
+    @PostMapping(value = "/changeStatus")
+    public Result<?> changeStatus(@RequestBody SmartJob smartJob){
+
+        if(smartJob.getJobStatus().equals("0")){
+            //关闭任务线程
+            if(smartJob.getIsLoop().equals("0")){
+                //关闭循环任务
+                loopTask.deleteJob(smartJob.getJobBean());
+            }else{
+                //关闭延迟任务
+                delayTask.deleteTask(smartJob.getJobBean());
+            }
+            smartJob.setJobStatus("1");
+        }else{
+            //开启任务线程
+            smartJobService.changeJobStatus(smartJob);
+            smartJob.setJobStatus("0");
+
+        }
+
+        //更新数据库状态
+        smartJobService.updateById(smartJob);
+
+        return Result.OK("任务更新成功！");
+
     }
 }

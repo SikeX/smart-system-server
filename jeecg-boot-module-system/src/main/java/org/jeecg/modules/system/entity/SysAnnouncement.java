@@ -69,7 +69,7 @@ public class SysAnnouncement implements Serializable {
     private java.lang.String priority;
     
     /**
-     * 消息类型1:通知公告2:系统消息
+     * 消息类型1:通知公告2:系统消息3:任务下发
      */
     @Excel(name = "消息类型", width = 15, dicCode = "msg_category")
     @Dict(dicCode = "msg_category")

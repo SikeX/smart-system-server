@@ -22,8 +22,7 @@
            exam_endtime,
            exam_grade
     from smart_people pe left join smart_exam_information e on pe.exam_id =e.id
-    left join smart_paper pa on pa.id = e.paper_id
-    where pe.person_id = #{userId} and pa.paper_type = 1
+    where pe.person_id = #{userId} and e.paper_type = 1
       <if test="examName != null and examName != ''">
           and exam_name like #{examName}
       </if>

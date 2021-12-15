@@ -50,7 +50,8 @@ public class SmartInnerPartyTalk implements Serializable {
     @ApiModelProperty(value = "所属部门")
     private java.lang.String sysOrgCode;
 	/**单位ID*/
-    @ApiModelProperty(value = "单位ID")
+    @Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
+    @ApiModelProperty(value = "单位")
     private java.lang.String departId;
 	/**会议时间*/
 	@Excel(name = "会议时间", width = 15, format = "yyyy-MM-dd HH:mm:ss")
@@ -99,7 +100,6 @@ public class SmartInnerPartyTalk implements Serializable {
     @ApiModelProperty(value = "受党纪处分人工姓名")
     private java.lang.String punisherName;
 	/**会议摘要*/
-	@Excel(name = "会议摘要", width = 15)
     @ApiModelProperty(value = "会议摘要")
     private java.lang.String abs;
 	/**记录人ID*/

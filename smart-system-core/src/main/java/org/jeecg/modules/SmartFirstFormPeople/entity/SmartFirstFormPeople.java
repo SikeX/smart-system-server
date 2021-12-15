@@ -54,7 +54,8 @@ public class SmartFirstFormPeople implements Serializable {
     @ApiModelProperty(value = "所属部门")
     private java.lang.String sysOrgCode;
     /**单位ID*/
-    @ApiModelProperty(value = "单位ID")
+    /*@Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")*/
+    @ApiModelProperty(value = "单位")
     private java.lang.String departId;
 	/**案件标题*/
 	@Excel(name = "案件标题", width = 15)
@@ -69,7 +70,8 @@ public class SmartFirstFormPeople implements Serializable {
     @ApiModelProperty(value = "被谈话人ID")
     private java.lang.String intervieweeId;
 	/**被谈话人单位*/
-	@Excel(name = "被谈话人单位", width = 15)
+    @Excel(name="被谈话人单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
+    @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
     @ApiModelProperty(value = "被谈话人单位")
     private java.lang.String intervieweeDept;
 	/**被谈话人姓名*/
@@ -81,12 +83,14 @@ public class SmartFirstFormPeople implements Serializable {
     @ApiModelProperty(value = "被谈话人性别")
     private java.lang.String intervieweeSex;
 	/**被谈话人民族*/
-	@Excel(name = "被谈话人民族", width = 15)
+	@Excel(name = "被谈话人民族", width = 15,dicCode = "ethnicity")
+    @Dict(dicCode = "ethnicity")
     @ApiModelProperty(value = "被谈话人民族")
     private java.lang.String intervieweeEthnicity;
 	/**被谈话人政治面貌*/
-	@Excel(name = "被谈话人政治面貌", width = 15)
+	@Excel(name = "被谈话人政治面貌", width = 15,dicCode = "political_status")
     @ApiModelProperty(value = "被谈话人政治面貌")
+    @Dict(dicCode = "political_status")
     private java.lang.String intervieweePolsta;
 	/**被谈话人入党时间*/
     @Excel(name = "被谈话人入党时间", width = 15, format = "yyyy-MM-dd")
@@ -95,12 +99,14 @@ public class SmartFirstFormPeople implements Serializable {
     @ApiModelProperty(value = "被谈话人入党时间")
     private java.util.Date intervieweeJpt;
 	/**被谈话人职务*/
-	@Excel(name = "被谈话人职务", width = 15)
+    @Excel(name = "职务", width = 15,dictTable ="sys_position",dicText = "name",dicCode = "code")
+    @Dict(dictTable ="sys_position",dicText = "name",dicCode = "code")
     @ApiModelProperty(value = "被谈话人职务")
     private java.lang.String intervieweePost;
 	/**被谈话人职级*/
-	@Excel(name = "被谈话人职级", width = 15)
+    @Excel(name = "被谈话人职级", width = 15,dicCode = "position_rank")
     @ApiModelProperty(value = "被谈话人职级")
+    @Dict(dicCode = "position_rank")
     private java.lang.String intervieweePostrank;
 	/**是否党政正职*/
 	@Excel(name = "是否党政正职", width = 15, dicCode = "yn")
@@ -126,7 +132,8 @@ public class SmartFirstFormPeople implements Serializable {
     @ApiModelProperty(value = "谈话人工号")
     private java.lang.String talkerId;
 	/**谈话人单位*/
-	@Excel(name = "谈话人单位", width = 15)
+    @Excel(name="谈话人单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
+    @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
     @ApiModelProperty(value = "谈话人单位")
     private java.lang.String talkerDept;
 	/**谈话人姓名*/
@@ -134,12 +141,14 @@ public class SmartFirstFormPeople implements Serializable {
     @ApiModelProperty(value = "谈话人姓名")
     private java.lang.String talkerName;
 	/**谈话人职务*/
-	@Excel(name = "谈话人职务", width = 15)
+    @Excel(name = "职务", width = 15,dictTable ="sys_position",dicText = "name",dicCode = "code")
+    @Dict(dictTable ="sys_position",dicText = "name",dicCode = "code")
     @ApiModelProperty(value = "谈话人职务")
     private java.lang.String talkerPost;
 	/**谈话人职级*/
-	@Excel(name = "谈话人职级", width = 15)
+    @Excel(name = "谈话人职级", width = 15,dicCode = "position_rank")
     @ApiModelProperty(value = "谈话人职级")
+    @Dict(dicCode = "position_rank")
     private java.lang.String talkerPostrank;
 	/**简要案情*/
 	@Excel(name = "简要案情", width = 15)
@@ -151,7 +160,7 @@ public class SmartFirstFormPeople implements Serializable {
     @ApiModelProperty(value = "办理部门")
     private java.lang.String handlerDepart;
 	/**办理状态*/
-	@Excel(name = "审核状态", width = 15)
+	/*@Excel(name = "审核状态", width = 15)*/
     @ApiModelProperty(value = "审核状态")
     private java.lang.String verifyStatus;
 	/**类型*/
@@ -181,7 +190,6 @@ public class SmartFirstFormPeople implements Serializable {
     @ApiModelProperty(value = "附件")
     private java.lang.String annex;
     /**删除状态*/
-    @Excel(name = "删除状态", width = 15,dicCode="del_flag")
     @TableLogic
     private java.lang.Integer delFlag;
 }
