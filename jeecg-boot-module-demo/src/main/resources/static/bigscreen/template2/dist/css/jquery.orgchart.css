@@ -339,7 +339,7 @@
 
 .orgchart .node .topEdge {
   top: -2px;
-
+  left: 22px;
 }
 
 .orgchart .node .topEdge.oci-chevron-up::before {
@@ -352,6 +352,7 @@
 
 .orgchart .node .bottomEdge {
   bottom: -2px;
+  left: 22px;
 }
 
 .orgchart .node .bottomEdge.oci-chevron-up::before {
@@ -372,10 +373,12 @@
 
 .orgchart .node .rightEdge {
   right: -2px;
+  top: 22px;
 }
 
 .orgchart .node .leftEdge {
   left: -2px;
+  top: 22px;
 }
 
 .orgchart .node .horizontalEdge::before {

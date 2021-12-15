@@ -16,9 +16,9 @@
     <title>智慧村务服务中心-首页</title>
     <style type="text/css">
         #chart-container {
-            display:flex;
+            display:block;
             width: 100%;
-            height: 95%;
+            height: 90%;
             position: absolute;
             border: 0px ;
             margin: auto;
@@ -32,7 +32,7 @@
         #chart-container2 {
             display:none;
             width: 100%;
-            height: 95%;
+            height: 90%;
             position: absolute;
             border: 0px ;
             margin: auto;
@@ -44,9 +44,9 @@
             right: 0;
         }
         #natureDepart {
-            display:flex;
-            width: 100%;
-            height: 95%;
+            display:block;
+            width: 80%;
+            height: 85%;
             border: 0px ;
             margin: auto;
             text-align: center;
@@ -54,8 +54,8 @@
         }
         #workDepart {
             display:none;
-            width: 100%;
-            height: 95%;
+            width: 80%;
+            height: 85%;
             border: 0px ;
             margin: auto;
             text-align: center;
@@ -63,9 +63,9 @@
         }
         .orgchart {
             overflow: auto;
-            width:110%;
-            height:78%;
-
+            width:100%;
+            height:100%;
+            line-height: 25px;
         }
         .orgchart .node .title { height: 30px; line-height: 25px;  }
         .orgchart .node .title .symbol { margin-top: 1px; }
@@ -419,11 +419,11 @@
 <#--            </div>-->
 <#--        </div>-->
         <div class="cont-div">
-            <div class="chart-box pop-charts">
+
                 <h2 class="title" id="titlefordepart"></h2>
                 <div id="natureDepart" ></div>
                 <div id="workDepart" ></div>
-            </div>
+
         </div>
 
         <div class="cont-div">
@@ -432,8 +432,8 @@
             <div class="chart-box pop-chart">
                 <div id="chart3s" style="width:100%;height:90%;"></div>
             </div>
-            <div class="data-box" style="display:none;">
-                <table class="table1">
+            <div class="data-box" style="top:25%;width:8.6rem;display:none;">
+                <table class="table2">
                     <tr class="bg-color">
                         <td rowspan="2">通知公告</td>
                         <td rowspan="2" class="table-data dph-data0">0</td>
@@ -489,7 +489,6 @@
 <script type="text/javascript" src="${base}/bigscreen/template2/js/china.js"></script>
 <script type="text/javascript" src="${base}/bigscreen/template2/js/data/guangdong.js"></script>
 <script type="text/javascript" src="${base}/bigscreen/template2/js/base.js"></script>
-<script type="text/javascript" src="${base}/bigscreen/template2/js/vue.js"></script>
 <script type="text/javascript" src="${base}/bigscreen/template2/dist/js/jquery.orgchart.js"></script>
 <script type="text/javascript" src="${base}/bigscreen/template2/dist/js/JSONLoop.js"></script>
 <script language="javascript" type="text/javascript" src="${base}/bigscreen/template2/js/echarts-wordcloud.min.js"></script>
@@ -541,20 +540,20 @@
                 $('.container').attr('style', 'visibility: visible').find('.pop-up').eq(index).attr('style', 'visibility: visible').siblings().attr('style', 'visibility: hidden');
             } else if (index > 2 && index < 5) {
                 $('.container').attr('style', 'visibility: visible').find('.pop-up').eq(3).attr('style', 'visibility: visible').siblings().attr('style', 'visibility: hidden');
+                $('.cont-div').eq(index - 3).attr('style', 'visibility: visible').siblings('.cont-div').attr('style', 'visibility: hidden');
                 $('#natureDepart').hide();
                 $('#workDepart').hide();
                 if (index = 3) {
                     if ($("#barType").find('.active').data('value') == 1) {
                         $('#titlefordepart').html('自然部门层级关系');
                         $('#workDepart').hide();
-                        $('#natureDepart').show();
+                        $('#natureDepart').css("display","block");
                     } else if ($("#barType").find('.active').data('value') == 2) {
                         $('#titlefordepart').html('业务部门层级关系');
                         $('#natureDepart').hide();
-                        $('#workDepart').show();
+                        $('#workDepart').css("display","block");
                     }
                 }
-                $('.cont-div').eq(index - 3).attr('style', 'visibility: visible').siblings('.cont-div').attr('style', 'visibility: hidden');
             } else if (index == 5) {
                 $('.container').attr('style', 'visibility: visible').find('.pop-up').eq(3).attr('style', 'visibility: visible').siblings().attr('style', 'visibility: hidden');
                 // $('.filter-con .pop-filters').hide();
@@ -733,19 +732,35 @@ console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
         $('#chart-container').orgchart({
             'data' : naturalData,
-            'direction': 'l2r'
+            'pan' : true,
+            'zoom' : true,
+            'draggable' : true,
+            'visibleLevel' : 2
+            // 'direction': 'l2r'
         });
         $('#chart-container2').orgchart({
             'data' : workData,
-            'direction': 'l2r'
+            'pan' : true,
+            'zoom' : true,
+            'draggable' : true,
+            'visibleLevel' : 2
+            // 'direction': 'l2r'
         });
         $('#natureDepart').orgchart({
             'data' : naturalData,
-            'direction': 'l2r'
+            'pan' : true,
+            'zoom' : true,
+            'draggable' : true,
+            'visibleLevel' : 2
+            // 'direction': 'l2r'
         });
         $('#workDepart').orgchart({
             'data' : workData,
-            'direction': 'l2r'
+            'pan' : true,
+            'zoom' : true,
+            'draggable' : true,
+            'visibleLevel' : 2
+            // 'direction': 'l2r'
         });
     })
 

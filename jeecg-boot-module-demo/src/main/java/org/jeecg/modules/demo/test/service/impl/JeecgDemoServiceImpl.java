@@ -198,7 +198,8 @@ public class JeecgDemoServiceImpl extends ServiceImpl<JeecgDemoMapper, JeecgDemo
 		Date date = new Date();
 		SimpleDateFormat formatter = new SimpleDateFormat("-MM-dd");
 		String partyDate = formatter.format(date).toString();
-
+System.out.println("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+System.out.println(this.jeecgDemoMapper.getCloudData(partyDate));
 		return this.jeecgDemoMapper.getCloudData(partyDate);
 	}
 

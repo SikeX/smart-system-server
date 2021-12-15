@@ -979,10 +979,10 @@ $('#barType').on('click', 'li', function () {
     $(this).addClass('active').siblings('li').removeClass('active');
     if ($("#barType").find('.active').data('value') == 1) {
         $('#chart-container2').hide();
-        $('#chart-container').show();
+        $('#chart-container').css("display","block");
     } else if ($("#barType").find('.active').data('value') == 2) {
         $('#chart-container').hide();
-        $('#chart-container2').show();
+        $('#chart-container2').css("display","block");
     }
 })
 
@@ -1121,13 +1121,13 @@ function chart3(type,chartType) {
             $('.table1 .dph-data5').html(data_[5].value);
             $('.table1 .dph-data6').html(data_[6].value);
         } else if (chartType == 1) {
-            $('.table1 .dph-data0').html(data_[0].value);
-            $('.table1 .dph-data1').html(data_[1].value);
-            $('.table1 .dph-data2').html(data_[2].value);
-            $('.table1 .dph-data3').html(data_[3].value);
-            $('.table1 .dph-data4').html(data_[4].value);
-            $('.table1 .dph-data5').html(data_[5].value);
-            $('.table1 .dph-data6').html(data_[6].value);
+            $('.table2 .dph-data0').html(data_[0].value);
+            $('.table2 .dph-data1').html(data_[1].value);
+            $('.table2 .dph-data2').html(data_[2].value);
+            $('.table2 .dph-data3').html(data_[3].value);
+            $('.table2 .dph-data4').html(data_[4].value);
+            $('.table2 .dph-data5').html(data_[5].value);
+            $('.table2 .dph-data6').html(data_[6].value);
         }
 
         series_data = [
@@ -1849,7 +1849,7 @@ $('#mineusL').on('click', function () {
         if ($(this).siblings('input').length == 3) {
             $('#addL').show();
         } else if ($(this).siblings('input').length == 2) {
-            $(this).hide()
+            $(this).hide();
         }
         $(this).siblings('input:last').remove();
     }

@@ -162,10 +162,10 @@ public class BigScreenTemplatController extends JeecgController<JeecgDemo, IJeec
         List<Cloud> cloudList = new ArrayList<>();
         if(userList != null) {
             for (partyUser user : userList) {
-                Cloud cloud = null;
-                cloud.setName(user.getUserName());
+                Cloud cloud = new Cloud();
+                cloud.setName(user.getRealname());
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy");
-                String partyYear = formatter.format(user.getPartyYear()).toString();
+                String partyYear = formatter.format(user.getJoinPartyDate());
                 cloud.setValue(partyYear);
                 cloudList.add(cloud);
             }
