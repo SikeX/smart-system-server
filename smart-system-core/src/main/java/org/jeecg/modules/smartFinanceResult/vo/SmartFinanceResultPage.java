@@ -1,5 +1,6 @@
 package org.jeecg.modules.smartFinanceResult.vo;
 
+import java.io.Serializable;
 import java.util.List;
 import org.jeecg.modules.smartFinanceResult.entity.SmartFinanceResult;
 import org.jeecg.modules.smartFinanceResult.entity.SmartFinanceAnnex;
@@ -22,7 +23,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @Data
 @ApiModel(value="smart_finance_resultPage对象", description="8项规定财物收支表")
-public class SmartFinanceResultPage {
+public class SmartFinanceResultPage implements Serializable {
 
 	/**主键*/
 	@ApiModelProperty(value = "主键")
@@ -62,10 +63,10 @@ public class SmartFinanceResultPage {
 	@ApiModelProperty(value = "创建时间")
     private java.util.Date createTime;
 	/**创建人ID*/
-	@Excel(name = "创建人ID", width = 15)
 	@ApiModelProperty(value = "创建人ID")
     private java.lang.String creatorId;
 	/**创建人*/
+	@Excel(name = "创建人", width = 15)
 	@ApiModelProperty(value = "创建人")
     private java.lang.String createBy;
 	/**删除状态（0，正常，1已删除）*/

@@ -55,7 +55,7 @@ public class SmartFinanceAnnex implements Serializable {
     @ApiModelProperty(value = "附件类型")
     private java.lang.String annexType;
 	/**附件文件*/
-	@Excel(name = "附件文件", width = 15)
+	// @Excel(name = "附件文件", width = 15)
     @ApiModelProperty(value = "附件文件")
     private java.lang.String annexFilepath;
 	/**上传时间*/

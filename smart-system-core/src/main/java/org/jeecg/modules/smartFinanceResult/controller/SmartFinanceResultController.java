@@ -1,17 +1,27 @@
 package org.jeecg.modules.smartFinanceResult.controller;
 
-import java.io.UnsupportedEncodingException;
-import java.io.IOException;
-import java.net.URLDecoder;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
+import org.jeecg.common.api.vo.Result;
+import org.jeecg.common.aspect.annotation.AutoLog;
+import org.jeecg.common.system.api.ISysBaseAPI;
+import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
-import org.jeecg.modules.smartOrgMeeting.entity.SmartOrgMeeting;
+import org.jeecg.modules.smartFinanceResult.entity.SmartFinanceAnnex;
+import org.jeecg.modules.smartFinanceResult.entity.SmartFinanceResult;
+import org.jeecg.modules.smartFinanceResult.service.ISmartFinanceAnnexService;
+import org.jeecg.modules.smartFinanceResult.service.ISmartFinanceResultService;
+import org.jeecg.modules.smartFinanceResult.vo.SmartFinanceResultPage;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
 import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
@@ -19,30 +29,18 @@ import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.ImportParams;
 import org.jeecgframework.poi.excel.view.JeecgEntityExcelView;
-import org.jeecg.common.system.vo.LoginUser;
-import org.apache.shiro.SecurityUtils;
-import org.jeecg.common.api.vo.Result;
-import org.jeecg.common.system.query.QueryGenerator;
-import org.jeecg.common.util.oConvertUtils;
-import org.jeecg.modules.smartFinanceResult.entity.SmartFinanceAnnex;
-import org.jeecg.modules.smartFinanceResult.entity.SmartFinanceResult;
-import org.jeecg.modules.smartFinanceResult.vo.SmartFinanceResultPage;
-import org.jeecg.modules.smartFinanceResult.service.ISmartFinanceResultService;
-import org.jeecg.modules.smartFinanceResult.service.ISmartFinanceAnnexService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lombok.extern.slf4j.Slf4j;
-import com.alibaba.fastjson.JSON;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import org.jeecg.common.aspect.annotation.AutoLog;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Description: 8项规定财物收支表
@@ -69,6 +67,10 @@ public class SmartFinanceResultController {
     public String verifyType = "财务收支";
     @Autowired
     CommonService commonService;
+    @Autowired
+    private ISysBaseAPI sysBaseAPI;
+    @Autowired
+    private BaseCommonService baseCommonService;
 
     /**
      * 分页列表查询
@@ -252,23 +254,63 @@ public class SmartFinanceResultController {
     /**
      * 导出excel
      *
-     * @param request
+     * @param req
      * @param smartFinanceResult
+     * @param response
      */
     @RequestMapping(value = "/exportXls")
-    public ModelAndView exportXls(HttpServletRequest request, SmartFinanceResult smartFinanceResult) {
-        // Step.1 组装查询条件查询数据
-        QueryWrapper<SmartFinanceResult> queryWrapper = QueryGenerator.initQueryWrapper(smartFinanceResult, request.getParameterMap());
+    public ModelAndView exportXls(HttpServletRequest req, SmartFinanceResult smartFinanceResult, HttpServletResponse response) throws Exception {
+        // 获取登录用户信息，可以用来查询单位部门信息
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
-        //Step.2 获取导出数据
-        List<SmartFinanceResult> queryList = smartFinanceResultService.list(queryWrapper);
-        // 过滤选中数据
-        String selections = request.getParameter("selections");
-        List<SmartFinanceResult> smartFinanceResultList = new ArrayList<SmartFinanceResult>();
-        if (oConvertUtils.isEmpty(selections)) {
-            smartFinanceResultList = queryList;
+        String username = sysUser.getUsername();
+
+        // 获取用户角色
+        List<String> role = sysBaseAPI.getRolesByUsername(username);
+
+        List<SmartFinanceResult> queryList = new ArrayList<SmartFinanceResult>();
+
+        // 如果是普通用户，则只能看到自己创建的数据
+        if(role.contains("CommonUser")) {
+            QueryWrapper<SmartFinanceResult> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("create_by",username);
+            queryList = smartFinanceResultService.list(queryWrapper);
         } else {
+            // 1. 规则，下面是 以**开始
+            String rule = "in";
+            // 2. 查询字段
+            String field = "departId";
+
+            // 获取子单位ID
+            String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
+
+            HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+            // 获取请求参数中的superQueryParams
+            List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+
+            // 添加额外查询条件，用于权限控制
+            paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+                    + childrenIdString
+                    + "%22,%22field%22:%22" + field + "%22%7D%5D");
+            String[] params = new String[paramsList.size()];
+            paramsList.toArray(params);
+            map.put("superQueryParams", params);
+            params = new String[]{"and"};
+            map.put("superQueryMatchType", params);
+            QueryWrapper<SmartFinanceResult> queryWrapper = QueryGenerator.initQueryWrapper(smartFinanceResult, map);
+
+            queryList = smartFinanceResultService.list(queryWrapper);
+        }
+
+        // Step.1 组装查询条件查询数据
+
+        //Step.2 获取导出数据
+        // 过滤选中数据
+        String selections = req.getParameter("selections");
+        List<SmartFinanceResult> smartFinanceResultList = new ArrayList<SmartFinanceResult>();
+        if(oConvertUtils.isEmpty(selections)) {
+            smartFinanceResultList = queryList;
+        }else {
             List<String> selectionList = Arrays.asList(selections.split(","));
             smartFinanceResultList = queryList.stream().filter(item -> selectionList.contains(item.getId())).collect(Collectors.toList());
         }
@@ -289,6 +331,14 @@ public class SmartFinanceResultController {
         mv.addObject(NormalExcelConstants.CLASS, SmartFinanceResultPage.class);
         mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("8项规定财物收支表数据", "导出人:" + sysUser.getRealname(), "8项规定财物收支表"));
         mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
+
+        // List深拷贝，否则返回前端会没数据
+        List<SmartFinanceResultPage> newPageList = ObjectUtil.cloneByStream(pageList);
+
+        baseCommonService.addExportLog(mv.getModel(), "财物收支", req, response);
+
+        mv.addObject(NormalExcelConstants.DATA_LIST, newPageList);
+
         return mv;
     }
 

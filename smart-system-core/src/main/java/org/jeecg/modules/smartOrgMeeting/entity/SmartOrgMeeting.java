@@ -56,7 +56,6 @@ public class SmartOrgMeeting implements Serializable {
     @ApiModelProperty(value = "上报时间")
     private java.util.Date reportTime;
 	/**主持人ID*/
-	@Excel(name = "主持人ID", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @ApiModelProperty(value = "主持人ID")
     private java.lang.String hostId;
@@ -65,7 +64,6 @@ public class SmartOrgMeeting implements Serializable {
     @ApiModelProperty(value = "主持人")
     private java.lang.String hostName;
 	/**会议记录人ID */
-	@Excel(name = "会议记录人ID ", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @ApiModelProperty(value = "会议记录人ID ")
     private java.lang.String recorderId;
@@ -82,11 +80,11 @@ public class SmartOrgMeeting implements Serializable {
     @ApiModelProperty(value = "会议记录")
     private java.lang.String record;
 	/**创建人ID*/
-	@Excel(name = "创建人ID", width = 15)
     @ApiModelProperty(value = "创建人ID")
     private java.lang.String creatorId;
 	/**创建人*/
     @ApiModelProperty(value = "创建人")
+    @Excel(name = "创建人", width = 15)
     private java.lang.String createBy;
 	/**创建时间*/
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
