@@ -1,5 +1,6 @@
 package org.jeecg.modules.smartOrgMeeting.vo;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.TableLogic;
@@ -25,13 +26,13 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @Data
 @ApiModel(value="smart_org_meetingPage对象", description="组织生活会")
-public class SmartOrgMeetingPage {
+public class SmartOrgMeetingPage implements Serializable {
 
 	/**主键*/
 	@ApiModelProperty(value = "主键")
     private java.lang.String id;
 	/**单位*/
-	@Excel(name = "单位", width = 15)
+	@Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
 	@ApiModelProperty(value = "单位")
     private java.lang.String departId;
 	/**会议名称*/
@@ -55,7 +56,6 @@ public class SmartOrgMeetingPage {
 	@ApiModelProperty(value = "上报时间")
     private java.util.Date reportTime;
 	/**主持人ID*/
-	@Excel(name = "主持人ID", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
 	@ApiModelProperty(value = "主持人ID")
     private java.lang.String hostId;
@@ -64,7 +64,6 @@ public class SmartOrgMeetingPage {
 	@ApiModelProperty(value = "主持人")
     private java.lang.String hostName;
 	/**会议记录人ID */
-	@Excel(name = "会议记录人ID ", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
 	@ApiModelProperty(value = "会议记录人ID ")
     private java.lang.String recorderId;
@@ -81,7 +80,6 @@ public class SmartOrgMeetingPage {
 	@ApiModelProperty(value = "会议记录")
     private java.lang.String record;
 	/**创建人ID*/
-	@Excel(name = "创建人ID", width = 15)
 	@ApiModelProperty(value = "创建人ID")
     private java.lang.String creatorId;
 	/**创建人*/
@@ -93,7 +91,6 @@ public class SmartOrgMeetingPage {
 	@ApiModelProperty(value = "创建时间")
     private java.util.Date createTime;
 	/**删除状态（0，正常，1已删除）*/
-	@Excel(name = "删除状态（0，正常，1已删除）", width = 15)
 	@TableLogic
 	@ApiModelProperty(value = "删除状态（0，正常，1已删除）")
     private java.lang.Integer delFlag;

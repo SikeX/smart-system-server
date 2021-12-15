@@ -1,5 +1,6 @@
 package org.jeecg.modules.smartEvaluateMeeting.vo;
 
+import java.io.Serializable;
 import java.util.List;
 import org.jeecg.modules.smartEvaluateMeeting.entity.SmartEvaluateMeeting;
 import org.jeecg.modules.smartEvaluateMeeting.entity.SmartEvaluateMeetingPacpa;
@@ -23,7 +24,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @Data
 @ApiModel(value="smart_evaluate_meetingPage对象", description="述责述廉表")
-public class SmartEvaluateMeetingPage {
+public class SmartEvaluateMeetingPage implements Serializable {
 
 	/**主键*/
 	@ApiModelProperty(value = "主键")

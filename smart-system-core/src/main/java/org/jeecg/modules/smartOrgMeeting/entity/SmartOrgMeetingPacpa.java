@@ -53,7 +53,6 @@ public class SmartOrgMeetingPacpa implements Serializable {
     @ApiModelProperty(value = "主表ID")
     private java.lang.String parentId;
 	/**参会人员ID*/
-	@Excel(name = "参会人员ID", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @ApiModelProperty(value = "参会人员ID")
     private java.lang.String pacpaId;
 	/**参会人员姓名*/
@@ -61,7 +60,6 @@ public class SmartOrgMeetingPacpa implements Serializable {
     @ApiModelProperty(value = "参会人员姓名")
     private java.lang.String pacpaName;
 	/**删除状态（0，正常，1已删除）*/
-	@Excel(name = "删除状态（0，正常，1已删除）", width = 15)
     @TableLogic
     @ApiModelProperty(value = "删除状态（0，正常，1已删除）")
     private java.lang.Integer delFlag;

@@ -231,4 +231,9 @@ public class SysUser implements Serializable {
     private String clientId;
 
     private List<String> roleId;
+
+    /**
+     * 上次验证手机号码时间
+     */
+    private Date lastVerifyTime;
 }

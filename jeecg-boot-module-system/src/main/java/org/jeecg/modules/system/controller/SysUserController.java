@@ -440,7 +440,7 @@ public class SysUserController {
             String username = user.getUsername();
             //设置初始账号：手机号
             if(username == null){
-                user.setPassword(phone);
+                user.setUsername(phone);
             }
             //设置初始密码
             String password = user.getPassword();
@@ -496,7 +496,7 @@ public class SysUserController {
             String username = user.getUsername();
             //设置初始账号：手机号
             if(username == null){
-                user.setPassword(phone);
+                user.setUsername(phone);
             }
             //设置初始密码
             String password = user.getPassword();

@@ -3,15 +3,21 @@ package org.jeecg.modules.demo.test.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.constant.CacheConstant;
+import org.jeecg.common.constant.CommonConstant;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.modules.demo.test.entity.Cloud;
 import org.jeecg.modules.demo.test.entity.JeecgDemo;
+import org.jeecg.modules.demo.test.entity.SysDepart;
 import org.jeecg.modules.demo.test.entity.partyUser;
 import org.jeecg.modules.demo.test.mapper.JeecgDemoMapper;
 import org.jeecg.modules.demo.test.service.IJeecgDemoService;
+import org.jeecg.modules.demo.test.vo.DepartIdModel;
+import org.jeecg.modules.demo.test.vo.SysDepartTreeModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -153,28 +159,28 @@ public class JeecgDemoServiceImpl extends ServiceImpl<JeecgDemoMapper, JeecgDemo
 	}
 
 	@Override
-	public String getTongzhiyidu(String userId){
-		return this.jeecgDemoMapper.getTongzhiyidu(userId);
+	public String getTongzhiyidu(){
+		return this.jeecgDemoMapper.getTongzhiyidu();
 	}
 
 	@Override
-	public String getTongzhiweidu(String userId){
-		return this.jeecgDemoMapper.getTongzhiweidu(userId);
+	public String getTongzhiweidu(){
+		return this.jeecgDemoMapper.getTongzhiweidu();
 	}
 
 	@Override
-	public String getLianzhengyidu(String userId){
-		return this.jeecgDemoMapper.getLianzhengyidu(userId);
+	public String getLianzhengyidu(){
+		return this.jeecgDemoMapper.getLianzhengyidu();
 	}
 
 	@Override
-	public String getLianzhengweidu(String userId){
-		return this.jeecgDemoMapper.getLianzhengweidu(userId);
+	public String getLianzhengweidu(){
+		return this.jeecgDemoMapper.getLianzhengweidu();
 	}
 
 	@Override
-	public String getRenwutiao(String userId){
-		return this.jeecgDemoMapper.getRenwutiao(userId);
+	public String getRenwutiao(){
+		return this.jeecgDemoMapper.getRenwutiao();
 	}
 
 	@Override
@@ -188,11 +194,13 @@ public class JeecgDemoServiceImpl extends ServiceImpl<JeecgDemoMapper, JeecgDemo
 	}
 
 	@Override
-	public List<partyUser> getCloudData(String departId){
+	public List<partyUser> getCloudData(){
 		Date date = new Date();
 		SimpleDateFormat formatter = new SimpleDateFormat("-MM-dd");
 		String partyDate = formatter.format(date).toString();
-		return this.jeecgDemoMapper.getCloudData(departId, partyDate);
+System.out.println("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+System.out.println(this.jeecgDemoMapper.getCloudData(partyDate));
+		return this.jeecgDemoMapper.getCloudData(partyDate);
 	}
 
 }
