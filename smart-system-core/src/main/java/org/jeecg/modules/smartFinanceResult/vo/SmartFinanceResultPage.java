@@ -39,7 +39,7 @@ public class SmartFinanceResultPage {
 	@ApiModelProperty(value = "所属部门")
     private java.lang.String sysOrgCode;
 	/**单位*/
-	@Excel(name = "单位", width = 15)
+	@Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
 	@ApiModelProperty(value = "单位")
     private java.lang.String departId;
 	/**标题*/
@@ -69,7 +69,7 @@ public class SmartFinanceResultPage {
 	@ApiModelProperty(value = "创建人")
     private java.lang.String createBy;
 	/**删除状态（0，正常，1已删除）*/
-	@Excel(name = "删除状态（0，正常，1已删除）", width = 15)
+
 	@ApiModelProperty(value = "删除状态（0，正常，1已删除）")
     private java.lang.Integer delFlag;
 	/**审核状态*/
