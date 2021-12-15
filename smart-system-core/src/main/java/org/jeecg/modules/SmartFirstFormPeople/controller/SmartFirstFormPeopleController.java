@@ -1,9 +1,6 @@
 package org.jeecg.modules.SmartFirstFormPeople.controller;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -11,8 +8,10 @@ import java.net.URLDecoder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.hutool.core.util.ObjectUtil;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
+import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.oConvertUtils;
@@ -24,8 +23,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
-import org.jeecg.modules.SmartInnerPartyTalk.entity.SmartInnerPartyTalk;
-import org.jeecg.modules.SmartPunishPeople.entity.SmartPunishPeople;
+import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
@@ -36,6 +34,7 @@ import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.ImportParams;
 import org.jeecgframework.poi.excel.view.JeecgEntityExcelView;
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -64,6 +63,10 @@ public class SmartFirstFormPeopleController extends JeecgController<SmartFirstFo
 	 private CommonService commonService;
 	 @Autowired
 	 private ISmartVerifyTypeService smartVerifyTypeService;
+	 @Autowired
+	 private ISysBaseAPI sysBaseAPI;
+	 @Autowired
+	 private BaseCommonService baseCommonService;
 	 @Autowired
 	 private SmartVerify smartVerify;
 	 public String verifyType = "执行第一形态人";
@@ -226,13 +229,99 @@ public class SmartFirstFormPeopleController extends JeecgController<SmartFirstFo
     /**
     * 导出excel
     *
-    * @param request
+    * @param req
     * @param smartFirstFormPeople
     */
     @RequestMapping(value = "/exportXls")
-    public ModelAndView exportXls(HttpServletRequest request, SmartFirstFormPeople smartFirstFormPeople) {
+	public ModelAndView exportXls(HttpServletRequest req,
+								  HttpServletResponse response, SmartFirstFormPeople smartFirstFormPeople) throws Exception {
+
+		// 获取登录用户信息，可以用来查询单位部门信息
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+		String username = sysUser.getUsername();
+
+		// 获取用户角色
+		List<String> role = sysBaseAPI.getRolesByUsername(username);
+
+		List<SmartFirstFormPeople> queryList = new ArrayList<SmartFirstFormPeople>();
+
+
+		// 如果是普通用户，则只能看到自己创建的数据
+		if(role.contains("CommonUser")) {
+			QueryWrapper<SmartFirstFormPeople> queryWrapper = new QueryWrapper<>();
+			queryWrapper.eq("create_by",username);
+			queryList = smartFirstFormPeopleService.list(queryWrapper);
+		} else {
+			// 1. 规则，下面是 以**开始
+			String rule = "in";
+			// 2. 查询字段
+			String field = "departId";
+
+			// 获取子单位ID
+			String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
+
+			HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+			// 获取请求参数中的superQueryParams
+			List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+
+			// 添加额外查询条件，用于权限控制
+			paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+					+ childrenIdString
+					+ "%22,%22field%22:%22" + field + "%22%7D%5D");
+			String[] params = new String[paramsList.size()];
+			paramsList.toArray(params);
+			map.put("superQueryParams", params);
+			params = new String[]{"and"};
+			map.put("superQueryMatchType", params);
+			QueryWrapper<SmartFirstFormPeople> queryWrapper = QueryGenerator.initQueryWrapper(smartFirstFormPeople, map);
+
+			queryList = smartFirstFormPeopleService.list(queryWrapper);
+		}
+
+
+		// Step.1 组装查询条件查询数据
+
+		//Step.2 获取导出数据
+		// 过滤选中数据
+		String selections = req.getParameter("selections");
+		List<SmartFirstFormPeople> smartFirstFormPeopleList = new ArrayList<SmartFirstFormPeople>();
+		if(oConvertUtils.isEmpty(selections)) {
+			smartFirstFormPeopleList = queryList;
+		}else {
+			List<String> selectionList = Arrays.asList(selections.split(","));
+			smartFirstFormPeopleList = queryList.stream().filter(item -> selectionList.contains(item.getId())).collect(Collectors.toList());
+		}
+
+		// Step.3 组装pageList
+		List<SmartFirstFormPeople> pageList = new ArrayList<SmartFirstFormPeople>();
+		for (SmartFirstFormPeople main : smartFirstFormPeopleList) {
+			SmartFirstFormPeople vo = new SmartFirstFormPeople();
+			BeanUtils.copyProperties(main, vo);
+			pageList.add(vo);
+		}
+
+		// Step.4 AutoPoi 导出Excel
+		ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
+		mv.addObject(NormalExcelConstants.FILE_NAME, "执行第一形态人列表");
+		mv.addObject(NormalExcelConstants.CLASS, SmartFirstFormPeople.class);
+		mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("执行第一形态人表数据", "导出人:"+sysUser.getRealname(), "执行第一形态人表"));
+		mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
+
+		// List深拷贝，否则返回前端会没数据
+		List<SmartFirstFormPeople> newPageList = ObjectUtil.cloneByStream(pageList);
+
+		baseCommonService.addExportLog(mv.getModel(), "执行第一形态人", req, response);
+
+		mv.addObject(NormalExcelConstants.DATA_LIST, newPageList);
+
+		return mv;
+
+	}
+
+    /*public ModelAndView exportXls(HttpServletRequest request, SmartFirstFormPeople smartFirstFormPeople) {
         return super.exportXls(request, smartFirstFormPeople, SmartFirstFormPeople.class, "执行第一种形态人员表");
-    }
+    }*/
 
     /**
       * 通过excel导入数据

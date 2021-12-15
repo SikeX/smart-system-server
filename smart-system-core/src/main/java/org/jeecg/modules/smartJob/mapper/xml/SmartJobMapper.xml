@@ -85,4 +85,10 @@
         where is_report = "0" and del_flag != "1"
     </select>
 
+    <select id="getPeopleInfo" resultType="org.jeecg.modules.smartJob.entity.SysUser">
+        SELECT *
+        from sys_user
+        where id = #{peopleId}
+    </select>
+
 </mapper>

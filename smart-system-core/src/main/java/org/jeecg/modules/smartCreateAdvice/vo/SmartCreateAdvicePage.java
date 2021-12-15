@@ -1,5 +1,6 @@
 package org.jeecg.modules.smartCreateAdvice.vo;
 
+import java.io.Serializable;
 import java.util.List;
 import org.jeecg.modules.smartCreateAdvice.entity.SmartCreateAdvice;
 import org.jeecg.modules.smartCreateAdvice.entity.SmartCreateAdviceAnnex;
@@ -22,7 +23,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @Data
 @ApiModel(value="smart_create_advicePage对象", description="制发建议表")
-public class SmartCreateAdvicePage {
+public class SmartCreateAdvicePage implements Serializable {
 
 	/**主键*/
 	@ApiModelProperty(value = "主键")

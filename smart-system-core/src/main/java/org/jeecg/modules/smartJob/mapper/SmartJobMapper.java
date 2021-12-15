@@ -34,4 +34,6 @@ public interface SmartJobMapper extends BaseMapper<SmartJob> {
     SmartJob getByBean(String id);
 
     List<SmartPremaritalFiling> selectNotReport();
+
+    SysUser getPeopleInfo(String peopleId);
 }

@@ -8,6 +8,8 @@ import org.jeecgframework.poi.excel.annotation.ExcelEntity;
 import org.jeecgframework.poi.excel.annotation.ExcelCollection;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -23,7 +25,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @Data
 @ApiModel(value="smart_premarital_filingPage对象", description="8项规定婚前报备表")
-public class SmartPremaritalFilingPage {
+public class SmartPremaritalFilingPage implements Serializable {
 
 	/**主键*/
 	@ApiModelProperty(value = "主键")

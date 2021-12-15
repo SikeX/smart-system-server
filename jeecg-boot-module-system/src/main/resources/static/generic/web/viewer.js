@@ -4071,7 +4071,7 @@ var TextLayerBuilder = (function TextLayerBuilderClosure() {
         return;
       }
 
-      // Convert the matches on the page controller into the match format
+      // Convert the matches on the page org.jeecg.modules.smart_video_player.controller into the match format
       // used for the textLayer.
       this.matches = this.convertMatches(this.findController === null ?
         [] : (this.findController.pageMatches[this.pageIdx] || []));
