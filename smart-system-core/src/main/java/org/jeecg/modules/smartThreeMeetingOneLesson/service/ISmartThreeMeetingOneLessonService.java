@@ -18,21 +18,21 @@ public interface ISmartThreeMeetingOneLessonService extends IService<SmartThreeM
 
 	/**
 	 * 添加一对多
-	 * 
+	 *
 	 */
 	public void saveMain(SmartThreeMeetingOneLesson smartThreeMeetingOneLesson,List<SmartThreeMeetingOneLessonParticipants> smartThreeMeetingOneLessonParticipantsList,List<SmartThreeMeetingOneLessonAnnex> smartThreeMeetingOneLessonAnnexList) ;
-	
+
 	/**
 	 * 修改一对多
-	 * 
+	 *
 	 */
 	public void updateMain(SmartThreeMeetingOneLesson smartThreeMeetingOneLesson,List<SmartThreeMeetingOneLessonParticipants> smartThreeMeetingOneLessonParticipantsList,List<SmartThreeMeetingOneLessonAnnex> smartThreeMeetingOneLessonAnnexList);
-	
+
 	/**
 	 * 删除一对多
 	 */
 	public void delMain (String id);
-	
+
 	/**
 	 * 批量删除一对多
 	 */
