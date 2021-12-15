@@ -52,7 +52,7 @@ public class SmartOrgMeetingAnnex implements Serializable {
     @ApiModelProperty(value = "附件说明")
     private java.lang.String description;
 	/**附件文件*/
-	@Excel(name = "附件文件", width = 15)
+	// @Excel(name = "附件文件", width = 15)
     @ApiModelProperty(value = "附件文件")
     private java.lang.String annexFilepath;
 	/**上传时间*/
@@ -65,7 +65,6 @@ public class SmartOrgMeetingAnnex implements Serializable {
     @ApiModelProperty(value = "下载次数")
     private java.lang.Integer downloadCount;
 	/**删除状态（0，正常，1已删除）*/
-	@Excel(name = "删除状态（0，正常，1已删除）", width = 15)
     @TableLogic
     @ApiModelProperty(value = "删除状态（0，正常，1已删除）")
     private java.lang.Integer delFlag;
