@@ -246,6 +246,9 @@ public class SysUserController {
 		Result<SysUser> result = new Result<SysUser>();
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
         String orgCode = sysUser.getOrgCode();
+        // 获取用户角色
+        String userName = sysUser.getUsername();
+        List<String> role = sysBaseAPI.getRolesByUsername(userName);
         if ("".equals(orgCode)) {
             return result.error500("本用户没有操作权限！");
         }
@@ -253,7 +256,14 @@ public class SysUserController {
         if (id == null) {
             return result.error500("没有找到部门！");
         }
-		String selectedRoles = jsonObject.getString("selectedroles");
+        //纪委管理员可以选择角色，单位管理员默认为单位非管理员
+        String selectedRoles = "";
+        if(role.contains("CCDIAdmin")){
+            selectedRoles = jsonObject.getString("selectedroles");
+        }
+		else {
+            selectedRoles = "1465163864583323650";
+        }
 		/*String selectedDeparts = jsonObject.getString("selecteddeparts");*/
 		//设置部门，只能添加本部门人员
 		String selectedDepart = id;
@@ -800,7 +810,6 @@ public class SysUserController {
         List<String> role = sysBaseAPI.getRolesByUsername(username);
 
         List<SysUser> queryList = new ArrayList<SysUser>();
-
 
         // 如果是普通用户，则只能看到自己创建的数据
         if(role.contains("CommonUser")) {
