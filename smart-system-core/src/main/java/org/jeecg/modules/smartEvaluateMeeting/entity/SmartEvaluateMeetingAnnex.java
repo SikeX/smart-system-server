@@ -53,7 +53,7 @@ public class SmartEvaluateMeetingAnnex implements Serializable {
     @ApiModelProperty(value = "主表ID")
     private java.lang.String parentId;
 	/**序号*/
-	@Excel(name = "序号", width = 15)
+//	@Excel(name = "序号", width = 15)
     @ApiModelProperty(value = "序号")
     private java.lang.Integer annexIndex;
 	/**附件说明*/
@@ -65,7 +65,7 @@ public class SmartEvaluateMeetingAnnex implements Serializable {
     @ApiModelProperty(value = "附件文件路径")
     private java.lang.String annexPath;
 	/**上传时间*/
-	@Excel(name = "上传时间", width = 15, format = "yyyy-MM-dd")
+//	@Excel(name = "上传时间", width = 15, format = "yyyy-MM-dd")
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "上传时间")
