@@ -84,8 +84,9 @@ public class SmartPaperPage {
 	/**所属部门*/
     @ApiModelProperty(value = "所属部门")
     private String sysOrgCode;
+    /**是否评分*/
+    private Integer isMark;
 	/**删除状态*/
-	@Excel(name = "删除状态", width = 15)
     @TableLogic
     private Integer delFlag;
     @ApiModelProperty(value = "试题表")
