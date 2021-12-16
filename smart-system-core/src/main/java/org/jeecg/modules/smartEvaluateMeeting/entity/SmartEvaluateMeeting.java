@@ -77,7 +77,6 @@ public class SmartEvaluateMeeting implements Serializable {
     @ApiModelProperty(value = "所属部门")
     private java.lang.String sysOrgCode;
 	/**删除状态（0，正常，1已删除）*/
-	@Excel(name = "删除状态（0，正常，1已删除）", width = 15)
     @TableLogic
     @ApiModelProperty(value = "删除状态（0，正常，1已删除）")
     private java.lang.Integer delFlag;

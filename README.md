@@ -210,7 +210,7 @@ QueryWrapper<?> queryWrapper = QueryGenerator.initQueryWrapper(?, req.getParamet
 
 #### 三、代码生成器
 
-> 功能说明：   一键生成的代码（包括：controller、service、dao、mapper、entity、vue）
+> 功能说明：   一键生成的代码（包括：org.jeecg.modules.smart_video_player.controller、service、dao、mapper、entity、vue）
 
  - 模板位置： src/main/resources/jeecg/code-template
  - 技术文档： http://doc.jeecg.com/2043916

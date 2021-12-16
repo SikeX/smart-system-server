@@ -120,6 +120,11 @@ public class LoginUser {
 
 	private java.lang.String peopleType;
 
+	/**
+	 * 上次验证手机号码时间
+	 */
+	private Date lastVerifyTime;
+
 	@Override
 	public String toString() {
 		return "LoginUser{" +
@@ -145,6 +150,7 @@ public class LoginUser {
 				", clientId='" + clientId + '\'' +
 				", departId='" + departId + '\'' +
 				", peopleType='" + peopleType + '\'' +
+				", lastVerifyTime='" + lastVerifyTime + '\'' +
 				'}';
 	}
 }

@@ -27,6 +27,7 @@ import org.jeecg.modules.smart_window_unit.service.ISmartWindowUnitService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import io.swagger.annotations.Api;
@@ -59,7 +60,6 @@ public class SmartWindowUnitController<ISysDepartService> extends JeecgControlle
 	private ISmartWindowPeopleService smartWindowPersonService;
 	private ISysBaseAPI sysBaseAPI;
 
-	private ISysDepartService sysDepartService;
 
 	/**
 	 * 分页列表查询
@@ -89,8 +89,8 @@ public class SmartWindowUnitController<ISysDepartService> extends JeecgControlle
 	 * @param smartWindowUnit
 	 * @return
 	 */
-
-	private static final String RootPath="${path.upload}/windows";
+	@Value(value = "${jeecg.path.upload}/windows")
+	private String RootPath;
 	private static final String FileFormat=".png";
 	private static final ThreadLocal<SimpleDateFormat> LOCALDATEFORMAT=ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyyMMddHHmmss"));
 
@@ -104,8 +104,8 @@ public class SmartWindowUnitController<ISysDepartService> extends JeecgControlle
 //		String principalId = smartWindowUnit.getPrincipal();
 //		smartWindowUnit.setPrincipal(sysBaseAPI.getUserById(principalId).getRealname());
 
-		String principalId = smartWindowUnit.getPrincipal();
-		smartWindowUnit.setPrincipal(smartWindowUnitService.getUserNameById(principalId));
+//		String principalId = smartWindowUnit.getPrincipal();
+//		smartWindowUnit.setPrincipal(smartWindowUnitService.getUserNameById(principalId));
 		String pid = smartWindowUnit.getPid();
 		String departName = smartWindowUnitService.getDepartNameById(pid);
 //		String windowUnitPid = smartWindowUnitService.getById(departName).getPid();

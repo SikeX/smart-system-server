@@ -105,6 +105,8 @@ public class SysDepartController {
 //				list = sysDepartService.queryTreeList();
 //			}
 			List<SysDepartTreeModel> list = sysDepartService.queryTreeList();
+//			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//			System.out.println(list);
 			res.setResult(list);
 			res.setSuccess(true);
 		} catch (Exception e) {
@@ -437,6 +439,7 @@ public class SysDepartController {
     public ModelAndView exportXls(SysDepart sysDepart,HttpServletRequest request) {
         // Step.1 组装查询条件
         QueryWrapper<SysDepart> queryWrapper = QueryGenerator.initQueryWrapper(sysDepart, request.getParameterMap());
+		queryWrapper.eq("del_flag", CommonConstant.DEL_FLAG_0.toString());
         //Step.2 AutoPoi 导出Excel
         ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
         List<SysDepart> pageList = sysDepartService.list(queryWrapper);

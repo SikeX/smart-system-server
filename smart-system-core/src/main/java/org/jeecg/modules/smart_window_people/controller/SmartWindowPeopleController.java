@@ -25,6 +25,7 @@ import org.jeecg.common.system.base.controller.JeecgController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import io.swagger.annotations.Api;
@@ -86,7 +87,8 @@ public class SmartWindowPeopleController extends JeecgController<SmartWindowPeop
 	 * @return
 	 */
 
-	private static final String RootPath= "${path.upload}/people";
+	@Value(value = "${jeecg.path.upload}/people")
+	private String RootPath;
 	private static final String FileFormat=".png";
 	private static final ThreadLocal<SimpleDateFormat> LOCALDATEFORMAT=ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyyMMddHHmmss"));
 
@@ -98,7 +100,7 @@ public class SmartWindowPeopleController extends JeecgController<SmartWindowPeop
 		String principalId = smartWindowPeople.getPersonId();
 //		String windowsName = smartWindowPeople.getDepartmentId();
 ////		String windowsName = smartWindowPeople.get();
-		smartWindowPeople.setPersonId(sysBaseAPI.getUserById(peopleId).getRealname());
+//		smartWindowPeople.setPersonId(sysBaseAPI.getUserById(peopleId).getRealname());
 		smartWindowPeople.setPrincipal(sysBaseAPI.getUserById(principalId).getRealname());
 //		smartWindowUnitService.addSmartWindowUnit(smartWindowUnit);
 		String departmentId = smartWindowPeople.getDepartmentId();
@@ -106,7 +108,7 @@ public class SmartWindowPeopleController extends JeecgController<SmartWindowPeop
 		String departName = smartWindowPeopleService.getDepartNameById(pid);
 		String windowName = smartWindowPeopleService.getDepartmentNameByDepartmentId(departmentId);
 		// 1. 根据ID生成二维码，并存储到本地
-		String content = "http://47.99.39.59:3000/SmartEvaluate/modules/SmartEvaluateForm?exeDept="+departName+"&windowsName="+windowName+"&personName="+smartWindowPeople.getPersonId();//exeDept主管部门名称，windowsName窗口名称，personName具体被举报人名
+		String content = "http://47.99.39.59:3000/SmartEvaluate/modules/SmartEvaluateForm?exeDept="+departName+"&windowsName="+windowName+"&personName="+smartWindowPeople.getPersonName();//exeDept主管部门名称，windowsName窗口名称，personName具体被举报人名
 		BaseResponse response = new BaseResponse(StatusCode.Success);
 		try {
 			final String fileName=LOCALDATEFORMAT.get().format(new Date());

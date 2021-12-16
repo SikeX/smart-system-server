@@ -67,7 +67,7 @@ public class SysUser implements Serializable {
     /**
      * 头像
      */
-    @Excel(name = "头像", width = 15,type = 2)
+   /* @Excel(name = "头像", width = 15,type = 2)*/
     private String avatar;
 
     /**
@@ -101,12 +101,14 @@ public class SysUser implements Serializable {
     /**
      * 部门code(当前选择登录部门)
      */
+    @Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
+    @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
     private String orgCode;
     //当前登录人单位ID
-    /*@Excel(name = "单位", width = 15)*/
+   /* @Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")*/
     private String departId;
     /**部门名称--将不需要序列化的属性前添加关键字transient，序列化对象的时候，这个属性就不会被序列化*/
-    @Excel(name = "单位", width = 15)
+  /*  @Excel(name = "单位", width = 15)*/
     private transient String orgCodeTxt;
 
 
@@ -134,7 +136,7 @@ public class SysUser implements Serializable {
     /**
      * 职务，关联职务表
      */
-    @Excel(name = "职务", width = 15)
+    @Excel(name = "职务", width = 15,dictTable ="sys_position",dicText = "name",dicCode = "code")
     @Dict(dictTable ="sys_position",dicText = "name",dicCode = "code")
     private String post;
 
@@ -229,4 +231,9 @@ public class SysUser implements Serializable {
     private String clientId;
 
     private List<String> roleId;
+
+    /**
+     * 上次验证手机号码时间
+     */
+    private Date lastVerifyTime;
 }

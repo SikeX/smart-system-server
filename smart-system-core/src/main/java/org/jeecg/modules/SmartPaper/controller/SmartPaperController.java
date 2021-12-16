@@ -90,6 +90,8 @@ public class SmartPaperController extends JeecgController<SmartPaper, ISmartPape
 		System.out.println(smartPaperPage);
 		smartPaperPage.setPaperType("1");//添加试卷
 		smartPaperPage.setPaperStatus("0");
+		//默认评分
+		smartPaperPage.setIsMark(1);
 		smartPaperService.insert(smartPaperPage);
 		return Result.OK("添加成功！");
 	}
@@ -100,8 +102,8 @@ public class SmartPaperController extends JeecgController<SmartPaper, ISmartPape
 	  * @param smartPaperPage
 	  * @return
 	  */
-	 @AutoLog(value = "试卷表-添加")
-	 @ApiOperation(value="试卷表-添加", notes="试卷表-添加")
+	 @AutoLog(value = "问卷-添加")
+	 @ApiOperation(value="问卷-添加", notes="问卷-添加")
 	 @PostMapping(value = "/addSurvey")
 	 public Result<?> addSurvey(@RequestBody SmartPaperPage smartPaperPage) {
 		 //System.out.println("####################");

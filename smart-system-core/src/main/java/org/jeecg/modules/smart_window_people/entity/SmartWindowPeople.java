@@ -59,11 +59,19 @@ public class SmartWindowPeople implements Serializable {
 	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @ApiModelProperty(value = "负责人")
     private java.lang.String principal;
-	/**窗口人员*/
+    /**负责人Name*/
+    @Excel(name = "负责人姓名", width = 15)
+    @ApiModelProperty(value = "负责人姓名")
+    private java.lang.String principalName;
+	/**窗口人员ID*/
 	@Excel(name = "窗口人员", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
 	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @ApiModelProperty(value = "窗口人员")
     private java.lang.String personId;
+    /**窗口人员Name*/
+    @Excel(name = "负责人姓名", width = 15)
+    @ApiModelProperty(value = "负责人姓名")
+    private java.lang.String personName;
 	/**联系方式*/
 	@Excel(name = "联系方式", width = 15)
     @ApiModelProperty(value = "联系方式")

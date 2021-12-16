@@ -25,15 +25,15 @@ import java.io.UnsupportedEncodingException;
 public class SmartThreeMeetingOneLessonParticipants implements Serializable {
     private static final long serialVersionUID = 1L;
 
-	/**主键*/
-	@TableId(type = IdType.ASSIGN_ID)
+    /**主键*/
+    @TableId(type = IdType.ASSIGN_ID)
     @ApiModelProperty(value = "主键")
     private java.lang.String id;
-	/**主表id*/
+    /**主表id*/
     @ApiModelProperty(value = "主表id")
     private java.lang.String parentTableId;
-	/**参会人员工号*/
-	@Excel(name = "参会人员工号", width = 15)
+    /**参会人员工号*/
+    @Excel(name = "参会人员工号", width = 15)
     @ApiModelProperty(value = "参会人员工号")
     private java.lang.String participantsNumber;
 }

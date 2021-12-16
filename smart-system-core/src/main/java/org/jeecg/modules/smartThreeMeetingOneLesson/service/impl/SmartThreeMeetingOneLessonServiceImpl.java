@@ -30,7 +30,7 @@ public class SmartThreeMeetingOneLessonServiceImpl extends ServiceImpl<SmartThre
 	private SmartThreeMeetingOneLessonParticipantsMapper smartThreeMeetingOneLessonParticipantsMapper;
 	@Autowired
 	private SmartThreeMeetingOneLessonAnnexMapper smartThreeMeetingOneLessonAnnexMapper;
-	
+
 	@Override
 	@Transactional
 	public void saveMain(SmartThreeMeetingOneLesson smartThreeMeetingOneLesson, List<SmartThreeMeetingOneLessonParticipants> smartThreeMeetingOneLessonParticipantsList,List<SmartThreeMeetingOneLessonAnnex> smartThreeMeetingOneLessonAnnexList) {
@@ -55,11 +55,11 @@ public class SmartThreeMeetingOneLessonServiceImpl extends ServiceImpl<SmartThre
 	@Transactional
 	public void updateMain(SmartThreeMeetingOneLesson smartThreeMeetingOneLesson,List<SmartThreeMeetingOneLessonParticipants> smartThreeMeetingOneLessonParticipantsList,List<SmartThreeMeetingOneLessonAnnex> smartThreeMeetingOneLessonAnnexList) {
 		smartThreeMeetingOneLessonMapper.updateById(smartThreeMeetingOneLesson);
-		
+
 		//1.先删除子表数据
 		smartThreeMeetingOneLessonParticipantsMapper.deleteByMainId(smartThreeMeetingOneLesson.getId());
 		smartThreeMeetingOneLessonAnnexMapper.deleteByMainId(smartThreeMeetingOneLesson.getId());
-		
+
 		//2.子表数据重新插入
 		if(smartThreeMeetingOneLessonParticipantsList!=null && smartThreeMeetingOneLessonParticipantsList.size()>0) {
 			for(SmartThreeMeetingOneLessonParticipants entity:smartThreeMeetingOneLessonParticipantsList) {

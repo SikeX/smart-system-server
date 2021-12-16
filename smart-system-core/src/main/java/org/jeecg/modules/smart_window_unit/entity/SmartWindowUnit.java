@@ -57,6 +57,10 @@ public class SmartWindowUnit implements Serializable {
 	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @ApiModelProperty(value = "负责人")
     private java.lang.String principal;
+    /**负责人Name*/
+    @Excel(name = "负责人姓名", width = 15)
+    @ApiModelProperty(value = "负责人姓名")
+    private java.lang.String principalName;
 	/**联系电话*/
 	@Excel(name = "联系电话", width = 15)
     @ApiModelProperty(value = "联系电话")

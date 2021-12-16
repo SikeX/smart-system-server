@@ -57,7 +57,6 @@ public class SmartEvaluateMeetingPacpa implements Serializable {
     @ApiModelProperty(value = "参与人员工号")
     private java.lang.String pacpaId;
 	/**删除状态（0，正常，1已删除）*/
-	@Excel(name = "删除状态（0，正常，1已删除）", width = 15)
     @TableLogic
     @ApiModelProperty(value = "删除状态（0，正常，1已删除）")
     private java.lang.Integer delFlag;
