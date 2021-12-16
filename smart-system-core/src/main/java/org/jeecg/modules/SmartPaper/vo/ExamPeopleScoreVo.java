@@ -16,4 +16,5 @@ public class ExamPeopleScoreVo {
     private String deptName;
     private String personName;
     private Integer examGrade;
+    private Integer isMark;
 }
