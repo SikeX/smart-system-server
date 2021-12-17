@@ -33,7 +33,7 @@ public class SmartTripleImportanceOneGreatnessDescription implements Serializabl
     @ApiModelProperty(value = "主表ID")
     private java.lang.String meetingId;
 	/**序号*/
-	@Excel(name = "序号", width = 15)
+	/*@Excel(name = "序号", width = 15)*/
     @ApiModelProperty(value = "序号")
     private java.lang.String serialNumber;
 	/**创建时间*/
