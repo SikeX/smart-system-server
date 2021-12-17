@@ -15,6 +15,7 @@ import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.smartCreateAdvice.entity.SmartCreateAdvice;
+import org.jeecg.modules.smartCreateAdvice.entity.SmartCreateAdviceAnnex;
 import org.jeecg.modules.smartCreateAdvice.vo.SmartCreateAdvicePage;
 import org.jeecg.modules.smartJob.entity.SmartJob;
 import org.jeecg.modules.smartJob.service.ISmartJobService;
@@ -159,6 +160,7 @@ public class SmartPremaritalFilingController {
                     item.setDepartId(useDepNames.get(item.getDepartId()));
                 });
             }
+            log.info("新的开始" + String.valueOf(pageList));
             return Result.OK(pageList);
         }
     }
@@ -306,17 +308,93 @@ public class SmartPremaritalFilingController {
      * @param req
      * @param smartPremaritalFiling
      */
+//    @RequestMapping(value = "/exportXls")
+//    public ModelAndView exportXls(HttpServletRequest req, HttpServletResponse response, SmartPremaritalFiling smartPremaritalFiling) throws Exception {
+//        // Step.1 组装查询条件查询数据
+//        //QueryWrapper<SmartPremaritalFiling> queryWrapper = QueryGenerator.initQueryWrapper(smartPremaritalFiling, request.getParameterMap());
+//        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+//        String username = sysUser.getUsername();
+//
+//        //获取用户角色
+//        List<String> role = sysBaseAPI.getRolesByUsername(username);
+//        List<SmartPremaritalFiling> queryList = new ArrayList<SmartPremaritalFiling>();
+//
+//        // 如果是普通用户，则只能看到自己创建的数据
+//        if (role.contains("CommonUser")) {
+//            QueryWrapper<SmartPremaritalFiling> queryWrapper = new QueryWrapper<>();
+//            queryWrapper.eq("create_by", username);
+//            queryList = smartPremaritalFilingService.list(queryWrapper);
+//        } else {
+//            // 1. 规则，下面是 以**开始
+//            String rule = "in";
+//            // 2. 查询字段
+//            String field = "departId";
+//            // 获取子单位ID
+//            String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
+//            HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+//            // 获取请求参数中的superQueryParams
+//            List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+//            // 添加额外查询条件，用于权限控制
+//            paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22 " + childrenIdString + "%22,%22field%22:%22" + field + "%22%7D%5D");
+//            String[] params = new String[paramsList.size()];
+//            paramsList.toArray(params);
+//            map.put("superQueryParams", params);
+//            params = new String[]{"and"};
+//            map.put("superQueryMatchType", params);
+//            QueryWrapper<SmartPremaritalFiling> queryWrapper = QueryGenerator.initQueryWrapper(smartPremaritalFiling, map);
+//            queryList = smartPremaritalFilingService.list(queryWrapper);
+//        }
+//
+//
+//        //Step.2 获取导出数据
+//        // 过滤选中数据
+//        String selections = req.getParameter("selections");
+//        log.info(String.valueOf(req));
+//        List<SmartPremaritalFiling> smartPremaritalFilingList = new ArrayList<SmartPremaritalFiling>();
+//        if (oConvertUtils.isEmpty(selections)) {
+//            smartPremaritalFilingList = queryList;
+//
+//        } else {
+//            List<String> selectionList = Arrays.asList(selections.split(","));
+//            smartPremaritalFilingList = queryList.stream().filter(item -> selectionList.contains(item.getId())).collect(Collectors.toList());
+//
+//        }
+//
+//
+//        // Step.3 组装pageList
+//        List<SmartPremaritalFilingPage> pageList = new ArrayList<SmartPremaritalFilingPage>();
+//        for (SmartPremaritalFiling main : smartPremaritalFilingList) {
+//            SmartPremaritalFilingPage vo = new SmartPremaritalFilingPage();
+//            BeanUtils.copyProperties(main, vo);
+//            List<SmartPremaritalFilingApp> smartPremaritalFilingAppList = smartPremaritalFilingAppService.selectByMainId(main.getId());
+//            vo.setSmartPremaritalFilingAppList(smartPremaritalFilingAppList);
+//            pageList.add(vo);
+//        }
+//
+//        // Step.4 AutoPoi 导出Excel
+//        ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
+//        mv.addObject(NormalExcelConstants.FILE_NAME, "8项规定婚前报备表列表");
+//        mv.addObject(NormalExcelConstants.CLASS, SmartPremaritalFilingPage.class);
+//        mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("8项规定婚前报备表数据", "导出人:" + sysUser.getRealname(), "8项规定婚前报备表"));
+//        mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
+//
+//        // List深拷贝，否则返回前端会没数据
+//        List<SmartPremaritalFilingPage> newPageList = ObjectUtil.cloneByStream(pageList);
+//        baseCommonService.addExportLog(mv.getModel(), "8项规定婚前报备", req, response);
+//        mv.addObject(NormalExcelConstants.DATA_LIST, newPageList);
+//
+//        return mv;
+//    }
     @RequestMapping(value = "/exportXls")
     public ModelAndView exportXls(HttpServletRequest req, HttpServletResponse response, SmartPremaritalFiling smartPremaritalFiling) throws Exception {
-        // Step.1 组装查询条件查询数据
-        //QueryWrapper<SmartPremaritalFiling> queryWrapper = QueryGenerator.initQueryWrapper(smartPremaritalFiling, request.getParameterMap());
+        // 获取登录用户信息，可以用来查询单位部门信息
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
         String username = sysUser.getUsername();
-
-        //获取用户角色
+        // 获取用户角色
         List<String> role = sysBaseAPI.getRolesByUsername(username);
-        List<SmartPremaritalFiling> queryList = new ArrayList<SmartPremaritalFiling>();
 
+
+        List<SmartPremaritalFiling> queryList = new ArrayList<SmartPremaritalFiling>();
         // 如果是普通用户，则只能看到自己创建的数据
         if (role.contains("CommonUser")) {
             QueryWrapper<SmartPremaritalFiling> queryWrapper = new QueryWrapper<>();
@@ -329,93 +407,97 @@ public class SmartPremaritalFilingController {
             String field = "departId";
             // 获取子单位ID
             String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
+
             HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
             // 获取请求参数中的superQueryParams
             List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+
             // 添加额外查询条件，用于权限控制
-            paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22 " + childrenIdString + "%22,%22field%22:%22" + field + "%22%7D%5D");
+            paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+                    + childrenIdString
+                    + "%22,%22field%22:%22" + field + "%22%7D%5D");
             String[] params = new String[paramsList.size()];
             paramsList.toArray(params);
             map.put("superQueryParams", params);
             params = new String[]{"and"};
             map.put("superQueryMatchType", params);
+
+            // TODO：3. 修改自己函数中这一部门，封装查询参数修改为我们的 map
             QueryWrapper<SmartPremaritalFiling> queryWrapper = QueryGenerator.initQueryWrapper(smartPremaritalFiling, map);
+            //QueryWrapper<SmartPremaritalFiling> queryWrapper = QueryGenerator.initQueryWrapper(smartPremaritalFiling, req.getParameterMap());
             queryList = smartPremaritalFilingService.list(queryWrapper);
         }
-
-
-        //Step.2 获取导出数据
-        // 过滤选中数据
-        String selections = req.getParameter("selections");
-        List<SmartPremaritalFiling> smartPremaritalFilingList = new ArrayList<SmartPremaritalFiling>();
-        if (oConvertUtils.isEmpty(selections)) {
-            smartPremaritalFilingList = queryList;
-        } else {
-            List<String> selectionList = Arrays.asList(selections.split(","));
-            smartPremaritalFilingList = queryList.stream().filter(item -> selectionList.contains(item.getId())).collect(Collectors.toList());
+// Step.1 组装查询条件查询数据
+// Step.2 获取导出数据
+// 过滤选中数据
+            String selections = req.getParameter("selections");
+            List<SmartPremaritalFiling> smartPremaritalFilingList = new ArrayList<SmartPremaritalFiling>();
+            if (oConvertUtils.isEmpty(selections)) {
+                smartPremaritalFilingList = queryList;
+            } else {
+                List<String> selectionList = Arrays.asList(selections.split(","));
+                smartPremaritalFilingList = queryList.stream().filter(item -> selectionList.contains(item.getId())).collect(Collectors.toList());
+            }// Step.3 组装pageList
+            List<SmartPremaritalFilingPage> pageList = new ArrayList<SmartPremaritalFilingPage>();
+            for (
+                    SmartPremaritalFiling main : smartPremaritalFilingList) {
+                SmartPremaritalFilingPage vo = new SmartPremaritalFilingPage();
+                BeanUtils.copyProperties(main, vo);
+                List<SmartPremaritalFilingApp> smartCreateAdviceAnnexList = smartPremaritalFilingAppService.selectByMainId(main.getId());
+                vo.setSmartPremaritalFilingAppList(smartCreateAdviceAnnexList);
+                pageList.add(vo);
+            }
+            // Step.4 AutoPoi 导出Excel
+            ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
+            mv.addObject(NormalExcelConstants.FILE_NAME, "八项规定婚前报备表");
+            mv.addObject(NormalExcelConstants.CLASS, SmartPremaritalFilingPage.class);
+            mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("八项规定婚前报备表数据", "导出人:" + sysUser.getRealname(), "八项规定婚前报备表"));
+            mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
+// List深拷贝，否则返回前端会没数据
+            List<SmartPremaritalFilingPage> newPageList = ObjectUtil.cloneByStream(pageList);
+            baseCommonService.addExportLog(mv.getModel(), "八项规定婚前报备", req, response);
+            mv.addObject(NormalExcelConstants.DATA_LIST, newPageList);
+            return mv;
         }
 
-        // Step.3 组装pageList
-        List<SmartPremaritalFilingPage> pageList = new ArrayList<SmartPremaritalFilingPage>();
-        for (
-                SmartPremaritalFiling main : smartPremaritalFilingList) {
-            SmartPremaritalFilingPage vo = new SmartPremaritalFilingPage();
-            BeanUtils.copyProperties(main, vo);
-            List<SmartPremaritalFilingApp> smartPremaritalFilingAppList = smartPremaritalFilingAppService.selectByMainId(main.getId());
-            vo.setSmartPremaritalFilingAppList(smartPremaritalFilingAppList);
-            pageList.add(vo);
-        }
 
-        // Step.4 AutoPoi 导出Excel
-        ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
-        mv.addObject(NormalExcelConstants.FILE_NAME, "8项规定婚前报备表列表");
-        mv.addObject(NormalExcelConstants.CLASS, SmartPremaritalFilingPage.class);
-        mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("8项规定婚前报备表数据", "导出人:" + sysUser.getRealname(), "8项规定婚前报备表"));
-        mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
-        // List深拷贝，否则返回前端会没数据
-        List<SmartPremaritalFilingPage> newPageList = ObjectUtil.cloneByStream(pageList);
-        baseCommonService.addExportLog(mv.getModel(), "8项规定婚前报备表", req, response);
-        mv.addObject(NormalExcelConstants.DATA_LIST, newPageList);
-        return mv;
-    }
-
-    /**
-     * 通过excel导入数据
-     *
-     * @param request
-     * @param response
-     * @return
-     */
-    @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
-    public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
-        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
-        for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
-            MultipartFile file = entity.getValue();// 获取上传文件对象
-            ImportParams params = new ImportParams();
-            params.setTitleRows(2);
-            params.setHeadRows(1);
-            params.setNeedSave(true);
-            try {
-                List<SmartPremaritalFilingPage> list = ExcelImportUtil.importExcel(file.getInputStream(), SmartPremaritalFilingPage.class, params);
-                for (SmartPremaritalFilingPage page : list) {
-                    SmartPremaritalFiling po = new SmartPremaritalFiling();
-                    BeanUtils.copyProperties(page, po);
-                    smartPremaritalFilingService.saveMain(po, page.getSmartPremaritalFilingAppList());
-                }
-                return Result.OK("文件导入成功！数据行数:" + list.size());
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-                return Result.error("文件导入失败:" + e.getMessage());
-            } finally {
+        /**
+         * 通过excel导入数据
+         *
+         * @param request
+         * @param response
+         * @return
+         */
+        @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
+        public Result<?> importExcel (HttpServletRequest request, HttpServletResponse response){
+            MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+            Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
+            for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
+                MultipartFile file = entity.getValue();// 获取上传文件对象
+                ImportParams params = new ImportParams();
+                params.setTitleRows(2);
+                params.setHeadRows(1);
+                params.setNeedSave(true);
                 try {
-                    file.getInputStream().close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    List<SmartPremaritalFilingPage> list = ExcelImportUtil.importExcel(file.getInputStream(), SmartPremaritalFilingPage.class, params);
+                    for (SmartPremaritalFilingPage page : list) {
+                        SmartPremaritalFiling po = new SmartPremaritalFiling();
+                        BeanUtils.copyProperties(page, po);
+                        smartPremaritalFilingService.saveMain(po, page.getSmartPremaritalFilingAppList());
+                    }
+                    return Result.OK("文件导入成功！数据行数:" + list.size());
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                    return Result.error("文件导入失败:" + e.getMessage());
+                } finally {
+                    try {
+                        file.getInputStream().close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+            return Result.OK("文件导入失败！");
         }
-        return Result.OK("文件导入失败！");
-    }
 
-}
+    }
