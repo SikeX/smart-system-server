@@ -20,6 +20,7 @@ import org.jeecg.modules.smartJob.entity.SmartJob;
 import org.jeecg.modules.smartJob.service.ISmartJobService;
 import org.jeecg.modules.smartJob.service.imp.SmartJobServiceImpl;
 import org.jeecg.modules.smartJob.util.LoopTask;
+import org.jeecg.modules.smartPostMarriage.service.ISmartPostMarriageReportService;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
 import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
@@ -73,6 +74,9 @@ public class SmartPremaritalFilingController {
     private BaseCommonService baseCommonService;
     @Autowired
     CommonService commonService;
+
+    @Autowired
+    ISmartPostMarriageReportService smartPostMarriageReportService;
 
     @Autowired
     private SmartVerify smartVerify;
@@ -232,6 +236,11 @@ public class SmartPremaritalFilingController {
     @ApiOperation(value = "8项规定婚前报备表-通过id删除", notes = "8项规定婚前报备表-通过id删除")
     @DeleteMapping(value = "/delete")
     public Result<?> delete(@RequestParam(name = "id", required = true) String id) {
+
+        //根据preId设置婚后del_flag = "1"
+        smartPostMarriageReportService.setDelFlagByPreId(id);
+
+        //删除数据
         smartPremaritalFilingService.delMain(id);
         return Result.OK("删除成功!");
     }
@@ -246,6 +255,13 @@ public class SmartPremaritalFilingController {
     @ApiOperation(value = "8项规定婚前报备表-批量删除", notes = "8项规定婚前报备表-批量删除")
     @DeleteMapping(value = "/deleteBatch")
     public Result<?> deleteBatch(@RequestParam(name = "ids", required = true) String ids) {
+
+        //根据preId设置婚后del_flag = "1"
+        List<String> tem = Arrays.asList(ids.split(","));
+        for(String s : tem){
+            smartPostMarriageReportService.setDelFlagByPreId(s);
+        }
+
         this.smartPremaritalFilingService.delBatchMain(Arrays.asList(ids.split(",")));
         return Result.OK("批量删除成功！");
     }
