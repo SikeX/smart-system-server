@@ -53,8 +53,8 @@ public class SmartInnerPartyPacpa implements Serializable {
     @ApiModelProperty(value = "主表ID")
     private java.lang.String mainId;
 	/**参会人员ID*/
-	@Excel(name = "参会人员", width = 15,dictTable = "sys_user", dicText = "realname", dicCode = "id")
-    @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "id")
+	@Excel(name = "参会人员", width = 15,dictTable = "sys_user", dicText = "realname", dicCode = "username")
+    @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @ApiModelProperty(value = "参会人员")
     private java.lang.String papcId;
 }
