@@ -32,6 +32,7 @@ public class SmartSupervision implements Serializable {
     @ApiModelProperty(value = "主键")
     private java.lang.String id;
 	/**创建人*/
+    @Excel(name = "创建人员用户名", width = 15)
     @ApiModelProperty(value = "创建人")
     private java.lang.String createBy;
 	/**创建日期*/
@@ -67,7 +68,7 @@ public class SmartSupervision implements Serializable {
     @ApiModelProperty(value = "监督检查时间")
     private java.util.Date supervisionTime;
 	/**创建人员工号*/
-	@Excel(name = "创建人员工号", width = 15)
+//	@Excel(name = "创建人员工号", width = 15)
     @ApiModelProperty(value = "创建人员工号")
     private java.lang.String creatorNo;
     /**创建人员工号*/

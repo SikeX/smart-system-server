@@ -152,9 +152,9 @@
                 <div class="weather">
                     <img id="weatherImg" src="${base}/bigscreen/template2/images/weather/weather_img01.png" alt="">
                     <div id="weather">
-                        <p class="active">多云</p>
-                        <p>16-22℃</p>
-                        <p>道里区</p>
+                        <p class="active" id="whichweather">多云</p>
+                        <p id="temperaturevaries">16-22℃</p>
+                        <p>哈尔滨</p>
                     </div>
                 </div>
             </div>
@@ -764,19 +764,60 @@ console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         });
     })
 
-    //
-    // var vm = new Vue({
-    //     el: '#myvue',
-    //     data: {
-    //         aa:'',
-    //         bb:'',
-    //     },
-    //     mounted(){
-    //         this.aa = 1
-    //         this.bb = 2
-    //     }
-    //
-    // })
+    $.ajax({
+        url:"https://free-api.heweather.net/s6/weather/forecast?location=哈尔滨&key=c583b96020544a139b61fc277ce8509d",
+        method:"get",
+        success:function(res){
+            // var location=res.HeWeather6[0].basic.location;
+            var cond_txt=res.HeWeather6[0].daily_forecast[0].cond_txt_d;
+            var min_tem=res.HeWeather6[0].daily_forecast[0].tmp_min;
+            var max_tem=res.HeWeather6[0].daily_forecast[0].tmp_max;
+            // $(".location").html(location);
+            $("#whichweather").html(cond_txt);
+            switch(cond_txt){
+                case  '多云':
+                    $("#weatherImg").attr("src","${base}/bigscreen/template2/images/weather/weather_img01.png")
+                    break;
+                case  '晴':
+                    $("#weatherImg").attr("src","${base}/bigscreen/template2/images/weather/晴.png")
+                    break;
+                case  '小雨':
+                    $("#weatherImg").attr("src","${base}/bigscreen/template2/images/weather/小雨.png")
+                    break;
+                case  '大雨':
+                    $("#weatherImg").attr("src","${base}/bigscreen/template2/images/weather/大雨.png")
+                    break;
+                case  '中雨':
+                    $("#weatherImg").attr("src","${base}/bigscreen/template2/images/weather/中雨.png")
+                    break;
+                case '阵雨' :
+                    $("#weatherImg").attr("src","${base}/bigscreen/template2/images/weather/阵雨.png")
+                    break;
+                case '强阵雨' :
+                    $("#weatherImg").attr("src","${base}/bigscreen/template2/images/weather/阵雨.png")
+                    break;
+                case '小雪' :
+                    $("#weatherImg").attr("src","${base}/bigscreen/template2/images/weather/小雪.png")
+                    break;
+                case '中雪' :
+                    $("#weatherImg").attr("src","${base}/bigscreen/template2/images/weather/中雪.png")
+                    break;
+                case '大雪' :
+                    $("#weatherImg").attr("src","${base}/bigscreen/template2/images/weather/大雪.png")
+                    break;
+                case '大暴雨' :
+                    $("#weatherImg").attr("src","${base}/bigscreen/template2/images/weather/大暴雨.png")
+                    break;
+                default:
+                    $("#weatherImg").attr("src","${base}/bigscreen/template2/images/weather/阴.png")
+            }
+            $("#temperaturevaries").html(min_tem+max_tem+"°c");
+        },
+        error:function(el){
+            console.log(el)
+        }
+    })
+
 
 </script>
 
