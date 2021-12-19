@@ -30,7 +30,7 @@ public class SmartTripleImportanceOneGreatnessPage implements Serializable {
 	@ApiModelProperty(value = "主键")
     private java.lang.String id;
 	/**单位*/
-	@Excel(name = "单位", width = 15)
+	@Excel(name = "单位", width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
 	@ApiModelProperty(value = "单位")
     private java.lang.String documentid;
 	/**名称*/
