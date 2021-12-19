@@ -14,6 +14,6 @@ import org.apache.ibatis.annotations.Param;
 public interface SmartThreeMeetingOneLessonParticipantsMapper extends BaseMapper<SmartThreeMeetingOneLessonParticipants> {
 
 	public boolean deleteByMainId(@Param("mainId") String mainId);
-    
+
 	public List<SmartThreeMeetingOneLessonParticipants> selectByMainId(@Param("mainId") String mainId);
 }

@@ -9,7 +9,9 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.hutool.core.util.ObjectUtil;
 import org.jeecg.common.system.api.ISysBaseAPI;
+import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
@@ -69,6 +71,8 @@ public class SmartSupervisionController {
 	private SmartVerify smartVerify;
 	@Autowired
 	private ISmartVerifyTypeService smartVerifyTypeService;
+	@Autowired
+	private BaseCommonService baseCommonService;
 
 	public String verifyType = "监督检查";
 	
@@ -255,48 +259,100 @@ public class SmartSupervisionController {
 		return Result.OK(smartSupervisionAnnexList);
 	}
 
-    /**
-    * 导出excel
-    *
-    * @param request
-    * @param smartSupervision
-    */
-    @RequestMapping(value = "/exportXls")
-    public ModelAndView exportXls(HttpServletRequest request, SmartSupervision smartSupervision) {
-      // Step.1 组装查询条件查询数据
-      QueryWrapper<SmartSupervision> queryWrapper = QueryGenerator.initQueryWrapper(smartSupervision, request.getParameterMap());
-      LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+	 /**
+	  * 导出excel
+	  *
+	  * @param req
+	  * @param smartCreateAdvice
+	  */
+	 @RequestMapping(value = "/exportXls")
+	 public ModelAndView exportXls(HttpServletRequest req,
+								   HttpServletResponse response, SmartSupervision smartSupervision) throws Exception {
 
-      //Step.2 获取导出数据
-      List<SmartSupervision> queryList = smartSupervisionService.list(queryWrapper);
-      // 过滤选中数据
-      String selections = request.getParameter("selections");
-      List<SmartSupervision> smartSupervisionList = new ArrayList<SmartSupervision>();
-      if(oConvertUtils.isEmpty(selections)) {
-          smartSupervisionList = queryList;
-      }else {
-          List<String> selectionList = Arrays.asList(selections.split(","));
-          smartSupervisionList = queryList.stream().filter(item -> selectionList.contains(item.getId())).collect(Collectors.toList());
-      }
+// 获取登录用户信息，可以用来查询单位部门信息
+		 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
-      // Step.3 组装pageList
-      List<SmartSupervisionPage> pageList = new ArrayList<SmartSupervisionPage>();
-      for (SmartSupervision main : smartSupervisionList) {
-          SmartSupervisionPage vo = new SmartSupervisionPage();
-          BeanUtils.copyProperties(main, vo);
-          List<SmartSupervisionAnnex> smartSupervisionAnnexList = smartSupervisionAnnexService.selectByMainId(main.getId());
-          vo.setSmartSupervisionAnnexList(smartSupervisionAnnexList);
-          pageList.add(vo);
-      }
+		 String username = sysUser.getUsername();
 
-      // Step.4 AutoPoi 导出Excel
-      ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
-      mv.addObject(NormalExcelConstants.FILE_NAME, "八项规定监督检查表列表");
-      mv.addObject(NormalExcelConstants.CLASS, SmartSupervisionPage.class);
-      mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("八项规定监督检查表数据", "导出人:"+sysUser.getRealname(), "八项规定监督检查表"));
-      mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
-      return mv;
-    }
+// 获取用户角色
+		 List<String> role = sysBaseAPI.getRolesByUsername(username);
+
+		 List<SmartSupervision> queryList = new ArrayList<SmartSupervision>();
+
+
+// 如果是普通用户，则只能看到自己创建的数据
+		 if(role.contains("CommonUser")) {
+			 QueryWrapper<SmartSupervision> queryWrapper = new QueryWrapper<>();
+			 queryWrapper.eq("create_by",username);
+			 queryList = smartSupervisionService.list(queryWrapper);
+		 } else {
+			 // 1. 规则，下面是 以**开始
+			 String rule = "in";
+			 // 2. 查询字段
+			 String field = "departId";
+
+			 // 获取子单位ID
+			 String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
+
+			 HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+			 // 获取请求参数中的superQueryParams
+			 List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+
+			 // 添加额外查询条件，用于权限控制
+			 paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+					 + childrenIdString
+					 + "%22,%22field%22:%22" + field + "%22%7D%5D");
+			 String[] params = new String[paramsList.size()];
+			 paramsList.toArray(params);
+			 map.put("superQueryParams", params);
+			 params = new String[]{"and"};
+			 map.put("superQueryMatchType", params);
+			 QueryWrapper<SmartSupervision> queryWrapper = QueryGenerator.initQueryWrapper(smartSupervision, map);
+
+			 queryList = smartSupervisionService.list(queryWrapper);
+		 }
+
+
+		 // Step.1 组装查询条件查询数据
+
+		 //Step.2 获取导出数据
+		 // 过滤选中数据
+		 String selections = req.getParameter("selections");
+		 List<SmartSupervision> smartSupervisionList = new ArrayList<SmartSupervision>();
+		 if(oConvertUtils.isEmpty(selections)) {
+			 smartSupervisionList = queryList;
+		 }else {
+			 List<String> selectionList = Arrays.asList(selections.split(","));
+			 smartSupervisionList = queryList.stream().filter(item -> selectionList.contains(item.getId())).collect(Collectors.toList());
+		 }
+
+		 // Step.3 组装pageList
+		 List<SmartSupervisionPage> pageList = new ArrayList<SmartSupervisionPage>();
+		 for (SmartSupervision main : smartSupervisionList) {
+			 SmartSupervisionPage vo = new SmartSupervisionPage();
+			 BeanUtils.copyProperties(main, vo);
+			 List<SmartSupervisionAnnex> smartSupervisionAnnexList = smartSupervisionAnnexService.selectByMainId(main.getId());
+			 vo.setSmartSupervisionAnnexList(smartSupervisionAnnexList);
+			 pageList.add(vo);
+		 }
+
+		 // Step.4 AutoPoi 导出Excel
+		 ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
+		 mv.addObject(NormalExcelConstants.FILE_NAME, "监督检查列表");
+		 mv.addObject(NormalExcelConstants.CLASS, SmartSupervisionPage.class);
+		 mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("监督检查表数据", "导出人:"+sysUser.getRealname(), "监督检查表"));
+		 mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
+
+		 // List深拷贝，否则返回前端会没数据
+		 List<SmartSupervisionPage> newPageList = ObjectUtil.cloneByStream(pageList);
+
+		 baseCommonService.addExportLog(mv.getModel(), "监督检查", req, response);
+
+		 mv.addObject(NormalExcelConstants.DATA_LIST, newPageList);
+
+		 return mv;
+
+	 }
 
     /**
     * 通过excel导入数据

@@ -1,5 +1,6 @@
 package org.jeecg.modules.smartPostMarriage.vo;
 
+import java.io.Serializable;
 import java.util.List;
 import org.jeecg.modules.smartPostMarriage.entity.SmartPostMarriageReport;
 import org.jeecg.modules.smartPostMarriage.entity.SmartPostMarriageReportFile;
@@ -22,7 +23,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @Data
 @ApiModel(value="smart_post_marriage_reportPage对象", description="8项规定婚后报备表")
-public class SmartPostMarriageReportPage {
+public class SmartPostMarriageReportPage implements Serializable {
 
 	/**主键*/
 	@ApiModelProperty(value = "主键")

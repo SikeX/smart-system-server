@@ -1,5 +1,6 @@
 package org.jeecg.modules.smartFinanceResult.vo;
 
+import java.io.Serializable;
 import java.util.List;
 import org.jeecg.modules.smartFinanceResult.entity.SmartFinanceResult;
 import org.jeecg.modules.smartFinanceResult.entity.SmartFinanceAnnex;
@@ -22,7 +23,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @Data
 @ApiModel(value="smart_finance_resultPage对象", description="8项规定财物收支表")
-public class SmartFinanceResultPage {
+public class SmartFinanceResultPage implements Serializable {
 
 	/**主键*/
 	@ApiModelProperty(value = "主键")
@@ -39,7 +40,7 @@ public class SmartFinanceResultPage {
 	@ApiModelProperty(value = "所属部门")
     private java.lang.String sysOrgCode;
 	/**单位*/
-	@Excel(name = "单位", width = 15)
+	@Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
 	@ApiModelProperty(value = "单位")
     private java.lang.String departId;
 	/**标题*/
@@ -62,14 +63,14 @@ public class SmartFinanceResultPage {
 	@ApiModelProperty(value = "创建时间")
     private java.util.Date createTime;
 	/**创建人ID*/
-	@Excel(name = "创建人ID", width = 15)
 	@ApiModelProperty(value = "创建人ID")
     private java.lang.String creatorId;
 	/**创建人*/
+	@Excel(name = "创建人", width = 15)
 	@ApiModelProperty(value = "创建人")
     private java.lang.String createBy;
 	/**删除状态（0，正常，1已删除）*/
-	@Excel(name = "删除状态（0，正常，1已删除）", width = 15)
+
 	@ApiModelProperty(value = "删除状态（0，正常，1已删除）")
     private java.lang.Integer delFlag;
 	/**审核状态*/

@@ -10,6 +10,7 @@ import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.smartEvaluateList.entity.MonthCount;
 import org.jeecg.modules.smartEvaluateList.entity.SmartEvaluateWindow;
 import org.jeecg.modules.smartEvaluateList.entity.TypeCount;
@@ -100,6 +101,33 @@ public class SmartChartController extends JeecgController<peopleAvg, ISmartChart
 								 HttpServletRequest req) {
 		try{
 			String oldWindowsName = peopleAvg.getWindowsName();
+			System.out.println(oldWindowsName);
+			String windowsName = "";
+			if(oldWindowsName == null || oldWindowsName.equals("")){
+				windowsName = oldWindowsName;
+			}else {
+				windowsName = oldWindowsName.replace('*','%');
+			}
+			QueryWrapper<peopleAvg> queryWrapper = QueryGenerator.initQueryWrapper(peopleAvg, req.getParameterMap());
+			System.out.println("OOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+			System.out.println(ParamsUtil.getSuperQueryParams(req.getParameterMap()));
+			Page<peopleAvg> page = new Page<peopleAvg>(pageNo, pageSize);
+			IPage<peopleAvg> pageList = smartChartService.avgByPeople(page,windowsName);
+			return Result.OK(pageList);
+		}catch (Exception e){
+			return Result.error("error");
+		}
+
+	}
+	@AutoLog(value = "阳光评廉-窗口评分均值")
+	@ApiOperation(value="阳光评廉-窗口评分均值", notes="阳光评廉-窗口评分均值")
+	@GetMapping(value = "/windowsByGrade")
+	public Result<?> windowsByGrade(peopleAvg peopleAvg,
+								 @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+								 @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+								 HttpServletRequest req) {
+		try{
+			String oldWindowsName = peopleAvg.getWindowsName();
 			System.out.println("OOOOOOOOOOOOOOOOOOOOOOOOOOOO");
 			System.out.println(oldWindowsName);
 			String windowsName = "";
@@ -110,7 +138,7 @@ public class SmartChartController extends JeecgController<peopleAvg, ISmartChart
 			}
 			QueryWrapper<peopleAvg> queryWrapper = QueryGenerator.initQueryWrapper(peopleAvg, req.getParameterMap());
 			Page<peopleAvg> page = new Page<peopleAvg>(pageNo, pageSize);
-			IPage<peopleAvg> pageList = smartChartService.avgByPeople(page,windowsName);
+			IPage<peopleAvg> pageList = smartChartService.windowsByGrade(page,windowsName);
 			return Result.OK(pageList);
 		}catch (Exception e){
 			return Result.error("error");

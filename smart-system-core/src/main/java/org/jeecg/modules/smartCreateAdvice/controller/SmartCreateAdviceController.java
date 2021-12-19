@@ -1,20 +1,18 @@
 package org.jeecg.modules.smartCreateAdvice.controller;
 
-import java.io.UnsupportedEncodingException;
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.hutool.core.util.ObjectUtil;
 import org.jeecg.common.system.api.ISysBaseAPI;
+import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
-import org.jeecg.modules.smartDemocraticLifeMeeting.entity.SmartDemocraticLifeMeeting;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
-import org.jeecg.modules.tasks.taskType.entity.SmartVerifyType;
 import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
@@ -42,12 +40,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.jeecg.common.aspect.annotation.AutoLog;
 
- /**
+/**
  * @Description: 制发建议表
  * @Author: jeecg-boot
  * @Date:   2021-11-13
@@ -70,6 +67,8 @@ public class SmartCreateAdviceController {
 	private ISmartVerifyTypeService smartVerifyTypeService;
 	@Autowired
 	private ISysBaseAPI sysBaseAPI;
+	 @Autowired
+	 private BaseCommonService baseCommonService;
 
 	public String verifyType = "制发建议";
 	/**
@@ -267,19 +266,62 @@ public class SmartCreateAdviceController {
     /**
     * 导出excel
     *
-    * @param request
+    * @param req
     * @param smartCreateAdvice
     */
     @RequestMapping(value = "/exportXls")
-    public ModelAndView exportXls(HttpServletRequest request, SmartCreateAdvice smartCreateAdvice) {
+    public ModelAndView exportXls(HttpServletRequest req,
+								  HttpServletResponse response, SmartCreateAdvice smartCreateAdvice) throws Exception {
+
+		// 获取登录用户信息，可以用来查询单位部门信息
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+		String username = sysUser.getUsername();
+
+		// 获取用户角色
+		List<String> role = sysBaseAPI.getRolesByUsername(username);
+
+		List<SmartCreateAdvice> queryList = new ArrayList<SmartCreateAdvice>();
+
+
+		// 如果是普通用户，则只能看到自己创建的数据
+		if(role.contains("CommonUser")) {
+			QueryWrapper<SmartCreateAdvice> queryWrapper = new QueryWrapper<>();
+			queryWrapper.eq("create_by",username);
+			queryList = smartCreateAdviceService.list(queryWrapper);
+		} else {
+			// 1. 规则，下面是 以**开始
+			String rule = "in";
+			// 2. 查询字段
+			String field = "departId";
+
+			// 获取子单位ID
+			String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
+
+			HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+			// 获取请求参数中的superQueryParams
+			List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+
+			// 添加额外查询条件，用于权限控制
+			paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+					+ childrenIdString
+					+ "%22,%22field%22:%22" + field + "%22%7D%5D");
+			String[] params = new String[paramsList.size()];
+			paramsList.toArray(params);
+			map.put("superQueryParams", params);
+			params = new String[]{"and"};
+			map.put("superQueryMatchType", params);
+			QueryWrapper<SmartCreateAdvice> queryWrapper = QueryGenerator.initQueryWrapper(smartCreateAdvice, map);
+
+			queryList = smartCreateAdviceService.list(queryWrapper);
+		}
+
+
       // Step.1 组装查询条件查询数据
-      QueryWrapper<SmartCreateAdvice> queryWrapper = QueryGenerator.initQueryWrapper(smartCreateAdvice, request.getParameterMap());
-      LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
       //Step.2 获取导出数据
-      List<SmartCreateAdvice> queryList = smartCreateAdviceService.list(queryWrapper);
       // 过滤选中数据
-      String selections = request.getParameter("selections");
+      String selections = req.getParameter("selections");
       List<SmartCreateAdvice> smartCreateAdviceList = new ArrayList<SmartCreateAdvice>();
       if(oConvertUtils.isEmpty(selections)) {
           smartCreateAdviceList = queryList;
@@ -304,7 +346,16 @@ public class SmartCreateAdviceController {
       mv.addObject(NormalExcelConstants.CLASS, SmartCreateAdvicePage.class);
       mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("制发建议表数据", "导出人:"+sysUser.getRealname(), "制发建议表"));
       mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
-      return mv;
+
+	  // List深拷贝，否则返回前端会没数据
+	  List<SmartCreateAdvicePage> newPageList = ObjectUtil.cloneByStream(pageList);
+
+	  baseCommonService.addExportLog(mv.getModel(), "制发建议", req, response);
+
+	  mv.addObject(NormalExcelConstants.DATA_LIST, newPageList);
+
+	  return mv;
+
     }
 
     /**

@@ -2,6 +2,7 @@ package org.jeecg.modules.smartJob.util;
 
 import io.netty.util.Timeout;
 import io.netty.util.concurrent.ScheduledFuture;
+import lombok.extern.slf4j.Slf4j;
 import org.jeecg.modules.smartJob.entity.JobType;
 import org.jeecg.modules.smartJob.entity.SmartJob;
 import org.jeecg.modules.smartJob.service.ISmartJobService;
@@ -11,10 +12,11 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * @Description: TODO
+ * @Description: 启动初始化定时任务
  * @author: lord
  * @date: 2021年12月03日 10:48
  */
+@Slf4j
 @Component
 public class TaskInit {
 
@@ -32,12 +34,12 @@ public class TaskInit {
         //读数据库，筛选出状态为“开启”的任务
         List<SmartJob> list = smartJobService.initGetTasks();
 
-        System.out.println("任务初始化中...");
+        log.info("\n任务初始化中...");
         for(SmartJob s : list){
             initJob(s);
-            System.out.println("任务：" + s.getJobName() + " 初始化完成");
+            log.info("\n任务：" + s.getJobBean() + " 初始化完成");
         }
-        System.out.println("初始化完成！");
+        log.info("\n初始化完成！");
 
         return true;
     }
@@ -70,7 +72,7 @@ public class TaskInit {
                     s.getTemplateContent()
             );
             loopTask.addOpen(s.getJobBean(), task);
-        }else{
+        }else if(s.getJobType().equals(JobType.getCUSTOMIZED())){
             //添加其他类型任务
             //检查是否需要每日提醒
             if(s.getIsLoop().equals("0")){
@@ -87,12 +89,13 @@ public class TaskInit {
                 loopTask.addOpen(s.getJobBean(), task);
             }else{
                 //不需要，开启延迟任务
+                long delay = ComputeTime.getDelayTime(s.getExecuteTimeDay(), s.getExecuteTimeHour());
+
                 Timeout task = delayTask.addTask(
                         s.getJobBean(),
                         s.getCreateBy(),
                         s.getTemplateContent(),
-                        ComputeTime.getDelayTime(s.getExecuteTimeDay(),
-                                s.getExecuteTimeHour()),
+                        delay,
                         s.getIsToAll(),
                         s.getToUser(),
                         s.getType()

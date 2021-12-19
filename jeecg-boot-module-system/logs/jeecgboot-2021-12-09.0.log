@@ -44,8 +44,8 @@
 2021-12-09 09:36:30.078 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'redisConnectionFactory' of type [org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
 2021-12-09 09:36:30.082 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'shiroConfig' of type [org.jeecg.config.shiro.ShiroConfig$$EnhancerBySpringCGLIB$$64dd0185] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
 2021-12-09 09:36:30.235 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'shiroRealm' of type [org.jeecg.config.shiro.ShiroRealm] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
-2021-12-09 09:36:31.156 [main] INFO  org.jeecg.config.shiro.ShiroConfig:219 - ===============(1)¥¥Ω®ª∫¥Êπ‹¿Ì∆˜RedisCacheManager
-2021-12-09 09:36:31.188 [main] INFO  org.jeecg.config.shiro.ShiroConfig:237 - ===============(2)¥¥Ω®RedisManager,¡¨Ω”Redis..
+2021-12-09 09:36:31.156 [main] INFO  org.jeecg.config.shiro.ShiroConfig:219 - ===============(1)ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩRedisCacheManager
+2021-12-09 09:36:31.188 [main] INFO  org.jeecg.config.shiro.ShiroConfig:237 - ===============(2)ÔøΩÔøΩÔøΩÔøΩRedisManager,ÔøΩÔøΩÔøΩÔøΩRedis..
 2021-12-09 09:36:31.222 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'redisManager' of type [org.crazycake.shiro.RedisManager] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
 2021-12-09 09:36:31.228 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'securityManager' of type [org.apache.shiro.web.mgt.DefaultWebSecurityManager] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
 2021-12-09 09:36:31.478 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker:335 - Bean 'authorizationAttributeSourceAdvisor' of type [org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
@@ -84,9 +84,9 @@
 2021-12-09 09:36:51.386 [main] INFO  org.quartz.core.QuartzScheduler:2293 - JobFactory set to: org.springframework.scheduling.quartz.SpringBeanJobFactory@4d2a1da3
 2021-12-09 09:36:53.270 [main] INFO  o.j.m.jmreport.config.JimuReportConfiguration:55 -  --- Init JimuReport Config --- 
 2021-12-09 09:36:59.948 [main] INFO  o.s.b.actuate.endpoint.web.EndpointLinksResolver:58 - Exposing 2 endpoint(s) beneath base path '/actuator'
-2021-12-09 09:37:00.175 [main] INFO  org.jeecg.config.init.CodeGenerateDbConfig:46 -  ¥˙¬Î…˙≥…∆˜ ˝æ›ø‚¡¨Ω”£¨ π”√application.ymlµƒDB≈‰÷√ ###################
+2021-12-09 09:37:00.175 [main] INFO  org.jeecg.config.init.CodeGenerateDbConfig:46 -  ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ›øÔøΩÔøΩÔøΩÔøΩ”£ÔøΩ πÔøΩÔøΩapplication.ymlÔøΩÔøΩDBÔøΩÔøΩÔøΩÔøΩ ###################
 2021-12-09 09:37:00.246 [main] INFO  s.d.s.w.WebMvcPropertySourcedRequestMappingHandlerMapping:69 - Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2ControllerWebMvc#getDocumentation(String, HttpServletRequest)]
-2021-12-09 09:37:00.382 [main] INFO  o.j.modules.jmreport.config.JmReportExecutorConfig:21 - ---¥¥Ω®œﬂ≥Ã≥ÿ---
+2021-12-09 09:37:00.382 [main] INFO  o.j.modules.jmreport.config.JmReportExecutorConfig:21 - ---ÔøΩÔøΩÔøΩÔøΩÔøΩﬂ≥Ã≥ÔøΩ---
 2021-12-09 09:37:00.385 [main] INFO  o.s.scheduling.concurrent.ThreadPoolTaskExecutor:181 - Initializing ExecutorService
 2021-12-09 09:37:00.388 [main] INFO  o.s.scheduling.concurrent.ThreadPoolTaskExecutor:181 - Initializing ExecutorService 'jmReportTaskExecutor'
 2021-12-09 09:37:03.157 [main] INFO  o.s.scheduling.concurrent.ThreadPoolTaskScheduler:181 - Initializing ExecutorService 'taskScheduler'
@@ -382,7 +382,7 @@
 	Application Jeecg-Boot is running! Access URLs:
 	Local: 		http://localhost:8080/smart-system/
 	External: 	http://192.168.31.86:8080/smart-system/
-	SwaggerŒƒµµ: 	http://192.168.31.86:8080/smart-system/doc.html
+	SwaggerÔøΩƒµÔøΩ: 	http://192.168.31.86:8080/smart-system/doc.html
 ----------------------------------------------------------
 2021-12-09 09:37:11.669 [http-nio-8080-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/smart-system]:173 - Initializing Spring DispatcherServlet 'dispatcherServlet'
 2021-12-09 09:37:11.669 [http-nio-8080-exec-2] INFO  org.springframework.web.servlet.DispatcherServlet:525 - Initializing Servlet 'dispatcherServlet'
@@ -455,7 +455,7 @@ Caused by: javax.crypto.AEADBadTagException: Tag mismatch!
 	at javax.crypto.Cipher.doFinal(Cipher.java:2168)
 	at org.apache.shiro.crypto.JcaCipherService.crypt(JcaCipherService.java:459)
 	... 55 common frames omitted
-2021-12-09 09:37:12.191 [http-nio-8080-exec-2] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - °æwebsocketœ˚œ¢°ø”––¬µƒ¡¨Ω”£¨◊‹ ˝Œ™:1
+2021-12-09 09:37:12.191 [http-nio-8080-exec-2] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ¬µÔøΩÔøΩÔøΩÔøΩ”£ÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:1
 2021-12-09 09:37:40.809 [http-nio-8080-exec-10] WARN  org.apache.shiro.mgt.AbstractRememberMeManager:449 - There was a failure while trying to retrieve remembered principals.  This could be due to a configuration problem or corrupted principals.  This could also be due to a recently changed encryption key, if you are using a shiro.ini file, this property would be 'securityManager.rememberMeManager.cipherKey' see: http://shiro.apache.org/web.html#Web-RememberMeServices. The remembered identity will be forgotten and not used for this request.
 2021-12-09 09:37:40.810 [http-nio-8080-exec-10] WARN  org.apache.shiro.mgt.DefaultSecurityManager:618 - Delegate RememberMeManager instance of type [org.apache.shiro.web.mgt.CookieRememberMeManager] threw an exception during getRememberedPrincipals().
 org.apache.shiro.crypto.CryptoException: Unable to execute 'doFinal' with cipher instance [javax.crypto.Cipher@4ae0cbdc].
@@ -524,10 +524,10 @@ Caused by: javax.crypto.AEADBadTagException: Tag mismatch!
 	at javax.crypto.Cipher.doFinal(Cipher.java:2168)
 	at org.apache.shiro.crypto.JcaCipherService.crypt(JcaCipherService.java:459)
 	... 55 common frames omitted
-2021-12-09 09:37:40.832 [http-nio-8080-exec-10] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - °æwebsocketœ˚œ¢°ø”––¬µƒ¡¨Ω”£¨◊‹ ˝Œ™:2
-2021-12-09 09:37:41.463 [http-nio-8080-exec-7] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:null,≈≈–Ú∑Ω Ω:null
-2021-12-09 09:37:41.767 [http-nio-8080-exec-7] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---∏ﬂº∂≤È—Ø≤Œ ˝-->[creatorId eq string null 1468620732370694146]
-2021-12-09 09:37:41.769 [http-nio-8080-exec-7] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --≤È—ØπÊ‘Ú-->creator_id = 1468620732370694146
+2021-12-09 09:37:40.832 [http-nio-8080-exec-10] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ¬µÔøΩÔøΩÔøΩÔøΩ”£ÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:2
+2021-12-09 09:37:41.463 [http-nio-8080-exec-7] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:null,ÔøΩÔøΩÔøΩÔøΩ Ω:null
+2021-12-09 09:37:41.767 [http-nio-8080-exec-7] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---ÔøΩﬂºÔøΩÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->[creatorId eq string null 1468620732370694146]
+2021-12-09 09:37:41.769 [http-nio-8080-exec-7] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --ÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->creator_id = 1468620732370694146
 2021-12-09 09:37:53.650 [http-nio-8080-exec-1] WARN  org.apache.shiro.mgt.AbstractRememberMeManager:449 - There was a failure while trying to retrieve remembered principals.  This could be due to a configuration problem or corrupted principals.  This could also be due to a recently changed encryption key, if you are using a shiro.ini file, this property would be 'securityManager.rememberMeManager.cipherKey' see: http://shiro.apache.org/web.html#Web-RememberMeServices. The remembered identity will be forgotten and not used for this request.
 2021-12-09 09:37:53.652 [http-nio-8080-exec-1] WARN  org.apache.shiro.mgt.DefaultSecurityManager:618 - Delegate RememberMeManager instance of type [org.apache.shiro.web.mgt.CookieRememberMeManager] threw an exception during getRememberedPrincipals().
 org.apache.shiro.crypto.CryptoException: Unable to execute 'doFinal' with cipher instance [javax.crypto.Cipher@474ddf5c].
@@ -2162,8 +2162,8 @@ Caused by: javax.crypto.AEADBadTagException: Tag mismatch!
 	... 55 common frames omitted
 2021-12-09 09:37:55.988 [http-nio-8080-exec-8] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - null
 java.lang.NullPointerException: null
-	at org.jeecg.modules.demo.test.controller.BigScreenTemplatController.getCloudData(BigScreenTemplatController.java:147)
-	at org.jeecg.modules.demo.test.controller.BigScreenTemplatController$$FastClassBySpringCGLIB$$ad0cc1eb.invoke(<generated>)
+	at org.jeecg.modules.demo.test.org.jeecg.modules.smart_video_player.controller.BigScreenTemplatController.getCloudData(BigScreenTemplatController.java:147)
+	at org.jeecg.modules.demo.test.org.jeecg.modules.smart_video_player.controller.BigScreenTemplatController$$FastClassBySpringCGLIB$$ad0cc1eb.invoke(<generated>)
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
@@ -2183,7 +2183,7 @@ java.lang.NullPointerException: null
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-	at org.jeecg.modules.demo.test.controller.BigScreenTemplatController$$EnhancerBySpringCGLIB$$9a68e0c.getCloudData(<generated>)
+	at org.jeecg.modules.demo.test.org.jeecg.modules.smart_video_player.controller.BigScreenTemplatController$$EnhancerBySpringCGLIB$$9a68e0c.getCloudData(<generated>)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -2273,9 +2273,9 @@ java.lang.NullPointerException: null
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.lang.Thread.run(Unknown Source)
-2021-12-09 09:38:04.359 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:38:06.672 [http-nio-8080-exec-2] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:38:06.673 [http-nio-8080-exec-2] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---∏ﬂº∂≤È—Ø≤Œ ˝-->[id in string null ]
+2021-12-09 09:38:04.359 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:38:06.672 [http-nio-8080-exec-2] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:38:06.673 [http-nio-8080-exec-2] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---ÔøΩﬂºÔøΩÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->[id in string null ]
 2021-12-09 09:38:06.683 [http-nio-8080-exec-2] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:96)
@@ -2292,8 +2292,8 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:687)
 	at org.jeecg.modules.SmartPaper.service.impl.SmartMyExamServiceImpl$$EnhancerBySpringCGLIB$$408707a5.getMyAllExam(<generated>)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
@@ -2324,7 +2324,7 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -2456,10 +2456,10 @@ Caused by: org.apache.ibatis.binding.BindingException: Parameter 'examName' not 
 	at java.lang.reflect.Method.invoke(Unknown Source)
 	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427)
 	... 134 common frames omitted
-2021-12-09 09:38:07.630 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --≤È—ØπÊ‘Ú-->paper_type = 2
-2021-12-09 09:38:07.632 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:38:10.374 [http-nio-8080-exec-8] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:38:10.375 [http-nio-8080-exec-8] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---∏ﬂº∂≤È—Ø≤Œ ˝-->[id in string null ]
+2021-12-09 09:38:07.630 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --ÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->paper_type = 2
+2021-12-09 09:38:07.632 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:38:10.374 [http-nio-8080-exec-8] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:38:10.375 [http-nio-8080-exec-8] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---ÔøΩﬂºÔøΩÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->[id in string null ]
 2021-12-09 09:38:10.378 [http-nio-8080-exec-8] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:96)
@@ -2476,8 +2476,8 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:687)
 	at org.jeecg.modules.SmartPaper.service.impl.SmartMyExamServiceImpl$$EnhancerBySpringCGLIB$$408707a5.getMyAllExam(<generated>)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
@@ -2508,7 +2508,7 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -2640,12 +2640,12 @@ Caused by: org.apache.ibatis.binding.BindingException: Parameter 'examName' not 
 	at java.lang.reflect.Method.invoke(Unknown Source)
 	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427)
 	... 134 common frames omitted
-2021-12-09 09:38:12.657 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --≤È—ØπÊ‘Ú-->paper_type = 2
-2021-12-09 09:38:12.660 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:38:27.515 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --≤È—ØπÊ‘Ú-->paper_type = 2
-2021-12-09 09:38:27.516 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:38:43.837 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:38:43.838 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---∏ﬂº∂≤È—Ø≤Œ ˝-->[id in string null ]
+2021-12-09 09:38:12.657 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --ÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->paper_type = 2
+2021-12-09 09:38:12.660 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:38:27.515 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --ÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->paper_type = 2
+2021-12-09 09:38:27.516 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:38:43.837 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:38:43.838 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---ÔøΩﬂºÔøΩÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->[id in string null ]
 2021-12-09 09:38:43.842 [http-nio-8080-exec-9] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:96)
@@ -2662,8 +2662,8 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:687)
 	at org.jeecg.modules.SmartPaper.service.impl.SmartMyExamServiceImpl$$EnhancerBySpringCGLIB$$408707a5.getMyAllExam(<generated>)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
@@ -2693,7 +2693,7 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -2824,8 +2824,8 @@ Caused by: org.apache.ibatis.binding.BindingException: Parameter 'examName' not 
 	at java.lang.reflect.Method.invoke(Unknown Source)
 	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427)
 	... 133 common frames omitted
-2021-12-09 09:38:51.189 [http-nio-8080-exec-2] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:38:51.190 [http-nio-8080-exec-2] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---∏ﬂº∂≤È—Ø≤Œ ˝-->[id in string null ]
+2021-12-09 09:38:51.189 [http-nio-8080-exec-2] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:38:51.190 [http-nio-8080-exec-2] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---ÔøΩﬂºÔøΩÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->[id in string null ]
 2021-12-09 09:38:51.192 [http-nio-8080-exec-2] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:96)
@@ -2842,8 +2842,8 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:687)
 	at org.jeecg.modules.SmartPaper.service.impl.SmartMyExamServiceImpl$$EnhancerBySpringCGLIB$$408707a5.getMyAllExam(<generated>)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
@@ -2873,7 +2873,7 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -3004,8 +3004,8 @@ Caused by: org.apache.ibatis.binding.BindingException: Parameter 'examName' not 
 	at java.lang.reflect.Method.invoke(Unknown Source)
 	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427)
 	... 133 common frames omitted
-2021-12-09 09:38:52.389 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:38:52.390 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---∏ﬂº∂≤È—Ø≤Œ ˝-->[id in string null ]
+2021-12-09 09:38:52.389 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:38:52.390 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---ÔøΩﬂºÔøΩÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->[id in string null ]
 2021-12-09 09:38:52.392 [http-nio-8080-exec-1] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:96)
@@ -3022,8 +3022,8 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:687)
 	at org.jeecg.modules.SmartPaper.service.impl.SmartMyExamServiceImpl$$EnhancerBySpringCGLIB$$408707a5.getMyAllExam(<generated>)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
@@ -3053,7 +3053,7 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -3184,10 +3184,10 @@ Caused by: org.apache.ibatis.binding.BindingException: Parameter 'examName' not 
 	at java.lang.reflect.Method.invoke(Unknown Source)
 	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427)
 	... 133 common frames omitted
-2021-12-09 09:39:33.933 [http-nio-8080-exec-6] INFO  o.jeecg.modules.system.controller.LoginController:141 -  ”√ªß√˚:  ΩÃ”˝æ÷µ•Œªπ‹¿Ì‘±,ÕÀ≥ˆ≥…π¶£° 
-2021-12-09 09:39:34.467 [http-nio-8080-exec-2] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - °æwebsocketœ˚œ¢°ø¡¨Ω”∂œø™£¨◊‹ ˝Œ™:1
-2021-12-09 09:39:34.989 [http-nio-8080-exec-10] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - java.io.IOException: ƒ„µƒ÷˜ª˙÷–µƒ»Ìº˛÷–÷π¡À“ª∏ˆ“—Ω®¡¢µƒ¡¨Ω”°£
-org.apache.catalina.connector.ClientAbortException: java.io.IOException: ƒ„µƒ÷˜ª˙÷–µƒ»Ìº˛÷–÷π¡À“ª∏ˆ“—Ω®¡¢µƒ¡¨Ω”°£
+2021-12-09 09:39:33.933 [http-nio-8080-exec-6] INFO  o.jeecg.modules.system.org.jeecg.modules.smart_video_player.controller.LoginController:141 -  ÔøΩ√ªÔøΩÔøΩÔøΩ:  ÔøΩÔøΩÔøΩÔøΩÔøΩ÷µÔøΩŒªÔøΩÔøΩÔøΩÔøΩ‘±,ÔøΩÀ≥ÔøΩÔøΩ…πÔøΩÔøΩÔøΩ
+2021-12-09 09:39:34.467 [http-nio-8080-exec-2] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ”∂œøÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:1
+2021-12-09 09:39:34.989 [http-nio-8080-exec-10] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - java.io.IOException: ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ–µÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ÷πÔøΩÔøΩ“ªÔøΩÔøΩÔøΩ—ΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ”°ÔøΩ
+org.apache.catalina.connector.ClientAbortException: java.io.IOException: ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ–µÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ÷πÔøΩÔøΩ“ªÔøΩÔøΩÔøΩ—ΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ”°ÔøΩ
 	at org.apache.catalina.connector.OutputBuffer.doFlush(OutputBuffer.java:309)
 	at org.apache.catalina.connector.OutputBuffer.flush(OutputBuffer.java:272)
 	at org.apache.catalina.connector.CoyoteOutputStream.flush(CoyoteOutputStream.java:118)
@@ -3278,7 +3278,7 @@ org.apache.catalina.connector.ClientAbortException: java.io.IOException: ƒ„µƒ÷˜ª
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.lang.Thread.run(Unknown Source)
-Caused by: java.io.IOException: ƒ„µƒ÷˜ª˙÷–µƒ»Ìº˛÷–÷π¡À“ª∏ˆ“—Ω®¡¢µƒ¡¨Ω”°£
+Caused by: java.io.IOException: ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ–µÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ÷πÔøΩÔøΩ“ªÔøΩÔøΩÔøΩ—ΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ”°ÔøΩ
 	at sun.nio.ch.SocketDispatcher.write0(Native Method)
 	at sun.nio.ch.SocketDispatcher.write(Unknown Source)
 	at sun.nio.ch.IOUtil.writeFromNativeBuffer(Unknown Source)
@@ -3301,7 +3301,7 @@ Caused by: java.io.IOException: ƒ„µƒ÷˜ª˙÷–µƒ»Ìº˛÷–÷π¡À“ª∏ˆ“—Ω®¡¢µƒ¡¨Ω”°£
 	at org.apache.catalina.connector.OutputBuffer.doFlush(OutputBuffer.java:305)
 	... 89 common frames omitted
 2021-12-09 09:39:35.024 [http-nio-8080-exec-10] WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver:414 - Failure in @ExceptionHandler org.jeecg.common.exception.JeecgBootExceptionHandler#handleException(Exception)
-org.apache.catalina.connector.ClientAbortException: java.io.IOException: ƒ„µƒ÷˜ª˙÷–µƒ»Ìº˛÷–÷π¡À“ª∏ˆ“—Ω®¡¢µƒ¡¨Ω”°£
+org.apache.catalina.connector.ClientAbortException: java.io.IOException: ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ–µÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ÷πÔøΩÔøΩ“ªÔøΩÔøΩÔøΩ—ΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ”°ÔøΩ
 	at org.apache.catalina.connector.OutputBuffer.doFlush(OutputBuffer.java:309)
 	at org.apache.catalina.connector.OutputBuffer.flush(OutputBuffer.java:272)
 	at org.apache.catalina.connector.CoyoteOutputStream.flush(CoyoteOutputStream.java:118)
@@ -3398,7 +3398,7 @@ org.apache.catalina.connector.ClientAbortException: java.io.IOException: ƒ„µƒ÷˜ª
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.lang.Thread.run(Unknown Source)
-Caused by: java.io.IOException: ƒ„µƒ÷˜ª˙÷–µƒ»Ìº˛÷–÷π¡À“ª∏ˆ“—Ω®¡¢µƒ¡¨Ω”°£
+Caused by: java.io.IOException: ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ–µÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ÷πÔøΩÔøΩ“ªÔøΩÔøΩÔøΩ—ΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ”°ÔøΩ
 	at sun.nio.ch.SocketDispatcher.write0(Native Method)
 	at sun.nio.ch.SocketDispatcher.write(Unknown Source)
 	at sun.nio.ch.IOUtil.writeFromNativeBuffer(Unknown Source)
@@ -3489,10 +3489,10 @@ Caused by: javax.crypto.AEADBadTagException: Tag mismatch!
 	at javax.crypto.Cipher.doFinal(Cipher.java:2168)
 	at org.apache.shiro.crypto.JcaCipherService.crypt(JcaCipherService.java:459)
 	... 55 common frames omitted
-2021-12-09 09:39:51.330 [http-nio-8080-exec-10] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - °æwebsocketœ˚œ¢°ø”––¬µƒ¡¨Ω”£¨◊‹ ˝Œ™:2
-2021-12-09 09:39:51.619 [http-nio-8080-exec-3] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:39:51.620 [http-nio-8080-exec-3] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---∏ﬂº∂≤È—Ø≤Œ ˝-->[id in string null 1467381365744496641]
-2021-12-09 09:39:51.621 [http-nio-8080-exec-3] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --≤È—ØπÊ‘Ú-->id IN 1467381365744496641
+2021-12-09 09:39:51.330 [http-nio-8080-exec-10] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ¬µÔøΩÔøΩÔøΩÔøΩ”£ÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:2
+2021-12-09 09:39:51.619 [http-nio-8080-exec-3] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:39:51.620 [http-nio-8080-exec-3] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---ÔøΩﬂºÔøΩÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->[id in string null 1467381365744496641]
+2021-12-09 09:39:51.621 [http-nio-8080-exec-3] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --ÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->id IN 1467381365744496641
 2021-12-09 09:39:51.626 [http-nio-8080-exec-3] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:96)
@@ -3509,8 +3509,8 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:687)
 	at org.jeecg.modules.SmartPaper.service.impl.SmartMyExamServiceImpl$$EnhancerBySpringCGLIB$$408707a5.getMyAllExam(<generated>)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
@@ -3540,7 +3540,7 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -3671,11 +3671,11 @@ Caused by: org.apache.ibatis.binding.BindingException: Parameter 'examName' not 
 	at java.lang.reflect.Method.invoke(Unknown Source)
 	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427)
 	... 133 common frames omitted
-2021-12-09 09:40:07.921 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:41:26.441 [http-nio-8080-exec-9] INFO  o.j.m.system.controller.SysPermissionController:439 - ======Ω«…´ ⁄»®≥…π¶=====∫ƒ ±:329∫¡√Î
-2021-12-09 09:41:34.925 [http-nio-8080-exec-8] INFO  o.jeecg.modules.system.controller.LoginController:141 -  ”√ªß√˚:  sike,ÕÀ≥ˆ≥…π¶£° 
-2021-12-09 09:41:35.421 [http-nio-8080-exec-9] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - °æwebsocketœ˚œ¢°ø¡¨Ω”∂œø™£¨◊‹ ˝Œ™:1
-2021-12-09 09:41:44.310 [http-nio-8080-exec-7] INFO  o.j.c.modules.redis.writer.JeecgRedisCacheWriter:104 - redis remove key:sys:cache:user::ÊïôËÇ≤Â±?Âçï‰ΩçÁÆ°ÁêÜÂë?
+2021-12-09 09:40:07.921 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:41:26.441 [http-nio-8080-exec-9] INFO  o.j.m.system.org.jeecg.modules.smart_video_player.controller.SysPermissionController:439 - ======ÔøΩÔøΩ…´ÔøΩÔøΩ»®ÔøΩ…πÔøΩ=====ÔøΩÔøΩ ±:329ÔøΩÔøΩÔøΩÔøΩ
+2021-12-09 09:41:34.925 [http-nio-8080-exec-8] INFO  o.jeecg.modules.system.org.jeecg.modules.smart_video_player.controller.LoginController:141 -  ÔøΩ√ªÔøΩÔøΩÔøΩ:  sike,ÔøΩÀ≥ÔøΩÔøΩ…πÔøΩÔøΩÔøΩ
+2021-12-09 09:41:35.421 [http-nio-8080-exec-9] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ”∂œøÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:1
+2021-12-09 09:41:44.310 [http-nio-8080-exec-7] INFO  o.j.c.modules.redis.writer.JeecgRedisCacheWriter:104 - redis remove key:sys:cache:user::ÊïôËÇ≤ÔøΩ?Âçï‰ΩçÁÆ°ÁêÜÔøΩ?
 2021-12-09 09:41:46.576 [http-nio-8080-exec-6] WARN  org.apache.shiro.mgt.AbstractRememberMeManager:449 - There was a failure while trying to retrieve remembered principals.  This could be due to a configuration problem or corrupted principals.  This could also be due to a recently changed encryption key, if you are using a shiro.ini file, this property would be 'securityManager.rememberMeManager.cipherKey' see: http://shiro.apache.org/web.html#Web-RememberMeServices. The remembered identity will be forgotten and not used for this request.
 2021-12-09 09:41:46.578 [http-nio-8080-exec-6] WARN  org.apache.shiro.mgt.DefaultSecurityManager:618 - Delegate RememberMeManager instance of type [org.apache.shiro.web.mgt.CookieRememberMeManager] threw an exception during getRememberedPrincipals().
 org.apache.shiro.crypto.CryptoException: Unable to execute 'doFinal' with cipher instance [javax.crypto.Cipher@3b9a1f05].
@@ -3745,7 +3745,7 @@ Caused by: javax.crypto.AEADBadTagException: Tag mismatch!
 	at org.apache.shiro.crypto.JcaCipherService.crypt(JcaCipherService.java:459)
 	... 55 common frames omitted
 2021-12-09 09:41:46.585 [http-nio-8080-exec-2] WARN  org.apache.shiro.mgt.AbstractRememberMeManager:449 - There was a failure while trying to retrieve remembered principals.  This could be due to a configuration problem or corrupted principals.  This could also be due to a recently changed encryption key, if you are using a shiro.ini file, this property would be 'securityManager.rememberMeManager.cipherKey' see: http://shiro.apache.org/web.html#Web-RememberMeServices. The remembered identity will be forgotten and not used for this request.
-2021-12-09 09:41:46.592 [http-nio-8080-exec-6] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - °æwebsocketœ˚œ¢°ø”––¬µƒ¡¨Ω”£¨◊‹ ˝Œ™:2
+2021-12-09 09:41:46.592 [http-nio-8080-exec-6] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ¬µÔøΩÔøΩÔøΩÔøΩ”£ÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:2
 2021-12-09 09:41:46.589 [http-nio-8080-exec-2] WARN  org.apache.shiro.mgt.DefaultSecurityManager:618 - Delegate RememberMeManager instance of type [org.apache.shiro.web.mgt.CookieRememberMeManager] threw an exception during getRememberedPrincipals().
 org.apache.shiro.crypto.CryptoException: Unable to execute 'doFinal' with cipher instance [javax.crypto.Cipher@2eb77a38].
 	at org.apache.shiro.crypto.JcaCipherService.crypt(JcaCipherService.java:462)
@@ -5379,8 +5379,8 @@ Caused by: javax.crypto.AEADBadTagException: Tag mismatch!
 	... 55 common frames omitted
 2021-12-09 09:41:48.568 [http-nio-8080-exec-6] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - null
 java.lang.NullPointerException: null
-	at org.jeecg.modules.demo.test.controller.BigScreenTemplatController.getCloudData(BigScreenTemplatController.java:147)
-	at org.jeecg.modules.demo.test.controller.BigScreenTemplatController$$FastClassBySpringCGLIB$$ad0cc1eb.invoke(<generated>)
+	at org.jeecg.modules.demo.test.org.jeecg.modules.smart_video_player.controller.BigScreenTemplatController.getCloudData(BigScreenTemplatController.java:147)
+	at org.jeecg.modules.demo.test.org.jeecg.modules.smart_video_player.controller.BigScreenTemplatController$$FastClassBySpringCGLIB$$ad0cc1eb.invoke(<generated>)
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
@@ -5399,7 +5399,7 @@ java.lang.NullPointerException: null
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-	at org.jeecg.modules.demo.test.controller.BigScreenTemplatController$$EnhancerBySpringCGLIB$$9a68e0c.getCloudData(<generated>)
+	at org.jeecg.modules.demo.test.org.jeecg.modules.smart_video_player.controller.BigScreenTemplatController$$EnhancerBySpringCGLIB$$9a68e0c.getCloudData(<generated>)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -5489,8 +5489,8 @@ java.lang.NullPointerException: null
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.lang.Thread.run(Unknown Source)
-2021-12-09 09:42:02.703 [http-nio-8080-exec-2] INFO  o.jeecg.modules.system.controller.LoginController:141 -  ”√ªß√˚:  ΩÃ”˝æ÷µ•Œªπ‹¿Ì‘±,ÕÀ≥ˆ≥…π¶£° 
-2021-12-09 09:42:03.070 [http-nio-8080-exec-5] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - °æwebsocketœ˚œ¢°ø¡¨Ω”∂œø™£¨◊‹ ˝Œ™:1
+2021-12-09 09:42:02.703 [http-nio-8080-exec-2] INFO  o.jeecg.modules.system.org.jeecg.modules.smart_video_player.controller.LoginController:141 -  ÔøΩ√ªÔøΩÔøΩÔøΩ:  ÔøΩÔøΩÔøΩÔøΩÔøΩ÷µÔøΩŒªÔøΩÔøΩÔøΩÔøΩ‘±,ÔøΩÀ≥ÔøΩÔøΩ…πÔøΩÔøΩÔøΩ
+2021-12-09 09:42:03.070 [http-nio-8080-exec-5] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ”∂œøÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:1
 2021-12-09 09:42:16.309 [http-nio-8080-exec-2] INFO  o.j.c.modules.redis.writer.JeecgRedisCacheWriter:104 - redis remove key:sys:cache:user::sike
 2021-12-09 09:42:19.069 [http-nio-8080-exec-5] WARN  org.apache.shiro.mgt.AbstractRememberMeManager:449 - There was a failure while trying to retrieve remembered principals.  This could be due to a configuration problem or corrupted principals.  This could also be due to a recently changed encryption key, if you are using a shiro.ini file, this property would be 'securityManager.rememberMeManager.cipherKey' see: http://shiro.apache.org/web.html#Web-RememberMeServices. The remembered identity will be forgotten and not used for this request.
 2021-12-09 09:42:19.070 [http-nio-8080-exec-5] WARN  org.apache.shiro.mgt.DefaultSecurityManager:618 - Delegate RememberMeManager instance of type [org.apache.shiro.web.mgt.CookieRememberMeManager] threw an exception during getRememberedPrincipals().
@@ -5628,7 +5628,7 @@ Caused by: javax.crypto.AEADBadTagException: Tag mismatch!
 	at javax.crypto.Cipher.doFinal(Cipher.java:2168)
 	at org.apache.shiro.crypto.JcaCipherService.crypt(JcaCipherService.java:459)
 	... 55 common frames omitted
-2021-12-09 09:42:19.145 [http-nio-8080-exec-7] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - °æwebsocketœ˚œ¢°ø”––¬µƒ¡¨Ω”£¨◊‹ ˝Œ™:2
+2021-12-09 09:42:19.145 [http-nio-8080-exec-7] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ¬µÔøΩÔøΩÔøΩÔøΩ”£ÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:2
 2021-12-09 09:42:19.765 [http-nio-8080-exec-6] WARN  org.apache.shiro.mgt.AbstractRememberMeManager:449 - There was a failure while trying to retrieve remembered principals.  This could be due to a configuration problem or corrupted principals.  This could also be due to a recently changed encryption key, if you are using a shiro.ini file, this property would be 'securityManager.rememberMeManager.cipherKey' see: http://shiro.apache.org/web.html#Web-RememberMeServices. The remembered identity will be forgotten and not used for this request.
 2021-12-09 09:42:19.766 [http-nio-8080-exec-6] WARN  org.apache.shiro.mgt.DefaultSecurityManager:618 - Delegate RememberMeManager instance of type [org.apache.shiro.web.mgt.CookieRememberMeManager] threw an exception during getRememberedPrincipals().
 org.apache.shiro.crypto.CryptoException: Unable to execute 'doFinal' with cipher instance [javax.crypto.Cipher@45d2c160].
@@ -6107,8 +6107,8 @@ Caused by: javax.crypto.AEADBadTagException: Tag mismatch!
 	... 55 common frames omitted
 2021-12-09 09:42:20.929 [http-nio-8080-exec-7] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - null
 java.lang.NullPointerException: null
-	at org.jeecg.modules.demo.test.controller.BigScreenTemplatController.getCloudData(BigScreenTemplatController.java:147)
-	at org.jeecg.modules.demo.test.controller.BigScreenTemplatController$$FastClassBySpringCGLIB$$ad0cc1eb.invoke(<generated>)
+	at org.jeecg.modules.demo.test.org.jeecg.modules.smart_video_player.controller.BigScreenTemplatController.getCloudData(BigScreenTemplatController.java:147)
+	at org.jeecg.modules.demo.test.org.jeecg.modules.smart_video_player.controller.BigScreenTemplatController$$FastClassBySpringCGLIB$$ad0cc1eb.invoke(<generated>)
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
@@ -6127,7 +6127,7 @@ java.lang.NullPointerException: null
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-	at org.jeecg.modules.demo.test.controller.BigScreenTemplatController$$EnhancerBySpringCGLIB$$9a68e0c.getCloudData(<generated>)
+	at org.jeecg.modules.demo.test.org.jeecg.modules.smart_video_player.controller.BigScreenTemplatController$$EnhancerBySpringCGLIB$$9a68e0c.getCloudData(<generated>)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -6217,7 +6217,7 @@ java.lang.NullPointerException: null
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.lang.Thread.run(Unknown Source)
-2021-12-09 09:42:26.658 [http-nio-8080-exec-6] INFO  o.j.m.system.controller.SysPermissionController:84 - ======ªÒ»°»´≤ø≤Àµ• ˝æ›=====∫ƒ ±:442∫¡√Î
+2021-12-09 09:42:26.658 [http-nio-8080-exec-6] INFO  o.j.m.system.org.jeecg.modules.smart_video_player.controller.SysPermissionController:84 - ======ÔøΩÔøΩ»°»´ÔøΩÔøΩÔøΩÀµÔøΩÔøΩÔøΩÔøΩÔøΩ=====ÔøΩÔøΩ ±:442ÔøΩÔøΩÔøΩÔøΩ
 2021-12-09 09:49:20.588 [http-nio-8080-exec-7] WARN  org.apache.shiro.mgt.AbstractRememberMeManager:449 - There was a failure while trying to retrieve remembered principals.  This could be due to a configuration problem or corrupted principals.  This could also be due to a recently changed encryption key, if you are using a shiro.ini file, this property would be 'securityManager.rememberMeManager.cipherKey' see: http://shiro.apache.org/web.html#Web-RememberMeServices. The remembered identity will be forgotten and not used for this request.
 2021-12-09 09:49:20.589 [http-nio-8080-exec-7] WARN  org.apache.shiro.mgt.DefaultSecurityManager:618 - Delegate RememberMeManager instance of type [org.apache.shiro.web.mgt.CookieRememberMeManager] threw an exception during getRememberedPrincipals().
 org.apache.shiro.crypto.CryptoException: Unable to execute 'doFinal' with cipher instance [javax.crypto.Cipher@708e0520].
@@ -6286,13 +6286,13 @@ Caused by: javax.crypto.AEADBadTagException: Tag mismatch!
 	at javax.crypto.Cipher.doFinal(Cipher.java:2168)
 	at org.apache.shiro.crypto.JcaCipherService.crypt(JcaCipherService.java:459)
 	... 55 common frames omitted
-2021-12-09 09:49:20.611 [http-nio-8080-exec-7] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - °æwebsocketœ˚œ¢°ø”––¬µƒ¡¨Ω”£¨◊‹ ˝Œ™:3
-2021-12-09 09:49:20.984 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:null,≈≈–Ú∑Ω Ω:null
-2021-12-09 09:49:20.985 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---∏ﬂº∂≤È—Ø≤Œ ˝-->[creatorId eq string null 1455364232132874242]
-2021-12-09 09:49:21.004 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --≤È—ØπÊ‘Ú-->creator_id = 1455364232132874242
-2021-12-09 09:49:55.517 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:49:55.517 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---∏ﬂº∂≤È—Ø≤Œ ˝-->[id in string null 1467381365744496641]
-2021-12-09 09:49:55.518 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --≤È—ØπÊ‘Ú-->id IN 1467381365744496641
+2021-12-09 09:49:20.611 [http-nio-8080-exec-7] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ¬µÔøΩÔøΩÔøΩÔøΩ”£ÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:3
+2021-12-09 09:49:20.984 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:null,ÔøΩÔøΩÔøΩÔøΩ Ω:null
+2021-12-09 09:49:20.985 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---ÔøΩﬂºÔøΩÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->[creatorId eq string null 1455364232132874242]
+2021-12-09 09:49:21.004 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --ÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->creator_id = 1455364232132874242
+2021-12-09 09:49:55.517 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:49:55.517 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---ÔøΩﬂºÔøΩÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->[id in string null 1467381365744496641]
+2021-12-09 09:49:55.518 [http-nio-8080-exec-1] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --ÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->id IN 1467381365744496641
 2021-12-09 09:49:55.520 [http-nio-8080-exec-1] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:96)
@@ -6309,8 +6309,8 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:687)
 	at org.jeecg.modules.SmartPaper.service.impl.SmartMyExamServiceImpl$$EnhancerBySpringCGLIB$$408707a5.getMyAllExam(<generated>)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
@@ -6340,7 +6340,7 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -6471,9 +6471,9 @@ Caused by: org.apache.ibatis.binding.BindingException: Parameter 'examName' not 
 	at java.lang.reflect.Method.invoke(Unknown Source)
 	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427)
 	... 133 common frames omitted
-2021-12-09 09:53:08.423 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:53:08.424 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---∏ﬂº∂≤È—Ø≤Œ ˝-->[id in string null 1467381365744496641]
-2021-12-09 09:53:08.424 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --≤È—ØπÊ‘Ú-->id IN 1467381365744496641
+2021-12-09 09:53:08.423 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:53:08.424 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---ÔøΩﬂºÔøΩÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->[id in string null 1467381365744496641]
+2021-12-09 09:53:08.424 [http-nio-8080-exec-9] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --ÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->id IN 1467381365744496641
 2021-12-09 09:53:08.426 [http-nio-8080-exec-9] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:96)
@@ -6490,8 +6490,8 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:687)
 	at org.jeecg.modules.SmartPaper.service.impl.SmartMyExamServiceImpl$$EnhancerBySpringCGLIB$$408707a5.getMyAllExam(<generated>)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
@@ -6521,7 +6521,7 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -6652,7 +6652,7 @@ Caused by: org.apache.ibatis.binding.BindingException: Parameter 'examName' not 
 	at java.lang.reflect.Method.invoke(Unknown Source)
 	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427)
 	... 133 common frames omitted
-2021-12-09 09:54:43.552 [http-nio-8080-exec-4] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - °æwebsocketœ˚œ¢°ø¡¨Ω”∂œø™£¨◊‹ ˝Œ™:2
+2021-12-09 09:54:43.552 [http-nio-8080-exec-4] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ”∂œøÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:2
 2021-12-09 09:54:50.138 [http-nio-8080-exec-6] WARN  org.apache.shiro.mgt.AbstractRememberMeManager:449 - There was a failure while trying to retrieve remembered principals.  This could be due to a configuration problem or corrupted principals.  This could also be due to a recently changed encryption key, if you are using a shiro.ini file, this property would be 'securityManager.rememberMeManager.cipherKey' see: http://shiro.apache.org/web.html#Web-RememberMeServices. The remembered identity will be forgotten and not used for this request.
 2021-12-09 09:54:50.140 [http-nio-8080-exec-6] WARN  org.apache.shiro.mgt.DefaultSecurityManager:618 - Delegate RememberMeManager instance of type [org.apache.shiro.web.mgt.CookieRememberMeManager] threw an exception during getRememberedPrincipals().
 org.apache.shiro.crypto.CryptoException: Unable to execute 'doFinal' with cipher instance [javax.crypto.Cipher@1fcf863d].
@@ -6721,10 +6721,10 @@ Caused by: javax.crypto.AEADBadTagException: Tag mismatch!
 	at javax.crypto.Cipher.doFinal(Cipher.java:2168)
 	at org.apache.shiro.crypto.JcaCipherService.crypt(JcaCipherService.java:459)
 	... 55 common frames omitted
-2021-12-09 09:54:50.155 [http-nio-8080-exec-6] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - °æwebsocketœ˚œ¢°ø”––¬µƒ¡¨Ω”£¨◊‹ ˝Œ™:3
-2021-12-09 09:54:50.430 [http-nio-8080-exec-10] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ≈≈–ÚπÊ‘Ú>>¡–:createTime,≈≈–Ú∑Ω Ω:desc
-2021-12-09 09:54:50.431 [http-nio-8080-exec-10] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---∏ﬂº∂≤È—Ø≤Œ ˝-->[id in string null 1467381365744496641]
-2021-12-09 09:54:50.432 [http-nio-8080-exec-10] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --≤È—ØπÊ‘Ú-->id IN 1467381365744496641
+2021-12-09 09:54:50.155 [http-nio-8080-exec-6] INFO  org.jeecg.modules.message.websocket.WebSocket:57 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ¬µÔøΩÔøΩÔøΩÔøΩ”£ÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:3
+2021-12-09 09:54:50.430 [http-nio-8080-exec-10] INFO  org.jeecg.common.system.query.QueryGenerator:227 - ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ>>ÔøΩÔøΩ:createTime,ÔøΩÔøΩÔøΩÔøΩ Ω:desc
+2021-12-09 09:54:50.431 [http-nio-8080-exec-10] INFO  org.jeecg.common.system.query.QueryGenerator:273 - ---ÔøΩﬂºÔøΩÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->[id in string null 1467381365744496641]
+2021-12-09 09:54:50.432 [http-nio-8080-exec-10] INFO  org.jeecg.common.system.query.QueryGenerator:535 - --ÔøΩÔøΩ—ØÔøΩÔøΩÔøΩÔøΩ-->id IN 1467381365744496641
 2021-12-09 09:54:50.436 [http-nio-8080-exec-10] ERROR o.jeecg.common.exception.JeecgBootExceptionHandler:57 - nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.binding.BindingException: Parameter 'examName' not found. Available parameters are [arg2, arg1, arg0, param3, param1, param2]
 	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:96)
@@ -6741,8 +6741,8 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:687)
 	at org.jeecg.modules.SmartPaper.service.impl.SmartMyExamServiceImpl$$EnhancerBySpringCGLIB$$408707a5.getMyAllExam(<generated>)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController.queryPageMyList(SmartExamInfoController.java:118)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$FastClassBySpringCGLIB$$8957eeda.invoke(<generated>)
 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
@@ -6772,7 +6772,7 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-	at org.jeecg.modules.SmartPaper.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
+	at org.jeecg.modules.SmartPaper.org.jeecg.modules.smart_video_player.controller.SmartExamInfoController$$EnhancerBySpringCGLIB$$597523c7.queryPageMyList(<generated>)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -6904,9 +6904,9 @@ Caused by: org.apache.ibatis.binding.BindingException: Parameter 'examName' not 
 	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427)
 	... 133 common frames omitted
 2021-12-09 09:59:56.163 [SpringContextShutdownHook] INFO  org.quartz.core.QuartzScheduler:585 - Scheduler MyScheduler_$_Sike-TB1639013811319 paused.
-2021-12-09 09:59:56.368 [SpringContextShutdownHook] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - °æwebsocketœ˚œ¢°ø¡¨Ω”∂œø™£¨◊‹ ˝Œ™:2
-2021-12-09 09:59:56.369 [SpringContextShutdownHook] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - °æwebsocketœ˚œ¢°ø¡¨Ω”∂œø™£¨◊‹ ˝Œ™:1
-2021-12-09 09:59:56.370 [SpringContextShutdownHook] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - °æwebsocketœ˚œ¢°ø¡¨Ω”∂œø™£¨◊‹ ˝Œ™:0
+2021-12-09 09:59:56.368 [SpringContextShutdownHook] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ”∂œøÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:2
+2021-12-09 09:59:56.369 [SpringContextShutdownHook] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ”∂œøÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:1
+2021-12-09 09:59:56.370 [SpringContextShutdownHook] INFO  org.jeecg.modules.message.websocket.WebSocket:67 - ÔøΩÔøΩwebsocketÔøΩÔøΩœ¢ÔøΩÔøΩÔøΩÔøΩÔøΩ”∂œøÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩŒ™:0
 2021-12-09 09:59:56.413 [SpringContextShutdownHook] INFO  o.s.scheduling.concurrent.ThreadPoolTaskScheduler:218 - Shutting down ExecutorService 'taskScheduler'
 2021-12-09 09:59:56.415 [SpringContextShutdownHook] INFO  o.s.scheduling.concurrent.ThreadPoolTaskExecutor:218 - Shutting down ExecutorService 'jmReportTaskExecutor'
 2021-12-09 09:59:56.420 [SpringContextShutdownHook] INFO  o.s.scheduling.quartz.SchedulerFactoryBean:845 - Shutting down Quartz Scheduler

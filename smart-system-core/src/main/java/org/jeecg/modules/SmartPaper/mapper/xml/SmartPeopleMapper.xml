@@ -26,13 +26,14 @@
             resultType="org.jeecg.modules.SmartPaper.vo.ExamPeopleScoreVo">
         SELECT
             sp.person_name,
-            sp.exam_grade
+            IFNULL(sp.exam_grade,-1) as exam_grade,is_mark
         FROM
             smart_exam_information se
                 LEFT JOIN smart_people sp ON se.id = sp.exam_id
+                LEFT JOIN smart_paper p ON p.id = se.paper_id
         WHERE se.paper_id = #{examId}
+        order by exam_grade desc
     </select>
-
 
     <update id="updateGrade">
         update smart_people

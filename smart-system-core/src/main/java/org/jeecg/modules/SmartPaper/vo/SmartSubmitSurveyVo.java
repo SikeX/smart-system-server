@@ -57,6 +57,8 @@ public class SmartSubmitSurveyVo {
     @Excel(name = "考试id", width = 15)
     @ApiModelProperty(value = "考试id")
     private String examId;
+    /**是否评分*/
+    private Integer isMark;
     /**成绩*/
     @Excel(name = "成绩", width = 15)
     @ApiModelProperty(value = "成绩")
@@ -71,10 +73,6 @@ public class SmartSubmitSurveyVo {
     @Excel(name = "ip地址", width = 15)
     @ApiModelProperty(value = "ip地址")
     private String ipAddress;
-    /**删除状态*/
-    @Excel(name = "删除状态", width = 15)
-    @TableLogic
-    private Integer delFlag;
 
     List<SmartSubmit> smartSubmitList;
 }

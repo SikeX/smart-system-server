@@ -1,10 +1,8 @@
 package org.jeecg.modules.smartReportingInformation.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -98,7 +96,12 @@ public class SmartReportingInformationController {
     @PostMapping(value = "/add")
     public Result<?> add(@RequestBody SmartReportingInformationPage smartReportingInformationPage) {
         SmartReportingInformation smartReportingInformation = new SmartReportingInformation();
+
         BeanUtils.copyProperties(smartReportingInformationPage, smartReportingInformation);
+
+        smartReportingInformation.setReportingTime(new Date());
+
+        log.info(String.valueOf(smartReportingInformation));
         smartReportingInformationService.saveMain(smartReportingInformation, smartReportingInformationPage.getSmartReportingSurveyList(), smartReportingInformationPage.getSmartReportingDescriptionList());
         // 2021-12-12 新增websocket通知 @Author CabbSir @TODO 不能写死
         List<String> list = sysBaseAPI.getSysUserListByRole("1464894241405718530");
