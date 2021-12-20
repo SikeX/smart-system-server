@@ -1,5 +1,6 @@
 package org.jeecg.modules.app.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jeecg.modules.app.entity.AppUser;
 import org.jeecg.modules.app.entity.WXUser;
 import org.jeecg.modules.app.mapper.AppUserMapper;
@@ -10,6 +11,7 @@ import org.jeecg.modules.system.mapper.SysUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class ApiClientServiceImpl implements IApiClientService {
     @Autowired
@@ -70,6 +72,7 @@ public class ApiClientServiceImpl implements IApiClientService {
     public boolean updateWxUserPhoneById(int id, String sysUserId, String purePhoneNumber) {
         // 首先更新tb_wx_user的phone
         wxUserMapper.updatePhoneById(id, purePhoneNumber);
+        log.info("当前sysUserId为: " + purePhoneNumber);
         // 更新sys_user
         sysUserMapper.updatePhoneById(sysUserId, purePhoneNumber);
         return true;
@@ -83,5 +86,6 @@ public class ApiClientServiceImpl implements IApiClientService {
     @Override
     public void updateWxUserSysUserIdById(int id, String sysUserId) {
         wxUserMapper.updateWxUserSysUserIdById(id, sysUserId);
+        log.info("当前sysUserId为: " + sysUserId);
     }
 }

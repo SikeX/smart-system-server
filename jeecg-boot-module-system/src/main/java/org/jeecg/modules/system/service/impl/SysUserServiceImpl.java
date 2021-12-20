@@ -583,6 +583,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 			appUserMapper.updateSysUserIdById(id, user.getId(), (int) System.currentTimeMillis());
 		} else if (userType == 2) {
 			wxUserMapper.updateSysUserIdById(id, user.getId(), (int) System.currentTimeMillis());
+			log.info("当前sysUserId为: " + user.getId());
 		}
 
 	}
