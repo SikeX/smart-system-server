@@ -25,12 +25,14 @@
     <select id="getScoreByExamId" parameterType="java.lang.String"
             resultType="org.jeecg.modules.SmartPaper.vo.ExamPeopleScoreVo">
         SELECT
-            sp.person_name,
+            sp.person_name,depart_name as deptName,
             IFNULL(sp.exam_grade,-1) as exam_grade,is_mark
         FROM
             smart_exam_information se
                 LEFT JOIN smart_people sp ON se.id = sp.exam_id
                 LEFT JOIN smart_paper p ON p.id = se.paper_id
+                LEFT JOIN  sys_user u on u.id = sp.person_id
+                LEFT JOIN  sys_depart sd on sd.id = u.depart_id
         WHERE se.paper_id = #{examId}
         order by exam_grade desc
     </select>
