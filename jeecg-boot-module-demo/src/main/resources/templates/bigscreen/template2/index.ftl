@@ -18,7 +18,7 @@
         #chart-container {
             display:block;
             width: 100%;
-            height: 90%;
+            height: 60%;
             position: absolute;
             border: 0px ;
             margin: auto;
@@ -32,7 +32,7 @@
         #chart-container2 {
             display:none;
             width: 100%;
-            height: 90%;
+            height: 60%;
             position: absolute;
             border: 0px ;
             margin: auto;
@@ -193,7 +193,8 @@
 
 <#--                <div id="chart4" style="width:100%;height:95%;">-->
 <#--                    <div id="gdMap1" class="gd-map" style="width:100%;height:95%;"></div>-->
-                    <div id="chart-container" ></div>
+            <div id="businessProgress"></div>
+            <div id="chart-container" ></div>
                     <div id="chart-container2" ></div>
 
 
@@ -570,8 +571,6 @@
         })
     })
         $(function(){
-            //词云
-            // console.log("---------------------词云1")
             let cloudData=[];
             $.ajax({
                 type: "post",
@@ -594,16 +593,12 @@
 
                 }
             });
-            console.log("-----------------------！！！！！！！！！！！！！---------------------获取Cloud信息")
-            console.log(cloudData)
             let wordCloud=echarts.init(document.getElementById('birthdayPeople'));
             let wordCloud2=echarts.init(document.getElementById('birthdayPeople2'));
-            // console.log("---------------------词云1")
             window.addEventListener('resize', function () {
                 wordCloud.resize();
                 wordCloud2.resize();
             });
-            // console.log("---------------------词云3")
             let wordCloud_option={
 
                 left: 'center',
@@ -639,10 +634,8 @@
                     data :cloudData
                 }]
             };
-            // console.log("---------------------词云4")
             wordCloud.setOption(wordCloud_option);
             wordCloud2.setOption(wordCloud_option);
-            // console.log("---------------------词云5")
         })
 
     $(function(){
@@ -664,8 +657,6 @@
                 if (result) {
                     if(result.naturalData && result.naturalData.length>0)
                     {naturalSet = result.naturalData;
-                    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!获取接口数据")
-                        console.log(naturalSet)
                     }
                     if(result.workData && result.workData.length>0)
                     { workSet = result.workData;}
@@ -675,7 +666,6 @@
 
        if(workSet && workSet.length>0)
        {
-           console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!set循环得到Data")
            workSet.forEach(function(item, index) {
                if (!item.parentId) {
                    delete item.parentId;
@@ -727,39 +717,37 @@
             });
 
         }
-console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        console.log(naturalData)
 
         $('#chart-container').orgchart({
             'data' : naturalData,
-            'pan' : true,
-            'zoom' : true,
-            'draggable' : true,
-            'visibleLevel' : 2
+            // 'pan' : true,
+            // 'zoom' : true,
+            // 'draggable' : true,
+            // 'visibleLevel' : 2
             // 'direction': 'l2r'
         });
         $('#chart-container2').orgchart({
             'data' : workData,
-            'pan' : true,
-            'zoom' : true,
-            'draggable' : true,
-            'visibleLevel' : 2
+            // 'pan' : true,
+            // 'zoom' : true,
+            // 'draggable' : true,
+            // 'visibleLevel' : 2
             // 'direction': 'l2r'
         });
         $('#natureDepart').orgchart({
             'data' : naturalData,
-            'pan' : true,
-            'zoom' : true,
-            'draggable' : true,
-            'visibleLevel' : 2
+            // 'pan' : true,
+            // 'zoom' : true,
+            // 'draggable' : true,
+            // 'visibleLevel' : 2
             // 'direction': 'l2r'
         });
         $('#workDepart').orgchart({
             'data' : workData,
-            'pan' : true,
-            'zoom' : true,
-            'draggable' : true,
-            'visibleLevel' : 2
+            // 'pan' : true,
+            // 'zoom' : true,
+            // 'draggable' : true,
+            // 'visibleLevel' : 2
             // 'direction': 'l2r'
         });
     })
@@ -811,7 +799,7 @@ console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                 default:
                     $("#weatherImg").attr("src","${base}/bigscreen/template2/images/weather/阴.png")
             }
-            $("#temperaturevaries").html(min_tem+max_tem+"°c");
+            $("#temperaturevaries").html(min_tem +"至"+max_tem+"°c");
         },
         error:function(el){
             console.log(el)
