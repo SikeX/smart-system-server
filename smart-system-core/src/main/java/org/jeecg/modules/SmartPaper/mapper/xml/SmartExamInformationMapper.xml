@@ -31,7 +31,7 @@
               <otherwise>
                     e.id=
                     (select e.id  from smart_exam_information e
-                    WHERE e.exam_endtime <![CDATA[<=]]> NOW()
+                    WHERE e.exam_endtime <![CDATA[<=]]> NOW() and e.paper_type = '1'
                     order by e.exam_endtime desc
                     LIMIT 1)
               </otherwise>
@@ -59,7 +59,7 @@
                 <otherwise>
                     se.id=
                     (select se.id  from smart_exam_information se
-                    WHERE se.exam_endtime <![CDATA[<=]]> NOW()
+                    WHERE se.exam_endtime <![CDATA[<=]]> NOW() and se.paper_type = '1'
                     order by se.exam_endtime desc
                     LIMIT 1)
                 </otherwise>
