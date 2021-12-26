@@ -356,4 +356,20 @@ public interface ISysBaseAPI extends CommonAPI {
      */
     List<String> getSysUserListByRole(String roleId);
 
+    /**
+     * 2021-12-24
+     * 获取所有业务部门（除开乡镇）
+     * @return
+     */
+    public List<SysDepartModel> getAllBusDepart();
+
+
+    /**
+     * 2021-12-25
+     * 通过orgcode获取子部门列表
+     * @param orgCode
+     * @return
+     */
+    public List<SysDepartModel> getChildrenDepart(String orgCode);
+
 }
