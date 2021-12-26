@@ -19,6 +19,7 @@ import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.RedisUtil;
 import org.jeecg.common.util.TokenUtils;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.common.util.DySmsHelper;
 import org.jeecg.modules.message.websocket.WebSocket;
 import org.jeecg.modules.system.entity.SysAnnouncement;
 import org.jeecg.modules.system.entity.SysAnnouncementSend;
@@ -27,6 +28,7 @@ import org.jeecg.modules.system.service.ISysAnnouncementService;
 import org.jeecg.modules.system.service.impl.ThirdAppDingtalkServiceImpl;
 import org.jeecg.modules.system.service.impl.ThirdAppWechatEnterpriseServiceImpl;
 import org.jeecg.modules.system.util.XSSUtils;
+import org.jeecg.modules.system.vo.SmsMsgVo;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -132,6 +134,25 @@ public class SysAnnouncementController {
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);
 			result.error500("操作失败");
+		}
+		return result;
+	}
+
+	/**
+	 *
+	 * @param smsMsgVo
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/sendSmsMsg", method = RequestMethod.GET)
+	public Result<SysAnnouncement> sendSmsMsg(SmsMsgVo smsMsgVo, HttpServletRequest request) {
+		Result<SysAnnouncement> result = new Result<SysAnnouncement>();
+		try{
+			sysAnnouncementService.sendSmsMsg(smsMsgVo);
+			result.success("发送成功");
+		} catch (Exception e) {
+			log.error(e.getMessage(),e);
+			result.error500("发送失败");
 		}
 		return result;
 	}
