@@ -91,4 +91,11 @@ public interface SysDepartMapper extends BaseMapper<SysDepart> {
 	 * @return
 	 */
 	SysDepart queryCurrentUserDepart(@Param("userId")String userId);
+
+	@Select("SELECT * FROM sys_depart d where (d.parent_id is not null and d.parent_id != '') and d.depart_type != " +
+			"'乡镇'")
+    List<SysDepart> getAllBusDepart();
+
+	@Select("SELECT * FROM sys_depart where del_flag = '0' and org_code REGEXP concat('^',#{orgCode}, '.{3}$') ")
+	List<SysDepart> getChildrenDepart(@Param("orgCode") String orgCode);
 }
