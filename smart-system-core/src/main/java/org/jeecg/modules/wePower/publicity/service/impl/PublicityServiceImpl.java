@@ -3,7 +3,6 @@ package org.jeecg.modules.wePower.publicity.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.system.api.ISysBaseAPI;
-import org.jeecg.modules.wePower.publicity.entity.SmartCreateAdvice;
 import org.jeecg.modules.wePower.publicity.service.PublicityService;
 import org.jeecg.modules.wePower.publicity.mapper.PublicityMapper;
 import org.jeecg.modules.wePower.publicity.vo.PublicityCommon;
@@ -23,7 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 */
 @Slf4j
 @Service
-public class PublicityServiceImpl extends ServiceImpl<PublicityMapper, SmartCreateAdvice>
+public class PublicityServiceImpl extends ServiceImpl<PublicityMapper, PublicityQuery>
     implements PublicityService {
 
     @Autowired

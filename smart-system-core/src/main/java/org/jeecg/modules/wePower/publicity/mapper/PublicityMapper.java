@@ -1,7 +1,7 @@
 package org.jeecg.modules.wePower.publicity.mapper;
 
-import org.jeecg.modules.wePower.publicity.entity.SmartCreateAdvice;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.jeecg.modules.wePower.publicity.vo.PublicityQuery;
 
 /**
 * @author sike
@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2021-12-24 17:17:53
 * @Entity org.jeecg.modules.wePower.publicity.entity.SmartCreateAdvice
 */
-public interface PublicityMapper extends BaseMapper<SmartCreateAdvice> {
+public interface PublicityMapper extends BaseMapper<PublicityQuery> {
 
 
 
