@@ -2,4 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.tasks.smartVerifyTask.mapper.SmartVerifyTaskMapper">
 
+    <select id="getTaskList" resultType="org.jeecg.modules.tasks.smartVerifyTask.vo.VerifyTaskListPage">
+        SELECT *
+        FROM smart_verify_task t
+        WHERE t.task_type in
+        <foreach collection="typeList" index="index" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+    <select id="getNotPassList" resultType="org.jeecg.modules.tasks.smartVerifyTask.vo.VerifyTaskListPage">
+        SELECT t.*,
+               d.audit_depart,
+               d.audit_person,
+               d.audit_status,
+               d.audit_time,
+               d.remark
+        FROM smart_verify_task t LEFT JOIN smart_verify_detail d on t.flow_no =  d.flow_no
+        WHERE t.flow_status = 0 and d.audit_status = 4
+        and t.task_type in
+        <foreach collection="typeList" index="index" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
 </mapper>

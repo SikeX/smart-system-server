@@ -1,6 +1,8 @@
 package org.jeecg.modules.tasks.smartVerifyTask.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -153,6 +155,60 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 
 		return Result.OK(pageList);
 	}
+
+	 @AutoLog(value = "纪律监督审核-分页列表查询")
+	 @ApiOperation(value="纪律监督审核-分页列表查询", notes="纪律监督审核-分页列表查询")
+	 @GetMapping(value = "/jilvList")
+	 public Result<?> queryJilvPageList(VerifyTaskListPage verifyTaskListPage,
+									@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+									@RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+									HttpServletRequest req) {
+
+		 Page<VerifyTaskListPage> page = new Page<VerifyTaskListPage>(pageNo, pageSize);
+
+		 List<String> typeList = new ArrayList<>();
+		 typeList.add("民主生活会");
+		 typeList.add("三会一课");
+		 typeList.add("组织生活会");
+		 typeList.add("党内谈话");
+		 typeList.add("问责情况");
+		 typeList.add("述责述廉");
+
+		 IPage<VerifyTaskListPage> pageList = smartVerifyTaskService.getTaskList(page, typeList, verifyTaskListPage);
+
+
+		 // log.info(sysBaseAPI.getDepartIdsByOrgCode(sysUser.getOrgCode()));
+
+		 return Result.OK(pageList);
+	 }
+
+	 @AutoLog(value = "纪律监督审核未通过-分页列表查询")
+	 @ApiOperation(value="纪律监督审核未通过-分页列表查询", notes="纪律监督审核未通过-分页列表查询")
+	 @GetMapping(value = "/jilvNotPassList")
+	 public Result<?> queryJilvNotPassPageList(VerifyTaskListPage verifyTaskListPage,
+										@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+										@RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+										HttpServletRequest req) {
+
+		 Page<VerifyTaskListPage> page = new Page<VerifyTaskListPage>(pageNo, pageSize);
+
+		 List<String> typeList = new ArrayList<>();
+		 typeList.add("民主生活会");
+		 typeList.add("三会一课");
+		 typeList.add("组织生活会");
+		 typeList.add("党内谈话");
+		 typeList.add("问责情况");
+		 typeList.add("述责述廉");
+
+		 IPage<VerifyTaskListPage> pageList = smartVerifyTaskService.getNotPassList(page, typeList, verifyTaskListPage);
+
+
+		 // log.info(sysBaseAPI.getDepartIdsByOrgCode(sysUser.getOrgCode()));
+
+		 return Result.OK(pageList);
+	 }
+
+
 
 	 @AutoLog(value = "审核任务表-分页列表查询")
 	 @ApiOperation(value="审核任务表-分页列表查询", notes="审核任务表-分页列表查询")
