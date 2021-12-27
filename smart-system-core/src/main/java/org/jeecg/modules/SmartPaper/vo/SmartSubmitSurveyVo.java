@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.jeecg.common.aspect.annotation.Dict;
 import org.jeecg.modules.SmartPaper.entity.SmartSubmit;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -46,9 +47,11 @@ public class SmartSubmitSurveyVo {
     @ApiModelProperty(value = "所属部门")
     private String sysOrgCode;
     /**人员id*/
-    @Excel(name = "人员id", width = 15)
     @ApiModelProperty(value = "人员id")
     private String personId;
+    /**调查人员id*/
+    @ApiModelProperty(value = "调查人员id")
+    private String inquirerId;
     /**姓名*/
     @Excel(name = "姓名", width = 15)
     @ApiModelProperty(value = "姓名")
@@ -75,4 +78,11 @@ public class SmartSubmitSurveyVo {
     private String ipAddress;
 
     List<SmartSubmit> smartSubmitList;
+    /**满意度*/
+    @Dict(dicCode = "evaluate_grade")
+    private String satisfaction;
+    /**是否完成调查*/
+    private String isFinish;
+    /**是否发现线索*/
+    private String isReport;
 }

@@ -1,16 +1,22 @@
 package org.jeecg.modules.SmartPaper.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
+import org.jeecg.common.constant.CommonConstant;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.modules.SmartPaper.entity.SmartPaper;
+import org.jeecg.modules.SmartPaper.entity.SmartPeople;
 import org.jeecg.modules.SmartPaper.entity.SmartTopic;
 import org.jeecg.modules.SmartPaper.mapper.SmartPaperMapper;
 import org.jeecg.modules.SmartPaper.mapper.SmartTopicMapper;
 import org.jeecg.modules.SmartPaper.service.ISmartPaperService;
+import org.jeecg.modules.SmartPaper.service.ISmartPeopleService;
+import org.jeecg.modules.SmartPaper.vo.RandomPeople;
 import org.jeecg.modules.SmartPaper.vo.SmartPaperPage;
 import org.jeecg.modules.SmartPaper.vo.SmartTopicVo;
+import org.jeecg.modules.SmartPaper.vo.SmartTriSurveyPage;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,12 +43,15 @@ public class SmartPaperServiceImpl extends ServiceImpl<SmartPaperMapper, SmartPa
     private SmartPaperMapper smartPaperMapper;
     @Autowired
     private SmartTopicMapper smartTopicMapper;
+    @Autowired
+    private ISmartPeopleService smartPeopleService;
     @Override
     public Result<?> insert(SmartPaperPage smartPaperPage) {
         try{
             SmartPaper smartPaper = new SmartPaper();
             BeanUtils.copyProperties(smartPaperPage,smartPaper);
             smartPaperMapper.insert(smartPaper);
+            String paperId = smartPaper.getId();
 
             SmartTopic t = new SmartTopic();
             for (SmartTopicVo topic:smartPaperPage.getSmartTopicVoList()){
@@ -143,6 +152,63 @@ public class SmartPaperServiceImpl extends ServiceImpl<SmartPaperMapper, SmartPa
         }catch (Exception e){
             return Result.error(e.toString());
         }
+    }
+
+    @Override
+    public Result insertTriSurvey(SmartTriSurveyPage smartTriSurveyPage) {
+        try{
+            SmartPaper smartPaper = new SmartPaper();
+            BeanUtils.copyProperties(smartTriSurveyPage,smartPaper);
+            smartPaperMapper.insert(smartPaper);
+            String paperId = smartPaper.getId();
+            Integer selectedCount = smartTriSurveyPage.getSelectedCount();
+            System.out.println(selectedCount);
+            //插入试卷及题目信息
+            SmartTopic t = new SmartTopic();
+            for (SmartTopicVo topic:smartTriSurveyPage.getSmartTopicVoList()){
+                BeanUtils.copyProperties(topic,t);
+                t.setPaperId(smartPaper.getId());
+                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                System.out.println(t);
+                smartTopicMapper.insert(t);
+            }
+
+            //随机选人
+            Page<RandomPeople> randomPeoplePage = new Page<RandomPeople>();
+            List<RandomPeople> randomPeopleList = new ArrayList<RandomPeople>();
+            //在每个村的总家庭数范围内，随机选择对应家庭数量,每个家庭选择一个人
+            List<String> allVillageList = smartPeopleService.getAllVillageList();
+            for(int i = 0;i<allVillageList.size();i++){
+                String villageId = allVillageList.get(i);
+                List<String> selectedHomeList = smartPeopleService.getAllHomeListByVillageId(villageId,selectedCount);
+                for(int j = 0;j<selectedHomeList.size();j++){
+                    String homeCode = selectedHomeList.get(j);
+                    RandomPeople randomPeople = smartPeopleService.getSelectedPeoByHomeCode(homeCode);
+                    randomPeopleList.add(randomPeople);
+                }
+            }
+            System.out.println(randomPeopleList);
+            for(int i = 0;i<randomPeopleList.size();i++){
+                String personsId = randomPeopleList.get(i).getUserId();
+                SmartPeople smartPeople = new SmartPeople();
+                smartPeople.setExamId(paperId);
+                smartPeople.setPersonId(personsId);
+                smartPeople.setIsFinish("0");
+                smartPeopleService.save(smartPeople);
+            }
+            randomPeoplePage.setRecords(randomPeopleList);
+
+            return Result.OK("success");
+        }catch (Exception e){
+            //强制手动事务回滚
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return Result.error(100,e.toString());
+        }
+    }
+
+    @Override
+    public Page<RandomPeople> getTriPeoList(Page<RandomPeople> page,String paperId) {
+        return page.setRecords(smartPaperMapper.getTriPeoList(page,paperId));
     }
 
 }

@@ -1,8 +1,6 @@
 package org.jeecg.modules.SmartPaper.controller;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -23,7 +21,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
+import org.jeecg.modules.SmartPaper.vo.ExamPeopleScoreVo;
+import org.jeecg.modules.SmartPaper.vo.RandomPeople;
 import org.jeecg.modules.SmartPaper.vo.SmartPaperPage;
+import org.jeecg.modules.SmartPaper.vo.SmartTriSurveyPage;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -75,7 +76,26 @@ public class SmartPaperController extends JeecgController<SmartPaper, ISmartPape
 		IPage<SmartPaper> pageList = smartPaperService.page(page, queryWrapper);
 		return Result.OK(pageList);
 	}
+	 @AutoLog(value = "三员+问卷表-分页列表查询")
+	 @ApiOperation(value="三员+问卷表-分页列表查询", notes="三员+问卷表-分页列表查询")
+	 @GetMapping(value = "/triPeoList")
+	 public Result<?> querytriPeoList(RandomPeople randomPeople,
+									  @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+									  @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+									  HttpServletRequest req) {
+		 QueryWrapper<RandomPeople> queryWrapper = QueryGenerator.initQueryWrapper(randomPeople, req.getParameterMap());
+		 String paperId = req.getParameter("id");
+		 //System.out.println("####################");
+		 //System.out.println(paperId);
+		 Result<IPage<RandomPeople>> result = new Result<IPage<RandomPeople>>();
 
+		 Page<RandomPeople> pageList = new Page<RandomPeople>(pageNo,pageSize);
+
+		 pageList = smartPaperService.getTriPeoList(pageList,paperId);
+		 result.setResult(pageList);
+		 result.setSuccess(true);
+		 return result;
+	 }
 	/**
 	 *   添加
 	 *
@@ -111,6 +131,24 @@ public class SmartPaperController extends JeecgController<SmartPaper, ISmartPape
 		 smartPaperPage.setPaperType("2");//添加调查问卷
 		 smartPaperPage.setPaperStatus("0");
 		 smartPaperService.insert(smartPaperPage);
+		 return Result.OK("添加成功！");
+	 }
+
+	 /**
+	  *   添加
+	  *
+	  * @param smartTriSurveyPage
+	  * @return
+	  */
+	 @AutoLog(value = "三员+问卷-添加")
+	 @ApiOperation(value="三员+问卷-添加", notes="三员+问卷-添加")
+	 @PostMapping(value = "/addTriSurvey")
+	 public Result<?> addTriSurvey(@RequestBody SmartTriSurveyPage smartTriSurveyPage) {
+		 //System.out.println("####################");
+		 //System.out.println(smartPaperPage);
+		 smartTriSurveyPage.setPaperType("3");//添加调查问卷
+		 smartTriSurveyPage.setPaperStatus("2");
+		 smartPaperService.insertTriSurvey(smartTriSurveyPage);
 		 return Result.OK("添加成功！");
 	 }
 

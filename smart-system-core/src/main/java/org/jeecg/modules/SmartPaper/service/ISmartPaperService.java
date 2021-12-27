@@ -1,9 +1,12 @@
 package org.jeecg.modules.SmartPaper.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.modules.SmartPaper.entity.SmartPaper;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.jeecg.modules.SmartPaper.vo.RandomPeople;
 import org.jeecg.modules.SmartPaper.vo.SmartPaperPage;
+import org.jeecg.modules.SmartPaper.vo.SmartTriSurveyPage;
 
 /**
  * @Description: 试卷表
@@ -20,4 +23,8 @@ public interface ISmartPaperService extends IService<SmartPaper> {
     Result updatePaperById(String id, SmartPaperPage smartPaperPage);
 
     Result deletePaper(String id);
+
+    Result insertTriSurvey(SmartTriSurveyPage smartTriSurveyPage);
+
+    Page<RandomPeople> getTriPeoList(Page<RandomPeople> page,String paperId);
 }
