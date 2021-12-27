@@ -222,4 +222,5 @@ public class SysUser implements Serializable {
     @Dict(dicCode = "people_type")
     private java.lang.String peopleType;
 
+    private String homeId;
 }

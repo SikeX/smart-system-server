@@ -274,4 +274,11 @@ public interface ISysUserService extends IService<SysUser> {
 	 * @return
 	 */
     SysUser queryByPhone(String purePhoneNumber);
+
+	/**
+	 * 根据户口号查询用户
+	 * @param homeCode
+	 * @return
+	 */
+	List<SysUser> queryByHomeCode(String homeCode);
 }

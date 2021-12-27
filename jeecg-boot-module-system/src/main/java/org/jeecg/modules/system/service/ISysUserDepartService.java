@@ -51,5 +51,6 @@ public interface ISysUserDepartService extends IService<SysUserDepart> {
 	IPage<SysUser> queryDepartUserPageList(String departId, String username, String realname, int pageSize, int pageNo);
 	//只展示本单位及下级单位人员
 	IPage<SysUser> newqueryDepartUserPageList(String departId, String username, String realname, int pageSize, int pageNo);
-
+	//只展示村民
+	IPage<SysUser> queryDepartVillagePageList(String departId, String username, String realname, int pageSize, int pageNo);
 }

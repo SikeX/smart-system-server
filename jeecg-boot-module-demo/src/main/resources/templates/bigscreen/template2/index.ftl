@@ -18,7 +18,7 @@
         #chart-container {
             display:block;
             width: 100%;
-            height: 60%;
+            height: 70%;
             position: absolute;
             border: 0px ;
             margin: auto;
@@ -32,7 +32,7 @@
         #chart-container2 {
             display:none;
             width: 100%;
-            height: 60%;
+            height:70%;
             position: absolute;
             border: 0px ;
             margin: auto;
@@ -193,7 +193,7 @@
 
 <#--                <div id="chart4" style="width:100%;height:95%;">-->
 <#--                    <div id="gdMap1" class="gd-map" style="width:100%;height:95%;"></div>-->
-            <div id="businessProgress"></div>
+<#--            <div id="businessProgress"></div>-->
             <div id="chart-container" ></div>
                     <div id="chart-container2" ></div>
 

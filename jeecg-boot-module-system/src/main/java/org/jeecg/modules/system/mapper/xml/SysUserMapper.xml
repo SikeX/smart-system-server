@@ -177,4 +177,9 @@
 	<select id="queryById" resultType="org.jeecg.modules.system.entity.SysUser">
 		select * from  sys_user  where id = #{id} and del_flag = 0
 	</select>
+
+	<!-- 根据homeCode查询家庭成员 -->
+	<select id="getUserByHomeCode" resultType="org.jeecg.modules.system.entity.SysUser">
+		select * from  sys_user  where home_code = #{homeCode} and del_flag = 0 and home_role = 2
+	</select>
 </mapper>
