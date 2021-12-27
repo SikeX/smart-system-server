@@ -153,12 +153,12 @@ public class SmartFinanceResultController {
         }
         smartFinanceResult.setDepartId(id);
         smartFinanceResult.setCreatorId(sysUser.getId());
+        smartFinanceResult.setCreator(sysUser.getRealname());
 
         Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
         if (isVerify) {
             smartFinanceResultService.saveMain(smartFinanceResult, smartFinanceResultPage.getSmartFinanceAnnexList());
             String recordId = smartFinanceResult.getId();
-            log.info("recordId is " + recordId);
             smartVerify.addVerifyRecord(recordId, verifyType);
             smartFinanceResult.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
             smartFinanceResultService.updateById(smartFinanceResult);

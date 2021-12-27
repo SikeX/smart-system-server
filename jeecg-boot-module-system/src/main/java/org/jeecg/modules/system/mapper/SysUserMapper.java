@@ -156,8 +156,8 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 	 */
     SysUser queryById(String id);
 
-	@Update("UPDATE sys_user SET phone = #{purePhoneNumber} where id = #{sysUserId}")
-	void updatePhoneById(String sysUserId, String purePhoneNumber);
+	@Update("UPDATE sys_user SET phone = #{arg1} where id = #{arg0}")
+	int updatePhoneById(String sysUserId, String purePhoneNumber);
 
 	/**
 	 * 根据homeCode获取用户信息

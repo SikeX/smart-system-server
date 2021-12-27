@@ -9,9 +9,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
+import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.constant.CommonConstant;
 import org.jeecg.common.constant.WebsocketConst;
 import org.jeecg.common.system.vo.ComboModel;
+import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.util.DySmsHelper;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.system.entity.SysAnnouncement;
 import org.jeecg.modules.system.entity.SysAnnouncementSend;
@@ -20,6 +23,7 @@ import org.jeecg.modules.system.mapper.SysAnnouncementMapper;
 import org.jeecg.modules.system.mapper.SysAnnouncementSendMapper;
 import org.jeecg.modules.system.mapper.SysUserMapper;
 import org.jeecg.modules.system.service.ISysAnnouncementService;
+import org.jeecg.modules.system.vo.SmsMsgVo;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -173,6 +177,91 @@ public class SysAnnouncementServiceImpl extends ServiceImpl<SysAnnouncementMappe
 				sysAnnouncementSendMapper.insert(item);
 			});
 			sqlSession.commit();
+		}
+	}
+
+	@Transactional
+	@Override
+	public void sendSmsMsg(SmsMsgVo smsMsgVo) {
+
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+		String userId = smsMsgVo.getUserIds();
+		String departIds = smsMsgVo.getDepartIds();
+		if(smsMsgVo.getMsgType().equals(CommonConstant.MSG_TYPE_ALL)) {
+
+			QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
+			queryWrapper.eq("del_flag",0).isNotNull(true,"org_code");
+			List<SysUser> allUserList = sysUserMapper.selectList(queryWrapper);
+
+
+			List<String> allUserNameList = new ArrayList<>();
+			List<String> allUserPhone = new ArrayList<>();
+			allUserList.forEach(item -> {
+				allUserNameList.add(item.getUsername());
+				allUserPhone.add(item.getPhone());
+			});
+
+			String receiver = String.join(",", allUserNameList);
+			String receiverPhone = String.join(",", allUserPhone);
+
+			DySmsHelper.sendSms(sysUser.getUsername(),smsMsgVo.getMsgType(),"测试",smsMsgVo.getContent(),receiver,receiverPhone);
+
+
+		} else if(smsMsgVo.getMsgType().equals(CommonConstant.MSG_TYPE_DEPART)){
+
+			List<String> userList = new ArrayList<>();
+
+			String[] departArray = departIds.split(",");
+			for(String depart: departArray){
+				userList.addAll(sysBaseApi.getDepAdminByDepId(depart));
+			}
+
+			QueryWrapper<SysUser> userQueryWrapper = new QueryWrapper<>();
+			userQueryWrapper.eq("del_flag",0).in("id", userList);
+			List<SysUser> allUserList = sysUserMapper.selectList(userQueryWrapper);
+
+			List<String> userNameList = new ArrayList<>();
+			List<String> userPhoneList = new ArrayList<>();
+
+			allUserList.forEach(item -> {
+				userNameList.add(item.getUsername());
+				userPhoneList.add(item.getPhone());
+			});
+
+			String receiver = String.join(",", userNameList);
+			String receiverPhone = String.join(",", userPhoneList);
+
+			DySmsHelper.sendSms(sysUser.getUsername(),smsMsgVo.getMsgType(),"测试",smsMsgVo.getContent(),receiver,receiverPhone);
+
+
+		} else {
+//			send_count = sysAnnouncement.getUserIds().split(",").length;
+//			sysAnnouncement.setSendCount(send_count);
+			// 1.插入通告表记录
+//			sysAnnouncementMapper.insert(sysAnnouncement);
+			// 2.插入用户通告阅读标记表记录
+//			String userId = sysAnnouncement.getUserIds();
+			String[] userIds = userId.split(",",-1);
+
+			QueryWrapper<SysUser> userQueryWrapper = new QueryWrapper<>();
+			userQueryWrapper.eq("del_flag",0).in("id", userIds);
+
+			List<SysUser> allUserList = sysUserMapper.selectList(userQueryWrapper);
+
+			List<String> userNameList = new ArrayList<>();
+			List<String> userPhoneList = new ArrayList<>();
+
+			allUserList.forEach(item -> {
+				userNameList.add(item.getUsername());
+				userPhoneList.add(item.getPhone());
+			});
+
+			String receiver = String.join(",", userNameList);
+			String receiverPhone = String.join(",", userPhoneList);
+
+			DySmsHelper.sendSms(sysUser.getUsername(),smsMsgVo.getMsgType(),"测试",smsMsgVo.getContent(),receiver,receiverPhone);
+
 		}
 	}
 	

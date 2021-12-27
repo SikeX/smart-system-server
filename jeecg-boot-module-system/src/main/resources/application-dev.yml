@@ -157,6 +157,7 @@ spring:
       shutdown-timeout: 100ms
 
     port: 6379
+    password: ""
 #mybatis plus 设置
 mybatis-plus:
   mapper-locations: classpath*:org/jeecg/modules/**/xml/*Mapper.xml

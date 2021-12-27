@@ -1,9 +1,6 @@
 package org.jeecg.modules.app.mapper;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.jeecg.modules.app.entity.AppUser;
 
 
@@ -28,5 +25,5 @@ public interface AppUserMapper {
 
     @Update("UPDATE tb_app_user SET sys_user_id = #{sysUserId}, mtime = #{mtime} " +
             "where id = #{id}")
-    int updateSysUserIdById(int id, String sysUserId, int mtime);
+    int updateSysUserIdById(@Param("id") int id, @Param("sysUserId") String sysUserId, @Param("mtime") int mtime);
 }

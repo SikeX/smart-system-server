@@ -1,13 +1,20 @@
 package org.jeecg.modules.SmartPaper.controller;
 
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.common.system.query.QueryGenerator;
@@ -17,9 +24,16 @@ import org.jeecg.common.system.query.QueryGenerator;
 import lombok.extern.slf4j.Slf4j;
 
 
+import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.SmartFirstFormPeople.entity.SmartFirstFormPeople;
 import org.jeecg.modules.SmartPaper.entity.SmartPeople;
 import org.jeecg.modules.SmartPaper.service.ISmartPeopleService;
 import org.jeecg.modules.SmartPaper.vo.ExamPeopleScoreVo;
+import org.jeecg.modules.base.service.BaseCommonService;
+import org.jeecgframework.poi.excel.def.NormalExcelConstants;
+import org.jeecgframework.poi.excel.entity.ExportParams;
+import org.jeecgframework.poi.excel.view.JeecgEntityExcelView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,7 +56,8 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 public class SmartPeopleController extends JeecgController<SmartPeople, ISmartPeopleService> {
     @Autowired
     private ISmartPeopleService smartPeopleService;
-
+    @Autowired
+    private BaseCommonService baseCommonService;
     /**
      * 分页列表查询
      *
@@ -165,7 +180,69 @@ public class SmartPeopleController extends JeecgController<SmartPeople, ISmartPe
     public ModelAndView exportXls(HttpServletRequest request, SmartPeople smartPeople) {
         return super.exportXls(request, smartPeople, SmartPeople.class, "考试参加人员表");
     }
+    /**
+     * 导出成绩单
+     *
+     * @param req
+     * @param examPeopleScoreVo
+     */
+    @RequestMapping(value = "/exportExamGradeXls")
+    public ModelAndView exportExamGradeXls(HttpServletRequest req,
+                                           HttpServletResponse response, ExamPeopleScoreVo examPeopleScoreVo,
+                                  @RequestParam(name="examId",required=true) String examId,
+                                  @RequestParam(name="title",required=true) String title,
+                                  @RequestParam(name="pageNo",defaultValue = "1") Integer pageNo,
+                                  @RequestParam(name="pageSize",defaultValue = "10") Integer pageSize) throws IOException {
+        // Step.1 组装查询条件
+        QueryWrapper<ExamPeopleScoreVo> queryWrapper = QueryGenerator.initQueryWrapper(examPeopleScoreVo, req.getParameterMap());
+        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
+        // Step.2 获取导出数据
+        Page<ExamPeopleScoreVo> page = new Page<ExamPeopleScoreVo>(pageNo,pageSize);
+        List<ExamPeopleScoreVo> pageList = (smartPeopleService.getScoreByExamId(page,examId)).getRecords();
+        List<ExamPeopleScoreVo> exportList = null;
+        System.out.println("##############################");
+        exportList = pageList;
+        System.out.println(exportList);
+        for(int i=0;i<exportList.size();i++){
+            ExamPeopleScoreVo examPeople = exportList.get(i);
+            Integer isMark = examPeople.getIsMark();
+            String score = examPeople.getExamGrade();
+            if(score.equals("-1")){
+                examPeople.setExamGrade("未参加");
+            }else if(score.equals("0") && isMark == 0){
+                examPeople.setExamGrade("已参与调查");
+            }
+        }
+        System.out.println(exportList);
+
+        // 过滤选中数据
+/*        String selections = request.getParameter("selections");
+        if (oConvertUtils.isNotEmpty(selections)) {
+            List<String> selectionList = Arrays.asList(selections.split(","));
+            exportList = pageList.stream().filter(item -> selectionList.contains(item.getDeptId())).collect(Collectors.toList());
+        } else {
+            exportList = pageList;
+        }*/
+
+        // Step.3 AutoPoi 导出Excel
+        ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
+        mv.addObject(NormalExcelConstants.FILE_NAME, title); //此处设置的filename无效 ,前端会重更新设置一下
+        mv.addObject(NormalExcelConstants.CLASS, ExamPeopleScoreVo.class);
+        //update-begin--Author:liusq  Date:20210126 for：图片导出报错，ImageBasePath未设置--------------------
+        ExportParams exportParams=new ExportParams(title + "报表", "导出人:" + sysUser.getRealname(), title);
+        //update-end--Author:liusq  Date:20210126 for：图片导出报错，ImageBasePath未设置----------------------
+        mv.addObject(NormalExcelConstants.PARAMS,exportParams);
+        mv.addObject(NormalExcelConstants.DATA_LIST, exportList);
+
+        // List深拷贝，否则返回前端会没数据
+        List<ExamPeopleScoreVo> newPageList = ObjectUtil.cloneByStream(exportList);
+
+        baseCommonService.addExportLog(mv.getModel(), "成绩单", req, response);
+
+        mv.addObject(NormalExcelConstants.DATA_LIST, newPageList);
+        return mv;
+    }
     /**
      * 通过excel导入数据
      *

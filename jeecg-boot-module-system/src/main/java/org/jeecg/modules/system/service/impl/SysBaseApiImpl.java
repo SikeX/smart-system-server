@@ -33,7 +33,6 @@ import org.jeecg.modules.message.service.ISysMessageTemplateService;
 import org.jeecg.modules.message.websocket.WebSocket;
 import org.jeecg.modules.system.entity.*;
 import org.jeecg.modules.system.mapper.*;
-import org.jeecg.modules.system.model.DepartIdModel;
 import org.jeecg.modules.system.service.*;
 import org.jeecg.modules.system.util.SecurityUtil;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -708,6 +707,30 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 	}
 
 	@Override
+	public List<SysDepartModel> getAllBusDepart() {
+		List<SysDepartModel> departModelList = new ArrayList<SysDepartModel>();
+		List<SysDepart> departList = departMapper.getAllBusDepart();
+		for(SysDepart depart : departList){
+			SysDepartModel model = new SysDepartModel();
+			BeanUtils.copyProperties(depart,model);
+			departModelList.add(model);
+		}
+		return departModelList;
+	}
+
+	@Override
+	public List<SysDepartModel> getChildrenDepart(String orgCode) {
+		List<SysDepartModel> departModelList = new ArrayList<SysDepartModel>();
+		List<SysDepart> departList = departMapper.getChildrenDepart(orgCode);
+		for(SysDepart depart : departList){
+			SysDepartModel model = new SysDepartModel();
+			BeanUtils.copyProperties(depart,model);
+			departModelList.add(model);
+		}
+		return departModelList;
+	}
+
+	@Override
 	public DynamicDataSourceModel getDynamicDbSourceById(String dbSourceId) {
 		SysDataSource dbSource = dataSourceService.getById(dbSourceId);
 		if(dbSource!=null && StringUtils.isNotBlank(dbSource.getDbPassword())){
@@ -1280,6 +1303,7 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 		return sysDepartService.getSubDepIdsByDepId(userId);
 	}
 
+	// 获取单位负责人id
 	@Override
 	public List<String> getDepAdminByDepId(String depId) {
 		return sysDepartRoleMapper.getDepAdminByDepId(depId);

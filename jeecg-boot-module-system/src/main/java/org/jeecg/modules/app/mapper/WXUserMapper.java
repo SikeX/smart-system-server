@@ -1,10 +1,6 @@
 package org.jeecg.modules.app.mapper;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
-import org.jeecg.modules.app.entity.AppUser;
+import org.apache.ibatis.annotations.*;
 import org.jeecg.modules.app.entity.WXUser;
 
 
@@ -26,16 +22,16 @@ public interface WXUserMapper {
             "wx_session_key = #{wxSessionKey} where id = #{id}")
     int updateById(WXUser wxUser);
 
-    @Update("UPDATE tb_wx_user SET sys_user_id = #{sysUserId}, mtime = #{mtime} " +
-            "where id = #{id}")
-    void updateSysUserIdById(int id, String sysUserId, int mtime);
-
     @Select("SELECT * FROM tb_wx_user WHERE wx_session_key = #{sessionKey}")
     WXUser queryBySessionKey(String sessionKey);
 
-    @Update("UPDATE tb_wx_user SET phone = #{purePhoneNumber} where id = #{id}")
-    void updatePhoneById(int id, String purePhoneNumber);
+    @Update("UPDATE tb_wx_user SET phone = #{arg1} where id = #{arg0}")
+    int updatePhoneById(int id, String purePhoneNumber);
 
-    @Update("UPDATE tb_wx_user SET sys_user_id = #{sysUserId} where id = #{id}")
-    void updateWxUserSysUserIdById(int id, String sysUserId);
+    @Update("UPDATE tb_wx_user SET sys_user_id = #{arg1} where id = #{arg0}")
+    int updateWxUserSysUserIdById(int id, String sysUserId);
+
+    @Update("UPDATE tb_wx_user SET sys_user_id = #{arg1}, mtime = #{arg2} " +
+            "where id = #{arg0}")
+    int updateSysUserIdById(int id, String sysUserId, int mtime);
 }

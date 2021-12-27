@@ -120,27 +120,41 @@ public class SysUserController {
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public Result<IPage<SysUser>> queryPageList(SysUser user,@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 									  @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,HttpServletRequest req) {
-        // 1. 规则，下面是 以**开始
-        String rule = "in";
-        // 2. 查询字段
-        String field = "departId";
+        HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
         // 获取登录用户信息，可以用来查询单位部门信息
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-        // 获取子单位ID
-        String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
-        HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
-        // 获取请求参数中的superQueryParams
-        List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
-        // 添加额外查询条件，用于权限控制
-        paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
-                + childrenIdString
-                + "%22,%22field%22:%22" + field + "%22%7D%5D");
+        // 获取用户角色
+        String userName = sysUser.getUsername();
+        List<String> role = sysBaseAPI.getRolesByUsername(userName);
+        //纪委管理员可以看到全区人员
+        if(role.contains("CCDIAdmin")){
 
-        String[] params = new String[paramsList.size()];
-        paramsList.toArray(params);
-        map.put("superQueryParams", params);
-        params = new String[]{"and"};
-        map.put("superQueryMatchType", params);
+        }
+        //单位管理员-设置部门，只能看到本部门人员
+        else {
+            // 1. 规则，下面是 以**开始
+            String rule = "in";
+            // 2. 查询字段
+            String field = "departId";
+            //当前登录人单位ID
+            String departId = sysUser.getDepartId();
+            // 获取子单位ID
+            //String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
+            // 获取请求参数中的superQueryParams
+            List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+            // 添加额外查询条件，用于权限控制
+            /*paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+                    + childrenIdString
+                    + "%22,%22field%22:%22" + field + "%22%7D%5D");*/
+            paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+                    + departId
+                    + "%22,%22field%22:%22" + field + "%22%7D%5D");
+            String[] params = new String[paramsList.size()];
+            paramsList.toArray(params);
+            map.put("superQueryParams", params);
+            params = new String[]{"and"};
+            map.put("superQueryMatchType", params);
+        }
 
         Result<IPage<SysUser>> result = new Result<IPage<SysUser>>();
 		QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(user, map);
@@ -271,7 +285,8 @@ public class SysUserController {
 
 		try {
 			SysUser user = JSON.parseObject(jsonObject.toJSONString(), SysUser.class);
-			user.setDepartId(id);
+			//更新user表中的departId
+			user.setDepartId(selectedDeparts);
 			//设置人员类别,党员干部
             user.setPeopleType("1");
 			//设置sys_code
@@ -296,7 +311,7 @@ public class SysUserController {
 			user.setPassword(passwordEncode);
 			user.setStatus(1);
 			user.setDelFlag(CommonConstant.DEL_FLAG_0);
-			// 保存用户走一个service 保证事务
+			// 保存用户走一个service 保证事务，更新user表和关联表
             sysUserService.saveUser(user, selectedRoles, selectedDeparts);
 			result.success("添加成功！");
 		} catch (Exception e) {
@@ -326,6 +341,10 @@ public class SysUserController {
 				user.setPassword(sysUser.getPassword());
 				String roles = jsonObject.getString("selectedroles");
                 String departs = jsonObject.getString("selecteddeparts");
+                //更改部门不为空，说明为纪委管理员，同步更新user表中departId
+                if(departs != null && !departs.isEmpty()){
+                    user.setDepartId(departs);
+                }
                 // 修改用户走一个service 保证事务
 				sysUserService.editUser(user, roles, departs);
 				result.success("修改成功!");
