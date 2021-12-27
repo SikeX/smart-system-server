@@ -593,4 +593,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 		return userMapper.getUserByPhone(purePhoneNumber);
 	}
 
+	@Override
+	public List<SysUser> queryByHomeCode(String homeCode) {
+		return  userMapper.getUserByHomeCode(homeCode);
+	}
+
 }

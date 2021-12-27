@@ -51,6 +51,8 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 	private SysDepartRoleUserMapper departRoleUserMapper;
 	@Autowired
 	private SysUserMapper sysUserMapper;
+	@Autowired
+	private SysUserServiceImpl sysUserServiceImpl;
 
 	@Override
 	public List<SysDepartTreeModel> queryMyDeptTreeList(String departIds) {
@@ -372,6 +374,15 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
                 String orgType = codeArray[1];
                 sysDepart.setOrgType(String.valueOf(orgType));
 				this.updateById(sysDepart);
+				//修改相关人员的orgCode
+				LambdaQueryWrapper<SysUser> queryPeople = new LambdaQueryWrapper<SysUser>();
+				queryPeople.eq(SysUser::getDepartId,sysDepart.getId());
+				List<SysUser> userList = sysUserServiceImpl.list(queryPeople);
+				for(SysUser user : userList)
+				{
+					user.setOrgCode(sysDepart.getOrgCode());
+					sysUserServiceImpl.updateById(user);
+				}
 				List<SysDepart> parentList = new ArrayList<>();
 				parentList.add(sysDepart);
 				this.childReCode(parentList);
@@ -428,6 +439,15 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 					String newOrgCode = YouBianCodeUtil.getSubYouBianCode(parentDept.getOrgCode(), null);
 					nextParentDept.setOrgCode(newOrgCode);
 					this.updateById(nextParentDept);
+					//修改相关人员的orgCode
+					LambdaQueryWrapper<SysUser> queryPeople = new LambdaQueryWrapper<SysUser>();
+					queryPeople.eq(SysUser::getDepartId,nextParentDept.getId());
+					List<SysUser> userList = sysUserServiceImpl.list(queryPeople);
+					for(SysUser user : userList)
+					{
+						user.setOrgCode(newOrgCode);
+						sysUserServiceImpl.updateById(user);
+					}
 					lastDepart = nextParentDept;
 					i = 1;
 				}
@@ -437,6 +457,15 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 					String newOrgCode =  YouBianCodeUtil.getSubYouBianCode(parentDept.getOrgCode(), lastDepart.getOrgCode());
 					nextParentDept.setOrgCode(newOrgCode);
 					this.updateById(nextParentDept);
+					//修改相关人员的orgCode
+					LambdaQueryWrapper<SysUser> queryPeople = new LambdaQueryWrapper<SysUser>();
+					queryPeople.eq(SysUser::getDepartId,nextParentDept.getId());
+					List<SysUser> userList = sysUserServiceImpl.list(queryPeople);
+					for(SysUser user : userList)
+					{
+						user.setOrgCode(newOrgCode);
+						sysUserServiceImpl.updateById(user);
+					}
 					lastDepart = nextParentDept;
 				}
 			}

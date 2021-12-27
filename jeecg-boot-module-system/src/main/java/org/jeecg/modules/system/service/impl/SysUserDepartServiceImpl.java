@@ -222,4 +222,45 @@ public class SysUserDepartServiceImpl extends ServiceImpl<SysUserDepartMapper, S
 		}
 		return pageList;
 	}
+
+	@Override
+	public IPage<SysUser> queryDepartVillagePageList(String departId, String username, String realname, int pageSize, int pageNo) {
+		IPage<SysUser> pageList = null;
+		// 部门ID不存在 直接查询用户表即可
+		Page<SysUser> page = new Page<SysUser>(pageNo, pageSize);
+		if(oConvertUtils.isEmpty(departId)){
+			LambdaQueryWrapper<SysUser> query = new LambdaQueryWrapper<>();
+			//
+			if(oConvertUtils.isNotEmpty(realname)){
+				query.like(SysUser::getRealname, realname);
+			}
+			//按人员类型过滤
+			query.eq(SysUser::getPeopleType,2);
+			pageList = sysUserService.page(page, query);
+		}else{
+			// 有部门ID 需要走自定义sql
+			SysDepart sysDepart = sysDepartService.getById(departId);
+			pageList = this.baseMapper.queryDepartVillagePageList(page, sysDepart.getOrgCode(), username, realname);
+		}
+		List<SysUser> userList = pageList.getRecords();
+		if(userList!=null && userList.size()>0){
+			List<String> userIds = userList.stream().map(SysUser::getId).collect(Collectors.toList());
+			Map<String, SysUser> map = new HashMap<String, SysUser>();
+			if(userIds!=null && userIds.size()>0){
+				// 查部门名称
+				Map<String,String>  useDepNames = sysUserService.getDepNamesByUserIds(userIds);
+				userList.forEach(item->{
+					//TODO 临时借用这个字段用于页面展示
+					item.setOrgCodeTxt(useDepNames.get(item.getId()));
+					item.setSalt("");
+					item.setPassword("");
+					// 去重
+					map.put(item.getId(), item);
+				});
+			}
+			pageList.setRecords(new ArrayList<SysUser>(map.values()));
+		}
+
+		return pageList;
+	}
 }

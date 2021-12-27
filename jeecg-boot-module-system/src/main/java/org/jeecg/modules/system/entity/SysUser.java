@@ -232,8 +232,15 @@ public class SysUser implements Serializable {
 
     private List<String> roleId;
 
+    private String role;
     /**
      * 上次验证手机号码时间
      */
     private Date lastVerifyTime;
+
+    private String homeCode;
+
+    @ApiModelProperty(value = "户籍关系")
+    @Dict(dicCode = "home_role")
+    private Integer homeRole;
 }
