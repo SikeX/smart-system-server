@@ -121,7 +121,6 @@ public class ShiroConfig {
         /*filterChainDefinitionMap.put("/sys/upload/**", "anon");//pdf预览*/
 
 
-
         //积木报表排除
         filterChainDefinitionMap.put("/jmreport/**", "anon");
         filterChainDefinitionMap.put("/**/*.js.map", "anon");
@@ -137,6 +136,16 @@ public class ShiroConfig {
 
         //app接口排除
         filterChainDefinitionMap.put("/api/client/**", "anon");
+
+        // 信息公示排除
+        filterChainDefinitionMap.put("/publicity/getQuery","anon");
+        filterChainDefinitionMap.put("/smartVillageLead/smartVillageLead/list","anon");
+        filterChainDefinitionMap.put("/smartPublicityProject/smartPublicityProject/list","anon");
+        filterChainDefinitionMap.put("/smartPublicityResource/smartPublicityResource/list","anon");
+        filterChainDefinitionMap.put("/smartPublicityParty/smartPublicityParty/list","anon");
+        filterChainDefinitionMap.put("/smartPublicityPower/smartPublicityPower/list","anon");
+        filterChainDefinitionMap.put("/smartPublicityBenifit/smartPublicityBenifit/list","anon");
+
 
         //测试排除
 //        filterChainDefinitionMap.put("/testVerify/testVerify/**", "anon");//系统通知和公告
