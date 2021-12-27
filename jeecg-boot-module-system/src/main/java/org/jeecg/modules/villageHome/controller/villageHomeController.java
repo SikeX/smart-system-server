@@ -231,14 +231,14 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 				}
 			}
 		}
-
         //保存编辑后的户主信息（假设户口本编号未更改，编辑后的户主保存原户口本编号信息）
 		 if(!bHostId.equals(lHostId))
 		 {
 		 	SysUser laterHost = sysUserService.getById(lHostId);
 		 	SysUser bHost = sysUserService.getById(bHostId);
-		 	bHost.setHomeCode(null);
-		 	bHost.setHomeRole(null);
+
+		 	bHost.setHomeCode("");
+		 	bHost.setHomeRole(0);
 		 	sysUserService.updateById(bHost);
 		 	laterHost.setHomeCode(bHomeCode);
 		 	laterHost.setHomeRole(1);
@@ -281,8 +281,8 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 			}
 			if(flag == 0)
 			{
-				buser.setHomeCode(null);
-				buser.setHomeRole(null);
+				buser.setHomeCode("");
+				buser.setHomeRole(0);
 				sysUserService.updateById(buser);
 			}
 		}
@@ -320,14 +320,14 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 	public Result<?> delete(@RequestParam(name="id",required=true) String id) {
 		villageHome villageHome = villageHomeService.getById(id);
 		SysUser host = sysUserService.getById(villageHome.getHostId());
-		host.setHomeCode(null);
-		host.setHomeRole(null);
+		host.setHomeCode("");
+		host.setHomeRole(0);
 		sysUserService.updateById(host);
 		List<SysUser> userList = sysUserService.queryByHomeCode(villageHome.getHomeCode());
 		for(SysUser user:userList)
 		{
-			user.setHomeCode(null);
-			user.setHomeRole(null);
+			user.setHomeCode("");
+			user.setHomeRole(0);
 			sysUserService.updateById(user);
 		}
 		villageHomeService.removeById(id);
@@ -349,14 +349,14 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 		{
 			villageHome villageHome = villageHomeService.getById(id);
 			SysUser host = sysUserService.getById(villageHome.getHostId());
-			host.setHomeCode(null);
-			host.setHomeRole(null);
+			host.setHomeCode("");
+			host.setHomeRole(0);
 			sysUserService.updateById(host);
 			List<SysUser> userList = sysUserService.queryByHomeCode(villageHome.getHomeCode());
 			for(SysUser user:userList)
 			{
-				user.setHomeCode(null);
-				user.setHomeRole(null);
+				user.setHomeCode("");
+				user.setHomeRole(0);
 				sysUserService.updateById(user);
 			}
 		}
