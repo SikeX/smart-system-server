@@ -1,14 +1,12 @@
 package org.jeecg.modules.SmartPaper.mapper;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
-import org.jeecg.common.api.vo.Result;
 import org.jeecg.modules.SmartPaper.entity.SmartPeople;
 import org.jeecg.modules.SmartPaper.vo.ExamPeopleScoreVo;
+import org.jeecg.modules.SmartPaper.vo.RandomPeople;
 
-import javax.xml.crypto.Data;
 import java.util.Date;
 import java.util.List;
 
@@ -29,4 +27,18 @@ public interface SmartPeopleMapper extends BaseMapper<SmartPeople> {
     void updateGrade(String userId, String examId, int grade, Date date);
 
     List<ExamPeopleScoreVo> getScoreByExamId(Page<ExamPeopleScoreVo> page, @Param("examId") String examId);
+
+    List<String> getAllVillageList();
+
+    List<String> getAllHomeListByVillageId(String villageId,Integer selectedCount);
+
+    RandomPeople getSelectedPeoByHomeCode(String homeCode);
+
+    List<RandomPeople> getTriPeoListByDptId(Page<RandomPeople> page, String paperId, String departId);
+
+    String selectByUIdEId(String examId, String userId);
+
+    int updateSumSur(String examId, String userId, int grade, String isFinish, String inquirerId, String satisfaction, String isReport);
+
+    List<RandomPeople> getTriResultByEIdDId(Page<RandomPeople> page, String examId, String departId);
 }

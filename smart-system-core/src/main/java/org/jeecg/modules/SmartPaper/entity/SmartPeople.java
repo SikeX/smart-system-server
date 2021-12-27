@@ -12,6 +12,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.jeecg.common.aspect.annotation.Dict;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -61,6 +62,9 @@ public class SmartPeople implements Serializable {
 	@Excel(name = "人员id", width = 15)
     @ApiModelProperty(value = "人员id")
     private String personId;
+    /**调查人员id*/
+    @ApiModelProperty(value = "调查人员id")
+    private String inquirerId;
 	/**姓名*/
 	@Excel(name = "姓名", width = 15)
     @ApiModelProperty(value = "姓名")
@@ -87,4 +91,13 @@ public class SmartPeople implements Serializable {
 	@Excel(name = "删除状态", width = 15)
     @TableLogic
     private Integer delFlag;
+    /**满意度*/
+    @Dict(dicCode = "evaluate_grade")
+    private String satisfaction;
+    /**是否完成调查*/
+    @Dict(dicCode = "is_finish")
+    private String isFinish;
+    /**是否发现线索*/
+    @Dict(dicCode = "yn")
+    private String isReport;
 }
