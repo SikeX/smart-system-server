@@ -71,7 +71,7 @@ public class SmartFinanceResult implements Serializable {
 	/**创建人*/
     @ApiModelProperty(value = "创建人")
     @Excel(name = "创建人", width = 15)
-    private java.lang.String createBy;
+    private java.lang.String creator;
 	/**删除状态（0，正常，1已删除）*/
     @TableLogic
     @ApiModelProperty(value = "删除状态（0，正常，1已删除）")
