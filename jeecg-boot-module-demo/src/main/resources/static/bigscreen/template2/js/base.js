@@ -1855,3 +1855,172 @@ $('#mineusL').on('click', function () {
     }
 })
 
+
+//业务进展图
+// var businessProgress=echarts.init(document.getElementById('businessProgress'));
+// var businessProgress_placeHoledStyle = {
+//     normal:{
+//         barBorderColor:'rgba(0,0,0,0)',
+//         color:'rgba(0,0,0,0)'
+//     },
+//     emphasis:{
+//         barBorderColor:'rgba(0,0,0,0)',
+//         color:'rgba(0,0,0,0)'
+//     }
+// };
+// var businessProgress_dataStyle = {
+//     normal: {
+//         barBorderColor:'rgba(0,102,255,1)',
+//         color:function(d){
+//             return 'rgba(0,102,255,0.3)';
+//         },
+//         label : {
+//             show: true,
+//             position: 'insideLeft',
+//             formatter: '{c}%',
+//             textStyle: {
+//                 fontFamily:'Arial',
+//                 fontWeight: 'bolder',
+//                 color:'#B7E1FF',
+//                 fontSize:24
+//             }
+//         }
+//     }
+// };
+//
+// var businessProgress_option = {
+//     title: {show:false},
+//     tooltip : {
+//         trigger: 'axis',
+//         axisPointer : {
+//             type : 'shadow'
+//         },
+//         textStyle: {
+//             color:'#FFF',
+//             fontSize:24
+//         },
+//         formatter : '{b}<br/>{a0}:{100}<br/>{a2}:{100}<br/>{a4}:{100}<br/>{a6}:{100}<br/>{a8}:{100}'
+//     },
+//     legend: {
+//         itemGap : 60,
+//         top:'top',
+//         textStyle: {
+//             fontFamily:'微软雅黑',
+//             fontWeight: 'bolder',
+//             color:'#B7E1FF',
+//             fontSize:24
+//         },
+//         data:['政府部门','党委部门', '乡镇','街道', '企事业单位']
+//     },
+//     toolbox: {show : false},
+//     grid: {
+//         left: 150
+//     },
+//     xAxis : [
+//         {
+//             type : 'value',
+//             position: 'top',
+//             axisLine:{
+//                 lineStyle:{color:'#09F'}
+//             },
+//             splitLine :{
+//                 lineStyle:{color:'#09F'	}
+//             },
+//             axisLabel: {show: false},
+//         }
+//     ],
+//     yAxis : [
+//         {
+//             type : 'category',
+//             data : ['单位数量', '人员数量'],
+//             axisLabel: {
+//                 textStyle: {
+//                     color: '#B7E1FF',
+//                     fontSize:24
+//                 }
+//             },
+//             axisLine:{
+//                 lineStyle:{
+//                     color:'#09F'
+//                 }
+//             },
+//             splitLine :{
+//                 lineStyle:{color:'#09F'	}
+//             }
+//         }
+//     ],
+//     series : [
+//         {
+//             name:'政府部门',
+//             type:'bar',
+//             stack: '进度',
+//             itemStyle : businessProgress_dataStyle,
+//             data:[100, 100]
+//         },
+//         {
+//             name:'政府部门',
+//             type:'bar',
+//             stack: '进度',
+//             itemStyle: businessProgress_placeHoledStyle,
+//             data:[0, 0]
+//         },
+//         {
+//             name:'党委部门',
+//             type:'bar',
+//             stack: '进度',
+//             itemStyle : businessProgress_dataStyle,
+//             data:[100, 100]
+//         },
+//         {
+//             name:'党委部门',
+//             type:'bar',
+//             stack: '进度',
+//             itemStyle: businessProgress_placeHoledStyle,
+//             data:[0, 0]
+//         },
+//         {
+//             name:'乡镇',
+//             type:'bar',
+//             stack: '进度',
+//             itemStyle : businessProgress_dataStyle,
+//             data:[100, 100]
+//         },
+//         {
+//             name:'乡镇',
+//             type:'bar',
+//             stack: '进度',
+//             itemStyle: businessProgress_placeHoledStyle,
+//             data:[0, 0]
+//         },
+//         {
+//             name:'街道',
+//             type:'bar',
+//             stack: '进度',
+//             itemStyle : businessProgress_dataStyle,
+//             data:[71, 50]
+//         },
+//         {
+//             name:'街道',
+//             type:'bar',
+//             stack: '进度',
+//             itemStyle: businessProgress_placeHoledStyle,
+//             data:[29, 50]
+//         },
+//         {
+//             name:'企事业单位',
+//             type:'bar',
+//             stack: '进度',
+//             itemStyle: businessProgress_dataStyle,
+//             data:[71, 50]
+//         },
+//         {
+//             name:'企事业单位',
+//             type:'bar',
+//             stack: '进度',
+//             itemStyle : businessProgress_placeHoledStyle,
+//             data:[29, 50]
+//         }
+//     ]
+// };
+// businessProgress.setOption(businessProgress_option);
+
