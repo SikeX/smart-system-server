@@ -2,6 +2,7 @@ package org.jeecg.modules.smartEvaluateList.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.ibatis.annotations.Param;
 import org.jeecg.modules.smartEvaluateList.entity.MonthCount;
 import org.jeecg.modules.smartEvaluateList.entity.SmartEvaluateWindow;
 import org.jeecg.modules.smartEvaluateList.entity.TypeCount;
@@ -29,28 +30,28 @@ public interface SmartChartMapper extends BaseMapper<peopleAvg> {
      * @param year
      *
      */
-    List<TypeCount> countByGrade(String year);
+    List<TypeCount> countByGrade(@Param("year") String year);
     /**
      *
      * 按人员统计人均分
      *
      *
      */
-    List<peopleAvg> avgByPeople(Page<peopleAvg> page, String windowsName);
+    List<peopleAvg> avgByPeople(@Param("page") Page<peopleAvg> page, @Param("windowsName") String windowsName);
     /**
      *
      * 窗口评价次数排名
      *
      *
      */
-    List<TypeCount> windowsRankByCount(String year);
+    List<TypeCount> windowsRankByCount(@Param("year") String year);
     /**
      *
      * 窗口评分次数排名
      *
      *
      */
-    List<TypeCount> windowsRankByGrade(String year);
+    List<TypeCount> windowsRankByGrade(@Param("year") String year);
 
-    List<peopleAvg> windowsByGrade(Page<peopleAvg> page, String windowsName);
+    List<peopleAvg> windowsByGrade(@Param("page") Page<peopleAvg> page, @Param("windowsName") String windowsName);
 }
