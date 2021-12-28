@@ -181,13 +181,17 @@ public class SmartPaperServiceImpl extends ServiceImpl<SmartPaperMapper, SmartPa
             for(int i = 0;i<allVillageList.size();i++){
                 String villageId = allVillageList.get(i);
                 List<String> selectedHomeList = smartPeopleService.getAllHomeListByVillageId(villageId,selectedCount);
+                System.out.println(selectedCount);
+                System.out.println("selectedHomeList");
+                System.out.println(selectedHomeList);
                 for(int j = 0;j<selectedHomeList.size();j++){
                     String homeCode = selectedHomeList.get(j);
                     RandomPeople randomPeople = smartPeopleService.getSelectedPeoByHomeCode(homeCode);
                     randomPeopleList.add(randomPeople);
+                    System.out.println(randomPeopleList);
                 }
+                //System.out.println(randomPeopleList);
             }
-            System.out.println(randomPeopleList);
             for(int i = 0;i<randomPeopleList.size();i++){
                 String personsId = randomPeopleList.get(i).getUserId();
                 SmartPeople smartPeople = new SmartPeople();
