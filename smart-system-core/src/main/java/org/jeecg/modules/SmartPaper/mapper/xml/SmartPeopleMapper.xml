@@ -34,6 +34,9 @@
                 LEFT JOIN  sys_user u on u.id = sp.person_id
                 LEFT JOIN  sys_depart sd on sd.id = u.depart_id
         WHERE se.paper_id = #{examId}
+        <if test="departId != null and departId != ''">
+            and u.depart_id = #{departId}
+        </if>
         order by exam_grade desc
     </select>
     <update id="updateGrade">

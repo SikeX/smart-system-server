@@ -43,7 +43,7 @@ public class PublicityServiceImpl extends ServiceImpl<PublicityMapper, Publicity
         List<PublicityCommon> departQueryList = new ArrayList<>();
         sysBaseAPI.getAllBusDepart().forEach((item) -> {
             PublicityCommon depart = new PublicityCommon();
-            depart.setValue(item.getId());
+            depart.setValue(item.getOrgCode());
             depart.setLabel(item.getDepartName());
             departQueryList.add(depart);
         });
@@ -58,8 +58,8 @@ public class PublicityServiceImpl extends ServiceImpl<PublicityMapper, Publicity
         typeList.add("党务村务公开");
         typeList.add("小微权利");
         typeList.add("惠民补贴");
-        typeList.add("政策法规");
-        typeList.add("举报投诉");
+//        typeList.add("政策法规");
+//        typeList.add("举报投诉");
         List<PublicityCommon> typeQueryList = new ArrayList<>();
         AtomicInteger count = new AtomicInteger(1);
         typeList.forEach((item) -> {
@@ -106,7 +106,7 @@ public class PublicityServiceImpl extends ServiceImpl<PublicityMapper, Publicity
         sysBaseAPI.getChildrenDepart(orgCode).forEach((item) -> {
             PublicityCommon location = new PublicityCommon();
             location.setLabel(item.getDepartName());
-            location.setValue(item.getOrgCode());
+            location.setValue(item.getId());
             location.setChildren(getLocationQuery(item.getOrgCode()));
             locationQueryList.add(location);
         });
