@@ -69,10 +69,10 @@ public class PublicityServiceImpl extends ServiceImpl<PublicityMapper, Publicity
             typeQueryList.add(type);
             count.getAndIncrement();
         });
-        PublicityCommon type = new PublicityCommon();
-        type.setLabel("不限");
-        type.setValue("0");
-        typeQueryList.add(type);
+//        PublicityCommon type = new PublicityCommon();
+//        type.setLabel("不限");
+//        type.setValue("0");
+//        typeQueryList.add(type);
         publicityQuery.setType(typeQueryList);
         // 获取年份查询条件
         //获取当前日期的年份
