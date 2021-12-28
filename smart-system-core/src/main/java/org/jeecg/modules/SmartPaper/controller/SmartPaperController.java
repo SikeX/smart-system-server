@@ -92,6 +92,8 @@ public class SmartPaperController extends JeecgController<SmartPaper, ISmartPape
 		 Page<RandomPeople> pageList = new Page<RandomPeople>(pageNo,pageSize);
 
 		 pageList = smartPaperService.getTriPeoList(pageList,paperId);
+		 System.out.println("####################");
+		 System.out.println(pageList.getRecords());
 		 result.setResult(pageList);
 		 result.setSuccess(true);
 		 return result;

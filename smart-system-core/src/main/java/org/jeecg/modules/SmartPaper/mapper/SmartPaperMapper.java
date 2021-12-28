@@ -26,19 +26,19 @@ public interface SmartPaperMapper extends BaseMapper<SmartPaper> {
      * 根据试卷ID获取试卷信息
      *
      */
-    SmartPaper getPaperById(String id);
+    SmartPaper getPaperById(@Param("id") String id);
     /**
      *
      * 根据试卷ID获取题目
      *
      */
-    List<SmartTopicVo> getTopicListByPaperId(String id);
+    List<SmartTopicVo> getTopicListByPaperId(@Param("id")String id);
     /**
      *
      * 根据试卷ID更新试卷状态
      *
      */
-    void updateStatus(String paperId);
+    void updateStatus(@Param("paperId")String paperId);
 
-    List<RandomPeople> getTriPeoList(Page<RandomPeople> page,String paperId);
+    List<RandomPeople> getTriPeoList(Page<RandomPeople> page,@Param("paperId")String paperId);
 }

@@ -18,27 +18,29 @@ import java.util.List;
  */
 public interface SmartPeopleMapper extends BaseMapper<SmartPeople> {
     //通过Id获取姓名
-    String getNameById(String userId);
+    String getNameById(@Param("userId")String userId);
     //获取用户考试ID
-    List<String> getExamIdByuser(String userId);
+    List<String> getExamIdByuser(@Param("userId")String userId);
     //获取成绩
-    Integer getGrade(String userId, String examId);
+    Integer getGrade(@Param("userId")String userId, @Param("examId")String examId);
     //更新成绩
-    void updateGrade(String userId, String examId, int grade, Date date);
+    void updateGrade(@Param("userId")String userId, @Param("examId")String examId, @Param("grade")int grade, @Param("date") Date date);
 
     List<ExamPeopleScoreVo> getScoreByExamId(Page<ExamPeopleScoreVo> page, @Param("examId") String examId);
 
     List<String> getAllVillageList();
 
-    List<String> getAllHomeListByVillageId(String villageId,Integer selectedCount);
+    List<String> getAllHomeListByVillageId(@Param("villageId")String villageId,@Param("selectedCount")Integer selectedCount);
 
-    RandomPeople getSelectedPeoByHomeCode(String homeCode);
+    RandomPeople getSelectedPeoByHomeCode(@Param("homeCode") String homeCode);
 
-    List<RandomPeople> getTriPeoListByDptId(Page<RandomPeople> page, String paperId, String departId);
+    List<RandomPeople> getTriPeoListByDptId(Page<RandomPeople> page, @Param("paperId")String paperId, @Param("departId")String departId);
 
-    String selectByUIdEId(String examId, String userId);
+    String selectByUIdEId(@Param("examId")String examId, @Param("userId")String userId);
 
-    int updateSumSur(String examId, String userId, int grade, String isFinish, String inquirerId, String satisfaction, String isReport);
+    int updateSumSur(@Param("examId")String examId, @Param("userId")String userId,
+                     @Param("grade")int grade, @Param("isFinish")String isFinish, @Param("inquirerId")String inquirerId,
+                     @Param("satisfaction")String satisfaction,@Param("isReport") String isReport);
 
-    List<RandomPeople> getTriResultByEIdDId(Page<RandomPeople> page, String examId, String departId);
+    List<RandomPeople> getTriResultByEIdDId(Page<RandomPeople> page, @Param("examId")String examId, @Param("departId")String departId);
 }
