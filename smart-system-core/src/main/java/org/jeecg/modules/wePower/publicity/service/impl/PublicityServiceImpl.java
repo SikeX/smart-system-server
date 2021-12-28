@@ -106,7 +106,7 @@ public class PublicityServiceImpl extends ServiceImpl<PublicityMapper, Publicity
         sysBaseAPI.getChildrenDepart(orgCode).forEach((item) -> {
             PublicityCommon location = new PublicityCommon();
             location.setLabel(item.getDepartName());
-            location.setValue(item.getOrgCode());
+            location.setValue(item.getId());
             location.setChildren(getLocationQuery(item.getOrgCode()));
             locationQueryList.add(location);
         });
