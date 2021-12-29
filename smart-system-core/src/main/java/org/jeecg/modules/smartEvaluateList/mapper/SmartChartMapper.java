@@ -30,28 +30,28 @@ public interface SmartChartMapper extends BaseMapper<peopleAvg> {
      * @param year
      *
      */
-    List<TypeCount> countByGrade(@Param("year")String year);
+    List<TypeCount> countByGrade(@Param("year") String year);
     /**
      *
      * 按人员统计人均分
      *
      *
      */
-    List<peopleAvg> avgByPeople(Page<peopleAvg> page,@Param("windowsName") String windowsName);
+    List<peopleAvg> avgByPeople(@Param("page") Page<peopleAvg> page, @Param("windowsName") String windowsName);
     /**
      *
      * 窗口评价次数排名
      *
      *
      */
-    List<TypeCount> windowsRankByCount(@Param("year")String year);
+    List<TypeCount> windowsRankByCount(@Param("year") String year);
     /**
      *
      * 窗口评分次数排名
      *
      *
      */
-    List<TypeCount> windowsRankByGrade(@Param("year")String year);
+    List<TypeCount> windowsRankByGrade(@Param("year") String year);
 
-    List<peopleAvg> windowsByGrade(Page<peopleAvg> page, @Param("windowsName")String windowsName);
+    List<peopleAvg> windowsByGrade(@Param("page") Page<peopleAvg> page, @Param("windowsName") String windowsName);
 }
