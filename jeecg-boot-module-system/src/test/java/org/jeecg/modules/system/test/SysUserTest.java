@@ -3,8 +3,12 @@ package org.jeecg.modules.system.test;
 import org.jeecg.JeecgSystemApplication;
 import org.jeecg.common.constant.CommonConstant;
 import org.jeecg.common.system.util.JwtUtil;
+import org.jeecg.common.util.PasswordUtil;
 import org.jeecg.common.util.RedisUtil;
 import org.jeecg.common.util.RestUtil;
+import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.system.entity.SysUser;
+import org.jeecg.modules.system.service.ISysUserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +19,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.http.ResponseEntity;
+
+import org.jeecg.modules.system.controller.SysUserController;
 
 /**
  * 系统用户单元测试
@@ -34,7 +40,49 @@ public class SysUserTest {
     // 请实际使用时替换成你自己的用户名和密码
     private final String USERNAME = "admin";
     private final String PASSWORD = "123456";
+    @Autowired
+    private ISysUserService sysUserService;
+    @Test
+    public void addVillages() {
+        String hzrealname = "新发镇_B1村_家庭" + 3 + "_户主" ;
+        SysUser hzuser = new SysUser();
+        hzuser.setUsername(hzrealname);
+        String hzpassword= "111111a.";
+        String hzsalt = oConvertUtils.randomGen(8);
+        hzuser.setSalt(hzsalt);
+        String hzpasswordEncode = PasswordUtil.encrypt(hzuser.getUsername(), hzpassword, hzsalt);
+        hzuser.setPassword(hzpasswordEncode);
+        hzuser.setRealname(hzrealname);
+        hzuser.setUserIdentity(1);
+        hzuser.setPeopleType("2");
+        hzuser.setDelFlag(0);
+        hzuser.setPhone("15641311903");
+        hzuser.setDepartId("f39b8278c17941829c90d75bc0dd3999");
+        String hzselectedDeparts =  "92f22ca2b2c94824be71e3b644165dfe";
+        String hzselectedRoles = "1463112478345588738";
+        sysUserService.saveUser(hzuser, hzselectedRoles, hzselectedDeparts);
 
+        for(int i =1;i<3;i++) {
+
+            String realname = "新发镇_B1村_家庭" + 3 + "_成员" + i;
+            SysUser user = new SysUser();
+            user.setUsername(realname);
+            String password= "111111a.";
+            String salt = oConvertUtils.randomGen(8);
+            user.setSalt(salt);
+            String passwordEncode = PasswordUtil.encrypt(user.getUsername(), password, salt);
+            user.setPassword(passwordEncode);
+            user.setRealname(realname);
+            user.setUserIdentity(1);
+            user.setPeopleType("2");
+            user.setDelFlag(0);
+            user.setPhone("1564431123"+i);
+            user.setDepartId("f39b8278c17941829c90d75bc0dd3999");
+            String selectedDeparts =  "92f22ca2b2c94824be71e3b644165dfe";
+            String selectedRoles = "1463112478345588738";
+            sysUserService.saveUser(user, selectedRoles, selectedDeparts);
+        }
+    }
     /**
      * 测试用例：新增
      */

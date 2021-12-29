@@ -31,6 +31,7 @@ import java.util.List;
 public class SmartPaperPage {
 
 	/**主键*/
+    @TableId(type = IdType.ASSIGN_ID)
     @ApiModelProperty(value = "主键")
     private String id;
 	/**试卷类型*/

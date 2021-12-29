@@ -158,4 +158,11 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 
 	@Update("UPDATE sys_user SET phone = #{arg1} where id = #{arg0}")
 	int updatePhoneById(String sysUserId, String purePhoneNumber);
+
+	/**
+	 * 根据homeCode获取用户信息
+	 * @param homeCode
+	 * @return
+	 */
+	List<SysUser> getUserByHomeCode(String homeCode);
 }
