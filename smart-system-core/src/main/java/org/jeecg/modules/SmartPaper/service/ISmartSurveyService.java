@@ -8,4 +8,6 @@ import org.jeecg.modules.SmartPaper.vo.SmartSubmitSurveyVo;
 
 public interface ISmartSurveyService extends IService<SmartPeople> {
     Result submitTestSurvey(SmartSubmitSurveyVo smartSubmitSurveyVO);
+
+    Result submitTriPreSurvey(SmartSubmitSurveyVo smartSubmitSurveyVO);
 }

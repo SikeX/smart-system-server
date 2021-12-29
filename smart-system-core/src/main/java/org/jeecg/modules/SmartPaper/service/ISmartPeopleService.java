@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.jeecg.modules.SmartPaper.entity.SmartPeople;
 import org.jeecg.modules.SmartPaper.vo.ExamPeopleScoreVo;
+import org.jeecg.modules.SmartPaper.vo.RandomPeople;
 
 import java.util.List;
 
@@ -19,4 +20,14 @@ public interface ISmartPeopleService extends IService<SmartPeople> {
     String getMyExamString(String userId);
 
     Page<ExamPeopleScoreVo> getScoreByExamId(Page<ExamPeopleScoreVo> page, String examId);
+
+    List<String> getAllVillageList();
+    List<String> getAllHomeListByVillageId(String villageId,Integer selectedCount);
+
+    RandomPeople getSelectedPeoByHomeCode(String homeCode);
+
+
+    Page<RandomPeople> getTriPeoListByDptId(Page<RandomPeople> page, String paperId, String departId);
+
+    Page<RandomPeople> getTriResultByEIdDId(Page<RandomPeople> page, String examId, String departId);
 }

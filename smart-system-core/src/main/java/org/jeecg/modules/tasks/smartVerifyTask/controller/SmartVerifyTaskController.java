@@ -208,6 +208,47 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 		 return Result.OK(pageList);
 	 }
 
+	 @AutoLog(value = "三重一大审核-分页列表查询")
+	 @ApiOperation(value="三重一大审核-分页列表查询", notes="三重一大审核-分页列表查询")
+	 @GetMapping(value = "/szydList")
+	 public Result<?> querySzydPageList(VerifyTaskListPage verifyTaskListPage,
+										@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+										@RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+										HttpServletRequest req) {
+
+		 Page<VerifyTaskListPage> page = new Page<VerifyTaskListPage>(pageNo, pageSize);
+
+		 List<String> typeList = new ArrayList<>();
+		 typeList.add("三重一大");
+
+		 IPage<VerifyTaskListPage> pageList = smartVerifyTaskService.getTaskList(page, typeList, verifyTaskListPage);
+
+
+		 // log.info(sysBaseAPI.getDepartIdsByOrgCode(sysUser.getOrgCode()));
+
+		 return Result.OK(pageList);
+	 }
+
+	 @AutoLog(value = "三重一大审核未通过-分页列表查询")
+	 @ApiOperation(value="三重一大审核未通过-分页列表查询", notes="三重一大审核未通过-分页列表查询")
+	 @GetMapping(value = "/szydNotPassList")
+	 public Result<?> querySzydNotPassPageList(VerifyTaskListPage verifyTaskListPage,
+											   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+											   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+											   HttpServletRequest req) {
+
+		 Page<VerifyTaskListPage> page = new Page<VerifyTaskListPage>(pageNo, pageSize);
+
+		 List<String> typeList = new ArrayList<>();
+		 typeList.add("三重一大");
+
+		 IPage<VerifyTaskListPage> pageList = smartVerifyTaskService.getNotPassList(page, typeList, verifyTaskListPage);
+
+
+		 // log.info(sysBaseAPI.getDepartIdsByOrgCode(sysUser.getOrgCode()));
+
+		 return Result.OK(pageList);
+	 }
 
 
 	 @AutoLog(value = "审核任务表-分页列表查询")
