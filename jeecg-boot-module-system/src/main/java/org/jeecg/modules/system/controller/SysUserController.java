@@ -356,6 +356,46 @@ public class SysUserController {
 		return result;
 	}
 
+    //@RequiresRoles({"admin"})
+    //@RequiresPermissions("user:edit")
+    @RequestMapping(value = "/editPeople", method = RequestMethod.PUT)
+    public Result<SysUser> editPeople(@RequestBody JSONObject jsonObject) {
+        Result<SysUser> result = new Result<SysUser>();
+
+        try {
+            SysUser sysUser = sysUserService.getById(jsonObject.getString("id"));
+            baseCommonService.addLog("编辑用户，id： " +jsonObject.getString("id") ,CommonConstant.LOG_TYPE_2, 2);
+            if(sysUser==null) {
+                result.error500("未找到对应实体");
+            }else {
+                SysUser user = JSON.parseObject(jsonObject.toJSONString(), SysUser.class);
+                user.setDepartId(null);
+                //user.setCreateTime(null);
+                user.setUpdateTime(new Date());
+                //String passwordEncode = PasswordUtil.encrypt(user.getUsername(), user.getPassword(), sysUser.getSalt());
+                user.setPassword(sysUser.getPassword());
+                String roles = jsonObject.getString("selectedroles");
+                String departs = jsonObject.getString("selecteddeparts");
+                //更改部门不为空，说明为纪委管理员，同步更新user表中departId
+                if(departs != null && !departs.isEmpty()){
+                    user.setDepartId(departs);
+                    SysDepart depart =  sysDepartService.queryDeptByDepartId(user.getDepartId());
+                    String userOrgCode = depart.getOrgCode();
+                    user.setOrgCode(userOrgCode);
+                }else
+                {
+                    user.setOrgCode("");
+                }
+                // 修改用户走一个service 保证事务
+                sysUserService.editUser(user, roles, departs);
+                result.success("修改成功!");
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            result.error500("操作失败");
+        }
+        return result;
+    }
 	/**
 	 * 删除用户
 	 */
