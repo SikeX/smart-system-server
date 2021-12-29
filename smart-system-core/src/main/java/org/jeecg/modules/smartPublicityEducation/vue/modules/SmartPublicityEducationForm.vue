@@ -24,6 +24,11 @@
               <j-date placeholder="请选择时间" v-model="model.time" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
             </a-form-model-item>
           </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="附件" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="files">
+              <j-upload v-model="model.files"  ></j-upload>
+            </a-form-model-item>
+          </a-col>
         </a-row>
       </a-form-model>
     </j-form-container>
@@ -32,21 +37,9 @@
       <a-tab-pane tab="宣传教育参会人员" :key="refKeys[0]" :forceRender="true">
         <j-editable-table
           :ref="refKeys[0]"
-          :loading="publicityEducationPacpaTable.loading"
-          :columns="publicityEducationPacpaTable.columns"
-          :dataSource="publicityEducationPacpaTable.dataSource"
-          :maxHeight="300"
-          :disabled="formDisabled"
-          :rowNumber="true"
-          :rowSelection="true"
-          :actionButton="true"/>
-      </a-tab-pane>
-      <a-tab-pane tab="宣传教育附件表" :key="refKeys[1]" :forceRender="true">
-        <j-editable-table
-          :ref="refKeys[1]"
-          :loading="publicityEducationAnnexTable.loading"
-          :columns="publicityEducationAnnexTable.columns"
-          :dataSource="publicityEducationAnnexTable.dataSource"
+          :loading="smartPublicityEducationPeopleTable.loading"
+          :columns="smartPublicityEducationPeopleTable.columns"
+          :dataSource="smartPublicityEducationPeopleTable.dataSource"
           :maxHeight="300"
           :disabled="formDisabled"
           :rowNumber="true"
@@ -65,7 +58,7 @@
   import { validateDuplicateValue } from '@/utils/util'
 
   export default {
-    name: 'PublicityEducationForm',
+    name: 'SmartPublicityEducationForm',
     mixins: [JEditableTableModelMixin],
     components: {
     },
@@ -105,11 +98,11 @@
               { required: true, message: '请输入时间!'},
            ],
         },
-        refKeys: ['publicityEducationPacpa', 'publicityEducationAnnex', ],
-        tableKeys:['publicityEducationPacpa', 'publicityEducationAnnex', ],
-        activeKey: 'publicityEducationPacpa',
+        refKeys: ['smartPublicityEducationPeople', ],
+        tableKeys:['smartPublicityEducationPeople', ],
+        activeKey: 'smartPublicityEducationPeople',
         // 宣传教育参会人员
-        publicityEducationPacpaTable: {
+        smartPublicityEducationPeopleTable: {
           loading: false,
           dataSource: [],
           columns: [
@@ -120,37 +113,15 @@
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
-            },
-          ]
-        },
-        // 宣传教育附件表
-        publicityEducationAnnexTable: {
-          loading: false,
-          dataSource: [],
-          columns: [
-            {
-              title: '附件文件',
-              key: 'filepath',
-              type: FormTypes.file,
-              token:true,
-              responseName:"message",
-              width:"200px",
-              placeholder: '请选择文件',
-              defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
             },
           ]
         },
         url: {
-          add: "/publicityEducation/publicityEducation/add",
-          edit: "/publicityEducation/publicityEducation/edit",
-          queryById: "/publicityEducation/publicityEducation/queryById",
-          publicityEducationPacpa: {
-            list: '/publicityEducation/publicityEducation/queryPublicityEducationPacpaByMainId'
-          },
-          publicityEducationAnnex: {
-            list: '/publicityEducation/publicityEducation/queryPublicityEducationAnnexByMainId'
+          add: "/smartPublicityEducation/smartPublicityEducation/add",
+          edit: "/smartPublicityEducation/smartPublicityEducation/edit",
+          queryById: "/smartPublicityEducation/smartPublicityEducation/queryById",
+          smartPublicityEducationPeople: {
+            list: '/smartPublicityEducation/smartPublicityEducation/querySmartPublicityEducationPeopleByMainId'
           },
         }
       }
@@ -172,8 +143,7 @@
     },
     methods: {
       addBefore(){
-        this.publicityEducationPacpaTable.dataSource=[]
-        this.publicityEducationAnnexTable.dataSource=[]
+        this.smartPublicityEducationPeopleTable.dataSource=[]
       },
       getAllTable() {
         let values = this.tableKeys.map(key => getRefPromise(this, key))
@@ -186,8 +156,7 @@
         // 加载子表数据
         if (this.model.id) {
           let params = { id: this.model.id }
-          this.requestSubTableData(this.url.publicityEducationPacpa.list, params, this.publicityEducationPacpaTable)
-          this.requestSubTableData(this.url.publicityEducationAnnex.list, params, this.publicityEducationAnnexTable)
+          this.requestSubTableData(this.url.smartPublicityEducationPeople.list, params, this.smartPublicityEducationPeopleTable)
         }
       },
       //校验所有一对一子表表单
@@ -211,8 +180,7 @@
         let main = Object.assign(this.model, allValues.formValue)
         return {
           ...main, // 展开
-          publicityEducationPacpaList: allValues.tablesValue[0].values,
-          publicityEducationAnnexList: allValues.tablesValue[1].values,
+          smartPublicityEducationPeopleList: allValues.tablesValue[0].values,
         }
       },
       validateError(msg){
