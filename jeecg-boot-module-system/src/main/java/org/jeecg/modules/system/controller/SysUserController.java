@@ -583,8 +583,14 @@ public class SysUserController {
                 user.setUpdateTime(new Date());
                 //String passwordEncode = PasswordUtil.encrypt(user.getUsername(), user.getPassword(), sysUser.getSalt());
                 String phone = user.getPhone();
-                if(phone.equals(sysUser.getPhone())){
+               String oldPhone = sysUser.getPhone();
+                if(oldPhone!=null && !oldPhone.equals("") && phone.equals(sysUser.getPhone())){
                     user.setPassword(sysUser.getPassword());
+                }
+                else if(phone==null || phone.equals(""))
+                {
+                    user.setPassword(null);
+                    user.setUsername(null);
                 }
                 else{
                     //更新账号：手机号
