@@ -121,6 +121,12 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 			result.setMessage("所选择户主已有户籍信息！");
 			return result;
 		}
+		if(host.getPhone()==null || host.getPhone().equals(""))
+		{
+			result.setSuccess(false);
+			result.setMessage("户主电话号不可为空！");
+			return result;
+		}
 		//判断家庭成员是否已经有户籍关系
 		List<SysUser> userList = villageHome.getUserList();
 		if(!userList.isEmpty())
@@ -199,6 +205,12 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 			{
 				result.setSuccess(false);
 				result.setMessage("更换的户主已有户籍信息！");
+				return result;
+			}
+			if(lHost.getPhone()==null || lHost.getPhone().equals(""))
+			{
+				result.setSuccess(false);
+				result.setMessage("户主电话号不可为空！");
 				return result;
 			}
 

@@ -23,7 +23,7 @@ public interface SmartChartMapper extends BaseMapper<peopleAvg> {
      * @param year
     *
     */
-    List<MonthCount> countByMonth(String year);
+    List<MonthCount> countByMonth(@Param("year")String year);
     /**
      *
      * 按评分统计

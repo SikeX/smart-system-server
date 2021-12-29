@@ -65,6 +65,7 @@ public class SendCaution {
 
                                 }
                             }
+                            break;
                         }
                     }
                 }
