@@ -75,6 +75,9 @@ public class SmartPublicityResource implements Serializable {
     @ApiModelProperty(value = "发布单位")
     @Dict(dictTable = "sys_depart", dicText = "depart_name", dicCode = "org_code")
     private java.lang.String sysOrgCode;
+    /**发布单位*/
+    @ApiModelProperty(value = "附件")
+    private java.lang.String file;
 	/**删除标志*/
 	@Excel(name = "删除标志", width = 15)
     @ApiModelProperty(value = "删除标志")

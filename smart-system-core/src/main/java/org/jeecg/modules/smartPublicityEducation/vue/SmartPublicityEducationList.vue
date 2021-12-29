@@ -10,18 +10,6 @@
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="标题">
-              <a-input placeholder="请输入标题" v-model="queryParam.title"></a-input>
-            </a-form-item>
-          </a-col>
-          <template v-if="toggleSearchStatus">
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-item label="时间">
-                <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择时间" v-model="queryParam.time"></j-date>
-              </a-form-item>
-            </a-col>
-          </template>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
@@ -39,7 +27,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('宣传教育主表')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('宣传教育')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -116,25 +104,25 @@
       </a-table>
     </div>
 
-    <publicity-education-modal ref="modalForm" @ok="modalFormOk"/>
+    <smart-publicity-education-modal ref="modalForm" @ok="modalFormOk"/>
   </a-card>
 </template>
 
 <script>
 
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import PublicityEducationModal from './modules/PublicityEducationModal'
+  import SmartPublicityEducationModal from './modules/SmartPublicityEducationModal'
   import '@/assets/less/TableExpand.less'
 
   export default {
-    name: "PublicityEducationList",
+    name: "SmartPublicityEducationList",
     mixins:[JeecgListMixin],
     components: {
-      PublicityEducationModal
+      SmartPublicityEducationModal
     },
     data () {
       return {
-        description: '宣传教育主表管理页面',
+        description: '宣传教育管理页面',
         // 表头
         columns: [
           {
@@ -168,6 +156,12 @@
             dataIndex: 'time'
           },
           {
+            title:'附件',
+            align:"center",
+            dataIndex: 'files',
+            scopedSlots: {customRender: 'fileSlot'}
+          },
+          {
             title: '操作',
             dataIndex: 'action',
             align:"center",
@@ -177,11 +171,11 @@
           }
         ],
         url: {
-          list: "/publicityEducation/publicityEducation/list",
-          delete: "/publicityEducation/publicityEducation/delete",
-          deleteBatch: "/publicityEducation/publicityEducation/deleteBatch",
-          exportXlsUrl: "/publicityEducation/publicityEducation/exportXls",
-          importExcelUrl: "publicityEducation/publicityEducation/importExcel",
+          list: "/smartPublicityEducation/smartPublicityEducation/list",
+          delete: "/smartPublicityEducation/smartPublicityEducation/delete",
+          deleteBatch: "/smartPublicityEducation/smartPublicityEducation/deleteBatch",
+          exportXlsUrl: "/smartPublicityEducation/smartPublicityEducation/exportXls",
+          importExcelUrl: "smartPublicityEducation/smartPublicityEducation/importExcel",
           
         },
         dictOptions:{},
@@ -205,6 +199,7 @@
          fieldList.push({type:'string',value:'title',text:'标题',dictCode:''})
          fieldList.push({type:'string',value:'address',text:'地点',dictCode:''})
          fieldList.push({type:'datetime',value:'time',text:'时间'})
+         fieldList.push({type:'Text',value:'files',text:'附件',dictCode:''})
         this.superFieldList = fieldList
       }
     }

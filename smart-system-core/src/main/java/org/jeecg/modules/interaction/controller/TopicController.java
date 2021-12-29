@@ -71,15 +71,27 @@ public class TopicController {
         String peopleType =  sysUser.getPeopleType();
         String userId = sysUser.getId();
 
+        // 获取用户角色
+        List<String> role = sysBaseAPI.getRolesByUsername(sysUser.getUsername());
+
         log.info("人员类型 "+peopleType);
+        log.info("人员角色 "+role);
 
         Page<SmartVillageTopic> pageList = new Page<SmartVillageTopic>(pageNo, pageSize);
 
         if(Objects.equals(peopleType, "2")) {
             pageList = smartVillageTopicService.getTopicListPage(pageList, userId);
         } else {
-            pageList = smartVillageTopicService.getTopicListByUserId(pageList, userId);
+            if(role.contains("CCDIAdmin")){
+                QueryWrapper<SmartVillageTopic> queryWrapper = new QueryWrapper<>();
+                queryWrapper.eq("status",1);
+                pageList = smartVillageTopicService.page(pageList, queryWrapper);
+            } else {
+                pageList = smartVillageTopicService.getTopicListByUserId(pageList, userId);
+            }
         }
+
+        log.info(String.valueOf(pageList));
 
         result.setResult(pageList);
         result.setSuccess(true);
