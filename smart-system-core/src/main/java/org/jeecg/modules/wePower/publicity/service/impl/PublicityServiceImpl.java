@@ -16,14 +16,14 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
-* @author sike
-* @description 针对表【smart_create_advice】的数据库操作Service实现
-* @createDate 2021-12-24 17:17:53
-*/
+ * @author sike
+ * @description 针对表【smart_create_advice】的数据库操作Service实现
+ * @createDate 2021-12-24 17:17:53
+ */
 @Slf4j
 @Service
 public class PublicityServiceImpl extends ServiceImpl<PublicityMapper, PublicityQuery>
-    implements PublicityService {
+        implements PublicityService {
 
     @Autowired
     private ISysBaseAPI sysBaseAPI;
@@ -33,7 +33,7 @@ public class PublicityServiceImpl extends ServiceImpl<PublicityMapper, Publicity
     public PublicityQuery getQuery(){
         PublicityQuery publicityQuery = new PublicityQuery();
         // 获取区域
-        List<PublicityCommon> locationQueryList = getLocationQuery("A02A05");
+        List<PublicityCommon> locationQueryList = getLocationQuery("A13A04");
         PublicityCommon location = new PublicityCommon();
         location.setValue("0");
         location.setLabel("不限");
@@ -58,6 +58,8 @@ public class PublicityServiceImpl extends ServiceImpl<PublicityMapper, Publicity
         typeList.add("党务村务公开");
         typeList.add("小微权利");
         typeList.add("惠民补贴");
+        typeList.add("项目管理");
+        typeList.add("资产资源");
 //        typeList.add("政策法规");
 //        typeList.add("举报投诉");
         List<PublicityCommon> typeQueryList = new ArrayList<>();
@@ -114,7 +116,3 @@ public class PublicityServiceImpl extends ServiceImpl<PublicityMapper, Publicity
     }
 
 }
-
-
-
-
