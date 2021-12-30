@@ -87,7 +87,11 @@ public class SmartPeopleController extends JeecgController<SmartPeople, ISmartPe
         Page<RandomPeople> pageList = new Page<RandomPeople>(pageNo,pageSize);
 
         pageList = smartPeopleService.getTriPeoListByDptId(pageList,paperId,departId);
+        // 获取登录用户信息
+        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+        String userName = sysUser.getRealname();
         result.setResult(pageList);
+        result.setMessage(userName);
         result.setSuccess(true);
         return result;
     }

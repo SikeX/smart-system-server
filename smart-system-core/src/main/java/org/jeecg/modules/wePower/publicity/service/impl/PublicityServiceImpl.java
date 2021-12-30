@@ -16,14 +16,14 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
-* @author sike
-* @description 针对表【smart_create_advice】的数据库操作Service实现
-* @createDate 2021-12-24 17:17:53
-*/
+ * @author sike
+ * @description 针对表【smart_create_advice】的数据库操作Service实现
+ * @createDate 2021-12-24 17:17:53
+ */
 @Slf4j
 @Service
 public class PublicityServiceImpl extends ServiceImpl<PublicityMapper, PublicityQuery>
-    implements PublicityService {
+        implements PublicityService {
 
     @Autowired
     private ISysBaseAPI sysBaseAPI;
@@ -71,10 +71,10 @@ public class PublicityServiceImpl extends ServiceImpl<PublicityMapper, Publicity
             typeQueryList.add(type);
             count.getAndIncrement();
         });
-//        PublicityCommon type = new PublicityCommon();
-//        type.setLabel("不限");
-//        type.setValue("0");
-//        typeQueryList.add(type);
+        PublicityCommon type = new PublicityCommon();
+        type.setLabel("不限");
+        type.setValue("0");
+        typeQueryList.add(type);
         publicityQuery.setType(typeQueryList);
         // 获取年份查询条件
         //获取当前日期的年份
@@ -116,7 +116,3 @@ public class PublicityServiceImpl extends ServiceImpl<PublicityMapper, Publicity
     }
 
 }
-
-
-
-
