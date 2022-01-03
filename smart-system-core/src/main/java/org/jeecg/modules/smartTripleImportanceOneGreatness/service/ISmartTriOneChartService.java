@@ -16,5 +16,9 @@ import java.util.List;
  */
 public interface ISmartTriOneChartService extends IService<TypeCount> {
 
-    List<TypeCount> countByVerifyStatus();
+    List<TypeCount> countByVerifyStatus(String year,String month);
+
+    List<TypeCount> getAllType();
+
+    List<TypeCount> countByType(String year,String month);
 }

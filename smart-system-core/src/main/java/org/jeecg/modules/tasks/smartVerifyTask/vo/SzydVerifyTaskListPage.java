@@ -16,13 +16,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
 @ApiModel(value = "审核对象",description = "审核对象")
-public class VerifyTaskListPage {
+public class SzydVerifyTaskListPage {
     /**主键*/
     @ApiModelProperty(value = "主键")
-    private java.lang.String flowNo;
+    private String flowNo;
     /**创建人*/
     @ApiModelProperty(value = "创建人")
-    private java.lang.String createBy;
+    private String createBy;
     /**创建日期*/
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
@@ -30,7 +30,7 @@ public class VerifyTaskListPage {
     private java.util.Date createTime;
     /**更新人*/
     @ApiModelProperty(value = "更新人")
-    private java.lang.String updateBy;
+    private String updateBy;
     /**更新日期*/
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
@@ -39,13 +39,16 @@ public class VerifyTaskListPage {
 
     @ApiModelProperty(value = "审核类型")
     private String taskType;
+    @ApiModelProperty(value = "任务类型")
+    @Dict(dicCode = "meeting_type")
+    private String meetType;
 
     @ApiModelProperty(value = "填报人")
     private String fillPerson;
 
     /**所属部门*/
     @ApiModelProperty(value = "填报部门")
-    private java.lang.String fillDepart;
+    private String fillDepart;
 
     @ApiModelProperty(value = "审批状态")
     private Integer flowStatus;
@@ -64,16 +67,16 @@ public class VerifyTaskListPage {
     @Dict(dictTable = "sys_depart", dicText = "depart_name", dicCode = "org_code")
     @Excel(name = "所属部门", width = 15)
     @ApiModelProperty(value = "所属部门")
-    private java.lang.String sysOrgCode;
+    private String sysOrgCode;
 
     @Excel(name = "单位类型", width = 15)
     @ApiModelProperty(value = "单位类型")
-    private java.lang.String departType;
+    private String departType;
 
     /**说明*/
     @Excel(name = "备注", width = 15)
     @ApiModelProperty(value = "说明")
-    private java.lang.String remark;
+    private String remark;
 
 
 }

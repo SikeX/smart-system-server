@@ -1,4 +1,4 @@
-package org.jeecg.modules.smartTripleImportanceOneGreatness.entity;
+package org.jeecg.modules.smartTripleImportanceOneGreatness.vo;
 
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
@@ -10,7 +10,7 @@ import lombok.Data;
  * @author: scott
  * @date: 2021年11月18日 12:31
  */
-public class TypeCount {
+public class TypeCountVo {
     /**
      * 类型
      */
@@ -19,9 +19,4 @@ public class TypeCount {
      * 该类型数量
      */
     private Integer value;
-    /**
-     * 审核状态
-     */
-    private String statu;
-
 }
