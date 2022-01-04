@@ -8,18 +8,18 @@
     @ok="handleOk"
     :okButtonProps="{ class:{'jee-hidden': disableSubmit} }"
     @cancel="handleCancel">
-    <publicity-education-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"/>
+    <smart-publicity-education-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"/>
   </j-modal>
 </template>
 
 <script>
 
-  import PublicityEducationForm from './PublicityEducationForm'
+  import SmartPublicityEducationForm from './SmartPublicityEducationForm'
 
   export default {
-    name: 'PublicityEducationModal',
+    name: 'SmartPublicityEducationModal',
     components: {
-      PublicityEducationForm
+      SmartPublicityEducationForm
     },
     data() {
       return {

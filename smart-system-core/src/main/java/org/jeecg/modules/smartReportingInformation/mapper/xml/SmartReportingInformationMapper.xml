@@ -7,7 +7,7 @@
 </select>
 <select id="getUser" resultType="org.jeecg.modules.smartReportingInformation.entity.SysRole">
     select DISTINCT username from sys_user,sys_role,sys_user_role
-    where sys_role.role_code="report_admin" OR sys_role.role_code="CCIDAdmin"
+    where (sys_role.role_code="report_admin" OR sys_role.role_code="CCIDAdmin")
     and sys_user.id=sys_user_role.user_id
      and sys_role.id=sys_user_role.role_id
 </select>

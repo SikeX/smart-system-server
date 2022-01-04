@@ -1,9 +1,8 @@
-package org.jeecg.modules.publicityEducation.vo;
+package org.jeecg.modules.smartPublicityEducation.vo;
 
 import java.util.List;
-import org.jeecg.modules.publicityEducation.entity.PublicityEducation;
-import org.jeecg.modules.publicityEducation.entity.PublicityEducationPacpa;
-import org.jeecg.modules.publicityEducation.entity.PublicityEducationAnnex;
+import org.jeecg.modules.smartPublicityEducation.entity.SmartPublicityEducation;
+import org.jeecg.modules.smartPublicityEducation.entity.SmartPublicityEducationPeople;
 import lombok.Data;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.jeecgframework.poi.excel.annotation.ExcelEntity;
@@ -16,14 +15,14 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * @Description: 宣传教育主表
+ * @Description: 宣传教育
  * @Author: jeecg-boot
- * @Date:   2021-12-26
+ * @Date:   2021-12-29
  * @Version: V1.0
  */
 @Data
-@ApiModel(value="publicity_educationPage对象", description="宣传教育主表")
-public class PublicityEducationPage {
+@ApiModel(value="smart_publicity_educationPage对象", description="宣传教育")
+public class SmartPublicityEducationPage {
 
 	/**主键*/
 	@ApiModelProperty(value = "主键")
@@ -65,12 +64,17 @@ public class PublicityEducationPage {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@ApiModelProperty(value = "时间")
     private java.util.Date time;
+	/**附件*/
+	@Excel(name = "附件", width = 15)
+	@ApiModelProperty(value = "附件")
+    private java.lang.String files;
+	/**删除标志*/
+	@Excel(name = "删除标志", width = 15)
+	@ApiModelProperty(value = "删除标志")
+    private java.lang.Integer deleteFlag;
 
 	@ExcelCollection(name="宣传教育参会人员")
 	@ApiModelProperty(value = "宣传教育参会人员")
-	private List<PublicityEducationPacpa> publicityEducationPacpaList;
-	@ExcelCollection(name="宣传教育附件表")
-	@ApiModelProperty(value = "宣传教育附件表")
-	private List<PublicityEducationAnnex> publicityEducationAnnexList;
+	private List<SmartPublicityEducationPeople> smartPublicityEducationPeopleList;
 
 }

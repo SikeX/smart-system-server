@@ -1,8 +1,6 @@
-package org.jeecg.modules.publicityEducation.entity;
+package org.jeecg.modules.smartPublicityEducation.entity;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.util.Date;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -10,20 +8,21 @@ import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.jeecgframework.poi.excel.annotation.Excel;
-import org.jeecg.common.aspect.annotation.Dict;
+import java.util.Date;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.UnsupportedEncodingException;
 
 /**
- * @Description: 宣传教育主表
+ * @Description: 宣传教育参会人员
  * @Author: jeecg-boot
- * @Date:   2021-12-26
+ * @Date:   2021-12-29
  * @Version: V1.0
  */
-@ApiModel(value="publicity_education对象", description="宣传教育主表")
+@ApiModel(value="smart_publicity_education_people对象", description="宣传教育参会人员")
 @Data
-@TableName("publicity_education")
-public class PublicityEducation implements Serializable {
+@TableName("smart_publicity_education_people")
+public class SmartPublicityEducationPeople implements Serializable {
     private static final long serialVersionUID = 1L;
 
 	/**主键*/
@@ -49,22 +48,11 @@ public class PublicityEducation implements Serializable {
 	/**所属部门*/
     @ApiModelProperty(value = "所属部门")
     private java.lang.String sysOrgCode;
-	/**村庄*/
-	@Excel(name = "村庄", width = 15)
-    @ApiModelProperty(value = "村庄")
-    private java.lang.String village;
-	/**标题*/
-	@Excel(name = "标题", width = 15)
-    @ApiModelProperty(value = "标题")
-    private java.lang.String title;
-	/**地点*/
-	@Excel(name = "地点", width = 15)
-    @ApiModelProperty(value = "地点")
-    private java.lang.String address;
-	/**时间*/
-	@Excel(name = "时间", width = 20, format = "yyyy-MM-dd HH:mm:ss")
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @ApiModelProperty(value = "时间")
-    private java.util.Date time;
+	/**主表ID*/
+    @ApiModelProperty(value = "主表ID")
+    private java.lang.String mainId;
+	/**参会人员姓名*/
+	@Excel(name = "参会人员姓名", width = 15)
+    @ApiModelProperty(value = "参会人员姓名")
+    private java.lang.String name;
 }

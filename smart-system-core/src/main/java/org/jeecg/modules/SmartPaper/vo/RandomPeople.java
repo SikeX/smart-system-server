@@ -21,6 +21,7 @@ public class RandomPeople implements Serializable {
     @Excel(name="户主",width = 15,dictTable = "sys_user",dicCode = "id",dicText = "realname")
     @Dict(dictTable = "sys_user",dicCode = "id",dicText = "realname")
     private String hostId;
+    private String hostName;
     /**被访人信息*/
     private String userId;
     @Excel(name="被访人",width = 15)

@@ -66,11 +66,13 @@
         order by rand() limit 1
     </select>
     <select id="getTriPeoListByDptId" resultType="org.jeecg.modules.SmartPaper.vo.RandomPeople">
-        select p.person_id as userId,su.realname,su.depart_id,d.depart_name,su.phone,su.phone,svh.host_id,p.is_finish
+        select p.person_id as userId,su.realname,su.depart_id,d.depart_name,su.phone,su.phone,
+               svh.host_id,su1.realname as hostName,p.is_finish
         from smart_paper sp
                  left join smart_people p on sp.id = p.exam_id
                  left join sys_user su on su.id = p.person_id
                  left join smart_village_home svh on su.home_code = svh.home_code
+                 left join sys_user su1 on su1.id = svh.host_id
                  left join sys_depart d on d.id = su.depart_id
         where sp.del_flag = 0 and sp.paper_type = '3'
           and sp.id=#{paperId} and su.depart_id=#{departId}
