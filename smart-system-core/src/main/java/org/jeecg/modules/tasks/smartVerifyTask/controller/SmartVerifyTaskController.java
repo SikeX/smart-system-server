@@ -208,6 +208,58 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 		 return Result.OK(pageList);
 	 }
 
+	 @AutoLog(value = "八项规定审核-分页列表查询")
+	 @ApiOperation(value="八项规定审核-分页列表查询", notes="八项规定审核-分页列表查询")
+	 @GetMapping(value = "/eightList")
+	 public Result<?> queryEightPageList(VerifyTaskListPage verifyTaskListPage,
+										@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+										@RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+										HttpServletRequest req) {
+
+		 Page<VerifyTaskListPage> page = new Page<VerifyTaskListPage>(pageNo, pageSize);
+
+		 List<String> typeList = new ArrayList<>();
+		 typeList.add("监督检查");
+		 typeList.add("财务收支");
+		 typeList.add("婚前报备");
+		 typeList.add("婚后报备");
+		 typeList.add("丧事报备");
+		 typeList.add("公务接待");
+
+		 IPage<VerifyTaskListPage> pageList = smartVerifyTaskService.getTaskList(page, typeList, verifyTaskListPage);
+
+
+		 // log.info(sysBaseAPI.getDepartIdsByOrgCode(sysUser.getOrgCode()));
+
+		 return Result.OK(pageList);
+	 }
+
+	 @AutoLog(value = "八项规定审核未通过-分页列表查询")
+	 @ApiOperation(value="八项规定审核未通过-分页列表查询", notes="八项规定审核未通过-分页列表查询")
+	 @GetMapping(value = "/eightNotPassList")
+	 public Result<?> queryEightNotPassPageList(VerifyTaskListPage verifyTaskListPage,
+											   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+											   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+											   HttpServletRequest req) {
+
+		 Page<VerifyTaskListPage> page = new Page<VerifyTaskListPage>(pageNo, pageSize);
+
+		 List<String> typeList = new ArrayList<>();
+		 typeList.add("监督检查");
+		 typeList.add("财务收支");
+		 typeList.add("婚前报备");
+		 typeList.add("婚后报备");
+		 typeList.add("丧事报备");
+		 typeList.add("公务接待");
+
+		 IPage<VerifyTaskListPage> pageList = smartVerifyTaskService.getNotPassList(page, typeList, verifyTaskListPage);
+
+
+		 // log.info(sysBaseAPI.getDepartIdsByOrgCode(sysUser.getOrgCode()));
+
+		 return Result.OK(pageList);
+	 }
+
 	 @AutoLog(value = "三重一大审核-分页列表查询")
 	 @ApiOperation(value="三重一大审核-分页列表查询", notes="三重一大审核-分页列表查询")
 	 @GetMapping(value = "/szydList")

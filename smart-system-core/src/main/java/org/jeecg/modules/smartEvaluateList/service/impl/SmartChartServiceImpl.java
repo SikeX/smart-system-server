@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.jeecg.modules.smartEvaluateList.entity.MonthCount;
+import org.jeecg.modules.smartEvaluateList.entity.MonthCountEight;
 import org.jeecg.modules.smartEvaluateList.entity.SmartEvaluateWindow;
 import org.jeecg.modules.smartEvaluateList.entity.TypeCount;
 import org.jeecg.modules.smartEvaluateList.entity.peopleAvg;
@@ -36,9 +37,25 @@ public class SmartChartServiceImpl extends ServiceImpl<SmartChartMapper, peopleA
         return smartChartMapper.countByMonth(year);
     }
 
+    /**
+     *
+     * 按月统计
+     * @param year
+     *
+     */
+    @Override
+    public List<MonthCountEight> countEight(String year){
+        return smartChartMapper.countEight(year);
+    }
+
     @Override
     public List<TypeCount> countByGrade(String year) {
         return smartChartMapper.countByGrade(year);
+    }
+
+    @Override
+    public List<TypeCount> countByType(String year) {
+        return smartChartMapper.countByType(year);
     }
 
     @Override

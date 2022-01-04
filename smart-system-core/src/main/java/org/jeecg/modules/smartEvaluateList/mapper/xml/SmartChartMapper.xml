@@ -16,6 +16,15 @@
     where year(evaluate_time)= #{year}
     group by  year(evaluate_time), month(evaluate_time)
     </select>
+    <!--按月统计八项规定任务数量-->
+    <select id="countEight" resultType="org.jeecg.modules.smartEvaluateList.entity.MonthCountEight">
+        select month(create_time) as month,
+            (select count(*) from smart_verify_task where year(create_time)= #{year} and month(create_time) = month and (task_type = '监督检查' or task_type = '财务收支' or task_type = '婚前报备'  or task_type = '婚后报备' or task_type = '丧事报备' or task_type = '公务接待'))as count,
+            (select count(*) from smart_verify_task where year(create_time)= #{year} and month(create_time) = month and flow_status = 0 and (task_type = '监督检查' or task_type = '财务收支' or task_type = '婚前报备'  or task_type = '婚后报备' or task_type = '丧事报备' or task_type = '公务接待'))as countNot
+        from smart_verify_task
+        where year(create_time)= #{year}
+        group by  year(create_time), month(create_time)
+    </select>
     <!--按评分统计-->
     <select id="countByGrade" resultType="org.jeecg.modules.smartEvaluateList.entity.TypeCount">
         select i.item_text as keyName,count(*) as value
@@ -23,6 +32,13 @@
         where e.evaluate_result = i.item_value and d.dict_code = 'evaluate_grade' and i.dict_id = d.id
         and year(evaluate_time)= #{year}
         group by e.evaluate_result,i.item_text
+    </select>
+    <!--按任务数统计-->
+    <select id="countByType" resultType="org.jeecg.modules.smartEvaluateList.entity.TypeCount">
+        select task_type as keyName,count(*) as value
+        from smart_verify_task
+        where year(create_time)= #{year} and (task_type = '监督检查' or task_type = '财务收支' or task_type = '婚前报备'  or task_type = '婚后报备' or task_type = '丧事报备' or task_type = '公务接待')
+        group by task_type
     </select>
     <!--人员平均分-->
     <select id="avgByPeople" resultMap="PeopleAvg">
