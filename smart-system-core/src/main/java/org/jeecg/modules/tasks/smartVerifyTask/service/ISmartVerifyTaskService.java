@@ -1,8 +1,10 @@
 package org.jeecg.modules.tasks.smartVerifyTask.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.jeecg.modules.tasks.smartVerifyTask.entity.SmartVerifyTask;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.jeecg.modules.tasks.smartVerifyTask.vo.SzydVerifyTaskListPage;
 import org.jeecg.modules.tasks.smartVerifyTask.vo.VerifyTaskListPage;
 
 import java.util.List;
@@ -21,4 +23,7 @@ public interface ISmartVerifyTaskService extends IService<SmartVerifyTask> {
     public Page<VerifyTaskListPage> getNotPassList(Page<VerifyTaskListPage> page, List<String> typeList,
                                                 VerifyTaskListPage verifyTaskListPage);
 
+    IPage<SzydVerifyTaskListPage> getSzydTaskList(Page<SzydVerifyTaskListPage> page, List<String> typeList, SzydVerifyTaskListPage szydVerifyTaskListPage);
+
+    IPage<SzydVerifyTaskListPage> getSzydNotPassList(Page<SzydVerifyTaskListPage> page, List<String> typeList, SzydVerifyTaskListPage szydVerifyTaskListPage);
 }

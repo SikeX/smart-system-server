@@ -84,12 +84,13 @@
     </select>
     <select id="getTriResultByEIdDId" resultType="org.jeecg.modules.SmartPaper.vo.RandomPeople">
         SELECT
-            u.id as userId,svh.host_id,u.depart_id,depart_name,u.realname,is_finish,is_mark,is_report,satisfaction
+            u.id as userId,u1.realname as hostName,svh.host_id,u.depart_id,depart_name,u.realname,is_finish,is_mark,is_report,satisfaction
         FROM     smart_people sp
                      LEFT JOIN smart_paper p ON p.id = sp.exam_id
                      LEFT JOIN  sys_user u on u.id = sp.person_id
                      LEFT JOIN sys_depart d on d.id = u.depart_id
                      LEFT JOIN smart_village_home svh on u.home_code = svh.home_code
+                     LEFT JOIN sys_user u1 on u1.id = svh.host_id
         WHERE sp.exam_id = #{examId}
           and u.depart_id = #{departId}
         order by sp.create_time desc
