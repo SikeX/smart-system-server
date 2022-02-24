@@ -493,7 +493,7 @@ public class SmartPremaritalFilingController {
 
     @GetMapping(value = "/exportWord")
     public void test01(@RequestParam(name = "ids", required = true) String ids, HttpServletResponse response, HttpServletRequest request) {
-        ids = "1476047132190715905";
+//        ids = "1476047132190715905";
 
         //获取需要的数据
         List<String> idsList = Arrays.asList(ids.split(","));

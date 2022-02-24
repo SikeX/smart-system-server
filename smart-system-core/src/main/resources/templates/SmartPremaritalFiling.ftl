@@ -1899,7 +1899,7 @@
                                     <w:color w:val="000000" />
                                     <w:sz w:val="24" />
                                 </w:rPr>
-                                <w:t>${obj.marryRegistTime}</w:t>
+                                <w:t>${(obj.marryRegistTime)?string("yyyy-MM-dd")}</w:t>
                             </w:r>
                         </w:p>
                     </w:tc>
@@ -1967,7 +1967,7 @@
                                     <w:color w:val="000000" />
                                     <w:sz w:val="24" />
                                 </w:rPr>
-                                <w:t> ${obj.weddingTime}</w:t>
+                                <w:t> ${(obj.weddingTime)?string("yyyy-MM-dd")}</w:t>
                             </w:r>
                         </w:p>
                     </w:tc>
@@ -3249,7 +3249,7 @@
                                     <w:color w:val="000000" />
                                     <w:sz w:val="24" />
                                 </w:rPr>
-                                <w:t>报告时间：年月日</w:t>
+                                <w:t>报告时间：${""?right_pad(4)}年${""?right_pad(4)}月${""?right_pad(4)}日</w:t>
                             </w:r>
                         </w:p>
                         <w:p wsp:rsidR="00000000" wsp:rsidRDefault="00850B42">
@@ -3341,7 +3341,7 @@
                                     <w:color w:val="000000" />
                                     <w:sz w:val="24" />
                                 </w:rPr>
-                                <w:t>年月日（盖章）</w:t>
+                                <w:t>年${""?right_pad(4)}月${""?right_pad(4)}日（盖章）</w:t>
                             </w:r>
                         </w:p>
                     </w:tc>
