@@ -14,7 +14,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 项目审核
  * @Author: jeecg-boot
- * @Date:   2021-12-26
+ * @Date:   2022-02-16
  * @Version: V1.0
  */
 @ApiModel(value="smart_publicity_project_verify对象", description="项目审核")

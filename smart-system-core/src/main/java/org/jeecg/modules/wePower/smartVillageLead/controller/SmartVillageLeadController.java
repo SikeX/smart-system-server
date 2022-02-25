@@ -4,7 +4,6 @@ import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jeecg.common.api.vo.Result;
-import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.wePower.smartVillageLead.entity.SmartVillageLead;
 import org.jeecg.modules.wePower.smartVillageLead.service.ISmartVillageLeadService;
@@ -14,7 +13,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
-//import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.common.system.base.controller.JeecgController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,7 +24,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
  /**
  * @Description: 村（社区）领导班子
  * @Author: jeecg-boot
- * @Date:   2021-12-24
+ * @Date:   2022-02-21
  * @Version: V1.0
  */
 @Api(tags="村（社区）领导班子")
