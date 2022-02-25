@@ -90,7 +90,20 @@ public class SysUser implements Serializable {
      */
     @Excel(name = "电子邮件", width = 15)
     private String email;
+    /**
+     * 身份证号
+     */
+    @Excel(name = "身份证号", width = 15)
+    @ApiModelProperty(value = "身份证号")
+    private java.lang.String idnumber;
 
+    /**
+     * 干部人员类别
+     */
+    @Excel(name = "干部人员类别", width = 15,dicCode="office_type")
+    @ApiModelProperty(value = "干部人员类别")
+    @Dict(dicCode = "office_type")
+    private java.lang.String officeType;
     /**
      * 电话
      */
@@ -149,6 +162,7 @@ public class SysUser implements Serializable {
     /**
      * 创建人
      */
+    
     private String createBy;
 
     /**
@@ -243,4 +257,7 @@ public class SysUser implements Serializable {
     @ApiModelProperty(value = "户籍关系")
     @Dict(dicCode = "home_role")
     private Integer homeRole;
+
+
+
 }
