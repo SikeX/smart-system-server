@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
 /**
  * @Description: Controller基类
  * @Author: dangzhenghui@163.com
@@ -39,6 +40,7 @@ import java.util.stream.Collectors;
 public class JeecgController<T, S extends IService<T>> {
     @Autowired
     S service;
+
 
     @Value("${jeecg.path.upload}")
     private String upLoadPath;
@@ -191,4 +193,6 @@ public class JeecgController<T, S extends IService<T>> {
         }
         return Result.error("文件导入失败！");
     }
+
+
 }

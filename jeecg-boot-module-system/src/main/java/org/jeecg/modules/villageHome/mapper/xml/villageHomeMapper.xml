@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.villageHome.mapper.villageHomeMapper">
-
+    <select id="getHostByHomeCode" parameterType="String" resultType="String">
+        select idnumber
+        from smart_village_home v
+        where v.home_code = #{homeCode}
+    </select>
 </mapper>
