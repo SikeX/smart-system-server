@@ -1,4 +1,4 @@
-package org.jeecg.modules.smartPublicityEducation.org.jeecg.modules.smart_video_player.controller;
+package org.jeecg.modules.smartPublicityEducation.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;

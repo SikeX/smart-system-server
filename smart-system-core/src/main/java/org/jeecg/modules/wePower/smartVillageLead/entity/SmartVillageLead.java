@@ -18,7 +18,7 @@ import lombok.experimental.Accessors;
 /**
  * @Description: 村（社区）领导班子
  * @Author: jeecg-boot
- * @Date:   2021-12-24
+ * @Date:   2022-02-21
  * @Version: V1.0
  */
 @Data
@@ -33,6 +33,19 @@ public class SmartVillageLead implements Serializable {
 	@TableId(type = IdType.ASSIGN_ID)
     @ApiModelProperty(value = "主键")
     private java.lang.String id;
+	/**人员选择*/
+	@Excel(name = "人员选择", width = 15, dictTable = "smart_village_home", dicText = "home_surname", dicCode = "idnumber")
+	@Dict(dictTable = "smart_village_home", dicText = "home_surname", dicCode = "idnumber")
+    @ApiModelProperty(value = "人员选择")
+    private java.lang.String people;
+	/**职务*/
+	@Excel(name = "职务", width = 15)
+    @ApiModelProperty(value = "职务")
+    private java.lang.String job;
+	/**照片*/
+	@Excel(name = "照片", width = 15)
+    @ApiModelProperty(value = "照片")
+    private java.lang.String picture;
 	/**上传人*/
     @ApiModelProperty(value = "上传人")
     private java.lang.String createBy;
@@ -55,7 +68,6 @@ public class SmartVillageLead implements Serializable {
     private java.lang.String location;
 	/**填报部门*/
     @ApiModelProperty(value = "填报部门")
-    @Dict(dictTable = "sys_depart", dicText = "depart_name", dicCode = "org_code")
     private java.lang.String sysOrgCode;
 	/**上传时间*/
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")

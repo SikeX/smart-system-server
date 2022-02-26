@@ -84,7 +84,7 @@ public class TopicController {
         } else {
             if(role.contains("CCDIAdmin")){
                 QueryWrapper<SmartVillageTopic> queryWrapper = new QueryWrapper<>();
-                queryWrapper.eq("status",1);
+                queryWrapper.eq("status",1).orderByDesc("create_time");
                 pageList = smartVillageTopicService.page(pageList, queryWrapper);
             } else {
                 pageList = smartVillageTopicService.getTopicListByUserId(pageList, userId);
