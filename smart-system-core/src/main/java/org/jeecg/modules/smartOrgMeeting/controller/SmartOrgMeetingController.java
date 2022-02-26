@@ -18,9 +18,7 @@ import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.smartOrgMeeting.entity.SmartOrgMeeting;
-import org.jeecg.modules.smartOrgMeeting.entity.SmartOrgMeetingAnnex;
 import org.jeecg.modules.smartOrgMeeting.entity.SmartOrgMeetingPacpa;
-import org.jeecg.modules.smartOrgMeeting.service.ISmartOrgMeetingAnnexService;
 import org.jeecg.modules.smartOrgMeeting.service.ISmartOrgMeetingPacpaService;
 import org.jeecg.modules.smartOrgMeeting.service.ISmartOrgMeetingService;
 import org.jeecg.modules.smartOrgMeeting.vo.SmartOrgMeetingPage;
@@ -59,8 +57,6 @@ public class SmartOrgMeetingController {
     private ISmartOrgMeetingService smartOrgMeetingService;
     @Autowired
     private ISmartOrgMeetingPacpaService smartOrgMeetingPacpaService;
-    @Autowired
-    private ISmartOrgMeetingAnnexService smartOrgMeetingAnnexService;
     /**
      * 审核
      */
@@ -160,7 +156,7 @@ public class SmartOrgMeetingController {
 
         Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
         if (isVerify) {
-            smartOrgMeetingService.saveMain(smartOrgMeeting, smartOrgMeetingPage.getSmartOrgMeetingPacpaList(), smartOrgMeetingPage.getSmartOrgMeetingAnnexList());
+            smartOrgMeetingService.saveMain(smartOrgMeeting, smartOrgMeetingPage.getSmartOrgMeetingPacpaList());
             String recordId = smartOrgMeeting.getId();
             log.info("recordId is " + recordId);
             smartVerify.addVerifyRecord(recordId, verifyType);
@@ -168,7 +164,7 @@ public class SmartOrgMeetingController {
             smartOrgMeetingService.updateById(smartOrgMeeting);
         } else {
             smartOrgMeeting.setVerifyStatus("3");
-            smartOrgMeetingService.saveMain(smartOrgMeeting, smartOrgMeetingPage.getSmartOrgMeetingPacpaList(), smartOrgMeetingPage.getSmartOrgMeetingAnnexList());
+            smartOrgMeetingService.saveMain(smartOrgMeeting, smartOrgMeetingPage.getSmartOrgMeetingPacpaList());
         }
         return Result.OK("添加成功！");
     }
@@ -191,7 +187,7 @@ public class SmartOrgMeetingController {
         }
         smartOrgMeeting.setDepartId(null);
         smartOrgMeeting.setCreateTime(null);
-        smartOrgMeetingService.updateMain(smartOrgMeeting, smartOrgMeetingPage.getSmartOrgMeetingPacpaList(), smartOrgMeetingPage.getSmartOrgMeetingAnnexList());
+        smartOrgMeetingService.updateMain(smartOrgMeeting, smartOrgMeetingPage.getSmartOrgMeetingPacpaList());
         return Result.OK("编辑成功!");
     }
 
@@ -255,19 +251,6 @@ public class SmartOrgMeetingController {
         return Result.OK(smartOrgMeetingPacpaList);
     }
 
-    /**
-     * 通过id查询
-     *
-     * @param id
-     * @return
-     */
-    @AutoLog(value = "组织生活会附件表通过主表ID查询")
-    @ApiOperation(value = "组织生活会附件表主表ID查询", notes = "组织生活会附件表-通主表ID查询")
-    @GetMapping(value = "/querySmartOrgMeetingAnnexByMainId")
-    public Result<?> querySmartOrgMeetingAnnexListByMainId(@RequestParam(name = "id", required = true) String id) {
-        List<SmartOrgMeetingAnnex> smartOrgMeetingAnnexList = smartOrgMeetingAnnexService.selectByMainId(id);
-        return Result.OK(smartOrgMeetingAnnexList);
-    }
 
     /**
      * 导出excel
@@ -338,9 +321,7 @@ public class SmartOrgMeetingController {
         for (SmartOrgMeeting main : smartOrgMeetingList) {
             SmartOrgMeetingPage vo = new SmartOrgMeetingPage();
             BeanUtils.copyProperties(main, vo);
-            List<SmartOrgMeetingAnnex> smartCreateAdviceAnnexList = smartOrgMeetingAnnexService.selectByMainId(main.getId());
             List<SmartOrgMeetingPacpa> smartOrgMeetingPacpaList = smartOrgMeetingPacpaService.selectByMainId(main.getId());
-            vo.setSmartOrgMeetingAnnexList(smartCreateAdviceAnnexList);
             vo.setSmartOrgMeetingPacpaList(smartOrgMeetingPacpaList);
             pageList.add(vo);
         }
@@ -385,7 +366,7 @@ public class SmartOrgMeetingController {
                 for (SmartOrgMeetingPage page : list) {
                     SmartOrgMeeting po = new SmartOrgMeeting();
                     BeanUtils.copyProperties(page, po);
-                    smartOrgMeetingService.saveMain(po, page.getSmartOrgMeetingPacpaList(), page.getSmartOrgMeetingAnnexList());
+                    smartOrgMeetingService.saveMain(po, page.getSmartOrgMeetingPacpaList());
                 }
                 return Result.OK("文件导入成功！数据行数:" + list.size());
             } catch (Exception e) {
@@ -400,20 +381,6 @@ public class SmartOrgMeetingController {
             }
         }
         return Result.OK("文件导入失败！");
-    }
-
-    @AutoLog(value = "更新文件下载次数")
-    @ApiOperation(value = "更新文件下载次数", notes = "更新文件下载次数")
-    @PutMapping(value = "/downloadCount")
-    public Result<?> downloadCount(@RequestBody SmartOrgMeetingAnnex smartOrgMeetingAnnex) {
-        SmartOrgMeetingAnnex newSmartOrgMeetingAnnex = smartOrgMeetingAnnexService.getById(smartOrgMeetingAnnex.getId());
-        if (newSmartOrgMeetingAnnex == null) {
-            return Result.error("未找到对应数据");
-        }
-        Integer downloadCount = newSmartOrgMeetingAnnex.getDownloadCount();
-        newSmartOrgMeetingAnnex.setDownloadCount(downloadCount + 1);
-        smartOrgMeetingAnnexService.updateById(newSmartOrgMeetingAnnex);
-        return Result.OK("更新成功!");
     }
 
 }
