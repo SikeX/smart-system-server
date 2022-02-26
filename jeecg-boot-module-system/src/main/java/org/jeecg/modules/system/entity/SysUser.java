@@ -105,8 +105,12 @@ public class SysUser implements Serializable {
     @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
     private String orgCode;
     //当前登录人单位ID
-   /* @Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")*/
+    @Excel(name = "所属村", width = 15)
+    @ApiModelProperty(value = "所属村")
     private String departId;
+    @Excel(name = "所属镇", width = 15)
+    @ApiModelProperty(value = "所属镇")
+    private String zhenId;
     /**部门名称--将不需要序列化的属性前添加关键字transient，序列化对象的时候，这个属性就不会被序列化*/
   /*  @Excel(name = "单位", width = 15)*/
     private transient String orgCodeTxt;
@@ -232,17 +236,32 @@ public class SysUser implements Serializable {
 
     private List<String> roleId;
 
+    /**角色*/
+    @Excel(name = "角色", width = 15)
+    @ApiModelProperty(value = "角色")
     private String role;
+
+    /**身份证号*/
+    @Excel(name = "身份证号", width = 15)
+    @ApiModelProperty(value = "身份证号")
+    private String idnumber;
+
     /**
      * 上次验证手机号码时间
      */
     private Date lastVerifyTime;
 
+    /**户籍编号*/
+    @Excel(name = "户籍编号", width = 15)
+    @ApiModelProperty(value = "户籍编号")
     private String homeCode;
 
-    @ApiModelProperty(value = "户籍关系")
+    @Excel(name = "是否是户主", width = 15)
+    @ApiModelProperty(value = "是否是户主")
     @Dict(dicCode = "home_role")
     private Integer homeRole;
+
+    private Integer relation;
 
     private String officeType;
 }
