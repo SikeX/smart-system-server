@@ -59,8 +59,6 @@ public class SmartTripleImportanceOneGreatness implements Serializable {
     @ApiModelProperty(value = "参会人数")
     private java.lang.Integer meetingNumber;
 
-
-
     /**主持人*/
 	/*@Excel(name = "主持人", width = 15)*/
     @Dict(dictTable = "sys_user",dicText = "realname",dicCode = "id")
@@ -107,4 +105,7 @@ public class SmartTripleImportanceOneGreatness implements Serializable {
 
     @ApiModelProperty(value="审核状态")
     private java.lang.String verifyStatus;
+    /**上传附件*/
+    @ApiModelProperty(value = "上传附件")
+    private java.lang.String files;
 }
