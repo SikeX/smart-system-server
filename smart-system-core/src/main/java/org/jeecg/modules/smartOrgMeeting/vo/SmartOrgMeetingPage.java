@@ -1,12 +1,10 @@
 package org.jeecg.modules.smartOrgMeeting.vo;
 
-import java.io.Serializable;
 import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import org.jeecg.modules.smartOrgMeeting.entity.SmartOrgMeeting;
 import org.jeecg.modules.smartOrgMeeting.entity.SmartOrgMeetingPacpa;
-import org.jeecg.modules.smartOrgMeeting.entity.SmartOrgMeetingAnnex;
 import lombok.Data;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.jeecgframework.poi.excel.annotation.ExcelEntity;
@@ -21,18 +19,18 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 组织生活会
  * @Author: jeecg-boot
- * @Date:   2021-11-14
+ * @Date:   2022-02-26
  * @Version: V1.0
  */
 @Data
 @ApiModel(value="smart_org_meetingPage对象", description="组织生活会")
-public class SmartOrgMeetingPage implements Serializable {
+public class SmartOrgMeetingPage {
 
 	/**主键*/
 	@ApiModelProperty(value = "主键")
     private java.lang.String id;
 	/**单位*/
-	@Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
+	@Excel(name = "单位", width = 15)
 	@ApiModelProperty(value = "单位")
     private java.lang.String departId;
 	/**会议名称*/
@@ -56,6 +54,7 @@ public class SmartOrgMeetingPage implements Serializable {
 	@ApiModelProperty(value = "上报时间")
     private java.util.Date reportTime;
 	/**主持人ID*/
+	@Excel(name = "主持人ID", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
 	@ApiModelProperty(value = "主持人ID")
     private java.lang.String hostId;
@@ -64,6 +63,7 @@ public class SmartOrgMeetingPage implements Serializable {
 	@ApiModelProperty(value = "主持人")
     private java.lang.String hostName;
 	/**会议记录人ID */
+	@Excel(name = "会议记录人ID ", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
 	@ApiModelProperty(value = "会议记录人ID ")
     private java.lang.String recorderId;
@@ -79,7 +79,16 @@ public class SmartOrgMeetingPage implements Serializable {
 	@Excel(name = "会议记录", width = 15)
 	@ApiModelProperty(value = "会议记录")
     private java.lang.String record;
+	/**附件说明*/
+	@Excel(name = "附件说明", width = 15)
+	@ApiModelProperty(value = "附件说明")
+    private java.lang.String explanation;
+	/**附件*/
+	@Excel(name = "附件", width = 15)
+	@ApiModelProperty(value = "附件")
+    private java.lang.String files;
 	/**创建人ID*/
+	@Excel(name = "创建人ID", width = 15)
 	@ApiModelProperty(value = "创建人ID")
     private java.lang.String creatorId;
 	/**创建人*/
@@ -98,8 +107,5 @@ public class SmartOrgMeetingPage implements Serializable {
 	@ExcelCollection(name="组织生活会参会人员表")
 	@ApiModelProperty(value = "组织生活会参会人员表")
 	private List<SmartOrgMeetingPacpa> smartOrgMeetingPacpaList;
-	@ExcelCollection(name="组织生活会附件表")
-	@ApiModelProperty(value = "组织生活会附件表")
-	private List<SmartOrgMeetingAnnex> smartOrgMeetingAnnexList;
 
 }
