@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @Description: 项目管理
  * @Author: jeecg-boot
- * @Date:   2021-12-26
+ * @Date:   2022-02-16
  * @Version: V1.0
  */
 public interface ISmartPublicityProjectService extends IService<SmartPublicityProject> {

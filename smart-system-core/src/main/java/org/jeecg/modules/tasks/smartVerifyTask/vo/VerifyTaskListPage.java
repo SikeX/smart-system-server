@@ -75,4 +75,5 @@ public class VerifyTaskListPage {
     @ApiModelProperty(value = "说明")
     private java.lang.String remark;
 
+
 }

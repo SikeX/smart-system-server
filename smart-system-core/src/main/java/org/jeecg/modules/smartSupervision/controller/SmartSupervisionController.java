@@ -154,7 +154,7 @@ public class SmartSupervisionController {
 	@ApiOperation(value="八项规定监督检查表-添加", notes="八项规定监督检查表-添加")
 	@Transactional
 	@PostMapping(value = "/add")
-	public Result<?> add(@RequestBody SmartSupervisionPage smartSupervisionPage) {
+	public Result<?> add(@RequestBody SmartSupervision smartSupervision) {
 
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 		String orgCode = sysUser.getOrgCode();
@@ -165,14 +165,14 @@ public class SmartSupervisionController {
 
 		String id = sysBaseAPI.getDepartIdsByOrgCode(orgCode);
 //		log.info(id);
-		smartSupervisionPage.setDepartId(id);
-		SmartSupervision smartSupervision = new SmartSupervision();
-		BeanUtils.copyProperties(smartSupervisionPage, smartSupervision);
+		smartSupervision.setDepartId(id);
+//		SmartSupervision smartSupervision = new SmartSupervision();
+//		BeanUtils.copyProperties(smartSupervisionPage, smartSupervision);
 //		log.info(smartSupervision.getId());
 
 		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
 		if(isVerify){
-			smartSupervisionService.saveMain(smartSupervision, smartSupervisionPage.getSmartSupervisionAnnexList());
+			smartSupervisionService.save(smartSupervision);
 			String recordId = smartSupervision.getId();
 			log.info("recordId is"+recordId);
 			smartVerify.addVerifyRecord(recordId,verifyType);
@@ -182,7 +182,7 @@ public class SmartSupervisionController {
 			// 设置审核状态为免审
 			smartSupervision.setVerifyStatus("3");
 			// 直接添加，不走审核流程
-			smartSupervisionService.saveMain(smartSupervision, smartSupervisionPage.getSmartSupervisionAnnexList());
+			smartSupervisionService.save(smartSupervision);
 		}
 
 		return Result.OK("添加成功！");
@@ -204,9 +204,9 @@ public class SmartSupervisionController {
 		if(smartSupervisionEntity==null) {
 			return Result.error("未找到对应数据");
 		}
-		smartSupervision.setDepartId(null);
-		smartSupervision.setCreateTime(null);
-		smartSupervisionService.updateMain(smartSupervision, smartSupervisionPage.getSmartSupervisionAnnexList());
+//		smartSupervision.setDepartId(null);
+//		smartSupervision.setCreateTime(null);
+		smartSupervisionService.updateById(smartSupervisionEntity);
 		return Result.OK("编辑成功!");
 	}
 	
@@ -220,7 +220,7 @@ public class SmartSupervisionController {
 	@ApiOperation(value="八项规定监督检查表-通过id删除", notes="八项规定监督检查表-通过id删除")
 	@DeleteMapping(value = "/delete")
 	public Result<?> delete(@RequestParam(name="id",required=true) String id) {
-		smartSupervisionService.delMain(id);
+		smartSupervisionService.removeById(id);
 		return Result.OK("删除成功!");
 	}
 	
@@ -234,7 +234,7 @@ public class SmartSupervisionController {
 	@ApiOperation(value="八项规定监督检查表-批量删除", notes="八项规定监督检查表-批量删除")
 	@DeleteMapping(value = "/deleteBatch")
 	public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
-		this.smartSupervisionService.delBatchMain(Arrays.asList(ids.split(",")));
+		this.smartSupervisionService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.OK("批量删除成功！");
 	}
 	
@@ -254,20 +254,6 @@ public class SmartSupervisionController {
 		}
 		return Result.OK(smartSupervision);
 
-	}
-	
-	/**
-	 * 通过id查询
-	 *
-	 * @param id
-	 * @return
-	 */
-	@AutoLog(value = "8项规定监督检查附件表通过主表ID查询")
-	@ApiOperation(value="8项规定监督检查附件表主表ID查询", notes="8项规定监督检查附件表-通主表ID查询")
-	@GetMapping(value = "/querySmartSupervisionAnnexByMainId")
-	public Result<?> querySmartSupervisionAnnexListByMainId(@RequestParam(name="id",required=true) String id) {
-		List<SmartSupervisionAnnex> smartSupervisionAnnexList = smartSupervisionAnnexService.selectByMainId(id);
-		return Result.OK(smartSupervisionAnnexList);
 	}
 
 	 /**

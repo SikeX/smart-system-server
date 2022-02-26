@@ -359,6 +359,7 @@ public interface ISysBaseAPI extends CommonAPI {
     /**
      * 2021-12-24
      * 获取所有业务部门（除开乡镇）
+     * @TODO 暂时
      * @return
      */
     public List<SysDepartModel> getAllBusDepart();
