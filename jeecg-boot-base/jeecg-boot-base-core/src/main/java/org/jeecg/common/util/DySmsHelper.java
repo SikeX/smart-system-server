@@ -268,18 +268,21 @@ public class DySmsHelper {
         // map.put("report","true");//是否需要状态报告
         // map.put("extend","123");//自定义扩展码
         JSONObject js = (JSONObject) JSONObject.toJSON(map);
-        String reString = sendSmsByPost(sendUrl, js.toString());
-        log.info("\n" + reString);
 
-        //返回值
-        JSONObject json = JSONObject.parseObject(reString);
-        Map<String, Object> map1 = (Map<String, Object>) json;
+//        String reString = sendSmsByPost(sendUrl, js.toString());
+//        log.info("\n" + reString);
+//
+//        //返回值
+//        JSONObject json = JSONObject.parseObject(reString);
+//        Map<String, Object> map1 = (Map<String, Object>) json;
+//
+//        if (map1.get("code").equals("0")) {
+//            return true;
+//        } else {
+//            return false;
+//        }
 
-        if (map1.get("code").equals("0")) {
-            return true;
-        } else {
-            return false;
-        }
+        return true;
     }
 
     private static List<String> getPhones(String phone) {
