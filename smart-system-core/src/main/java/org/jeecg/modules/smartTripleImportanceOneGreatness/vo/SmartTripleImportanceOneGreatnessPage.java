@@ -108,6 +108,10 @@ public class SmartTripleImportanceOneGreatnessPage implements Serializable {
 	@ApiModelProperty(value = "删除状态（0正常，1已删除）")
     private java.lang.Integer delFlag;
 
+	/**上传附件*/
+	@ApiModelProperty(value = "上传附件")
+	private java.lang.String files;
+
 	@ExcelCollection(name="三重一大参会人员表")
 	@ApiModelProperty(value = "三重一大参会人员表")
 	private List<SmartTripleImportanceOneGreatnessPacca> smartTripleImportanceOneGreatnessPaccaList;
