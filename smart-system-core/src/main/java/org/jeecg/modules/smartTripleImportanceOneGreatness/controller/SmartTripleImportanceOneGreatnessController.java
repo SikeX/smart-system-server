@@ -149,13 +149,13 @@ public class SmartTripleImportanceOneGreatnessController {
 	/**
 	 *   添加
 	 *
-	 * @param smartTripleImportanceOneGreatnessPage
+	 * @param smartTripleImportanceOneGreatness
 	 * @return
 	 */
 	@AutoLog(value = "三重一大表-添加")
 	@ApiOperation(value="三重一大表-添加", notes="三重一大表-添加")
 	@PostMapping(value = "/add")
-	public Result<?> add(@RequestBody SmartTripleImportanceOneGreatnessPage smartTripleImportanceOneGreatnessPage) {
+	public Result<?> add(@RequestBody SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness) {
 
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 		String orgCode = sysUser.getOrgCode();
@@ -163,18 +163,19 @@ public class SmartTripleImportanceOneGreatnessController {
 			return Result.error("本用户没有操作权限！");
 		}
 		String id = smartTripleImportanceOneGreatnessService.getDepartIdByOrgCode(orgCode);
-		smartTripleImportanceOneGreatnessPage.setDocumentid(id);
-		SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness = new SmartTripleImportanceOneGreatness();
-		BeanUtils.copyProperties(smartTripleImportanceOneGreatnessPage, smartTripleImportanceOneGreatness);
+		if (id == null) {
+			return Result.error("没有找到部门！");
+		}
+
+		smartTripleImportanceOneGreatness.setDocumentid(id);
+
 
 
 		//smartVerify.addVerifyRecord(smartTripleImportanceOneGreatness.getId(),verifyType);
 
-		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType); if(isVerify){
-			smartTripleImportanceOneGreatnessService.saveMain(
-					smartTripleImportanceOneGreatness,
-					smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessPaccaList(),
-					smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessDescriptionList());
+		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
+		if(isVerify){
+			smartTripleImportanceOneGreatnessService.save(smartTripleImportanceOneGreatness);
 			String recordId = smartTripleImportanceOneGreatness.getId();
 		    smartVerify.addVerifyRecord(recordId,verifyType);
 		    smartTripleImportanceOneGreatness.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
@@ -183,10 +184,7 @@ public class SmartTripleImportanceOneGreatnessController {
 		    	// 设置审核状态为免审
 			 smartTripleImportanceOneGreatness.setVerifyStatus("3");
 			// 直接添加，不走审核流程
-			smartTripleImportanceOneGreatnessService.saveMain(
-					smartTripleImportanceOneGreatness,
-					smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessPaccaList(),
-					smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessDescriptionList());
+			smartTripleImportanceOneGreatnessService.save(smartTripleImportanceOneGreatness);
 		    }
 
 		return Result.OK("添加成功！");
@@ -195,15 +193,15 @@ public class SmartTripleImportanceOneGreatnessController {
 	/**
 	 *  编辑
 	 *
-	 * @param smartTripleImportanceOneGreatnessPage
+	 * @param smartTripleImportanceOneGreatness
 	 * @return
 	 */
 	@AutoLog(value = "三重一大表-编辑")
 	@ApiOperation(value="三重一大表-编辑", notes="三重一大表-编辑")
 	@PutMapping(value = "/edit")
-	public Result<?> edit(@RequestBody SmartTripleImportanceOneGreatnessPage smartTripleImportanceOneGreatnessPage) {
-		SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness = new SmartTripleImportanceOneGreatness();
-		BeanUtils.copyProperties(smartTripleImportanceOneGreatnessPage, smartTripleImportanceOneGreatness);
+	public Result<?> edit(@RequestBody SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness) {
+		//SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness = new SmartTripleImportanceOneGreatness();
+		//BeanUtils.copyProperties(smartTripleImportanceOneGreatnessPage, smartTripleImportanceOneGreatness);
 		SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatnessEntity = smartTripleImportanceOneGreatnessService.getById(smartTripleImportanceOneGreatness.getId());
 		if(smartTripleImportanceOneGreatnessEntity==null) {
 			return Result.error("未找到对应数据");
@@ -211,7 +209,7 @@ public class SmartTripleImportanceOneGreatnessController {
 		smartTripleImportanceOneGreatness.setDocumentid(null);
 		smartTripleImportanceOneGreatness.setCreateTime(null);
 
-		smartTripleImportanceOneGreatnessService.updateMain(smartTripleImportanceOneGreatness, smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessPaccaList(),smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessDescriptionList());
+		smartTripleImportanceOneGreatnessService.updateById(smartTripleImportanceOneGreatnessEntity);
 		return Result.OK("编辑成功!");
 	}
 
@@ -240,7 +238,7 @@ public class SmartTripleImportanceOneGreatnessController {
 	@ApiOperation(value="三重一大表-通过id删除", notes="三重一大表-通过id删除")
 	@DeleteMapping(value = "/delete")
 	public Result<?> delete(@RequestParam(name="id",required=true) String id) {
-		smartTripleImportanceOneGreatnessService.delMain(id);
+		smartTripleImportanceOneGreatnessService.removeById(id);
 		return Result.OK("删除成功!");
 	}
 
@@ -254,7 +252,7 @@ public class SmartTripleImportanceOneGreatnessController {
 	@ApiOperation(value="三重一大表-批量删除", notes="三重一大表-批量删除")
 	@DeleteMapping(value = "/deleteBatch")
 	public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
-		this.smartTripleImportanceOneGreatnessService.delBatchMain(Arrays.asList(ids.split(",")));
+		this.smartTripleImportanceOneGreatnessService.removeByIds(Arrays.asList(ids.split("")));
 		return Result.OK("批量删除成功！");
 	}
 
@@ -276,19 +274,19 @@ public class SmartTripleImportanceOneGreatnessController {
 
 	}
 
-	/**
-	 * 通过id查询
-	 *
-	 * @param id
-	 * @return
-	 */
-	@AutoLog(value = "三重一大参会人员表通过主表ID查询")
-	@ApiOperation(value="三重一大参会人员表主表ID查询", notes="三重一大参会人员表-通主表ID查询")
-	@GetMapping(value = "/querySmartTripleImportanceOneGreatnessPaccaByMainId")
-	public Result<?> querySmartTripleImportanceOneGreatnessPaccaListByMainId(@RequestParam(name="id",required=true) String id) {
-		List<SmartTripleImportanceOneGreatnessPacca> smartTripleImportanceOneGreatnessPaccaList = smartTripleImportanceOneGreatnessPaccaService.selectByMainId(id);
-		return Result.OK(smartTripleImportanceOneGreatnessPaccaList);
-	}
+//	/**
+//	 * 通过id查询
+//	 *
+//	 * @param id
+//	 * @return
+//	 */
+//	@AutoLog(value = "三重一大参会人员表通过主表ID查询")
+//	@ApiOperation(value="三重一大参会人员表主表ID查询", notes="三重一大参会人员表-通主表ID查询")
+//	@GetMapping(value = "/querySmartTripleImportanceOneGreatnessPaccaByMainId")
+//	public Result<?> querySmartTripleImportanceOneGreatnessPaccaListByMainId(@RequestParam(name="id",required=true) String id) {
+//		List<SmartTripleImportanceOneGreatnessPacca> smartTripleImportanceOneGreatnessPaccaList = smartTripleImportanceOneGreatnessPaccaService.selectByMainId(id);
+//		return Result.OK(smartTripleImportanceOneGreatnessPaccaList);
+//	}
 	/**
 	 * 通过id查询
 	 *
