@@ -5,7 +5,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -18,7 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 民主生活会表
  * @Author: jeecg-boot
- * @Date:   2021-11-17
+ * @Date:   2022-02-26
  * @Version: V1.0
  */
 @ApiModel(value="smart_democratic_life_meeting对象", description="民主生活会表")
@@ -93,11 +92,18 @@ public class SmartDemocraticLifeMeeting implements Serializable {
     private java.util.Date createTime;
 	/**删除状态（0，正常，1已删除）*/
 	@Excel(name = "删除状态（0，正常，1已删除）", width = 15)
-    @TableLogic
     @ApiModelProperty(value = "删除状态（0，正常，1已删除）")
     private java.lang.Integer delFlag;
 	/**审核状态*/
-
+	@Excel(name = "审核状态", width = 15)
     @ApiModelProperty(value = "审核状态")
     private java.lang.String verifyStatus;
+	/**附件说明*/
+	@Excel(name = "附件说明", width = 15)
+    @ApiModelProperty(value = "附件说明")
+    private java.lang.String explanation;
+	/**附件文件*/
+	@Excel(name = "附件文件", width = 15)
+    @ApiModelProperty(value = "附件文件")
+    private java.lang.String path;
 }
