@@ -567,6 +567,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	}
 
 	@Override
+	public SysUser queryByIdnumber(String idnumber) {
+		return userMapper.queryByIdnumber(idnumber);
+	}
+
+	@Override
 	public void saveUserFromClient(SysUser user, String selectedRoles, int id, int userType) {
 		//step.1 保存用户
 		this.save(user);
@@ -595,7 +600,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
 	@Override
 	public List<SysUser> queryByHomeCode(String homeCode) {
-		return  userMapper.getUserByHomeCode(homeCode);
+		List<SysUser> userList = userMapper.getUserByHomeCode(homeCode);
+		for(int i=0;i<userList.size();i++)
+		{
+			SysUser user = userList.get(i);
+			Integer relation = userMapper.getRelationByHomeCode(homeCode,user.getIdnumber());
+			if(relation!=null && !relation.equals("")) {
+				user.setRelation(userMapper.getRelationByHomeCode(homeCode, user.getIdnumber()));
+				userList.set(i,user);
+			}
+		}
+		return userList;
 	}
 
 }

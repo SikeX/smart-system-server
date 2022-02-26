@@ -262,6 +262,13 @@ public interface ISysUserService extends IService<SysUser> {
 	SysUser queryById(String id);
 
 	/**
+	 * 根据id查询系统用户
+	 * @param idnumber
+	 * @return
+	 */
+	SysUser queryByIdnumber(String idnumber);
+
+	/**
 	 * 保存用户
 	 * @param user 用户
 	 * @param selectedRoles 选择的角色id，多个以逗号隔开
