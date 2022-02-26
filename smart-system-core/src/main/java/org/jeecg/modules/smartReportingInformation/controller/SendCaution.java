@@ -24,7 +24,7 @@ public class SendCaution {
     @Autowired
     private ISysBaseAPI sysBaseAPI;
 
-    @Scheduled(cron = "0 0 9 * * ?")
+    @Scheduled(cron = "0 0 17 * * ?")
 
     private void sendCaution() {//给管理员发送提醒
         //获取项目的状态（开始或关闭）
