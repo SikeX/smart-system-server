@@ -83,5 +83,9 @@ public class SmartEvaluateMeeting implements Serializable {
     /**审核状态*/
     @ApiModelProperty(value = "审核状态")
     private java.lang.String verifyStatus;
+    /**附件*/
+    @Excel(name = "附件", width = 15)
+    @ApiModelProperty(value = "附件")
+    private java.lang.String files;
 
 }
