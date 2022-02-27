@@ -156,6 +156,13 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 	 */
     SysUser queryById(String id);
 
+	/**
+	 * 根据id获取用户信息
+	 * @param idnumber
+	 * @return
+	 */
+	SysUser queryByIdnumber(String idnumber);
+
 	@Update("UPDATE sys_user SET phone = #{arg1} where id = #{arg0}")
 	int updatePhoneById(String sysUserId, String purePhoneNumber);
 
@@ -165,4 +172,12 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 	 * @return
 	 */
 	List<SysUser> getUserByHomeCode(String homeCode);
+
+	/**
+	 * 根据homeCode获取用户的家庭关系
+	 * @param homeCode
+	 * @param idnumber
+	 * @return
+	 */
+	Integer getRelationByHomeCode(String homeCode,String idnumber);
 }

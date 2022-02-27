@@ -75,4 +75,7 @@ public class SmartCreateAdvice implements Serializable {
     @Excel(name = "审核状态", width = 15)
     @ApiModelProperty(value = "审核状态")
     private java.lang.String verifyStatus;
+
+    @ApiModelProperty(value = "附件")
+    private java.lang.String file;
 }

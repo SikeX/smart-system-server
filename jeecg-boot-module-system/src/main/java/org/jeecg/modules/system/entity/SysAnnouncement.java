@@ -160,4 +160,6 @@ public class SysAnnouncement implements Serializable {
     private Integer sendCount;
 
     private Integer readCount;
+
+    private String peopleType;
 }

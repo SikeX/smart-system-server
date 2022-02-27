@@ -53,18 +53,24 @@ public class SmartEvaluateWindow implements Serializable {
 	/**所属部门*/
     @ApiModelProperty(value = "所属部门")
     private java.lang.String sysOrgCode;
+    private java.lang.String exeDeptId;
 	/**主管单位*/
 	@Excel(name = "主管单位", width = 15)
     @ApiModelProperty(value = "主管单位")
     private java.lang.String exeDept;
+
+
+    private java.lang.String windowsId;
 	/**政务服务大厅名称*/
 	@Excel(name = "政务服务大厅名称", width = 15)
     @ApiModelProperty(value = "政务服务大厅名称")
     private java.lang.String windowsName;
+
+    private java.lang.String personName;
 	/**人员名称*/
 	@Excel(name = "人员名称", width = 15)
     @ApiModelProperty(value = "人员名称")
-    private java.lang.String personName;
+    private java.lang.String personId;
 	/**评价结果*/
 	@Excel(name = "评价结果", width = 15)
     @ApiModelProperty(value = "评价结果")

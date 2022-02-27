@@ -178,8 +178,18 @@
 		select * from  sys_user  where id = #{id} and del_flag = 0
 	</select>
 
+	<!-- 根据id查询 -->
+	<select id="queryByIdnumber" resultType="org.jeecg.modules.system.entity.SysUser">
+		select * from  sys_user  where idnumber = #{idnumber} and del_flag = 0
+	</select>
+
 	<!-- 根据homeCode查询家庭成员 -->
 	<select id="getUserByHomeCode" resultType="org.jeecg.modules.system.entity.SysUser">
 		select * from  sys_user  where home_code = #{homeCode} and del_flag = 0 and home_role = 2
+	</select>
+
+	<!-- 根据homeCode查询家庭成员的家庭关系 -->
+	<select id="getRelationByHomeCode" resultType="Integer">
+		select home_relation from  smart_village_relation  where home_code = #{homeCode} and idnumber = #{idnumber}
 	</select>
 </mapper>
