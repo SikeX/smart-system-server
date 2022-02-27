@@ -457,6 +457,7 @@ public class SmartPostMarriageReportController {
     @GetMapping(value = "/exportWord")
     public void test01(@RequestParam(name = "ids", required = true) String ids, HttpServletResponse response, HttpServletRequest request) {
 
+        System.out.println(ids);
         //获取需要的数据
         List<String> idsList = Arrays.asList(ids.split(","));
         List<SmartPostMarriageReport> smartPostMarriageReports = smartPostMarriageReportService.listByIds(idsList);
