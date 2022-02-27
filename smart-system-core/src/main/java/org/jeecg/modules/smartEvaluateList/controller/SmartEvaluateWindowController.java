@@ -10,8 +10,12 @@ import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.common.util.DySmsHelper;
 import org.jeecg.modules.smartEvaluateList.entity.SmartEvaluateWindow;
 import org.jeecg.modules.smartEvaluateList.service.ISmartEvaluateWindowService;
+import org.jeecg.modules.smartSentMsg.entity.SmartSentMsg;
+import org.jeecg.modules.smartSentMsg.service.ISmartSentMsgService;
+import org.jeecg.modules.smart_window_unit.service.ISmartWindowUnitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -33,7 +37,12 @@ import java.util.Arrays;
 public class SmartEvaluateWindowController extends JeecgController<SmartEvaluateWindow, ISmartEvaluateWindowService> {
 	@Autowired
 	private ISmartEvaluateWindowService smartEvaluateWindowService;
-	
+	@Autowired
+	private ISmartWindowUnitService smartWindowUnitService;
+	@Autowired
+	private ISmartSentMsgService smartSentMsgService;
+
+
 	/**
 	 * 分页列表查询
 	 *
@@ -67,6 +76,26 @@ public class SmartEvaluateWindowController extends JeecgController<SmartEvaluate
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody SmartEvaluateWindow smartEvaluateWindow) {
 		smartEvaluateWindowService.save(smartEvaluateWindow);
+		//不满意给负责人发送短信
+		String evaluate = smartEvaluateWindow.getEvaluateResult();
+		System.out.println(".................");
+		System.out.println(smartEvaluateWindow);
+		System.out.println(evaluate);
+		if(evaluate.equals("2")){
+			System.out.println("发送短信.................");
+			String windowsId = smartEvaluateWindow.getWindowsId();
+			String windowsName = smartEvaluateWindow.getWindowsName();
+			String content = "您负责的"+windowsName+"收到不满意评价！";
+            System.out.println(smartWindowUnitService.getById(windowsId));
+
+			String receiverPhone = (smartWindowUnitService.getById(windowsId)).getPhone();
+			DySmsHelper.sendSms(content, receiverPhone);
+			//保存发送记录
+			SmartSentMsg smartSentMsg = new SmartSentMsg();
+			smartSentMsg.setContent(content);
+			smartSentMsg.setReceiverPhone(receiverPhone);
+			smartSentMsgService.save(smartSentMsg);
+		}
 		return Result.OK("添加成功！");
 	}
 	

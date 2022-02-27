@@ -262,4 +262,6 @@ public class SysUser implements Serializable {
     private Integer homeRole;
 
     private Integer relation;
+
+    private String officeType;
 }

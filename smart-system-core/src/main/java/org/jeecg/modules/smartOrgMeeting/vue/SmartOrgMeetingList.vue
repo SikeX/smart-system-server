@@ -186,6 +186,17 @@
             dataIndex: 'record'
           },
           {
+            title:'附件说明',
+            align:"center",
+            dataIndex: 'explanation'
+          },
+          {
+            title:'附件',
+            align:"center",
+            dataIndex: 'files',
+            scopedSlots: {customRender: 'fileSlot'}
+          },
+          {
             title:'创建人',
             align:"center",
             dataIndex: 'createBy'
@@ -194,6 +205,11 @@
             title:'创建时间',
             align:"center",
             dataIndex: 'createTime'
+          },
+          {
+            title:'审核状态',
+            align:"center",
+            dataIndex: 'verifyStatus'
           },
           {
             title: '操作',
@@ -229,17 +245,20 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'departId',text:'单位',dictCode:''})
-         fieldList.push({type:'string',value:'meetingName',text:'会议名称',dictCode:''})
-         fieldList.push({type:'string',value:'address',text:'会议地点',dictCode:''})
-         fieldList.push({type:'datetime',value:'meetingTime',text:'会议时间'})
-         fieldList.push({type:'datetime',value:'reportTime',text:'上报时间'})
-         fieldList.push({type:'string',value:'hostName',text:'主持人',dictCode:''})
-         fieldList.push({type:'string',value:'recorderName',text:'会议记录人',dictCode:''})
-         fieldList.push({type:'Text',value:'summary',text:'会议内容摘要',dictCode:''})
-         fieldList.push({type:'Text',value:'record',text:'会议记录',dictCode:''})
-         fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
-         fieldList.push({type:'datetime',value:'createTime',text:'创建时间'})
+        fieldList.push({type:'string',value:'departId',text:'单位',dictCode:''})
+        fieldList.push({type:'string',value:'meetingName',text:'会议名称',dictCode:''})
+        fieldList.push({type:'string',value:'address',text:'会议地点',dictCode:''})
+        fieldList.push({type:'datetime',value:'meetingTime',text:'会议时间'})
+        fieldList.push({type:'datetime',value:'reportTime',text:'上报时间'})
+        fieldList.push({type:'string',value:'hostName',text:'主持人',dictCode:''})
+        fieldList.push({type:'string',value:'recorderName',text:'会议记录人',dictCode:''})
+        fieldList.push({type:'Text',value:'summary',text:'会议内容摘要',dictCode:''})
+        fieldList.push({type:'Text',value:'record',text:'会议记录',dictCode:''})
+        fieldList.push({type:'Text',value:'explanation',text:'附件说明',dictCode:''})
+        fieldList.push({type:'Text',value:'files',text:'附件',dictCode:''})
+        fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
+        fieldList.push({type:'datetime',value:'createTime',text:'创建时间'})
+        fieldList.push({type:'int',value:'verifyStatus',text:'审核状态',dictCode:''})
         this.superFieldList = fieldList
       }
     }
