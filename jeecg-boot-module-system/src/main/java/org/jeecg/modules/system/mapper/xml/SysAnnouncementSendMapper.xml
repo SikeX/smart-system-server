@@ -25,6 +25,7 @@
 		<result column="read_time" property="readTime" jdbcType="TIMESTAMP" />
 		<result column="submit_file" property="submitFile" jdbcType="VARCHAR" />
 		<result column="submit_remark" property="submitRemark" jdbcType="VARCHAR" />
+		<result column="people_type" property="peopleType" jdbcType="VARCHAR" />
 	</resultMap>
 	
 	<select id="queryByUserId" parameterType="String"  resultType="String">
