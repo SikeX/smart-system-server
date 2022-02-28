@@ -97,4 +97,11 @@ public interface SysDepartMapper extends BaseMapper<SysDepart> {
 
 	@Select("SELECT * FROM sys_depart where del_flag = '0' and org_code REGEXP concat('^',#{orgCode}, '.{3}$') ")
 	List<SysDepart> getChildrenDepart(@Param("orgCode") String orgCode);
+
+	/**
+	 * 根据OrgCod查询所属公司信息
+	 * @param name
+	 * @return
+	 */
+	String getZhenIdByName(@Param("name")String name);
 }

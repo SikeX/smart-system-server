@@ -52,9 +52,13 @@ public class villageHome implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "更新日期")
     private Date updateTime;
-	/**所属乡镇*/
-	@Excel(name = "所属乡镇", width = 15)
-    @ApiModelProperty(value = "所属乡镇")
+    /**所属镇*/
+    @Excel(name = "所属镇", width = 15)
+    @ApiModelProperty(value = "所属镇")
+    private String zhenId;
+	/**所属乡*/
+	@Excel(name = "所属村", width = 15)
+    @ApiModelProperty(value = "所属村")
     private String departId;
 	/**户籍编号*/
 	@Excel(name = "户籍编号", width = 15)
@@ -65,9 +69,9 @@ public class villageHome implements Serializable {
     @ApiModelProperty(value = "户主姓")
     private String homeSurname;
 	/**户主*/
-	@Excel(name = "户主", width = 15)
+	@Excel(name = "身份证号", width = 15)
     @ApiModelProperty(value = "户主")
-    private String hostId;
+    private String idnumber;
 	/**家庭地址*/
 	@Excel(name = "家庭地址", width = 15)
     @ApiModelProperty(value = "家庭地址")

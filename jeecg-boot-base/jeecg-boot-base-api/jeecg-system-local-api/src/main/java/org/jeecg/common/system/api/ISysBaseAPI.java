@@ -373,4 +373,12 @@ public interface ISysBaseAPI extends CommonAPI {
      */
     public List<SysDepartModel> getChildrenDepart(String orgCode);
 
+    /**
+     * 2022-02-26
+     * 通过干部人员类型发送通知
+     * @param peopleType
+     * @return
+     */
+    public List<JSONObject> getUserIdsByTypes(String peopleType);
+
 }

@@ -16,7 +16,7 @@ import java.io.UnsupportedEncodingException;
 /**
  * @Description: 民主生活参会人员表
  * @Author: jeecg-boot
- * @Date:   2021-11-17
+ * @Date:   2022-02-26
  * @Version: V1.0
  */
 @ApiModel(value="smart_democratic_life_people对象", description="民主生活参会人员表")
