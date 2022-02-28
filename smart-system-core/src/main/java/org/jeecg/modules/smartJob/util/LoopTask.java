@@ -140,6 +140,7 @@ public class LoopTask {
                     boolean isFifteen = ComputeTime.isFifteen(s.getWeddingTime());
                     if(isFifteen){
                         //超过，将婚前isReport字段更新为15，表示15天未填报，并发送系统消息提醒管理员
+                        smartJobService.updatePreIsReport(s.getId());
 
                         //通知管理员
                     }else{
