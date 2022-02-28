@@ -78,6 +78,10 @@ public class SmartEvaluateMeetingPage implements Serializable {
 //	@Excel(name = "删除状态（0，正常，1已删除）", width = 15)
 	@ApiModelProperty(value = "删除状态（0，正常，1已删除）")
     private java.lang.Integer delFlag;
+	/**附件*/
+	@Excel(name = "附件", width = 15)
+	@ApiModelProperty(value = "附件")
+	private java.lang.String files;
 
 	@ExcelCollection(name="述责述廉参与人表")
 	@ApiModelProperty(value = "述责述廉参与人表")
