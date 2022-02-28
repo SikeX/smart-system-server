@@ -67,6 +67,7 @@ public class SysAnnouncementServiceImpl extends ServiceImpl<SysAnnouncementMappe
 	public void saveAnnouncement(SysAnnouncement sysAnnouncement) {
 		String userId = sysAnnouncement.getUserIds();
 		String departIds = sysAnnouncement.getDepartIds();
+		String peopleType = sysAnnouncement.getPeopleType();
 		Integer send_count;
 		if(sysAnnouncement.getMsgType().equals(CommonConstant.MSG_TYPE_ALL)) {
 
@@ -149,6 +150,56 @@ public class SysAnnouncementServiceImpl extends ServiceImpl<SysAnnouncementMappe
 			});
 			sqlSession.commit();
 
+		} else if(sysAnnouncement.getMsgType().equals("TYPE")){
+
+			List<String> userList = new ArrayList<>();
+
+			log.info(peopleType);
+
+			if(StringUtils.isBlank(peopleType) || sysBaseApi.getUserIdsByTypes(peopleType).isEmpty() ) {
+				throw new NullPointerException("无对应接收人员");
+			} else {
+//				log.info(String.valueOf(sysBaseApi.getUserIdsByTypes(peopleType)));
+
+				sysBaseApi.getUserIdsByTypes(peopleType).forEach(user -> {
+					log.info(String.valueOf(user));
+					userList.add(user.getString("id"));
+				});
+
+				sysAnnouncement.setUserIds(String.join(",",userList));
+				send_count = userList.size();
+				sysAnnouncement.setSendCount(send_count);
+				log.info(String.valueOf(send_count));
+
+				// 1.插入通告表记录
+				sysAnnouncementMapper.insert(sysAnnouncement);
+				// 2.插入用户通告阅读标记表记录
+				List<SysAnnouncementSend> sysAnnouncementSendList = new ArrayList<>();
+
+//			String[] userIdArray = new String[userIdList.size()];
+//			for(int i = 0; i < userIdList.size(); i++){
+//				userIdArray[i] = userIdList.get(i);
+//			}
+
+				String anntId = sysAnnouncement.getId();
+				for (String s : userList) {
+					SysAnnouncementSend announcementSend = new SysAnnouncementSend();
+					announcementSend.setAnntId(anntId);
+					announcementSend.setUserId(s);
+//				announcementSend.setUserName(s);
+//				announcementSend.setUserDepart(sysBaseApi.getDepartNamesByUsername(s).get(0));
+					announcementSend.setReadFlag(CommonConstant.NO_READ_FLAG);
+					announcementSend.setIsDelay(0);
+					sysAnnouncementSendList.add(announcementSend);
+				}
+				SqlSession sqlSession = sqlSessionTemplate.getSqlSessionFactory().openSession(ExecutorType.BATCH.BATCH, false);
+				sysAnnouncementSendMapper = sqlSession.getMapper(SysAnnouncementSendMapper.class);
+				sysAnnouncementSendList.forEach(item -> {
+					sysAnnouncementSendMapper.insert(item);
+				});
+				sqlSession.commit();
+			}
+
 		} else {
 			send_count = sysAnnouncement.getUserIds().split(",").length;
 			sysAnnouncement.setSendCount(send_count);
@@ -188,6 +239,7 @@ public class SysAnnouncementServiceImpl extends ServiceImpl<SysAnnouncementMappe
 
 		String userId = smsMsgVo.getUserIds();
 		String departIds = smsMsgVo.getDepartIds();
+		String peopleType = smsMsgVo.getPeopleType();
 		if(smsMsgVo.getMsgType().equals(CommonConstant.MSG_TYPE_ALL)) {
 
 			QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
@@ -234,6 +286,33 @@ public class SysAnnouncementServiceImpl extends ServiceImpl<SysAnnouncementMappe
 
 			DySmsHelper.sendSms(sysUser.getUsername(),smsMsgVo.getMsgType(),"测试",smsMsgVo.getContent(),receiver,receiverPhone);
 
+
+		} else if(smsMsgVo.getMsgType().equals("TYPE")){
+
+			List<String> userList = new ArrayList<>();
+
+			List<String> userNameList = new ArrayList<>();
+			List<String> userPhoneList = new ArrayList<>();
+
+			log.info(peopleType);
+
+			if(StringUtils.isBlank(peopleType) || sysBaseApi.getUserIdsByTypes(peopleType).isEmpty() ) {
+				throw new NullPointerException("无对应接收人员");
+			} else {
+//				log.info(String.valueOf(sysBaseApi.getUserIdsByTypes(peopleType)));
+
+				sysBaseApi.getUserIdsByTypes(peopleType).forEach(user -> {
+					log.info(String.valueOf(user));
+					userNameList.add(user.getString("username"));
+					userPhoneList.add(user.getString("phone"));
+				});
+
+				String receiver = String.join(",", userNameList);
+				String receiverPhone = String.join(",", userPhoneList);
+
+				DySmsHelper.sendSms(sysUser.getUsername(),smsMsgVo.getMsgType(),"测试",smsMsgVo.getContent(),receiver,receiverPhone);
+
+			}
 
 		} else {
 //			send_count = sysAnnouncement.getUserIds().split(",").length;

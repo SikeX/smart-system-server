@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * @Description: 三重一大参会人员表
  * @Author: jeecg-boot
- * @Date:   2021-11-13
+ * @Date:   2022-02-27
  * @Version: V1.0
  */
 public interface ISmartTripleImportanceOneGreatnessPaccaService extends IService<SmartTripleImportanceOneGreatnessPacca> {

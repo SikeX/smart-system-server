@@ -136,7 +136,7 @@ public class WordUtils {
                 String wordName = fileNamesList.get(i);
 
                 // 调用工具类的createDoc方法在临时目录下生成Word文档
-                createDoc(map, freemarkerTemplate, directory.getPath() + "/" + wordName + ".doc");
+                createDoc(map, freemarkerTemplate, directory.getPath() + "/" + wordName + i + ".doc");
             }
             //压缩目录
             ZipUtil.createZip(path, path + "zip.zip");
@@ -221,7 +221,7 @@ public class WordUtils {
         createDoc(map, freemarkerTemplate1, directory+ "/" + "哈尔滨市党员干部操办婚礼事宜承诺书" + ".doc");
     }
 
-    //婚后报备导出附件（婚后报备表，承诺书，提醒涵）
+    //婚前报备导出附件（婚前报备表，承诺书，提醒涵）
     public static void preExportWordBatch(List<Map<String, Object>> dataList, List<String> fileNamesList, String ftlTemplateName, HttpServletResponse response, HttpServletRequest request) {
         File file = null;
         File zipfile = null;
@@ -250,14 +250,14 @@ public class WordUtils {
                 String wordName = fileNamesList.get(i);
 
                 //子目录
-                String subPath = path + "/" + wordName;
+                String subPath = path + "/" + wordName + i;
                 subDirectory = new File(subPath);
                 subDirectory.mkdir();
 
 
                 // 调用工具类的createDoc方法在临时目录下生成Word文档
                 createDoc(map, freemarkerTemplate, subDirectory.getPath() + "/" + "哈尔滨市党员干部操办婚礼事宜事前报告表" + ".doc");
-                //承诺书，
+                //承诺书，提醒涵
                 createAccessory(map, subPath);
             }
             //压缩目录

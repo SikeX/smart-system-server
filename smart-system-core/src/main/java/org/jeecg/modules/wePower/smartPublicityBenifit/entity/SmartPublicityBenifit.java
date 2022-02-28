@@ -70,6 +70,10 @@ public class SmartPublicityBenifit implements Serializable {
 	@Excel(name = "附件", width = 15)
     @ApiModelProperty(value = "附件")
     private java.lang.String file;
+
+    @Excel(name = "类型", width = 15)
+    @ApiModelProperty(value = "类型")
+    private java.lang.String type;
 	/**删除标志*/
 	@Excel(name = "删除标志", width = 15)
     @ApiModelProperty(value = "删除标志")
