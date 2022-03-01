@@ -91,4 +91,8 @@
         where id = #{peopleId}
     </select>
 
+    <update id="updatePreIsReport" parameterType="java.lang.String">
+        update smart_premarital_filing set is_report="15" where id=#{id}
+    </update>
+
 </mapper>
