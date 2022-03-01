@@ -616,4 +616,9 @@ public class SmartJobServiceImpl extends ServiceImpl<SmartJobMapper, SmartJob> i
     public SysUser getPeopleInfo(String peopleId) {
         return smartJobMapper.getPeopleInfo(peopleId);
     }
+
+    @Override
+    public void updatePreIsReport(String id) {
+        smartJobMapper.updatePreIsReport(id);
+    }
 }

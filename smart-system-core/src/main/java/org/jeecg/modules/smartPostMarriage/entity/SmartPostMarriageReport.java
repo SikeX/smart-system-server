@@ -39,7 +39,7 @@ public class SmartPostMarriageReport implements Serializable {
     @ApiModelProperty(value = "创建人")
     private java.lang.String createBy;
     /**人员工号*/
-    @Excel(name = "人员id", width = 15 )
+//    @Excel(name = "人员id", width = 15 )
     @ApiModelProperty(value = "人员id")
     private java.lang.String personId;
     /**姓名*/
