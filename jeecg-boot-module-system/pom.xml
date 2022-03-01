@@ -69,7 +69,7 @@
 		<dependency>
 			<groupId>org.jeecgframework.boot</groupId>
 			<artifactId>smart-system-core</artifactId>
-			<version>2.4.6</version>
+			<version>3.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.yaml</groupId>

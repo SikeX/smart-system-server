@@ -5,6 +5,8 @@
 *.iml
 rebel.xml
 **/target
+**/bin
 **/.DS_Store
 /files/
 **/logs/
+*.bat
