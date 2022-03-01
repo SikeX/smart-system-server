@@ -25,23 +25,13 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="主持人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="hostId">
-              <select-user-by-dep v-model="model.hostId" @info="getHostUser"></select-user-by-dep>
+            <a-form-model-item label="主持人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="hostName">
+              <a-input v-model="model.hostName" placeholder="请输入主持人姓名" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="主持人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="hostName" v-show="false">
-              <a-input v-model="model.hostName"></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
-            <a-form-model-item label="会议记录人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="recorderId">
-              <select-user-by-dep v-model="model.recorderId" @info="getRecorderUser"></select-user-by-dep>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
-            <a-form-model-item label="会议记录人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="recorderName" v-show="false">
-              <a-input v-model="model.recorderName"></a-input>
+            <a-form-model-item label="会议记录人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="recorderName">
+              <a-input v-model="model.recorderName" placeholder="请输入会议记录人姓名" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -59,13 +49,24 @@
               <a-input v-model="model.verifyStatus" placeholder="请输入审核状态" ></a-input>
             </a-form-model-item>
           </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="附件说明" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="explanation">
+              <a-input v-model="model.explanation" placeholder="请输入附件说明" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="附件文件" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="path">
+              <j-upload v-model="model.path"  ></j-upload>
+            </a-form-model-item>
+          </a-col>
         </a-row>
       </a-form-model>
     </j-form-container>
       <!-- 子表单区域 -->
     <a-tabs v-model="activeKey" @change="handleChangeTabs">
       <a-tab-pane tab="民主生活参会人员表" :key="refKeys[0]" :forceRender="true">
-        <j-editable-table
+        <j-vxe-table
+          keep-source
           :ref="refKeys[0]"
           :loading="smartDemocraticLifePeopleTable.loading"
           :columns="smartDemocraticLifePeopleTable.columns"
@@ -74,20 +75,8 @@
           :disabled="formDisabled"
           :rowNumber="true"
           :rowSelection="true"
-          :actionButton="true"/>
-      </a-tab-pane>
-      <a-tab-pane tab="民主生活会附件表" :key="refKeys[1]" :forceRender="true">
-        <j-editable-table
-          :ref="refKeys[1]"
-          :loading="smartDemocraticLifeEnclosureTable.loading"
-          :columns="smartDemocraticLifeEnclosureTable.columns"
-          :dataSource="smartDemocraticLifeEnclosureTable.dataSource"
-          :maxHeight="300"
-          :disabled="formDisabled"
-          :rowNumber="true"
-          :rowSelection="true"
-          :actionButton="true"
-          :rootUrl="rootUrl"/>
+          :toolbar="true"
+          />
       </a-tab-pane>
     </a-tabs>
   </a-spin>
@@ -96,14 +85,17 @@
 <script>
 
   import { getAction } from '@/api/manage'
-  import { FormTypes,getRefPromise,VALIDATE_NO_PASSED } from '@/utils/JEditableTableUtil'
-  import { JEditableTableModelMixin } from '@/mixins/JEditableTableModelMixin'
+  import { JVxeTableModelMixin } from '@/mixins/JVxeTableModelMixin.js'
+  import { JVXETypes } from '@/components/jeecg/JVxeTable'
+  import { getRefPromise,VALIDATE_FAILED} from '@/components/jeecg/JVxeTable/utils/vxeUtils.js'
   import { validateDuplicateValue } from '@/utils/util'
+  import JFormContainer from '@/components/jeecg/JFormContainer'
 
   export default {
     name: 'SmartDemocraticLifeMeetingForm',
-    mixins: [JEditableTableModelMixin],
+    mixins: [JVxeTableModelMixin],
     components: {
+      JFormContainer,
     },
     data() {
       return {
@@ -124,7 +116,7 @@
           sm: { span: 20 },
         },
         model:{
-        },
+         },
         // 新增时子表默认添加几行空数据
         addDefaultRowNum: 1,
         validatorRules: {
@@ -153,8 +145,8 @@
               { required: true, message: '请输入会议记录!'},
            ],
         },
-        refKeys: ['smartDemocraticLifePeople', 'smartDemocraticLifeEnclosure', ],
-        tableKeys:['smartDemocraticLifePeople', 'smartDemocraticLifeEnclosure', ],
+        refKeys: ['smartDemocraticLifePeople', ],
+        tableKeys:['smartDemocraticLifePeople', ],
         activeKey: 'smartDemocraticLifePeople',
         // 民主生活参会人员表
         smartDemocraticLifePeopleTable: {
@@ -162,9 +154,9 @@
           dataSource: [],
           columns: [
             {
-              title: '参会人员',
+              title: '参会人员姓名',
               key: 'participantName',
-              type: FormTypes.sel_user,
+               type: JVXETypes.input,
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
@@ -172,51 +164,12 @@
             },
           ]
         },
-        // 民主生活会附件表
-        smartDemocraticLifeEnclosureTable: {
-          loading: false,
-          dataSource: [],
-          columns: [
-            {
-              title: '序号',
-              key: 'number',
-              type: FormTypes.input,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
-            },
-            {
-              title: '附件说明',
-              key: 'explanation',
-              type: FormTypes.input,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-            },
-            {
-              title: '附件文件',
-              key: 'path',
-              type: FormTypes.file,
-              token:true,
-              responseName:"message",
-              width:"200px",
-              placeholder: '请选择文件',
-              defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
-            },
-          ]
-        },
-        rootUrl: "/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/",
         url: {
           add: "/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/add",
           edit: "/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/edit",
           queryById: "/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/queryById",
           smartDemocraticLifePeople: {
             list: '/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/querySmartDemocraticLifePeopleByMainId'
-          },
-          smartDemocraticLifeEnclosure: {
-            list: '/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/querySmartDemocraticLifeEnclosureByMainId'
           },
         }
       }
@@ -239,7 +192,6 @@
     methods: {
       addBefore(){
         this.smartDemocraticLifePeopleTable.dataSource=[]
-        this.smartDemocraticLifeEnclosureTable.dataSource=[]
       },
       getAllTable() {
         let values = this.tableKeys.map(key => getRefPromise(this, key))
@@ -252,46 +204,31 @@
         // 加载子表数据
         if (this.model.id) {
           let params = { id: this.model.id }
-          getAction(this.url.queryById, params).then(res => {
-            if (res.success) {
-              this.model = res.result
-            }
-          })
           this.requestSubTableData(this.url.smartDemocraticLifePeople.list, params, this.smartDemocraticLifePeopleTable)
-          this.requestSubTableData(this.url.smartDemocraticLifeEnclosure.list, params, this.smartDemocraticLifeEnclosureTable)
         }
       },
-      getHostUser(back) {
-        this.model.hostId = back[0].id
-        this.model.hostName = back[0].realname
-      },
-      getRecorderUser(back) {
-        this.model.recorderId = back[0].id
-        this.model.recorderName = back[0].realname
-      },
       //校验所有一对一子表表单
-      validateSubForm(allValues){
-          return new Promise((resolve,reject)=>{
-            Promise.all([
-            ]).then(() => {
-              resolve(allValues)
-            }).catch(e => {
-              if (e.error === VALIDATE_NO_PASSED) {
-                // 如果有未通过表单验证的子表，就自动跳转到它所在的tab
-                this.activeKey = e.index == null ? this.activeKey : this.refKeys[e.index]
-              } else {
-                console.error(e)
-              }
+        validateSubForm(allValues){
+            return new Promise((resolve,reject)=>{
+              Promise.all([
+              ]).then(() => {
+                resolve(allValues)
+              }).catch(e => {
+                if (e.error === VALIDATE_FAILED) {
+                  // 如果有未通过表单验证的子表，就自动跳转到它所在的tab
+                  this.activeKey = e.index == null ? this.activeKey : this.refKeys[e.index]
+                } else {
+                  console.error(e)
+                }
+              })
             })
-          })
-      },
+        },
       /** 整理成formData */
       classifyIntoFormData(allValues) {
         let main = Object.assign(this.model, allValues.formValue)
         return {
           ...main, // 展开
-          smartDemocraticLifePeopleList: allValues.tablesValue[0].values,
-          smartDemocraticLifeEnclosureList: allValues.tablesValue[1].values,
+          smartDemocraticLifePeopleList: allValues.tablesValue[0].tableData,
         }
       },
       validateError(msg){

@@ -14,6 +14,7 @@ import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.smartEvaluateList.entity.MonthCount;
 import org.jeecg.modules.smartEvaluateList.entity.SmartEvaluateWindow;
 import org.jeecg.modules.smartEvaluateList.entity.TypeCount;
+import org.jeecg.modules.smartEvaluateList.entity.MonthCountEight;
 import org.jeecg.modules.smartEvaluateList.entity.peopleAvg;
 import org.jeecg.modules.smartEvaluateList.service.ISmartChartService;
 import org.jeecg.modules.smartEvaluateList.service.ISmartEvaluateWindowService;
@@ -70,6 +71,38 @@ public class SmartChartController extends JeecgController<peopleAvg, ISmartChart
 		}
 
 	}
+
+	/**
+	 *   按月统计
+	 *
+	 * @param
+	 * @return
+	 */
+	@AutoLog(value = "八项规定-按月统计")
+	@ApiOperation(value="八项规定-按月统计", notes="八项规定-按月统计")
+	@ResponseBody
+	@GetMapping(value = "/countEight")
+	public Result<?> countEight(@RequestParam (value="year",required = false) String year) {
+		try{
+
+			if(year == null || year.isEmpty()){
+				//获取当前年份
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+				Date date = new Date();
+				year =sdf.format(date);
+			}else{
+				year = year.substring(1,year.length()-1);
+			}
+			//System.out.println("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
+			System.out.println(year);
+			List<MonthCountEight> list = smartChartService.countEight(year);
+			return Result.OK(list);
+		}catch (Exception e){
+			return Result.error("error");
+		}
+
+	}
+
 	@AutoLog(value = "阳光评廉-按类型统计")
 	@ApiOperation(value="阳光评廉-按类型统计", notes="阳光评廉-按类型统计")
 	@GetMapping(value = "/countByGrade")
@@ -92,6 +125,30 @@ public class SmartChartController extends JeecgController<peopleAvg, ISmartChart
 		}
 
 	}
+
+	@AutoLog(value = "八项规定-按类型统计")
+	@ApiOperation(value="八项规定-按类型统计", notes="八项规定-按类型统计")
+	@GetMapping(value = "/countByType")
+	public Result<?> countByType(@RequestParam (value="year",required = false) String year) {
+		try{
+			if(year == null || year.isEmpty()){
+				//获取当前年份
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+				Date date = new Date();
+				year =sdf.format(date);
+			}else{
+				year = year.substring(1,year.length()-1);
+			}
+			//System.out.println("ggggggggggggggggggggggg");
+			System.out.println(year);
+			List<TypeCount> list = smartChartService.countByType(year);
+			return Result.OK(list);
+		}catch (Exception e){
+			return Result.error("error");
+		}
+
+	}
+
 	@AutoLog(value = "阳光评廉-人员评分均值")
 	@ApiOperation(value="阳光评廉-人员评分均值", notes="阳光评廉-人员评分均值")
 	@GetMapping(value = "/avgByPeople")

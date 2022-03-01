@@ -21,7 +21,17 @@ public class SmartTriOneChartServiceImpl extends ServiceImpl<SmartTriOneChartMap
     @Autowired
     private SmartTriOneChartMapper smartTriOneChartMapper;
     @Override
-    public List<TypeCount> countByVerifyStatus() {
-        return smartTriOneChartMapper.countByVerifyStatus();
+    public List<TypeCount> countByVerifyStatus(String year,String month) {
+        return smartTriOneChartMapper.countByVerifyStatus(year, month);
+    }
+
+    @Override
+    public List<TypeCount> getAllType() {
+        return smartTriOneChartMapper.getAllType();
+    }
+
+    @Override
+    public List<TypeCount> countByType(String year,String month) {
+        return smartTriOneChartMapper.countByType( year, month);
     }
 }

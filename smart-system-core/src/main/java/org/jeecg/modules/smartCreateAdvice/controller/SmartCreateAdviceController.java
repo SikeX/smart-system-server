@@ -150,10 +150,10 @@ public class SmartCreateAdviceController {
 	@ApiOperation(value="制发建议表-添加", notes="制发建议表-添加")
 	@PostMapping(value = "/add")
 	@Transactional
-	public Result<?> add(@RequestBody SmartCreateAdvicePage smartCreateAdvicePage) {
-		SmartCreateAdvice smartCreateAdvice = new SmartCreateAdvice();
+	public Result<?> add(@RequestBody SmartCreateAdvice smartCreateAdvice) {
+//		SmartCreateAdvice smartCreateAdvice = new SmartCreateAdvice();
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-		BeanUtils.copyProperties(smartCreateAdvicePage, smartCreateAdvice);
+//		BeanUtils.copyProperties(smartCreateAdvicePage, smartCreateAdvice);
 		String orgCode = sysUser.getOrgCode();
 		if ("".equals(orgCode)) {
 			return Result.error("本用户没有操作权限！");
@@ -166,7 +166,7 @@ public class SmartCreateAdviceController {
 
 		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
 		if(isVerify){
-			smartCreateAdviceService.saveMain(smartCreateAdvice, smartCreateAdvicePage.getSmartCreateAdviceAnnexList());
+			smartCreateAdviceService.save(smartCreateAdvice);
 			String recordId = smartCreateAdvice.getId();
 			smartVerify.addVerifyRecord(recordId,verifyType);
 			smartCreateAdvice.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
@@ -175,7 +175,7 @@ public class SmartCreateAdviceController {
 			// 设置审核状态为免审
 			smartCreateAdvice.setVerifyStatus("3");
 			// 直接添加，不走审核流程
-			smartCreateAdviceService.saveMain(smartCreateAdvice, smartCreateAdvicePage.getSmartCreateAdviceAnnexList());
+			smartCreateAdviceService.save(smartCreateAdvice);
 		}
 
 		return Result.OK("添加成功！");
@@ -190,16 +190,16 @@ public class SmartCreateAdviceController {
 	@AutoLog(value = "制发建议表-编辑")
 	@ApiOperation(value="制发建议表-编辑", notes="制发建议表-编辑")
 	@PutMapping(value = "/edit")
-	public Result<?> edit(@RequestBody SmartCreateAdvicePage smartCreateAdvicePage) {
-		SmartCreateAdvice smartCreateAdvice = new SmartCreateAdvice();
-		BeanUtils.copyProperties(smartCreateAdvicePage, smartCreateAdvice);
+	public Result<?> edit(@RequestBody SmartCreateAdvice smartCreateAdvice) {
+//		SmartCreateAdvice smartCreateAdvice = new SmartCreateAdvice();
+//		BeanUtils.copyProperties(smartCreateAdvicePage, smartCreateAdvice);
 		SmartCreateAdvice smartCreateAdviceEntity = smartCreateAdviceService.getById(smartCreateAdvice.getId());
 		if(smartCreateAdviceEntity==null) {
 			return Result.error("未找到对应数据");
 		}
-		smartCreateAdvice.setDepartId(null);
-		smartCreateAdvice.setCreateTime(null);
-		smartCreateAdviceService.updateMain(smartCreateAdvice, smartCreateAdvicePage.getSmartCreateAdviceAnnexList());
+//		smartCreateAdvice.setDepartId(null);
+//		smartCreateAdvice.setCreateTime(null);
+		smartCreateAdviceService.updateById(smartCreateAdviceEntity);
 		return Result.OK("编辑成功!");
 	}
 	
@@ -213,7 +213,7 @@ public class SmartCreateAdviceController {
 	@ApiOperation(value="制发建议表-通过id删除", notes="制发建议表-通过id删除")
 	@DeleteMapping(value = "/delete")
 	public Result<?> delete(@RequestParam(name="id",required=true) String id) {
-		smartCreateAdviceService.delMain(id);
+		smartCreateAdviceService.removeById(id);
 		return Result.OK("删除成功!");
 	}
 	
@@ -227,7 +227,7 @@ public class SmartCreateAdviceController {
 	@ApiOperation(value="制发建议表-批量删除", notes="制发建议表-批量删除")
 	@DeleteMapping(value = "/deleteBatch")
 	public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
-		this.smartCreateAdviceService.delBatchMain(Arrays.asList(ids.split(",")));
+		this.smartCreateAdviceService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.OK("批量删除成功！");
 	}
 	
@@ -247,20 +247,6 @@ public class SmartCreateAdviceController {
 		}
 		return Result.OK(smartCreateAdvice);
 
-	}
-	
-	/**
-	 * 通过id查询
-	 *
-	 * @param id
-	 * @return
-	 */
-	@AutoLog(value = "制发建议附件表通过主表ID查询")
-	@ApiOperation(value="制发建议附件表主表ID查询", notes="制发建议附件表-通主表ID查询")
-	@GetMapping(value = "/querySmartCreateAdviceAnnexByMainId")
-	public Result<?> querySmartCreateAdviceAnnexListByMainId(@RequestParam(name="id",required=true) String id) {
-		List<SmartCreateAdviceAnnex> smartCreateAdviceAnnexList = smartCreateAdviceAnnexService.selectByMainId(id);
-		return Result.OK(smartCreateAdviceAnnexList);
 	}
 
     /**

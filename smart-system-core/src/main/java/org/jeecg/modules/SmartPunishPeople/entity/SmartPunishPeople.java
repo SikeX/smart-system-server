@@ -37,6 +37,7 @@ public class SmartPunishPeople implements Serializable {
     @ApiModelProperty(value = "主键")
     private java.lang.String id;
 	/**创建人*/
+    @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @ApiModelProperty(value = "创建人")
     private java.lang.String createBy;
 	/**创建日期*/
@@ -45,6 +46,7 @@ public class SmartPunishPeople implements Serializable {
     @ApiModelProperty(value = "创建日期")
     private java.util.Date createTime;
 	/**更新人*/
+    @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @ApiModelProperty(value = "更新人")
     private java.lang.String updateBy;
 	/**更新日期*/

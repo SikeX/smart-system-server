@@ -3,9 +3,25 @@
 <mapper namespace="org.jeecg.modules.smartTripleImportanceOneGreatness.mapper.SmartTriOneChartMapper">
 
     <select id="countByVerifyStatus" resultType="org.jeecg.modules.smartTripleImportanceOneGreatness.entity.TypeCount">
-        /* 审核人审批状态：(1.审核中,2.待我审批.3.通过,4.驳回)*/
-        select count(*) as count,t.verify_status as keyName from smart_triple_importance_one_greatness t
-        where t.del_flag = 0 and date(create_time) = curdate()
-        group by t.verify_status
+        /* 审核人审批状态：(.1.通过,0.驳回2.待审批)*/
+        select count(1) as value, g.verify_status as statu,i.item_text as keyName from  smart_triple_importance_one_greatness g
+            left join  smart_verify_task t on  t.flow_no = g.id
+            left join sys_dict_item i on i.dict_id = (select id from sys_dict where sys_dict.dict_code='meeting_type')
+            and i.item_value = g.meeting_type
+        where g.del_flag = 0 and Month(g.create_time) = #{month} and  YEAR(g.create_time) = #{year}
+          and (g.verify_status = 0 or g.verify_status = 1)
+        group by i.item_text,g.meeting_type,i.item_value, g.verify_status
+    </select>
+    <select id="getAllType" resultType="org.jeecg.modules.smartTripleImportanceOneGreatness.entity.TypeCount">
+        select i.item_value,i.item_text as keyName from  sys_dict_item i
+        where i.dict_id =(select id from sys_dict where sys_dict.dict_code='meeting_type')
+    </select>
+    <select id="countByType" resultType="org.jeecg.modules.smartTripleImportanceOneGreatness.entity.TypeCount">
+        select count(1) as value,i.item_text as keyName from  smart_triple_importance_one_greatness g
+
+            left join sys_dict_item i on i.dict_id = (select id from sys_dict where sys_dict.dict_code='meeting_type')
+            and i.item_value = g.meeting_type
+        where g.del_flag = 0 and Month(g.create_time) = #{month} and  YEAR(g.create_time) = #{year}
+        group by i.item_text,g.meeting_type,i.item_value
     </select>
 </mapper>

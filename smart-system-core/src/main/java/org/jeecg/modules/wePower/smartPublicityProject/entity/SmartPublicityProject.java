@@ -16,7 +16,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 项目管理
  * @Author: jeecg-boot
- * @Date:   2021-12-26
+ * @Date:   2022-02-16
  * @Version: V1.0
  */
 @ApiModel(value="smart_publicity_project对象", description="项目管理")
@@ -33,18 +33,26 @@ public class SmartPublicityProject implements Serializable {
 	@Excel(name = "项目名称", width = 15)
     @ApiModelProperty(value = "项目名称")
     private java.lang.String title;
+	/**项目分类*/
+	@Excel(name = "项目分类", width = 15)
+    @ApiModelProperty(value = "项目分类")
+    private java.lang.String type;
 	/**建设单位*/
 	@Excel(name = "建设单位", width = 15, dictTable = "sys_depart", dicText = "depart_name", dicCode = "id")
     @Dict(dictTable = "sys_depart", dicText = "depart_name", dicCode = "id")
     @ApiModelProperty(value = "建设单位")
     private java.lang.String location;
-	/**合同内容*/
-	@Excel(name = "合同内容", width = 15)
-    @ApiModelProperty(value = "合同内容")
+	/**施工单位*/
+	@Excel(name = "施工单位", width = 15)
+    @ApiModelProperty(value = "施工单位")
+    private java.lang.String constructDep;
+	/**简要说明*/
+	@Excel(name = "简要说明", width = 15)
+    @ApiModelProperty(value = "简要说明")
     private java.lang.String projectContent;
-	/**金额*/
-	@Excel(name = "金额", width = 15)
-    @ApiModelProperty(value = "金额")
+	/**合同金额*/
+	@Excel(name = "合同金额", width = 15)
+    @ApiModelProperty(value = "合同金额")
     private java.lang.String money;
 	/**服务年限*/
 	@Excel(name = "服务年限", width = 15)
@@ -56,11 +64,11 @@ public class SmartPublicityProject implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @ApiModelProperty(value = "完成时限")
     private java.util.Date endTime;
-	/**签订日期*/
-	@Excel(name = "签订日期", width = 15, format = "yyyy-MM-dd")
+	/**合同签订日期*/
+	@Excel(name = "合同签订日期", width = 15, format = "yyyy-MM-dd")
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern="yyyy-MM-dd")
-    @ApiModelProperty(value = "签订日期")
+    @ApiModelProperty(value = "合同签订日期")
     private java.util.Date signTime;
 	/**创建人*/
     @ApiModelProperty(value = "创建人")
@@ -82,10 +90,22 @@ public class SmartPublicityProject implements Serializable {
     @ApiModelProperty(value = "创建部门")
     @Dict(dictTable = "sys_depart", dicText = "depart_name", dicCode = "org_code")
     private java.lang.String sysOrgCode;
-	/**附件*/
-	@Excel(name = "附件", width = 15)
-    @ApiModelProperty(value = "附件")
-    private java.lang.String file;
+	/**四议两公开内容*/
+	@Excel(name = "四议两公开内容", width = 15)
+    @ApiModelProperty(value = "四议两公开内容")
+    private java.lang.String file1;
+	/**村集体经济组织相关材料*/
+	@Excel(name = "村集体经济组织相关材料", width = 15)
+    @ApiModelProperty(value = "村集体经济组织相关材料")
+    private java.lang.String file2;
+	/**合同*/
+	@Excel(name = "合同", width = 15)
+    @ApiModelProperty(value = "合同")
+    private java.lang.String file3;
+	/**验收材料*/
+	@Excel(name = "验收材料", width = 15)
+    @ApiModelProperty(value = "验收材料")
+    private java.lang.String file4;
 	/**删除标志*/
 	@Excel(name = "删除标志", width = 15)
     @ApiModelProperty(value = "删除标志")

@@ -108,7 +108,15 @@ public class SmartWindowPeopleController extends JeecgController<SmartWindowPeop
 		String departName = smartWindowPeopleService.getDepartNameById(pid);
 		String windowName = smartWindowPeopleService.getDepartmentNameByDepartmentId(departmentId);
 		// 1. 根据ID生成二维码，并存储到本地
-		String content = "http://47.99.39.59:3000/SmartEvaluate/modules/SmartEvaluateForm?exeDept="+departName+"&windowsName="+windowName+"&personName="+smartWindowPeople.getPersonName();//exeDept主管部门名称，windowsName窗口名称，personName具体被举报人名
+		//String content = "http://47.99.39.59:3000/SmartEvaluate/modules/SmartEvaluateForm?exeDept="+departName+"&windowsName="+windowName+"&personName="+smartWindowPeople.getPersonName();//exeDept主管部门名称，windowsName窗口名称，personName具体被举报人名
+
+		String content = "http://47.99.39.59:3000/SmartEvaluate/modules/SmartEvaluateForm?" +
+				"exeDeptId="+pid+"&exeDept="+departName+
+				"&windowsId="+departmentId+"&windowsName="+windowName+
+				"&personId="+smartWindowPeople.getPersonId()+"&personName="+smartWindowPeople.getPersonName();//exeDept主管部门名称，windowsName窗口名称，personName具体被举报人名，可删除留空判断
+
+		System.out.println("@@@@@@@@@@@@@@@@@@@@@");
+		System.out.println(content);
 		BaseResponse response = new BaseResponse(StatusCode.Success);
 		try {
 			final String fileName=LOCALDATEFORMAT.get().format(new Date());

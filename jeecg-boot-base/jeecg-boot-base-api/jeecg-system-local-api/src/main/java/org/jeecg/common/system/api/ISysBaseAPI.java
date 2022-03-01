@@ -359,6 +359,7 @@ public interface ISysBaseAPI extends CommonAPI {
     /**
      * 2021-12-24
      * 获取所有业务部门（除开乡镇）
+     * @TODO 暂时
      * @return
      */
     public List<SysDepartModel> getAllBusDepart();
@@ -371,5 +372,13 @@ public interface ISysBaseAPI extends CommonAPI {
      * @return
      */
     public List<SysDepartModel> getChildrenDepart(String orgCode);
+
+    /**
+     * 2022-02-26
+     * 通过干部人员类型发送通知
+     * @param peopleType
+     * @return
+     */
+    public List<JSONObject> getUserIdsByTypes(String peopleType);
 
 }
