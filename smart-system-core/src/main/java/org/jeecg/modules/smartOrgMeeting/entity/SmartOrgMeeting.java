@@ -18,7 +18,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 组织生活会
  * @Author: jeecg-boot
- * @Date:   2021-11-14
+ * @Date:   2022-02-26
  * @Version: V1.0
  */
 @ApiModel(value="smart_org_meeting对象", description="组织生活会")
@@ -56,6 +56,7 @@ public class SmartOrgMeeting implements Serializable {
     @ApiModelProperty(value = "上报时间")
     private java.util.Date reportTime;
 	/**主持人ID*/
+	@Excel(name = "主持人ID", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @ApiModelProperty(value = "主持人ID")
     private java.lang.String hostId;
@@ -64,6 +65,7 @@ public class SmartOrgMeeting implements Serializable {
     @ApiModelProperty(value = "主持人")
     private java.lang.String hostName;
 	/**会议记录人ID */
+	@Excel(name = "会议记录人ID ", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @ApiModelProperty(value = "会议记录人ID ")
     private java.lang.String recorderId;
@@ -79,7 +81,16 @@ public class SmartOrgMeeting implements Serializable {
 	@Excel(name = "会议记录", width = 15)
     @ApiModelProperty(value = "会议记录")
     private java.lang.String record;
+	/**附件说明*/
+	@Excel(name = "附件说明", width = 15)
+    @ApiModelProperty(value = "附件说明")
+    private java.lang.String explanation;
+	/**附件*/
+	@Excel(name = "附件", width = 15)
+    @ApiModelProperty(value = "附件")
+    private java.lang.String files;
 	/**创建人ID*/
+	@Excel(name = "创建人ID", width = 15)
     @ApiModelProperty(value = "创建人ID")
     private java.lang.String creatorId;
 	/**创建人*/

@@ -32,14 +32,14 @@ public class SmartPostMarriageReport implements Serializable {
     @ApiModelProperty(value = "主键")
     private java.lang.String id;
 
-    //婚前报备Id
+    @ApiModelProperty(value = "婚前报备记录id")
     private java.lang.String preId;
 
     /**创建人*/
     @ApiModelProperty(value = "创建人")
     private java.lang.String createBy;
     /**人员工号*/
-    @Excel(name = "人员id", width = 15 )
+//    @Excel(name = "人员id", width = 15 )
     @ApiModelProperty(value = "人员id")
     private java.lang.String personId;
     /**姓名*/
@@ -145,4 +145,7 @@ public class SmartPostMarriageReport implements Serializable {
 
     @ApiModelProperty(value = "审核状态")
     private java.lang.String verifyStatus;
+
+    @ApiModelProperty(value = "文件路径")
+    private java.lang.String files;
 }

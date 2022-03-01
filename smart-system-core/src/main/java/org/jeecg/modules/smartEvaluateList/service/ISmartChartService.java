@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.jeecg.modules.SmartPaper.vo.SmartMyExamVo;
 import org.jeecg.modules.smartEvaluateList.entity.MonthCount;
+import org.jeecg.modules.smartEvaluateList.entity.MonthCountEight;
 import org.jeecg.modules.smartEvaluateList.entity.SmartEvaluateWindow;
 import org.jeecg.modules.smartEvaluateList.entity.TypeCount;
 import org.jeecg.modules.smartEvaluateList.entity.peopleAvg;
@@ -26,7 +27,17 @@ public interface ISmartChartService extends IService<peopleAvg> {
      */
     List<MonthCount> countByMonth(String year);
 
+    /**
+     *
+     * 按月统计
+     * @param year
+     *
+     */
+    List<MonthCountEight> countEight(String year);
+
     List<TypeCount> countByGrade(String year);
+
+    List<TypeCount> countByType(String year);
 
     Page<peopleAvg> avgByPeople(Page<peopleAvg> page,String windowsName);
 

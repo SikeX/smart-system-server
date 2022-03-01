@@ -139,7 +139,8 @@ public class LoopTask {
                     //判断是否超过15日
                     boolean isFifteen = ComputeTime.isFifteen(s.getWeddingTime());
                     if(isFifteen){
-                        //超过
+                        //超过，将婚前isReport字段更新为15，表示15天未填报，并发送系统消息提醒管理员
+                        smartJobService.updatePreIsReport(s.getId());
 
                         //通知管理员
                     }else{
@@ -160,6 +161,7 @@ public class LoopTask {
                             smartSentMsg.setTittle("婚后报备提醒");
                             smartSentMsg.setSendTime(date);
                             smartSentMsg.setContent(content);
+                            smartSentMsg.setReceiverPhone(s.getContactNumber());
 
                             boolean isSuccess = DySmsHelper.sendSms(content, s.getContactNumber());
 

@@ -19,4 +19,6 @@ public class SmsMsgVo implements Serializable {
     private String userIds;
 
     private String departIds;
+
+    private String peopleType;
 }

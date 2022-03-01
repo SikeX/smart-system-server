@@ -131,6 +131,9 @@ public class SysAnnouncementController {
 			sysAnnouncement.setSendStatus(CommonSendStatus.UNPUBLISHED_STATUS_0);//未发布
 			sysAnnouncementService.saveAnnouncement(sysAnnouncement);
 			result.success("添加成功！");
+		} catch (NullPointerException e) {
+			log.warn(e.getMessage(),e);
+			result.error500("发送人员为空！");
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);
 			result.error500("操作失败");
@@ -150,6 +153,9 @@ public class SysAnnouncementController {
 		try{
 			sysAnnouncementService.sendSmsMsg(smsMsgVo);
 			result.success("发送成功");
+		} catch (NullPointerException e) {
+			log.warn(e.getMessage(),e);
+			result.error500("发送人员为空！");
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);
 			result.error500("发送失败");

@@ -1,19 +1,27 @@
 package org.jeecg.modules.smartDemocraticLifeMeeting.controller;
 
-import java.io.UnsupportedEncodingException;
-import java.io.IOException;
-import java.net.URLDecoder;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
+import org.jeecg.common.api.vo.Result;
+import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.system.api.ISysBaseAPI;
+import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.smartDemocraticLifeMeeting.entity.SmartDemocraticLifeMeeting;
+import org.jeecg.modules.smartDemocraticLifeMeeting.entity.SmartDemocraticLifePeople;
+import org.jeecg.modules.smartDemocraticLifeMeeting.service.ISmartDemocraticLifeMeetingService;
+import org.jeecg.modules.smartDemocraticLifeMeeting.service.ISmartDemocraticLifePeopleService;
+import org.jeecg.modules.smartDemocraticLifeMeeting.vo.SmartDemocraticLifeMeetingPage;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
 import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
@@ -21,32 +29,18 @@ import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.ImportParams;
 import org.jeecgframework.poi.excel.view.JeecgEntityExcelView;
-import org.jeecg.common.system.vo.LoginUser;
-import org.apache.shiro.SecurityUtils;
-import org.jeecg.common.api.vo.Result;
-import org.jeecg.common.system.query.QueryGenerator;
-import org.jeecg.common.util.oConvertUtils;
-import org.jeecg.modules.smartDemocraticLifeMeeting.entity.SmartDemocraticLifePeople;
-import org.jeecg.modules.smartDemocraticLifeMeeting.entity.SmartDemocraticLifeEnclosure;
-import org.jeecg.modules.smartDemocraticLifeMeeting.entity.SmartDemocraticLifeMeeting;
-import org.jeecg.modules.smartDemocraticLifeMeeting.vo.SmartDemocraticLifeMeetingPage;
-import org.jeecg.modules.smartDemocraticLifeMeeting.service.ISmartDemocraticLifeMeetingService;
-import org.jeecg.modules.smartDemocraticLifeMeeting.service.ISmartDemocraticLifePeopleService;
-import org.jeecg.modules.smartDemocraticLifeMeeting.service.ISmartDemocraticLifeEnclosureService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lombok.extern.slf4j.Slf4j;
-import com.alibaba.fastjson.JSON;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import org.jeecg.common.aspect.annotation.AutoLog;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Description: 民主生活会表
@@ -63,8 +57,6 @@ public class SmartDemocraticLifeMeetingController {
 	private ISmartDemocraticLifeMeetingService smartDemocraticLifeMeetingService;
 	@Autowired
 	private ISmartDemocraticLifePeopleService smartDemocraticLifePeopleService;
-	@Autowired
-	private ISmartDemocraticLifeEnclosureService smartDemocraticLifeEnclosureService;
     /**
      * 审核
      */
@@ -162,7 +154,7 @@ public class SmartDemocraticLifeMeetingController {
 
         Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
         if (isVerify) {
-            smartDemocraticLifeMeetingService.saveMain(smartDemocraticLifeMeeting, smartDemocraticLifeMeetingPage.getSmartDemocraticLifePeopleList(), smartDemocraticLifeMeetingPage.getSmartDemocraticLifeEnclosureList());
+            smartDemocraticLifeMeetingService.saveMain(smartDemocraticLifeMeeting, smartDemocraticLifeMeetingPage.getSmartDemocraticLifePeopleList());
             String recordId = smartDemocraticLifeMeeting.getId();
             log.info("recordId is " + recordId);
             smartVerify.addVerifyRecord(recordId, verifyType);
@@ -170,7 +162,7 @@ public class SmartDemocraticLifeMeetingController {
             smartDemocraticLifeMeetingService.updateById(smartDemocraticLifeMeeting);
         } else {
             smartDemocraticLifeMeeting.setVerifyStatus("3");
-            smartDemocraticLifeMeetingService.saveMain(smartDemocraticLifeMeeting, smartDemocraticLifeMeetingPage.getSmartDemocraticLifePeopleList(), smartDemocraticLifeMeetingPage.getSmartDemocraticLifeEnclosureList());
+            smartDemocraticLifeMeetingService.saveMain(smartDemocraticLifeMeeting, smartDemocraticLifeMeetingPage.getSmartDemocraticLifePeopleList());
         }
 		return Result.OK("添加成功！");
 	}
@@ -193,7 +185,7 @@ public class SmartDemocraticLifeMeetingController {
 		}
 		smartDemocraticLifeMeeting.setDepartId(null);
 		smartDemocraticLifeMeeting.setCreateTime(null);
-		smartDemocraticLifeMeetingService.updateMain(smartDemocraticLifeMeeting, smartDemocraticLifeMeetingPage.getSmartDemocraticLifePeopleList(), smartDemocraticLifeMeetingPage.getSmartDemocraticLifeEnclosureList());
+		smartDemocraticLifeMeetingService.updateMain(smartDemocraticLifeMeeting, smartDemocraticLifeMeetingPage.getSmartDemocraticLifePeopleList());
 		return Result.OK("编辑成功!");
 	}
 
@@ -255,20 +247,6 @@ public class SmartDemocraticLifeMeetingController {
 	public Result<?> querySmartDemocraticLifePeopleListByMainId(@RequestParam(name = "id", required = true) String id) {
 		List<SmartDemocraticLifePeople> smartDemocraticLifePeopleList = smartDemocraticLifePeopleService.selectByMainId(id);
 		return Result.OK(smartDemocraticLifePeopleList);
-	}
-
-	/**
-	 * 通过id查询
-	 *
-	 * @param id
-	 * @return
-	 */
-	@AutoLog(value = "民主生活会附件表通过主表ID查询")
-	@ApiOperation(value = "民主生活会附件表主表ID查询", notes = "民主生活会附件表-通主表ID查询")
-	@GetMapping(value = "/querySmartDemocraticLifeEnclosureByMainId")
-	public Result<?> querySmartDemocraticLifeEnclosureListByMainId(@RequestParam(name = "id", required = true) String id) {
-		List<SmartDemocraticLifeEnclosure> smartDemocraticLifeEnclosureList = smartDemocraticLifeEnclosureService.selectByMainId(id);
-		return Result.OK(smartDemocraticLifeEnclosureList);
 	}
 
 	/**
@@ -337,9 +315,7 @@ public class SmartDemocraticLifeMeetingController {
 		for (SmartDemocraticLifeMeeting main : smartDemocraticLifeMeetingList) {
 			SmartDemocraticLifeMeetingPage vo = new SmartDemocraticLifeMeetingPage();
 			BeanUtils.copyProperties(main, vo);
-			List<SmartDemocraticLifeEnclosure> smartCreateAdviceAnnexList = smartDemocraticLifeEnclosureService.selectByMainId(main.getId());
 			List<SmartDemocraticLifePeople> smartDemocraticLifePeopleList = smartDemocraticLifePeopleService.selectByMainId(main.getId());
-			vo.setSmartDemocraticLifeEnclosureList(smartCreateAdviceAnnexList);
 			vo.setSmartDemocraticLifePeopleList(smartDemocraticLifePeopleList);
 			pageList.add(vo);
 		}
@@ -419,7 +395,7 @@ public class SmartDemocraticLifeMeetingController {
 				for (SmartDemocraticLifeMeetingPage page : list) {
 					SmartDemocraticLifeMeeting po = new SmartDemocraticLifeMeeting();
 					BeanUtils.copyProperties(page, po);
-					smartDemocraticLifeMeetingService.saveMain(po, page.getSmartDemocraticLifePeopleList(), page.getSmartDemocraticLifeEnclosureList());
+					smartDemocraticLifeMeetingService.saveMain(po, page.getSmartDemocraticLifePeopleList());
 				}
 				return Result.OK("文件导入成功！数据行数:" + list.size());
 			} catch (Exception e) {
@@ -434,20 +410,6 @@ public class SmartDemocraticLifeMeetingController {
 			}
 		}
 		return Result.OK("文件导入失败！");
-	}
-
-	@AutoLog(value = "更新文件下载次数")
-	@ApiOperation(value = "更新文件下载次数", notes = "更新文件下载次数")
-	@PutMapping(value = "/downloadCount")
-	public Result<?> downloadCount(@RequestBody SmartDemocraticLifeEnclosure smartDemocraticLifeEnclosure) {
-		SmartDemocraticLifeEnclosure newSmartDemocraticLifeEnclosure = smartDemocraticLifeEnclosureService.getById(smartDemocraticLifeEnclosure.getId());
-		if (newSmartDemocraticLifeEnclosure == null) {
-			return Result.error("未找到对应数据");
-		}
-		Integer downloadCount = newSmartDemocraticLifeEnclosure.getDownloadCount();
-		newSmartDemocraticLifeEnclosure.setDownloadCount(downloadCount + 1);
-		smartDemocraticLifeEnclosureService.updateById(newSmartDemocraticLifeEnclosure);
-		return Result.OK("更新成功!");
 	}
 
 }

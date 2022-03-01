@@ -14,11 +14,14 @@ public class TypeCount {
     /**
      * 类型
      */
-
     private String keyName;
     /**
      * 该类型数量
      */
     private Integer value;
+    /**
+     * 审核状态
+     */
+    private String statu;
 
 }

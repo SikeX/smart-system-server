@@ -44,13 +44,29 @@
               <a-textarea v-model="model.record" rows="4" placeholder="请输入会议记录" />
             </a-form-model-item>
           </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="附件说明" :labelCol="labelCol2" :wrapperCol="wrapperCol2" prop="explanation">
+              <a-textarea v-model="model.explanation" rows="4" placeholder="请输入附件说明" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="附件" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="files">
+              <j-upload v-model="model.files"  ></j-upload>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="审核状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verifyStatus">
+              <a-input-number v-model="model.verifyStatus" placeholder="请输入审核状态" style="width: 100%" />
+            </a-form-model-item>
+          </a-col>
         </a-row>
       </a-form-model>
     </j-form-container>
       <!-- 子表单区域 -->
     <a-tabs v-model="activeKey" @change="handleChangeTabs">
       <a-tab-pane tab="组织生活会参会人员表" :key="refKeys[0]" :forceRender="true">
-        <j-editable-table
+        <j-vxe-table
+          keep-source
           :ref="refKeys[0]"
           :loading="smartOrgMeetingPacpaTable.loading"
           :columns="smartOrgMeetingPacpaTable.columns"
@@ -59,19 +75,8 @@
           :disabled="formDisabled"
           :rowNumber="true"
           :rowSelection="true"
-          :actionButton="true"/>
-      </a-tab-pane>
-      <a-tab-pane tab="组织生活会附件表" :key="refKeys[1]" :forceRender="true">
-        <j-editable-table
-          :ref="refKeys[1]"
-          :loading="smartOrgMeetingAnnexTable.loading"
-          :columns="smartOrgMeetingAnnexTable.columns"
-          :dataSource="smartOrgMeetingAnnexTable.dataSource"
-          :maxHeight="300"
-          :disabled="formDisabled"
-          :rowNumber="true"
-          :rowSelection="true"
-          :actionButton="true"/>
+          :toolbar="true"
+          />
       </a-tab-pane>
     </a-tabs>
   </a-spin>
@@ -80,14 +85,17 @@
 <script>
 
   import { getAction } from '@/api/manage'
-  import { FormTypes,getRefPromise,VALIDATE_NO_PASSED } from '@/utils/JEditableTableUtil'
-  import { JEditableTableModelMixin } from '@/mixins/JEditableTableModelMixin'
+  import { JVxeTableModelMixin } from '@/mixins/JVxeTableModelMixin.js'
+  import { JVXETypes } from '@/components/jeecg/JVxeTable'
+  import { getRefPromise,VALIDATE_FAILED} from '@/components/jeecg/JVxeTable/utils/vxeUtils.js'
   import { validateDuplicateValue } from '@/utils/util'
+  import JFormContainer from '@/components/jeecg/JFormContainer'
 
   export default {
     name: 'SmartOrgMeetingForm',
-    mixins: [JEditableTableModelMixin],
+    mixins: [JVxeTableModelMixin],
     components: {
+      JFormContainer,
     },
     data() {
       return {
@@ -108,7 +116,7 @@
           sm: { span: 20 },
         },
         model:{
-        },
+         },
         // 新增时子表默认添加几行空数据
         addDefaultRowNum: 1,
         validatorRules: {
@@ -119,8 +127,8 @@
               { required: true, message: '请输入上报时间!'},
            ],
         },
-        refKeys: ['smartOrgMeetingPacpa', 'smartOrgMeetingAnnex', ],
-        tableKeys:['smartOrgMeetingPacpa', 'smartOrgMeetingAnnex', ],
+        refKeys: ['smartOrgMeetingPacpa', ],
+        tableKeys:['smartOrgMeetingPacpa', ],
         activeKey: 'smartOrgMeetingPacpa',
         // 组织生活会参会人员表
         smartOrgMeetingPacpaTable: {
@@ -128,54 +136,9 @@
           dataSource: [],
           columns: [
             {
-              title: '参会人员ID',
-              key: 'pacpaId',
-              type: FormTypes.input,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-            },
-          ]
-        },
-        // 组织生活会附件表
-        smartOrgMeetingAnnexTable: {
-          loading: false,
-          dataSource: [],
-          columns: [
-            {
-              title: '附件说明',
-              key: 'description',
-              type: FormTypes.input,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
-            },
-            {
-              title: '附件文件',
-              key: 'annexFilepath',
-              type: FormTypes.file,
-              token:true,
-              responseName:"message",
-              width:"200px",
-              placeholder: '请选择文件',
-              defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
-            },
-            {
-              title: '上传时间',
-              key: 'createTime',
-              type: FormTypes.datetime,
-              disabled:true,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-            },
-            {
-              title: '下载次数',
-              key: 'downloadCount',
-              type: FormTypes.inputNumber,
-              disabled:true,
+              title: '参会人员姓名',
+              key: 'pacpaName',
+               type: JVXETypes.input,
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
@@ -188,9 +151,6 @@
           queryById: "/smartOrgMeeting/smartOrgMeeting/queryById",
           smartOrgMeetingPacpa: {
             list: '/smartOrgMeeting/smartOrgMeeting/querySmartOrgMeetingPacpaByMainId'
-          },
-          smartOrgMeetingAnnex: {
-            list: '/smartOrgMeeting/smartOrgMeeting/querySmartOrgMeetingAnnexByMainId'
           },
         }
       }
@@ -213,7 +173,6 @@
     methods: {
       addBefore(){
         this.smartOrgMeetingPacpaTable.dataSource=[]
-        this.smartOrgMeetingAnnexTable.dataSource=[]
       },
       getAllTable() {
         let values = this.tableKeys.map(key => getRefPromise(this, key))
@@ -227,32 +186,30 @@
         if (this.model.id) {
           let params = { id: this.model.id }
           this.requestSubTableData(this.url.smartOrgMeetingPacpa.list, params, this.smartOrgMeetingPacpaTable)
-          this.requestSubTableData(this.url.smartOrgMeetingAnnex.list, params, this.smartOrgMeetingAnnexTable)
         }
       },
       //校验所有一对一子表表单
-      validateSubForm(allValues){
-          return new Promise((resolve,reject)=>{
-            Promise.all([
-            ]).then(() => {
-              resolve(allValues)
-            }).catch(e => {
-              if (e.error === VALIDATE_NO_PASSED) {
-                // 如果有未通过表单验证的子表，就自动跳转到它所在的tab
-                this.activeKey = e.index == null ? this.activeKey : this.refKeys[e.index]
-              } else {
-                console.error(e)
-              }
+        validateSubForm(allValues){
+            return new Promise((resolve,reject)=>{
+              Promise.all([
+              ]).then(() => {
+                resolve(allValues)
+              }).catch(e => {
+                if (e.error === VALIDATE_FAILED) {
+                  // 如果有未通过表单验证的子表，就自动跳转到它所在的tab
+                  this.activeKey = e.index == null ? this.activeKey : this.refKeys[e.index]
+                } else {
+                  console.error(e)
+                }
+              })
             })
-          })
-      },
+        },
       /** 整理成formData */
       classifyIntoFormData(allValues) {
         let main = Object.assign(this.model, allValues.formValue)
         return {
           ...main, // 展开
-          smartOrgMeetingPacpaList: allValues.tablesValue[0].values,
-          smartOrgMeetingAnnexList: allValues.tablesValue[1].values,
+          smartOrgMeetingPacpaList: allValues.tablesValue[0].tableData,
         }
       },
       validateError(msg){

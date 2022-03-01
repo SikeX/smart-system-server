@@ -146,18 +146,42 @@ public class SmartPremaritalFiling implements Serializable {
 //  @Dict(dictTable = "sys_position", dicText = "name", dicCode = "code")
     @ApiModelProperty(value = "结婚人配偶单位职务")
     private java.lang.String marrySpoUnitPos;
-    /**结婚人配偶父母姓名*/
-    @Excel(name = "结婚人配偶父母姓名", width = 15)
-    @ApiModelProperty(value = "结婚人配偶父母姓名")
-    private java.lang.String marrySpoParName;
-    /**结婚人配偶父母单位*/
-    @Excel(name = "结婚人配偶父母单位", width = 15)
-    @ApiModelProperty(value = "结婚人配偶父母单位")
-    private java.lang.String marrySpoParUnit;
-    /**结婚人配偶单位职务*/
-    @Excel(name = "结婚人配偶单位职务", width = 15)
-    @ApiModelProperty(value = "结婚人配偶单位职务")
-    private java.lang.String marrySpoParUnitPos;
+    /**结婚人配偶父亲姓名*/
+    @Excel(name = "结婚人配偶父亲姓名", width = 15)
+    @ApiModelProperty(value = "结婚人配偶父亲姓名")
+    private java.lang.String marrySpoMaleName;
+    /**结婚人配偶母亲姓名*/
+    @Excel(name = "结婚人配偶母亲姓名", width = 15)
+    @ApiModelProperty(value = "结婚人配偶母亲姓名")
+    private java.lang.String marrySpoFemaleName;
+    /**结婚人配偶父亲单位*/
+    @Excel(name = "结婚人配偶父亲单位", width = 15)
+    @ApiModelProperty(value = "结婚人配偶父亲单位")
+    private java.lang.String marrySpoMaleUnit;
+    /**结婚人配偶母亲单位*/
+    @Excel(name = "结婚人配偶母亲单位", width = 15)
+    @ApiModelProperty(value = "结婚人配偶母亲单位")
+    private java.lang.String marrySpoFemaleUnit;
+    /**结婚人配偶父亲职务*/
+    @Excel(name = "结婚人配偶父亲职务", width = 15)
+    @ApiModelProperty(value = "结婚人配偶父亲职务")
+    private java.lang.String marrySpoMaleUnitPos;
+    /**结婚人配偶母亲职务*/
+    @Excel(name = "结婚人配偶母亲职务", width = 15)
+    @ApiModelProperty(value = "结婚人配偶母亲职务")
+    private java.lang.String marrySpoFemaleUnitPos;
+//    /**结婚人配偶父母姓名*/
+//    @Excel(name = "结婚人配偶父母姓名", width = 15)
+//    @ApiModelProperty(value = "结婚人配偶父母姓名")
+//    private java.lang.String marrySpoParName;
+//    /**结婚人配偶父母单位*/
+//    @Excel(name = "结婚人配偶父母单位", width = 15)
+//    @ApiModelProperty(value = "结婚人配偶父母单位")
+//    private java.lang.String marrySpoParUnit;
+//    /**结婚人配偶单位职务*/
+//    @Excel(name = "结婚人配偶单位职务", width = 15)
+//    @ApiModelProperty(value = "结婚人配偶单位职务")
+//    private java.lang.String marrySpoParUnitPos;
     /**其他需要说明的事情*/
     @Excel(name = "其他需要说明的事情", width = 15)
     @ApiModelProperty(value = "其他需要说明的事情")
@@ -190,4 +214,12 @@ public class SmartPremaritalFiling implements Serializable {
     private java.lang.String verifyStatus;
     @ApiModelProperty(value = "创建人")
     private java.lang.String createBy;
+
+    /**附件*/
+    @Excel(name = "附件", width = 15)
+    @ApiModelProperty(value = "附件")
+    private java.lang.String files;
+
+    private java.lang.String isReport;
+
 }
