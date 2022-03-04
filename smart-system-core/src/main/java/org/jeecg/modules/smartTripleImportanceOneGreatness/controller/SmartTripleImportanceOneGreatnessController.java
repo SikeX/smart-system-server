@@ -14,6 +14,7 @@ import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
+//import org.jeecg.modules.smartTripleImportanceOneGreatness.service.ISmartTripleImportanceOneGreatnessDescriptionService;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
 import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
@@ -27,12 +28,11 @@ import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatnessPacca;
-import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatnessDescription;
 import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatness;
 import org.jeecg.modules.smartTripleImportanceOneGreatness.vo.SmartTripleImportanceOneGreatnessPage;
 import org.jeecg.modules.smartTripleImportanceOneGreatness.service.ISmartTripleImportanceOneGreatnessService;
 import org.jeecg.modules.smartTripleImportanceOneGreatness.service.ISmartTripleImportanceOneGreatnessPaccaService;
-import org.jeecg.modules.smartTripleImportanceOneGreatness.service.ISmartTripleImportanceOneGreatnessDescriptionService;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -63,8 +63,8 @@ public class SmartTripleImportanceOneGreatnessController {
 	private ISmartTripleImportanceOneGreatnessService smartTripleImportanceOneGreatnessService;
 	@Autowired
 	private ISmartTripleImportanceOneGreatnessPaccaService smartTripleImportanceOneGreatnessPaccaService;
-	@Autowired
-	private ISmartTripleImportanceOneGreatnessDescriptionService smartTripleImportanceOneGreatnessDescriptionService;
+	/*@Autowired
+	private ISmartTripleImportanceOneGreatnessDescriptionService smartTripleImportanceOneGreatnessDescriptionService;*/
 	@Autowired
 	private CommonService commonService;
 	@Autowired
@@ -135,14 +135,14 @@ public class SmartTripleImportanceOneGreatnessController {
 			QueryWrapper<SmartTripleImportanceOneGreatness> queryWrapper = QueryGenerator.initQueryWrapper(smartTripleImportanceOneGreatness, map);
 			Page<SmartTripleImportanceOneGreatness> page = new Page<SmartTripleImportanceOneGreatness>(pageNo, pageSize);
 			IPage<SmartTripleImportanceOneGreatness> pageList = smartTripleImportanceOneGreatnessService.page(page, queryWrapper);
-			// 请同步修改edit函数中，将departId变为null，不然会更新成名称
-			List<String> departIds = pageList.getRecords().stream().map(SmartTripleImportanceOneGreatness::getDocumentid).collect(Collectors.toList());
-			if (departIds != null && departIds.size() > 0) {
-				Map<String, String> useDepNames = commonService.getDepNamesByIds(departIds);
-				pageList.getRecords().forEach(item -> {
-					item.setDocumentid(useDepNames.get(item.getDocumentid()));
-				});
-			}
+//			// 请同步修改edit函数中，将departId变为null，不然会更新成名称
+//			List<String> departIds = pageList.getRecords().stream().map(SmartTripleImportanceOneGreatness::getDocumentid).collect(Collectors.toList());
+//			if (departIds != null && departIds.size() > 0) {
+//				Map<String, String> useDepNames = commonService.getDepNamesByIds(departIds);
+//				pageList.getRecords().forEach(item -> {
+//					item.setDocumentid(useDepNames.get(item.getDocumentid()));
+//				});
+//			}
 			return Result.OK(pageList);
 		}
 	}
@@ -162,19 +162,22 @@ public class SmartTripleImportanceOneGreatnessController {
 		if ("".equals(orgCode)) {
 			return Result.error("本用户没有操作权限！");
 		}
-		String id = smartTripleImportanceOneGreatnessService.getDepartIdByOrgCode(orgCode);
-		smartTripleImportanceOneGreatnessPage.setDocumentid(id);
+		String id = commonService.getDepartIdByOrgCode(orgCode);
+		if (id == null) {
+			return Result.error("没有找到部门！");
+		}
 		SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness = new SmartTripleImportanceOneGreatness();
+
 		BeanUtils.copyProperties(smartTripleImportanceOneGreatnessPage, smartTripleImportanceOneGreatness);
+		smartTripleImportanceOneGreatness.setDocumentid(sysUser.getDepartId());
 
 
 		//smartVerify.addVerifyRecord(smartTripleImportanceOneGreatness.getId(),verifyType);
 
-		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType); if(isVerify){
-			smartTripleImportanceOneGreatnessService.saveMain(
-					smartTripleImportanceOneGreatness,
-					smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessPaccaList(),
-					smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessDescriptionList());
+		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
+		if(isVerify){
+			smartTripleImportanceOneGreatnessService.saveMain(smartTripleImportanceOneGreatness,
+					smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessPaccaList());
 			String recordId = smartTripleImportanceOneGreatness.getId();
 		    smartVerify.addVerifyRecord(recordId,verifyType);
 		    smartTripleImportanceOneGreatness.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
@@ -183,10 +186,8 @@ public class SmartTripleImportanceOneGreatnessController {
 		    	// 设置审核状态为免审
 			 smartTripleImportanceOneGreatness.setVerifyStatus("3");
 			// 直接添加，不走审核流程
-			smartTripleImportanceOneGreatnessService.saveMain(
-					smartTripleImportanceOneGreatness,
-					smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessPaccaList(),
-					smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessDescriptionList());
+			smartTripleImportanceOneGreatnessService.saveMain(smartTripleImportanceOneGreatness,
+					smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessPaccaList());
 		    }
 
 		return Result.OK("添加成功！");
@@ -211,24 +212,25 @@ public class SmartTripleImportanceOneGreatnessController {
 		smartTripleImportanceOneGreatness.setDocumentid(null);
 		smartTripleImportanceOneGreatness.setCreateTime(null);
 
-		smartTripleImportanceOneGreatnessService.updateMain(smartTripleImportanceOneGreatness, smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessPaccaList(),smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessDescriptionList());
+		smartTripleImportanceOneGreatnessService.updateMain(smartTripleImportanceOneGreatness,
+				smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessPaccaList());
 		return Result.OK("编辑成功!");
 	}
 
-	 @AutoLog(value = "更新文件下载次数")
-	 @ApiOperation(value="更新文件下载次数", notes="更新文件下载次数")
-	 @PutMapping(value = "/downloadTimes")
-	 public Result<?> edit(@RequestBody SmartTripleImportanceOneGreatnessDescription
-								   smartTripleImportanceOneGreatnessDescription) {
-		 SmartTripleImportanceOneGreatnessDescription
-				 newSmartTripleImportanceOneGreatnessDescription
-				 =smartTripleImportanceOneGreatnessDescriptionService.getById(smartTripleImportanceOneGreatnessDescription.getId());
-		 int currentCount = newSmartTripleImportanceOneGreatnessDescription.getDownloadTimes();
-		 newSmartTripleImportanceOneGreatnessDescription.setDownloadTimes(currentCount+1);
-		 smartTripleImportanceOneGreatnessDescriptionService.updateById(newSmartTripleImportanceOneGreatnessDescription);
-
-		 return Result.OK("更新成功!");
-	 }
+//	 @AutoLog(value = "更新文件下载次数")
+//	 @ApiOperation(value="更新文件下载次数", notes="更新文件下载次数")
+//	 @PutMapping(value = "/downloadTimes")
+//	 public Result<?> edit(@RequestBody SmartTripleImportanceOneGreatnessDescription
+//								   smartTripleImportanceOneGreatnessDescription) {
+//		 SmartTripleImportanceOneGreatnessDescription
+//				 newSmartTripleImportanceOneGreatnessDescription
+//				 =smartTripleImportanceOneGreatnessDescriptionService.getById(smartTripleImportanceOneGreatnessDescription.getId());
+//		 int currentCount = newSmartTripleImportanceOneGreatnessDescription.getDownloadTimes();
+//		 newSmartTripleImportanceOneGreatnessDescription.setDownloadTimes(currentCount+1);
+//		 smartTripleImportanceOneGreatnessDescriptionService.updateById(newSmartTripleImportanceOneGreatnessDescription);
+//
+//		 return Result.OK("更新成功!");
+//	 }
 
 	/**
 	 *   通过id删除
@@ -294,14 +296,14 @@ public class SmartTripleImportanceOneGreatnessController {
 	 *
 	 * @param id
 	 * @return
-	 */
+	 *//*
 	@AutoLog(value = "三重一大附件表通过主表ID查询")
 	@ApiOperation(value="三重一大附件表主表ID查询", notes="三重一大附件表-通主表ID查询")
 	@GetMapping(value = "/querySmartTripleImportanceOneGreatnessDescriptionByMainId")
 	public Result<?> querySmartTripleImportanceOneGreatnessDescriptionListByMainId(@RequestParam(name="id",required=true) String id) {
 		List<SmartTripleImportanceOneGreatnessDescription> smartTripleImportanceOneGreatnessDescriptionList = smartTripleImportanceOneGreatnessDescriptionService.selectByMainId(id);
 		return Result.OK(smartTripleImportanceOneGreatnessDescriptionList);
-	}
+	}*/
 
     /**
     * 导出excel
@@ -375,8 +377,8 @@ public class SmartTripleImportanceOneGreatnessController {
           BeanUtils.copyProperties(main, vo);
           List<SmartTripleImportanceOneGreatnessPacca> smartTripleImportanceOneGreatnessPaccaList = smartTripleImportanceOneGreatnessPaccaService.selectByMainId(main.getId());
           vo.setSmartTripleImportanceOneGreatnessPaccaList(smartTripleImportanceOneGreatnessPaccaList);
-          List<SmartTripleImportanceOneGreatnessDescription> smartTripleImportanceOneGreatnessDescriptionList = smartTripleImportanceOneGreatnessDescriptionService.selectByMainId(main.getId());
-          vo.setSmartTripleImportanceOneGreatnessDescriptionList(smartTripleImportanceOneGreatnessDescriptionList);
+          /*List<SmartTripleImportanceOneGreatnessDescription> smartTripleImportanceOneGreatnessDescriptionList = smartTripleImportanceOneGreatnessDescriptionService.selectByMainId(main.getId());
+          vo.setSmartTripleImportanceOneGreatnessDescriptionList(smartTripleImportanceOneGreatnessDescriptionList);*/
           pageList.add(vo);
       }
 
@@ -416,7 +418,7 @@ public class SmartTripleImportanceOneGreatnessController {
               for (SmartTripleImportanceOneGreatnessPage page : list) {
                   SmartTripleImportanceOneGreatness po = new SmartTripleImportanceOneGreatness();
                   BeanUtils.copyProperties(page, po);
-                  smartTripleImportanceOneGreatnessService.saveMain(po, page.getSmartTripleImportanceOneGreatnessPaccaList(),page.getSmartTripleImportanceOneGreatnessDescriptionList());
+                  smartTripleImportanceOneGreatnessService.saveMain(po, page.getSmartTripleImportanceOneGreatnessPaccaList());
               }
               return Result.OK("文件导入成功！数据行数:" + list.size());
           } catch (Exception e) {

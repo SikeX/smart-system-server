@@ -115,4 +115,6 @@ public class SmartInnerPartyTalk implements Serializable {
     private java.lang.Integer delFlag;
     @ApiModelProperty(value = "审核状态")
     private java.lang.String verifyStatus;
+
+    private java.lang.String files;
 }

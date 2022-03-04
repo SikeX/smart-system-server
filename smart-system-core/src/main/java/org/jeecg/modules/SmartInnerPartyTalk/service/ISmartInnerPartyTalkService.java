@@ -20,14 +20,16 @@ public interface ISmartInnerPartyTalkService extends IService<SmartInnerPartyTal
 	 * 添加一对多
 	 * 
 	 */
-	public void saveMain(SmartInnerPartyTalk smartInnerPartyTalk,List<SmartInnerPartyPacpa> smartInnerPartyPacpaList,List<SmartInnerPartyAnnex> smartInnerPartyAnnexList) ;
-	
+	//public void saveMain(SmartInnerPartyTalk smartInnerPartyTalk,List<SmartInnerPartyPacpa> smartInnerPartyPacpaList,List<SmartInnerPartyAnnex> smartInnerPartyAnnexList) ;
+	public void saveMain(SmartInnerPartyTalk smartInnerPartyTalk,List<SmartInnerPartyPacpa> smartInnerPartyPacpaList) ;
+
 	/**
 	 * 修改一对多
 	 * 
 	 */
-	public void updateMain(SmartInnerPartyTalk smartInnerPartyTalk,List<SmartInnerPartyPacpa> smartInnerPartyPacpaList,List<SmartInnerPartyAnnex> smartInnerPartyAnnexList);
-	
+	//public void updateMain(SmartInnerPartyTalk smartInnerPartyTalk,List<SmartInnerPartyPacpa> smartInnerPartyPacpaList,List<SmartInnerPartyAnnex> smartInnerPartyAnnexList);
+	public void updateMain(SmartInnerPartyTalk smartInnerPartyTalk,List<SmartInnerPartyPacpa> smartInnerPartyPacpaList);
+
 	/**
 	 * 删除一对多
 	 */

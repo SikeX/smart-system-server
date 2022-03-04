@@ -867,4 +867,36 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
             }
         }
     }
+	/**
+	 * 根据镇名得到镇ID
+	 * @param name
+	 * @return
+	 */
+	@Override
+	public String getZhenIdByName(String name){
+		return this.baseMapper.getZhenIdByName(name);
+	};
+	/**
+	 * 根据镇名得到镇ID
+	 * @param zhen
+	 * @param cun
+	 * @return
+	 */
+	@Override
+	public String getCunIdByNames(String zhen,String cun){
+		String cunId = null;
+		if(cun.equals("前进村"))
+		{
+			if(zhen.equals("新农镇"))
+			{
+				cunId = "e0ce48ecb1734d77b843d28017b95f39";
+			}else
+			{
+				cunId = "a41f094b9d8e4875b2f60ef2993e8fa0";
+			}
+		} else {
+			cunId = this.baseMapper.getZhenIdByName(cun);
+		}
+		return cunId;
+	};
 }

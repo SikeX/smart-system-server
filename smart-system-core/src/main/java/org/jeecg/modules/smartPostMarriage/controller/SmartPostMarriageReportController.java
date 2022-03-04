@@ -13,6 +13,8 @@ import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.smartExportWord.util.WordUtils;
+import org.jeecg.modules.smartPremaritalFiling.entity.SmartPremaritalFiling;
+import org.jeecg.modules.smartPremaritalFiling.service.ISmartPremaritalFilingService;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
 import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
@@ -62,6 +64,9 @@ public class SmartPostMarriageReportController {
 
     @Autowired
     private BaseCommonService baseCommonService;
+
+    @Autowired
+    ISmartPremaritalFilingService smartPremaritalFilingService;
 
     @Autowired
     CommonService commonService;
@@ -160,7 +165,7 @@ public class SmartPostMarriageReportController {
     @PostMapping(value = "/add")
     public Result<?> add(@RequestBody SmartPostMarriageReportPage smartPostMarriageReportPage) {
 
-        //判断有没有填报
+        //根据婚前报备id判断有没有婚后填报
         SmartPostMarriageReport smartPostMarriageReport1 = smartPostMarriageReportService.getByPreId(
                 smartPostMarriageReportPage.getPreId()
         );
@@ -238,6 +243,7 @@ public class SmartPostMarriageReportController {
     @ApiOperation(value = "8项规定婚后报备表-通过id删除", notes = "8项规定婚后报备表-通过id删除")
     @DeleteMapping(value = "/delete")
     public Result<?> delete(@RequestParam(name = "id", required = true) String id) {
+        System.out.println(id);
 
         //修改preId为0
         //查询婚后数据，获取婚前id
@@ -261,6 +267,7 @@ public class SmartPostMarriageReportController {
     @ApiOperation(value = "8项规定婚后报备表-批量删除", notes = "8项规定婚后报备表-批量删除")
     @DeleteMapping(value = "/deleteBatch")
     public Result<?> deleteBatch(@RequestParam(name = "ids", required = true) String ids) {
+        System.out.println(ids);
 
         //更新pre表的is_report为”0“
         List<String> tem = Arrays.asList(ids.split(","));
@@ -288,7 +295,9 @@ public class SmartPostMarriageReportController {
     @AutoLog(value = "8项规定婚后报备表-通过id查询")
     @ApiOperation(value = "8项规定婚后报备表-通过id查询", notes = "8项规定婚后报备表-通过id查询")
     @GetMapping(value = "/queryById")
-    public Result<?> queryById(@RequestParam(name = "id", required = true) String id) {
+    public Result<?> queryById(@RequestParam(name = "id", required = true) String id, @RequestParam(name = "preId", required = false) String preId) {
+        System.out.println(id);
+        System.out.println(preId);
         SmartPostMarriageReport smartPostMarriageReport = smartPostMarriageReportService.getById(id);
         if (smartPostMarriageReport == null) {
             return Result.error("未找到对应数据");
@@ -307,6 +316,7 @@ public class SmartPostMarriageReportController {
     @ApiOperation(value = "8项规定婚后报备宴请发票与附件表主表ID查询", notes = "8项规定婚后报备宴请发票与附件表-通主表ID查询")
     @GetMapping(value = "/querySmartPostMarriageReportFileByMainId")
     public Result<?> querySmartPostMarriageReportFileListByMainId(@RequestParam(name = "id", required = true) String id) {
+        System.out.println(id);
         List<SmartPostMarriageReportFile> smartPostMarriageReportFileList = smartPostMarriageReportFileService.selectByMainId(id);
         return Result.OK(smartPostMarriageReportFileList);
     }
@@ -315,10 +325,11 @@ public class SmartPostMarriageReportController {
      * 导出excel
      *
      * @param req
-     * @param smartPostMarriageReport
+     * @param smartPremaritalFiling
      */
     @RequestMapping(value = "/exportXls")
-    public ModelAndView exportXls(HttpServletRequest req, HttpServletResponse response, SmartPostMarriageReport smartPostMarriageReport) throws IOException {
+    public ModelAndView exportXls(HttpServletRequest req, HttpServletResponse response, SmartPremaritalFiling smartPremaritalFiling) throws IOException {
+        System.out.println(smartPremaritalFiling);
         // Step.1 组装查询条件查询数据
 //		 QueryWrapper<SmartPostMarriageReport> queryWrapper = QueryGenerator.initQueryWrapper(smartPostMarriageReport, request.getParameterMap());
 
@@ -328,17 +339,17 @@ public class SmartPostMarriageReportController {
 
         // 获取用户角色
         List<String> role = sysBaseAPI.getRolesByUsername(username);
-        List<SmartPostMarriageReport> queryList = new ArrayList<SmartPostMarriageReport>();
+        List<SmartPremaritalFiling> queryList1 = new ArrayList<SmartPremaritalFiling>();
 
         if (role.contains("CommonUser")) {
-            QueryWrapper<SmartPostMarriageReport> queryWrapper = new QueryWrapper<>();
+            QueryWrapper<SmartPremaritalFiling> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("create_by", username);
-            queryList = smartPostMarriageReportService.list(queryWrapper);
+            queryList1 = smartPremaritalFilingService.list(queryWrapper);
         } else {
             // TODO：规则，下面是 以＊*开始
             String rule = "in";
             // TODO：查询字段
-            String field = "workDepartment";
+            String field = "departId";
 
 
             // 获取子单位ID
@@ -359,9 +370,19 @@ public class SmartPostMarriageReportController {
             params = new String[]{"and"};
             map.put("superQueryMatchType", params);
 
-            QueryWrapper<SmartPostMarriageReport> queryWrapper = QueryGenerator.initQueryWrapper(smartPostMarriageReport, map);
-            queryList = smartPostMarriageReportService.list(queryWrapper);
+            QueryWrapper<SmartPremaritalFiling> queryWrapper = QueryGenerator.initQueryWrapper(smartPremaritalFiling, map);
+            queryList1 = smartPremaritalFilingService.list(queryWrapper);
         }
+
+        //将婚前报备转换为婚后报备数据。。。
+        List<String> preIdList = new ArrayList<>();
+        for(int i = 0; i < queryList1.size(); i++){
+            preIdList.add(queryList1.get(i).getId());
+        }
+        QueryWrapper<SmartPostMarriageReport> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("pre_id", preIdList);
+        List<SmartPostMarriageReport> queryList = smartPostMarriageReportService.list(queryWrapper);
+
 
         // Step.1 组装查询条件查询数据
 
@@ -370,9 +391,20 @@ public class SmartPostMarriageReportController {
         String selections = req.getParameter("selections");
         List<SmartPostMarriageReport> smartPostMarriageReportList = new ArrayList<SmartPostMarriageReport>();
         if (oConvertUtils.isEmpty(selections)) {
+            //已选择的id为空
             smartPostMarriageReportList = queryList;
         } else {
-            List<String> selectionList = Arrays.asList(selections.split(","));
+            //已选择的id不空。。。
+            List<String> selectionList1 = Arrays.asList(selections.split(","));
+            //将婚前id转换为婚后id
+            QueryWrapper<SmartPostMarriageReport> covert = new QueryWrapper<>();
+            covert.in("pre_id", selectionList1);
+            List<SmartPostMarriageReport> tem = smartPostMarriageReportService.list(queryWrapper);
+            List<String> selectionList = new ArrayList<>();
+            for(int i = 0; i < tem.size(); i++){
+                selectionList.add(tem.get(i).getId());
+            }
+
             smartPostMarriageReportList = queryList.stream().filter(item -> selectionList.contains(item.getId())).collect(Collectors.toList());
         }
 
@@ -459,7 +491,18 @@ public class SmartPostMarriageReportController {
 
         //获取需要的数据
         List<String> idsList = Arrays.asList(ids.split(","));
-        List<SmartPostMarriageReport> smartPostMarriageReports = smartPostMarriageReportService.listByIds(idsList);
+        System.out.println(ids);
+        QueryWrapper<SmartPostMarriageReport> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id").in("pre_id", idsList);
+        List<SmartPostMarriageReport> list = smartPostMarriageReportService.list(queryWrapper);
+
+        List<String> idList = new ArrayList<>();
+
+        for(int i = 0; i < list.size(); i++){
+            idList.add(list.get(i).getId());
+        }
+
+        List<SmartPostMarriageReport> smartPostMarriageReports = smartPostMarriageReportService.listByIds(idList);
 
         //存放数据map
         List<Map<String, Object>> dataList = new ArrayList<>();
@@ -492,6 +535,19 @@ public class SmartPostMarriageReportController {
         //设置模板
         String ftlTemplateName = "/templates/SmartPostMarriageReport.ftl";
         WordUtils.exportWordBatch(dataList, fileNamesList, ftlTemplateName, response, request);
+    }
+
+    //根据婚前id查找婚后报备记录
+    @GetMapping(value = "/queryByPreId")
+    public Result<?> queryByPreId(@RequestParam(name = "preId", required = true) String preId) {
+        System.out.println(preId);
+
+        SmartPostMarriageReport smartPostMarriageReport = smartPostMarriageReportService.getByPreId(preId);
+        if (smartPostMarriageReport == null) {
+            return Result.error("未找到对应数据");
+        }
+        return Result.OK(smartPostMarriageReport);
+
     }
 
 }

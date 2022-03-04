@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * @Description: 组织生活会参会人员表
  * @Author: jeecg-boot
- * @Date:   2021-11-14
+ * @Date:   2022-02-26
  * @Version: V1.0
  */
 @Service

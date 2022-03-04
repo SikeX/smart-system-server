@@ -51,4 +51,6 @@ public interface ISmartJobService extends IService<SmartJob> {
     void changeJobStatus(SmartJob smartJob);
 
     SysUser getPeopleInfo(String peopleId);
+
+    void updatePreIsReport(String id);
 }

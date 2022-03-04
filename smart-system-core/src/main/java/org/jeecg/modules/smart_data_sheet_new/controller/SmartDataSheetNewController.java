@@ -94,9 +94,9 @@ public class SmartDataSheetNewController extends JeecgController<SmartDataSheetN
 		String id = smartDataSheetNewService.getDepartIdByOrgCode(orgCode);
 		String name =smartDataSheetNewService.getDepartNameById(id) ;
 		smartDataSheetNew.setDepartmentid(name);
-		String publishId = smartDataSheetNew.getPublisher();
+		String publishId = smartDataSheetNew.getCreateBy();
 		String pName = smartDataSheetNewService.getUserNameById(publishId);
-		smartDataSheetNew.setPublisher(pName);
+//		smartDataSheetNew.setPublisher(pName);
 
 
 		smartDataSheetNewService.save(smartDataSheetNew);

@@ -28,12 +28,12 @@ public class SmartInnerPartyTalkServiceImpl extends ServiceImpl<SmartInnerPartyT
 	private SmartInnerPartyTalkMapper smartInnerPartyTalkMapper;
 	@Autowired
 	private SmartInnerPartyPacpaMapper smartInnerPartyPacpaMapper;
-	@Autowired
-	private SmartInnerPartyAnnexMapper smartInnerPartyAnnexMapper;
+	//@Autowired
+	//private SmartInnerPartyAnnexMapper smartInnerPartyAnnexMapper;
 	
 	@Override
 	@Transactional
-	public void saveMain(SmartInnerPartyTalk smartInnerPartyTalk, List<SmartInnerPartyPacpa> smartInnerPartyPacpaList,List<SmartInnerPartyAnnex> smartInnerPartyAnnexList) {
+	public void saveMain(SmartInnerPartyTalk smartInnerPartyTalk, List<SmartInnerPartyPacpa> smartInnerPartyPacpaList) {
 		smartInnerPartyTalkMapper.insert(smartInnerPartyTalk);
 		if(smartInnerPartyPacpaList!=null && smartInnerPartyPacpaList.size()>0) {
 			for(SmartInnerPartyPacpa entity:smartInnerPartyPacpaList) {
@@ -42,23 +42,23 @@ public class SmartInnerPartyTalkServiceImpl extends ServiceImpl<SmartInnerPartyT
 				smartInnerPartyPacpaMapper.insert(entity);
 			}
 		}
-		if(smartInnerPartyAnnexList!=null && smartInnerPartyAnnexList.size()>0) {
-			for(SmartInnerPartyAnnex entity:smartInnerPartyAnnexList) {
-				//外键设置
-				entity.setMainId(smartInnerPartyTalk.getId());
-				smartInnerPartyAnnexMapper.insert(entity);
-			}
-		}
+//		if(smartInnerPartyAnnexList!=null && smartInnerPartyAnnexList.size()>0) {
+//			for(SmartInnerPartyAnnex entity:smartInnerPartyAnnexList) {
+//				//外键设置
+//				entity.setMainId(smartInnerPartyTalk.getId());
+//				smartInnerPartyAnnexMapper.insert(entity);
+//			}
+//		}
 	}
 
 	@Override
 	@Transactional
-	public void updateMain(SmartInnerPartyTalk smartInnerPartyTalk,List<SmartInnerPartyPacpa> smartInnerPartyPacpaList,List<SmartInnerPartyAnnex> smartInnerPartyAnnexList) {
+	public void updateMain(SmartInnerPartyTalk smartInnerPartyTalk,List<SmartInnerPartyPacpa> smartInnerPartyPacpaList) {
 		smartInnerPartyTalkMapper.updateById(smartInnerPartyTalk);
 		
 		//1.先删除子表数据
 		smartInnerPartyPacpaMapper.deleteByMainId(smartInnerPartyTalk.getId());
-		smartInnerPartyAnnexMapper.deleteByMainId(smartInnerPartyTalk.getId());
+		//smartInnerPartyAnnexMapper.deleteByMainId(smartInnerPartyTalk.getId());
 		
 		//2.子表数据重新插入
 		if(smartInnerPartyPacpaList!=null && smartInnerPartyPacpaList.size()>0) {
@@ -68,20 +68,20 @@ public class SmartInnerPartyTalkServiceImpl extends ServiceImpl<SmartInnerPartyT
 				smartInnerPartyPacpaMapper.insert(entity);
 			}
 		}
-		if(smartInnerPartyAnnexList!=null && smartInnerPartyAnnexList.size()>0) {
-			for(SmartInnerPartyAnnex entity:smartInnerPartyAnnexList) {
-				//外键设置
-				entity.setMainId(smartInnerPartyTalk.getId());
-				smartInnerPartyAnnexMapper.insert(entity);
-			}
-		}
+//		if(smartInnerPartyAnnexList!=null && smartInnerPartyAnnexList.size()>0) {
+//			for(SmartInnerPartyAnnex entity:smartInnerPartyAnnexList) {
+//				//外键设置
+//				entity.setMainId(smartInnerPartyTalk.getId());
+//				smartInnerPartyAnnexMapper.insert(entity);
+//			}
+//		}
 	}
 
 	@Override
 	@Transactional
 	public void delMain(String id) {
 		smartInnerPartyPacpaMapper.deleteByMainId(id);
-		smartInnerPartyAnnexMapper.deleteByMainId(id);
+		//smartInnerPartyAnnexMapper.deleteByMainId(id);
 		smartInnerPartyTalkMapper.deleteById(id);
 	}
 
@@ -90,7 +90,7 @@ public class SmartInnerPartyTalkServiceImpl extends ServiceImpl<SmartInnerPartyT
 	public void delBatchMain(Collection<? extends Serializable> idList) {
 		for(Serializable id:idList) {
 			smartInnerPartyPacpaMapper.deleteByMainId(id.toString());
-			smartInnerPartyAnnexMapper.deleteByMainId(id.toString());
+			//smartInnerPartyAnnexMapper.deleteByMainId(id.toString());
 			smartInnerPartyTalkMapper.deleteById(id);
 		}
 	}

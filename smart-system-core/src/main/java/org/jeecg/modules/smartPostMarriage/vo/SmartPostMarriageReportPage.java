@@ -37,7 +37,7 @@ public class SmartPostMarriageReportPage implements Serializable {
 	@ApiModelProperty(value = "单位")
 	private java.lang.String workDepartment;
 	/**人员工号*/
-	@Excel(name = "人员id", width = 15)
+//	@Excel(name = "人员id", width = 15)
 	@ApiModelProperty(value = "人员id")
 	private java.lang.String personId;
 	/**姓名*/
