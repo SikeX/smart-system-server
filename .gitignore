@@ -8,3 +8,4 @@ rebel.xml
 **/.DS_Store
 /files/
 **/logs/
+/jeecg-boot-module-system/src/main/resources/application-dev.yml
