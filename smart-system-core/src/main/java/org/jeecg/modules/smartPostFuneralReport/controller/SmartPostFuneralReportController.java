@@ -1,9 +1,6 @@
 package org.jeecg.modules.smartPostFuneralReport.controller;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -11,6 +8,7 @@ import java.net.URLDecoder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.hutool.core.util.ObjectUtil;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.api.ISysBaseAPI;
@@ -265,12 +263,98 @@ public class SmartPostFuneralReportController extends JeecgController<SmartPostF
     /**
     * 导出excel
     *
-    * @param request
+    * @param req
     * @param smartPostFuneralReport
     */
     @RequestMapping(value = "/exportXls")
-    public ModelAndView exportXls(HttpServletRequest request, SmartPostFuneralReport smartPostFuneralReport) {
-        return super.exportXls(request, smartPostFuneralReport, SmartPostFuneralReport.class, "丧事事后报备表");
+    public ModelAndView exportXls(HttpServletRequest req, HttpServletResponse response,  SmartPostFuneralReport smartPostFuneralReport)throws Exception {
+		// 获取登录用户信息，可以用来查询单位部门信息
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+		String username = sysUser.getUsername();
+
+		// 获取用户角色
+		List<String> role = sysBaseAPI.getRolesByUsername(username);
+
+		List<SmartPostFuneralReport> queryList = new ArrayList<SmartPostFuneralReport>();
+
+
+		// 如果是普通用户，则只能看到自己创建的数据
+		if(role.contains("CommonUser")) {
+			QueryWrapper<SmartPostFuneralReport> queryWrapper = new QueryWrapper<>();
+			queryWrapper.eq("create_by",username);
+			queryList = smartPostFuneralReportService.list(queryWrapper);
+		} else {
+			// 1. 规则，下面是 以**开始
+			String rule = "in";
+			// 2. 查询字段
+			String field = "departId";
+
+			// 获取子单位ID
+			String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
+
+			HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+			// 获取请求参数中的superQueryParams
+			List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+
+			// 添加额外查询条件，用于权限控制
+			paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+					+ childrenIdString
+					+ "%22,%22field%22:%22" + field + "%22%7D%5D");
+			String[] params = new String[paramsList.size()];
+			paramsList.toArray(params);
+			map.put("superQueryParams", params);
+			params = new String[]{"and"};
+			map.put("superQueryMatchType", params);
+			QueryWrapper<SmartPostFuneralReport> queryWrapper = QueryGenerator.initQueryWrapper(smartPostFuneralReport, map);
+
+			queryList = smartPostFuneralReportService.list(queryWrapper);
+		}
+
+
+
+		// Step.1 组装查询条件查询数据
+//      QueryWrapper<SmartEvaluateMeeting> queryWrapper = QueryGenerator.initQueryWrapper(smartEvaluateMeeting, request.getParameterMap());
+//      LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+		//Step.2 获取导出数据
+//      List<SmartEvaluateMeeting> queryList = smartEvaluateMeetingService.list(queryWrapper);
+		// 过滤选中数据
+		String selections = req.getParameter("selections");
+		List<SmartPostFuneralReport> smartPostFuneralReportList = new ArrayList<SmartPostFuneralReport>();
+		if(oConvertUtils.isEmpty(selections)) {
+			smartPostFuneralReportList = queryList;
+		}else {
+			List<String> selectionList = Arrays.asList(selections.split(","));
+			smartPostFuneralReportList = queryList.stream().filter(item -> selectionList.contains(item.getId())).collect(Collectors.toList());
+		}
+
+		// Step.3 组装pageList
+//		List<SmartFuneralReport> pageList = new ArrayList<SmartFuneralReport>();
+//		for (SmartFuneralReport main : smartFuneralReportList) {
+//			SmartFuneralReportPage vo = new SmartFuneralReportPage();
+//			BeanUtils.copyProperties(main, vo);
+//			List<SmartEvaluateMeetingPacpa> smartEvaluateMeetingPacpaList = smartEvaluateMeetingPacpaService.selectByMainId(main.getId());
+//			vo.setSmartEvaluateMeetingPacpaList(smartEvaluateMeetingPacpaList);
+//			List<SmartEvaluateMeetingAnnex> smartEvaluateMeetingAnnexList = smartEvaluateMeetingAnnexService.selectByMainId(main.getId());
+//			vo.setSmartEvaluateMeetingAnnexList(smartEvaluateMeetingAnnexList);
+//			pageList.add(vo);
+//		}
+
+		// Step.4 AutoPoi 导出Excel
+		ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
+		mv.addObject(NormalExcelConstants.FILE_NAME, "丧事事后报备表");
+		mv.addObject(NormalExcelConstants.CLASS, SmartPostFuneralReport.class);
+		mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("丧事事后报备表数据", "导出人:"+sysUser.getRealname(), "丧事事后报备表表"));
+		mv.addObject(NormalExcelConstants.DATA_LIST, smartPostFuneralReportList);
+
+		// List深拷贝，否则返回前端会没数据
+		List<SmartPostFuneralReport> newPageList = ObjectUtil.cloneByStream(smartPostFuneralReportList);
+
+		baseCommonService.addExportLog(mv.getModel(), "丧事事后报备", req, response);
+
+		mv.addObject(NormalExcelConstants.DATA_LIST, newPageList);
+		return mv;
     }
 
     /**
