@@ -8,7 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cn.hutool.core.util.ObjectUtil;
+import org.jeecg.common.api.CommonAPI;
 import org.jeecg.common.system.api.ISysBaseAPI;
+import org.jeecg.common.system.util.JwtUtil;
 import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
@@ -106,8 +108,16 @@ public class SmartPremaritalFilingController {
                                    @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                    HttpServletRequest req) {
         // 获取登录用户信息，可以用来查询单位部门信息
-        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-        String username = sysUser.getUsername();
+        String username;
+        LoginUser sysUser;
+        String wxToken = req.getParameter("token");
+        if (wxToken == null) {
+            sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+            username = sysUser.getUsername();
+        } else {
+            username = JwtUtil.getUsername(wxToken);
+            sysUser = sysBaseAPI.getUserByName(username);
+        }
         // 获取用户角色
         List<String> role = sysBaseAPI.getRolesByUsername(username);
         Page<SmartPremaritalFiling> page = new Page<SmartPremaritalFiling>(pageNo, pageSize);

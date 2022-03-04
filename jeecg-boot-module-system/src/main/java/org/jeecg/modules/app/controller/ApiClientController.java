@@ -5,10 +5,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.minio.credentials.Jwt;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
+import org.jeecg.common.api.CommonAPI;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.constant.CacheConstant;
 import org.jeecg.common.constant.CommonConstant;
@@ -39,6 +41,7 @@ import javax.annotation.Resource;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.servlet.http.HttpServletRequest;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -72,6 +75,8 @@ public class ApiClientController extends ApiBaseController {
     private WechatConfig wechatConfig;
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private CommonAPI commonAPI;
 
     /**
      * 激活设备接口
@@ -495,6 +500,14 @@ public class ApiClientController extends ApiBaseController {
         result.setCode(200);
         baseCommonService.addLog("用户名: " + username + ",登录成功[移动端]！", CommonConstant.LOG_TYPE_1, null);
         return result;
+    }
+
+    @GetMapping(value = "/user/info")
+    @ApiOperation(value = "微信-获取平台用户信息", notes = "微信小程序端-获取用户详细信息")
+    public Result<?> wxGetUserInfo(@RequestParam("token") String token) {
+        String username = JwtUtil.getUsername(token);
+        SysUser user = sysUserService.getUserByName(username);
+        return Result.OK(user);
     }
 
 }

@@ -136,6 +136,7 @@ public class ShiroConfig {
 
         //app接口排除
         filterChainDefinitionMap.put("/api/client/**", "anon");
+        filterChainDefinitionMap.put("/sys/dict/getDictItems/**", "anon");
 
         // 信息公示排除
         filterChainDefinitionMap.put("/publicity/getQuery","anon");
