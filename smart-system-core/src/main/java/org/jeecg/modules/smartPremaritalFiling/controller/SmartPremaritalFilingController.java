@@ -108,16 +108,8 @@ public class SmartPremaritalFilingController {
                                    @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                    HttpServletRequest req) {
         // 获取登录用户信息，可以用来查询单位部门信息
-        String username;
-        LoginUser sysUser;
-        String wxToken = req.getParameter("token");
-        if (wxToken == null) {
-            sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-            username = sysUser.getUsername();
-        } else {
-            username = JwtUtil.getUsername(wxToken);
-            sysUser = sysBaseAPI.getUserByName(username);
-        }
+        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+        String username = sysUser.getUsername();
         // 获取用户角色
         List<String> role = sysBaseAPI.getRolesByUsername(username);
         Page<SmartPremaritalFiling> page = new Page<SmartPremaritalFiling>(pageNo, pageSize);
