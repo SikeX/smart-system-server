@@ -24,7 +24,7 @@ public class FuneralSendCaution {
     @Autowired
     private ISysBaseAPI sysBaseAPI;
 
-    @Scheduled(cron = "0 8 17 * * ?")
+    @Scheduled(cron = "0 20 20 * * ?")
 
     private void sendCaution() {//给管理员发送提醒
         //获取项目的状态（开始或关闭）
@@ -40,9 +40,9 @@ public class FuneralSendCaution {
                 for (SmartFuneralReport s : send) {
 //                    String status = s.getProcessingResult();
 //                    if(status.equals("未受理")){
-                        long now=new Date().getTime();//当前时间
+                        long now =new Date().getTime();//当前时间
                         long report = s.getReportTime().getTime();//口头报备填写时间
-                        long time=report-now;
+                        long time=now - report;
                         time/= ONE_DAY;
                         if(time<15){
                             continue;
