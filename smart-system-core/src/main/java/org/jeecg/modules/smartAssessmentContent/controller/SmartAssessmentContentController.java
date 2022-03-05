@@ -15,6 +15,8 @@ import org.jeecg.modules.smartAssessmentContent.entity.SmartAssessmentContent;
 import org.jeecg.modules.smartAssessmentContent.service.ISmartAssessmentContentService;
 import org.jeecg.modules.smartAssessmentMission.entity.SmartAssessmentMission;
 import org.jeecg.modules.smartAssessmentMission.service.ISmartAssessmentMissionService;
+import org.jeecg.modules.smartRankVisible.entity.SmartRankVisible;
+import org.jeecg.modules.smartRankVisible.service.ISmartRankVisibleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -41,6 +43,9 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
 
     @Autowired
     private ISmartAssessmentMissionService smartAssessmentMissionService;
+
+    @Autowired
+    private ISmartRankVisibleService smartRankVisibleService;
 
     /**
      * 分页列表查询
@@ -158,6 +163,15 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
     @PostMapping(value = "/add")
     public Result<?> add(@RequestBody SmartAssessmentContent smartAssessmentContent) {
         smartAssessmentContentService.addSmartAssessmentContent(smartAssessmentContent);
+        // 配置考核排名字段是否可见
+        if(smartAssessmentContent.getPid() == "0") {
+            SmartRankVisible smartRankVisible = new SmartRankVisible();
+            smartRankVisible.setMissionId(smartAssessmentContent.getMissionId());
+            smartRankVisible.setContentId(smartAssessmentContent.getId());
+            smartRankVisible.setVisible("1");
+            smartRankVisibleService.save(smartRankVisible);
+
+        }
         // 如果是考核要点,则自动向上级增加分数
         Integer point = smartAssessmentContent.getPoint();
         QueryWrapper<SmartAssessmentContent> queryWrapper = new QueryWrapper<>();
@@ -275,6 +289,10 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
             updateSuperiorPoint(smartAssessmentContent, smartAssessmentContent.getPoint() * -1);
         }
         smartAssessmentContentService.deleteSmartAssessmentContent(id);
+        // 同步删除排名字段可见表中的内容
+        QueryWrapper<SmartRankVisible> rankVisibleQueryWrapper = new QueryWrapper<>();
+        rankVisibleQueryWrapper.eq("content_id",id);
+        smartRankVisibleService.remove(rankVisibleQueryWrapper);
         return Result.OK("删除成功!");
     }
 
