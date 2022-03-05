@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.smartFuneralReport.mapper.SmartFuneralReportMapper">
-
+    <select id="getUser" resultType="org.jeecg.modules.smartReportingInformation.entity.SysRole">
+        select DISTINCT username from sys_user,sys_role,sys_user_role
+        where (sys_role.role_code="systemAdmin" OR sys_role.role_code="CCIDAdmin")
+          and sys_user.id=sys_user_role.user_id
+          and sys_role.id=sys_user_role.role_id
+    </select>
+    <select id="getStatus" resultType="org.jeecg.modules.smartReportingInformation.entity.SmartJob">
+        select job_status from smart_job
+        where job_name like '%丧事%'
+    </select>
+    <select id="sendInformation" resultType="org.jeecg.modules.smartFuneralReport.entity.SmartFuneralReport">
+        select * from smart_funeral_report
+        where if_report = 0 and del_flag = 0
+    </select>
+    <select id="getRealnameById" resultType="String">
+        select realname from sys_user
+        where id = #{userId} and del_flag = 0
+    </select>
 </mapper>
