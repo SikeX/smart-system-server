@@ -263,4 +263,37 @@ public class SysUserDepartServiceImpl extends ServiceImpl<SysUserDepartMapper, S
 
 		return pageList;
 	}
+
+    @Override
+    public IPage<SysUser> queryRealDepartUserPageList(String departId, String username, String realname, int pageSize, int pageNo) {
+		IPage<SysUser> pageList = null;
+		// 部门ID不存在 直接查询用户表即可
+		Page<SysUser> page = new Page<SysUser>(pageNo, pageSize);
+		if(oConvertUtils.isEmpty(departId)){
+			return pageList;
+		}
+
+		pageList = this.baseMapper.queryRealDepartUserPageList(page, departId, username, realname);
+
+		List<SysUser> userList = pageList.getRecords();
+		if(userList!=null && userList.size()>0){
+			List<String> userIds = userList.stream().map(SysUser::getId).collect(Collectors.toList());
+			Map<String, SysUser> map = new HashMap<String, SysUser>();
+			if(userIds!=null && userIds.size()>0){
+				// 查部门名称
+				Map<String,String>  useDepNames = sysUserService.getDepNamesByUserIds(userIds);
+				userList.forEach(item->{
+					//TODO 临时借用这个字段用于页面展示
+					item.setOrgCodeTxt(useDepNames.get(item.getId()));
+					item.setSalt("");
+					item.setPassword("");
+					// 去重
+					map.put(item.getId(), item);
+				});
+			}
+			pageList.setRecords(new ArrayList<SysUser>(map.values()));
+		}
+
+		return pageList;
+    }
 }
