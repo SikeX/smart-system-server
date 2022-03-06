@@ -73,7 +73,6 @@ public interface SysDictMapper extends BaseMapper<SysDict> {
 	 */
 	List<DictModelMany> queryManyDictByKeys(@Param("dictCodeList") List<String> dictCodeList, @Param("keys") List<String> keys);
 
-	@Deprecated
 	public String queryTableDictTextByKey(@Param("table") String table,@Param("text") String text,@Param("code") String code,@Param("key") String key);
 
 	/**
