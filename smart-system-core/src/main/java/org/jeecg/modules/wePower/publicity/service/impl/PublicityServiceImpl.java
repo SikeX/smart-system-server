@@ -59,7 +59,7 @@ public class PublicityServiceImpl extends ServiceImpl<PublicityMapper, Publicity
         typeList.add("惠民补贴");
         typeList.add("项目管理");
         typeList.add("资产资源");
-        typeList.add("农村集体经济组织");
+        typeList.add("财务公开");
 //        typeList.add("政策法规");
 //        typeList.add("举报投诉");
         List<PublicityCommon> typeQueryList = new ArrayList<>();
