@@ -79,19 +79,17 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
         // 被考核单位查询包含自己的所有考核任务ID
         QueryWrapper<SmartAssessmentDepart> smartAssessmentDepartQueryWrapper = new QueryWrapper<>();
-		smartAssessmentDepartQueryWrapper.select("mission_id").eq("depart_user", sysUser.getId()).eq("assessment_depart", sysUser.getDepartId());
-		List<SmartAssessmentDepart> missionList = smartAssessmentDepartService.list(smartAssessmentDepartQueryWrapper);
-		List<String> missionIdList = new ArrayList<>();
-		missionList.forEach(mission -> {
-			missionIdList.add(mission.getMissionId());
-		});
+        smartAssessmentDepartQueryWrapper.select("distinct mission_id").eq("depart_user", sysUser.getId()).eq("assessment_depart", sysUser.getDepartId());
+        List<SmartAssessmentDepart> missionList = smartAssessmentDepartService.list(smartAssessmentDepartQueryWrapper);
+        List<String> missionIdList = new ArrayList<>();
+        missionList.forEach(mission -> {
+            missionIdList.add(mission.getMissionId());
+        });
 
         // 查询上面所有考核任务信息
         QueryWrapper<SmartAnswerInfo> queryWrapper = QueryGenerator.initQueryWrapper(smartAnswerInfo, req.getParameterMap());
-        // 本单位
-        queryWrapper.eq("depart", sysUser.getDepartId()).in("mission_id", Joiner.on(",").join(missionIdList));
         // 包含本单位的任务
-//        queryWrapper.in("mission_id", Joiner.on(",").join(missionIdList));
+        queryWrapper.eq("depart", sysUser.getDepartId()).in("mission_id", missionIdList);
         Page<SmartAnswerInfo> page = new Page<SmartAnswerInfo>(pageNo, pageSize);
         IPage<SmartAnswerInfo> pageList = smartAnswerInfoService.page(page, queryWrapper);
         return Result.OK(pageList);
@@ -182,13 +180,11 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
     @PutMapping(value = "/sign")
     public Result<?> sign(@RequestBody SmartAnswerInfo smartAnswerInfo) {
         // 检查是否已截止
-        int dateDiff = DateUtils.dateDiff('s', DateUtils.getCalendar(DateUtils.getMillis(smartAnswerInfo.getEndTime())), DateUtils.getCalendar());
-        if (dateDiff <= 0) {
-            return Result.error("已过截止时间!");
-        }
+//        int dateDiff = DateUtils.dateDiff('s', DateUtils.getCalendar(DateUtils.getMillis(smartAnswerInfo.getEndTime())), DateUtils.getCalendar());
+//        if (dateDiff <= 0) {
+//            return Result.error("已过截止时间!");
+//        }
 
-        smartAnswerInfo.setMissionStatus("已签收");
-        smartAnswerInfoService.updateById(smartAnswerInfo);
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
 
@@ -212,8 +208,13 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
             smartAnswerAssContent.setPid(smartAssessmentContent.getPid());
             smartAnswerAssContent.setHasChild(smartAssessmentContent.getHasChild());
             smartAnswerAssContent.setAssContentId(smartAssessmentContent.getId());
+            smartAnswerAssContent.setIsKey(smartAssessmentContent.getIsKey());
             smartAnswerAssContentService.save(smartAnswerAssContent);
         }
+
+        smartAnswerInfo.setMissionStatus("已签收");
+        smartAnswerInfoService.updateById(smartAnswerInfo);
+
         return Result.OK("签收成功!");
     }
 
