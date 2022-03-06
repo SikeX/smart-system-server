@@ -70,6 +70,10 @@ public class SmartAnswerAssContent implements Serializable {
     @Excel(name = "要点状态", width = 15)
     @ApiModelProperty(value = "要点状态")
     private java.lang.Integer contentStatus;
+    /**是否考核要点*/
+    @Excel(name = "是否考核要点", width = 15)
+    @ApiModelProperty(value = "是否考核要点")
+    private java.lang.Integer isKey;
 	/**最低得分*/
     @Excel(name = "最低得分", width = 15)
     @ApiModelProperty(value = "最低得分")
