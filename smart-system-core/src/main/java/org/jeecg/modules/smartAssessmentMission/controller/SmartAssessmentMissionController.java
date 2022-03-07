@@ -14,17 +14,24 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.util.DateUtil;
+import org.jeecg.common.util.DateUtils;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.smartAnswerAssContent.entity.SmartAnswerAssContent;
 import org.jeecg.modules.smartAnswerAssContent.service.ISmartAnswerAssContentService;
 import org.jeecg.modules.smartAnswerInfo.entity.SmartAnswerInfo;
 import org.jeecg.modules.smartAnswerInfo.service.ISmartAnswerInfoService;
+import org.jeecg.modules.smartAssessmentContent.entity.SmartAssessmentContent;
 import org.jeecg.modules.smartAssessmentContent.service.ISmartAssessmentContentService;
+import org.jeecg.modules.smartAssessmentDepartment.entity.SmartAssessmentDepartment;
+import org.jeecg.modules.smartAssessmentDepartment.service.ISmartAssessmentDepartmentService;
 import org.jeecg.modules.smartAssessmentMission.entity.SmartAssessmentDepart;
 import org.jeecg.modules.smartAssessmentMission.entity.SmartAssessmentMission;
 import org.jeecg.modules.smartAssessmentMission.service.ISmartAssessmentDepartService;
 import org.jeecg.modules.smartAssessmentMission.service.ISmartAssessmentMissionService;
 import org.jeecg.modules.smartRankVisible.service.ISmartRankVisibleService;
+import org.jeecg.modules.smartAssessmentTeam.entity.SmartAssessmentTeam;
+import org.jeecg.modules.smartAssessmentTeam.service.ISmartAssessmentTeamService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -72,6 +79,13 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
 	@Autowired
 	private ISmartAssessmentContentService smartAssessmentContentService;
 
+	@Autowired
+	private ISmartAssessmentTeamService smartAssessmentTeamService;
+
+	@Autowired
+	private ISmartAssessmentDepartmentService smartAssessmentDepartmentService;
+
+
 	/*---------------------------------主表处理-begin-------------------------------------*/
 
 	/**
@@ -94,6 +108,84 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
 		IPage<SmartAssessmentMission> pageList = smartAssessmentMissionService.page(page, queryWrapper);
 		return Result.OK(pageList);
 	}
+
+	/**
+	 * 分页列表查询用户考核组参与评分的考核任务
+	 * @param smartAssessmentMission
+	 * @param pageNo
+	 * @param pageSize
+	 * @param req
+	 * @return
+	 */
+	@AutoLog(value = "考核任务表-分页列表查询考核组参与的考核任务")
+	@ApiOperation(value="考核任务表-分页列表查询考核组参与的考核任务", notes="考核任务表-分页列表查询考核组参与的考核任务")
+	@GetMapping(value = "/teamMissionList")
+	public Result<?> queryTeamPageList(SmartAssessmentMission smartAssessmentMission,
+								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+								   HttpServletRequest req) {
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		// 查询当前用户所在考核组
+		QueryWrapper<SmartAssessmentTeam> teamQueryWrapper = new QueryWrapper<>();
+		teamQueryWrapper.select("distinct id").or().in("team_leader", sysUser.getId())
+				.or().in("deputy_team_Leader", sysUser.getId())
+				.or().in("members", sysUser.getId());
+		List<SmartAssessmentTeam> teamList = smartAssessmentTeamService.list(teamQueryWrapper);
+		List<String> teamIdList = new ArrayList<>();
+		teamList.forEach(smartAssessmentTeam -> teamIdList.add(smartAssessmentTeam.getId()));
+
+		// 查询考核组参与的考核任务ID
+		QueryWrapper<SmartAssessmentContent> contentQueryWrapper = new QueryWrapper<>();
+		contentQueryWrapper.select("distinct mission_id").in("ass_team", teamIdList);
+		List<SmartAssessmentContent> contentList = smartAssessmentContentService.list(contentQueryWrapper);
+		List<String> missionIdList = new ArrayList<>();
+		contentList.forEach(smartAssessmentContent -> missionIdList.add(smartAssessmentContent.getMissionId()));
+
+		QueryWrapper<SmartAssessmentMission> queryWrapper = QueryGenerator.initQueryWrapper(smartAssessmentMission, req.getParameterMap());
+		queryWrapper.ne("mission_status", "未发布").in("id", missionIdList);
+		Page<SmartAssessmentMission> page = new Page<SmartAssessmentMission>(pageNo, pageSize);
+		IPage<SmartAssessmentMission> pageList = smartAssessmentMissionService.page(page, queryWrapper);
+		return Result.OK(pageList);
+	}
+
+	/**
+	 * 分页列表查询用户考核单位参与评分的考核任务
+	 * @param smartAssessmentMission
+	 * @param pageNo
+	 * @param pageSize
+	 * @param req
+	 * @return
+	 */
+	@AutoLog(value = "考核任务表-分页列表查询考核组参与的考核任务")
+	@ApiOperation(value="考核任务表-分页列表查询考核组参与的考核任务", notes="考核任务表-分页列表查询考核组参与的考核任务")
+	@GetMapping(value = "/departmentMissionList")
+	public Result<?> queryDepartmentPageList(SmartAssessmentMission smartAssessmentMission,
+									   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+									   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+									   HttpServletRequest req) {
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		// 查询当前用户所在考核单位
+		QueryWrapper<SmartAssessmentDepartment> departmentQueryWrapper = new QueryWrapper<>();
+		departmentQueryWrapper.eq("depart_id", sysUser.getDepartId()).eq("depart_user", sysUser.getId());
+		SmartAssessmentDepartment assessmentDepartment = smartAssessmentDepartmentService.getOne(departmentQueryWrapper);
+		if (oConvertUtils.isEmpty(assessmentDepartment)) {
+			return Result.error("没有权限查看");
+		}
+
+		// 查询考核单位参与的考核任务ID
+		QueryWrapper<SmartAssessmentContent> contentQueryWrapper = new QueryWrapper<>();
+		contentQueryWrapper.select("distinct mission_id").eq("ass_depart", assessmentDepartment.getId());
+		List<SmartAssessmentContent> contentList = smartAssessmentContentService.list(contentQueryWrapper);
+		List<String> missionIdList = new ArrayList<>();
+		contentList.forEach(smartAssessmentContent -> missionIdList.add(smartAssessmentContent.getMissionId()));
+
+		QueryWrapper<SmartAssessmentMission> queryWrapper = QueryGenerator.initQueryWrapper(smartAssessmentMission, req.getParameterMap());
+		queryWrapper.ne("mission_status", "未发布").in("id", missionIdList);
+		Page<SmartAssessmentMission> page = new Page<SmartAssessmentMission>(pageNo, pageSize);
+		IPage<SmartAssessmentMission> pageList = smartAssessmentMissionService.page(page, queryWrapper);
+		return Result.OK(pageList);
+	}
+
 
 	/**
      *   添加
@@ -155,12 +247,14 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
 		answerInfoList.forEach(smartAnswerInfo -> {
 			answerInfoIdsList.add(smartAnswerInfo.getId());
 		});
-		String answerInfoIds = Joiner.on(",").join(answerInfoIdsList);
 
 		// 删除答题考核节点相关数据
 		QueryWrapper<SmartAnswerAssContent> contentQueryWrapper = new QueryWrapper<>();
-		answerInfoQueryWrapper.select("id").in("main_id", answerInfoIds);
-		smartAnswerAssContentService.remove(contentQueryWrapper);
+		contentQueryWrapper.select("distinct id").in("main_id", answerInfoIdsList);
+		List<SmartAnswerAssContent> answerAssContentList = smartAnswerAssContentService.list(contentQueryWrapper);
+		List<String> answerAssContentIdList = new ArrayList<>();
+		answerAssContentList.forEach(smartAnswerAssContent -> answerAssContentIdList.add(smartAnswerAssContent.getId()));
+		smartAnswerAssContentService.delBatchMain(answerAssContentIdList);
 
 		// 删除答题信息表中相关数据
 		smartAnswerInfoService.removeByIds(answerInfoIdsList);
@@ -276,6 +370,19 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
 	@ApiOperation(value="考核任务被考核单位-编辑", notes="考核任务被考核单位-编辑")
 	@PutMapping(value = "/editSmartAssessmentDepart")
 	public Result<?> editSmartAssessmentDepart(@RequestBody SmartAssessmentDepart smartAssessmentDepart) {
+		// 更新答题信息表中的截止时间
+		QueryWrapper<SmartAnswerInfo> queryWrapper = new QueryWrapper<>();
+		queryWrapper.eq("mission_id", smartAssessmentDepart.getMissionId()).eq("depart", smartAssessmentDepart.getAssessmentDepart());
+		SmartAnswerInfo answerInfo = smartAnswerInfoService.getOne(queryWrapper);
+		if (oConvertUtils.isEmpty(answerInfo)) {
+			return Result.error("错误信息");
+		}
+		// 如果时间不相等更新
+		if (answerInfo.getEndTime().getTime() != smartAssessmentDepart.getDeadline().getTime()) {
+			answerInfo.setEndTime(smartAssessmentDepart.getDeadline());
+			smartAnswerInfoService.updateById(answerInfo);
+		}
+
 		smartAssessmentDepartService.updateById(smartAssessmentDepart);
 		return Result.OK("编辑成功!");
 	}
