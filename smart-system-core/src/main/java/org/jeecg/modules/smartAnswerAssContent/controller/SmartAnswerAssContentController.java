@@ -20,6 +20,7 @@ import org.jeecg.modules.smartAnswerAssContent.service.ISmartAnswerAssContentSer
 import org.jeecg.modules.smartAnswerAssContent.service.ISmartAnswerAssScoreService;
 import org.jeecg.modules.smartAnswerAssContent.service.ISmartAnswerFileService;
 import org.jeecg.modules.smartAssessmentContent.entity.SmartAssessmentContent;
+import org.jeecg.modules.smartAssessmentMission.entity.SmartAssessmentMission;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -417,6 +418,27 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
     }
 
 	/**
+	 * 更新上级成绩
+	 *
+	 * @param smartAnswerAssContent
+	 * @param increment              成绩增量
+	 */
+	private void updateSuperiorScore(SmartAnswerAssContent smartAnswerAssContent, int increment) {
+		QueryWrapper<SmartAnswerAssContent> queryWrapper = new QueryWrapper<>();
+		while (oConvertUtils.isNotEmpty(smartAnswerAssContent.getPid())) {
+			// 查找该考核要点的上级
+			queryWrapper.clear();
+			queryWrapper.eq("id", smartAnswerAssContent.getPid());
+			smartAnswerAssContent = smartAnswerAssContentService.getOne(queryWrapper);
+			if (oConvertUtils.isEmpty(smartAnswerAssContent)) {
+				break;
+			}
+			smartAnswerAssContent.setFinalScore(smartAnswerAssContent.getFinalScore() + increment);
+			smartAnswerAssContentService.updateById(smartAnswerAssContent);
+		}
+	}
+
+	/**
 	 * 添加
 	 * @param smartAnswerAssScore
 	 * @return
@@ -428,6 +450,20 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 		smartAnswerAssScore.setRatingUser(sysUser.getId());
 		smartAnswerAssScoreService.save(smartAnswerAssScore);
+
+		SmartAnswerAssContent answerAssContent = smartAnswerAssContentService.getById(smartAnswerAssScore.getMainId());
+		// 如果大于最高分则更新最高分
+		if (smartAnswerAssScore.getScore() > answerAssContent.getHighestScore()) {
+			answerAssContent.setHighestScore(smartAnswerAssScore.getScore());
+		}
+		if (smartAnswerAssScore.getScore() < answerAssContent.getLowestScore() || answerAssContent.getLowestScore() == 0) {
+			// 如果小于最低分或最低分为0则更新最低分
+			answerAssContent.setLowestScore(smartAnswerAssScore.getScore());
+		}
+		// 平均分应该是所有人评分的平均分
+		// answerAssContent.setAverageScore((answerAssContent.getHighestScore() + answerAssContent.getLowestScore())/ 2);
+		// 更新考核内容节点分数
+		smartAnswerAssContentService.updateById(answerAssContent);
 		return Result.OK("添加成功！");
 	}
 
@@ -441,6 +477,21 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 	@PutMapping(value = "/editSmartAnswerAssScore")
 	public Result<?> editSmartAnswerAssScore(@RequestBody SmartAnswerAssScore smartAnswerAssScore) {
 		smartAnswerAssScoreService.updateById(smartAnswerAssScore);
+
+		SmartAnswerAssContent answerAssContent = smartAnswerAssContentService.getById(smartAnswerAssScore.getMainId());
+		// 如果大于最高分则更新最高分
+		if (smartAnswerAssScore.getScore() > answerAssContent.getHighestScore()) {
+			answerAssContent.setHighestScore(smartAnswerAssScore.getScore());
+		}
+		if (smartAnswerAssScore.getScore() < answerAssContent.getLowestScore() || answerAssContent.getLowestScore() == 0) {
+			// 如果小于最低分或最低分为0则更新最低分
+			answerAssContent.setLowestScore(smartAnswerAssScore.getScore());
+		}
+		// 平均分应该是所有人评分的平均分
+		// answerAssContent.setAverageScore((answerAssContent.getHighestScore() + answerAssContent.getLowestScore())/ 2);
+		// 更新考核内容节点分数
+		smartAnswerAssContentService.updateById(answerAssContent);
+
 		return Result.OK("编辑成功!");
 	}
 
