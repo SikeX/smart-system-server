@@ -156,12 +156,10 @@ public class SysAnnouncementServiceImpl extends ServiceImpl<SysAnnouncementMappe
 
 			log.info(peopleType);
 
-			if(StringUtils.isBlank(peopleType)) {
-				return;
+			if(StringUtils.isBlank(peopleType) || sysBaseApi.getUserIdsByTypes(peopleType).isEmpty() ) {
+				throw new NullPointerException("无对应接收人员");
 			} else {
-				String[] peopleTypeArray = peopleType.split(",");
-
-				log.info(String.valueOf(sysBaseApi.getUserIdsByTypes(peopleType)));
+//				log.info(String.valueOf(sysBaseApi.getUserIdsByTypes(peopleType)));
 
 				sysBaseApi.getUserIdsByTypes(peopleType).forEach(user -> {
 					log.info(String.valueOf(user));
@@ -202,8 +200,7 @@ public class SysAnnouncementServiceImpl extends ServiceImpl<SysAnnouncementMappe
 				sqlSession.commit();
 			}
 
-		}
-		else {
+		} else {
 			send_count = sysAnnouncement.getUserIds().split(",").length;
 			sysAnnouncement.setSendCount(send_count);
 			// 1.插入通告表记录
@@ -242,6 +239,7 @@ public class SysAnnouncementServiceImpl extends ServiceImpl<SysAnnouncementMappe
 
 		String userId = smsMsgVo.getUserIds();
 		String departIds = smsMsgVo.getDepartIds();
+		String peopleType = smsMsgVo.getPeopleType();
 		if(smsMsgVo.getMsgType().equals(CommonConstant.MSG_TYPE_ALL)) {
 
 			QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
@@ -288,6 +286,33 @@ public class SysAnnouncementServiceImpl extends ServiceImpl<SysAnnouncementMappe
 
 			DySmsHelper.sendSms(sysUser.getUsername(),smsMsgVo.getMsgType(),"测试",smsMsgVo.getContent(),receiver,receiverPhone);
 
+
+		} else if(smsMsgVo.getMsgType().equals("TYPE")){
+
+			List<String> userList = new ArrayList<>();
+
+			List<String> userNameList = new ArrayList<>();
+			List<String> userPhoneList = new ArrayList<>();
+
+			log.info(peopleType);
+
+			if(StringUtils.isBlank(peopleType) || sysBaseApi.getUserIdsByTypes(peopleType).isEmpty() ) {
+				throw new NullPointerException("无对应接收人员");
+			} else {
+//				log.info(String.valueOf(sysBaseApi.getUserIdsByTypes(peopleType)));
+
+				sysBaseApi.getUserIdsByTypes(peopleType).forEach(user -> {
+					log.info(String.valueOf(user));
+					userNameList.add(user.getString("username"));
+					userPhoneList.add(user.getString("phone"));
+				});
+
+				String receiver = String.join(",", userNameList);
+				String receiverPhone = String.join(",", userPhoneList);
+
+				DySmsHelper.sendSms(sysUser.getUsername(),smsMsgVo.getMsgType(),"测试",smsMsgVo.getContent(),receiver,receiverPhone);
+
+			}
 
 		} else {
 //			send_count = sysAnnouncement.getUserIds().split(",").length;

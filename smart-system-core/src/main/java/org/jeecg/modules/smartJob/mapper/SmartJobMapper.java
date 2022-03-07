@@ -36,4 +36,6 @@ public interface SmartJobMapper extends BaseMapper<SmartJob> {
     List<SmartPremaritalFiling> selectNotReport();
 
     SysUser getPeopleInfo(String peopleId);
+
+    void updatePreIsReport(String id);
 }

@@ -1314,7 +1314,7 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 		return sysUserRoleMapper.getSysUserListByRole(roleId);
 	}
 
-	@Override
+
 	public List<JSONObject> getUserIdsByTypes(String peopleType) {
 		LambdaQueryWrapper<SysUser> queryWrapper =  new LambdaQueryWrapper<>();
 		queryWrapper.eq(SysUser::getDelFlag,0).isNotNull(true,SysUser::getOrgCode).in(SysUser::getOfficeType,peopleType.split(","));

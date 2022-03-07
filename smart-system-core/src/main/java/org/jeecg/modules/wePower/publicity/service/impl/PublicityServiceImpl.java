@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author sike
- * @description 针对表【smart_create_advice】的数据库操作Service实现
+ * @description 信息公示查询
  * @createDate 2021-12-24 17:17:53
  */
 @Slf4j
@@ -27,7 +27,6 @@ public class PublicityServiceImpl extends ServiceImpl<PublicityMapper, Publicity
 
     @Autowired
     private ISysBaseAPI sysBaseAPI;
-
 
     @Override
     public PublicityQuery getQuery(){
@@ -60,6 +59,7 @@ public class PublicityServiceImpl extends ServiceImpl<PublicityMapper, Publicity
         typeList.add("惠民补贴");
         typeList.add("项目管理");
         typeList.add("资产资源");
+        typeList.add("财务公开");
 //        typeList.add("政策法规");
 //        typeList.add("举报投诉");
         List<PublicityCommon> typeQueryList = new ArrayList<>();
