@@ -199,6 +199,11 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
         queryWrapper.eq("mission_id", missionId).eq("is_key", 0);
         smartAssessmentContentService.update(updateContent, queryWrapper);
 
+        // 重置考核任务总分数
+        SmartAssessmentMission mission = smartAssessmentMissionService.getById(missionId);
+        mission.setTotalPoint(0);
+        smartAssessmentMissionService.updateById(mission);
+
         queryWrapper.clear();
         queryWrapper.eq("mission_id", missionId).eq("is_key", 1);
         List<SmartAssessmentContent> assessmentContentList = smartAssessmentContentService.list(queryWrapper);
