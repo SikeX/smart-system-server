@@ -3,6 +3,8 @@ package org.jeecg.modules.smartPostMarriage.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.jeecg.modules.smartJob.entity.SysUser;
 import org.jeecg.modules.smartPostMarriage.entity.SmartPostMarriageReport;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -36,4 +38,7 @@ public interface SmartPostMarriageReportMapper extends BaseMapper<SmartPostMarri
     void setPreIsReport(String preId);
 
     void setDelFlagByPreId(String preId);
+
+    @Select("select * from sys_user where id=#{id}")
+    SysUser getSysUser(String id);
 }
