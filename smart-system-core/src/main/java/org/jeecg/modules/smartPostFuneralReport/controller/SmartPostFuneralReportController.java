@@ -21,6 +21,7 @@ import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.smartEvaluateMeeting.entity.SmartEvaluateMeeting;
 import org.jeecg.modules.smartFuneralReport.entity.SmartFuneralReport;
 import org.jeecg.modules.smartFuneralReport.service.ISmartFuneralReportService;
+import org.jeecg.modules.smartFuneralReport.service.impl.SmartFuneralReportServiceImpl;
 import org.jeecg.modules.smartPostFuneralReport.entity.SmartPostFuneralReport;
 import org.jeecg.modules.smartPostFuneralReport.service.ISmartPostFuneralReportService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -28,6 +29,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
+import org.jeecg.modules.smartPostFuneralReport.service.impl.SmartPostFuneralReportServiceImpl;
+import org.jeecg.modules.smartPostFuneralReport.vo.FuneralReport;
 import org.jeecg.modules.smartPostMarriage.entity.SmartPostMarriageReport;
 import org.jeecg.modules.smartPostMarriage.service.ISmartPostMarriageReportFileService;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
@@ -47,6 +50,9 @@ import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.jeecg.common.aspect.annotation.AutoLog;
+import org.jeecg.modules.smartExportWord.util.*;
+
+
 
  /**
  * @Description: 丧事事后报备表
@@ -64,6 +70,9 @@ public class SmartPostFuneralReportController extends JeecgController<SmartPostF
 
 	 @Autowired
 	 private ISmartFuneralReportService smartFuneralReportService;
+
+	 @Autowired
+	 private SmartPostFuneralReportServiceImpl smartPostFuneralReportServiceImpl;
 
 	 @Autowired
 	 private ISmartVerifyTypeService smartVerifyTypeService;
@@ -368,5 +377,80 @@ public class SmartPostFuneralReportController extends JeecgController<SmartPostF
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
         return super.importExcel(request, response, SmartPostFuneralReport.class);
     }
+
+
+
+	 @GetMapping(value = "/exportWord")
+	 public void exportWord(@RequestParam(name = "ids", required = true) String ids, HttpServletResponse response, HttpServletRequest request) {
+
+		 List<String> idsList = Arrays.asList(ids.split(","));
+		 List<FuneralReport> funeralReports = smartPostFuneralReportService.listByIds(idsList);
+		 System.out.println(funeralReports);
+
+		 //存放数据map
+		 List<Map<String, Object>> dataList = new ArrayList<>();
+		 //存放文件名
+		 List<String> fileNamesList = new ArrayList<>();
+		 for (int i = 0; i < funeralReports.size(); i++) {
+//			 //数据完善
+			 if(funeralReports.get(i).getSex() == null)
+			 {funeralReports.get(i).setSex("");}
+			 else if ( funeralReports.get(i).getSex().equals("2")) {
+				 funeralReports.get(i).setSex("女");
+			 } else if (funeralReports.get(i).getSex().equals("1")) {
+				 funeralReports.get(i).setSex("男");
+			 }
+
+//			 //部门名称
+//			 List<String> departids = new ArrayList<>();
+//			 departids.add(smartPostMarriageReports.get(i).getWorkDepartment());
+//			 Map<String, String> departNames = commonService.getDepNamesByIds(departids);
+//			 smartPostMarriageReports.get(i).setWorkDepartment(departNames.get(smartPostMarriageReports.get(i).getWorkDepartment()));
+
+			 //设置数据
+			 if(funeralReports.get(i).getBirthday()== null || funeralReports.get(i).getBirthday().equals("") )
+			 {funeralReports.get(i).setAge("");}
+			 else{
+			 	funeralReports.get(i).setAge(smartPostFuneralReportServiceImpl.getAge(funeralReports.get(i).getBirthday()));}
+			 if(funeralReports.get(i).getPositionRank()== null || funeralReports.get(i).getPositionRank().equals(""))
+			 {funeralReports.get(i).setPositionRank("");}
+			 else{
+				 if(smartPostFuneralReportServiceImpl.getDicText("1174509082208395266",funeralReports.get(i).getPositionRank())!=null){
+			 	funeralReports.get(i).setPositionRank(smartPostFuneralReportServiceImpl.getDicText("1174509082208395266",funeralReports.get(i).getPositionRank()));}
+			 }
+			 if(funeralReports.get(i).getOrgCode()== null || funeralReports.get(i).getOrgCode().equals(""))
+			 {funeralReports.get(i).setOrgCode("");}
+			 else{
+				 if(smartPostFuneralReportServiceImpl.getDepByOrgCode(funeralReports.get(i).getOrgCode())!=null){
+				 funeralReports.get(i).setOrgCode(smartPostFuneralReportServiceImpl.getDepByOrgCode(funeralReports.get(i).getOrgCode()));}
+			 }
+			 if(funeralReports.get(i).getPost()== null || funeralReports.get(i).getPost().equals(""))
+			 {funeralReports.get(i).setPost("");}
+			 else{
+				 funeralReports.get(i).setPost(smartPostFuneralReportServiceImpl.getPostByCode(funeralReports.get(i).getPost()));
+			 }
+			 if(funeralReports.get(i).getPoliticalStatus()== null || funeralReports.get(i).getPoliticalStatus().equals(""))
+			 {funeralReports.get(i).setPoliticalStatus("");}
+			 else{
+			 	if(smartPostFuneralReportServiceImpl.getDicText("1455557934932160513",funeralReports.get(i).getPoliticalStatus())!=null){
+				 funeralReports.get(i).setPoliticalStatus(smartPostFuneralReportServiceImpl.getDicText("1455557934932160513",funeralReports.get(i).getPoliticalStatus()));}
+			 }
+			 if(funeralReports.get(i).getPhone()== null)
+			 {funeralReports.get(i).setPhone("");}
+			 if(funeralReports.get(i).getElseState()== null)
+			 {funeralReports.get(i).setElseState("");}
+			 Map<String, Object> dataMap = new HashMap<>();
+			 dataMap.put("e", funeralReports.get(i));
+			 dataList.add(dataMap);
+
+			 //文件名，注意于数据对应
+			 String fileName = funeralReports.get(i).getRealname();
+			 fileNamesList.add(fileName);
+		 }
+
+		 //设置模板
+		 String ftlTemplateName = "/templates/funeralReport.ftl";
+		 WordUtils.exportWordBatch(dataList, fileNamesList, ftlTemplateName, response, request);
+	 }
 
 }

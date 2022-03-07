@@ -1,22 +1,19 @@
-package org.jeecg.modules.smartPostFuneralReport.entity;
+package org.jeecg.modules.smartPostFuneralReport.vo;
 
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.util.Date;
-import java.math.BigDecimal;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.jeecgframework.poi.excel.annotation.Excel;
-import org.jeecg.common.aspect.annotation.Dict;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.jeecg.common.aspect.annotation.Dict;
+import org.jeecg.modules.smartPostFuneralReport.entity.SysUser;
+import org.jeecgframework.poi.excel.annotation.Excel;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @Description: 丧事事后报备表
@@ -25,11 +22,8 @@ import lombok.experimental.Accessors;
  * @Version: V1.0
  */
 @Data
-@TableName("smart_post_funeral_report")
-@Accessors(chain = true)
-@EqualsAndHashCode(callSuper = false)
-@ApiModel(value="smart_post_funeral_report对象", description="丧事事后报备表")
-public class SmartPostFuneralReport implements Serializable {
+@ApiModel(value="funeral_report对象", description="丧事事后报备表")
+public class FuneralReport implements Serializable {
     private static final long serialVersionUID = 1L;
 
 	/**主键*/
@@ -60,35 +54,6 @@ public class SmartPostFuneralReport implements Serializable {
     @ApiModelProperty(value = "报备人ID")
     @Dict(dictTable ="sys_user",dicText = "realname",dicCode = "id")
     private String peopleId;
-	/**性别*/
-	@Excel(name = "性别", width = 15)
-    @ApiModelProperty(value = "性别")
-    private String reportSex;
-	/**年龄*/
-	@Excel(name = "年龄", width = 15)
-    @ApiModelProperty(value = "年龄")
-    private String reportAge;
-	/**政治面貌*/
-	@Excel(name = "政治面貌", width = 15)
-    @ApiModelProperty(value = "政治面貌")
-    private String politics;
-	/**工作单位*/
-	@Excel(name = "工作单位", width = 15)
-    @ApiModelProperty(value = "工作单位")
-    @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
-    private String departId;
-	/**职务*/
-	@Excel(name = "职务", width = 15)
-    @ApiModelProperty(value = "职务")
-    private String zhiwu;
-	/**职级*/
-	@Excel(name = "职级", width = 15)
-    @ApiModelProperty(value = "职级")
-    private String zhiji;
-	/**联系电话*/
-	@Excel(name = "联系电话", width = 15)
-    @ApiModelProperty(value = "联系电话")
-    private String reportPhone;
 	/**逝世人姓名*/
 	@Excel(name = "逝世人姓名", width = 15)
     @ApiModelProperty(value = "逝世人姓名")
@@ -170,6 +135,63 @@ public class SmartPostFuneralReport implements Serializable {
     /**附件*/
     @Excel(name = "附件", width = 15)
     @ApiModelProperty(value = "附件")
-    private java.lang.String files;
+    private String files;
+    /**
+     * 真实姓名
+     */
+    @Excel(name = "真实姓名", width = 15)
+    private String realname;
 
+    /**
+     * 生日
+     */
+    @Excel(name = "出生日期", width = 15, format = "yyyy-MM-dd")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date birthday;
+
+    private String age;
+    /**
+     * 性别（1：男 2：女）
+     */
+    @Excel(name = "性别", width = 15,dicCode="sex")
+    @Dict(dicCode = "sex")
+    private String sex;
+
+    /**
+     * 电话
+     */
+    @TableField(value = "phone",updateStrategy = FieldStrategy.IGNORED)
+    @Excel(name = "手机号码", width = 15)
+    private String phone;
+    /**
+     * 部门code(当前选择登录部门)
+     */
+    @Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
+    @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
+    private String orgCode;
+
+    /**
+     * 职务，关联职务表
+     */
+    @Excel(name = "职务", width = 15,dictTable ="sys_position",dicText = "name",dicCode = "code")
+    @Dict(dictTable ="sys_position",dicText = "name",dicCode = "code")
+    private String post;
+
+    /**
+     * 职级
+     */
+    @Excel(name = "职级", width = 15,dicCode="position_rank")
+    @ApiModelProperty(value = "职级")
+    @Dict(dicCode = "position_rank")
+    private String positionRank;
+
+
+    /**
+     * 政治面貌
+     */
+    @Excel(name = "政治面貌", width = 15,dicCode="political_status")
+    @ApiModelProperty(value = "政治面貌")
+    @Dict(dicCode = "political_status")
+    private String politicalStatus;
 }
