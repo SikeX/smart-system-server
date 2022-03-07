@@ -10,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Configuration
 public class SignAuthConfiguration implements WebMvcConfigurer {
-    public static String[] urlList = new String[] {"/sys/dict/getDictItems/*", "/sys/dict/loadDict/*",
+    public static String[] urlList = new String[] {"/sys/dict/loadDict/*",
             "/sys/dict/loadDictOrderByValue/*", "/sys/dict/loadDictItem/*", "/sys/dict/loadTreeData",
             "/sys/api/queryTableDictItemsByCode", "/sys/api/queryFilterTableDictInfo", "/sys/api/queryTableDictByKeys",
             "/sys/api/translateDictFromTable", "/sys/api/translateDictFromTableByKeys"};
