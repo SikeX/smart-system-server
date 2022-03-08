@@ -266,7 +266,7 @@ public class SysUser implements Serializable {
     @ApiModelProperty(value = "户籍编号")
     private String homeCode;
 
-    @Excel(name = "是否是户主", width = 15)
+    @Excel(name = "是否是户主", width = 15,dicCode = "home_role")
     @ApiModelProperty(value = "是否是户主")
     @Dict(dicCode = "home_role")
     private Integer homeRole;

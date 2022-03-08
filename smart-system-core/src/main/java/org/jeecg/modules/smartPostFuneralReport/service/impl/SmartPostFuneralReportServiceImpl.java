@@ -8,6 +8,7 @@ import org.jeecg.modules.smartPostFuneralReport.entity.SmartPostFuneralReport;
 import org.jeecg.modules.smartPostFuneralReport.mapper.SmartPostFuneralReportMapper;
 import org.jeecg.modules.smartPostFuneralReport.service.ISmartPostFuneralReportService;
 import org.jeecg.modules.smartPostFuneralReport.vo.FuneralReport;
+import org.jeecg.modules.smartPostMarriage.entity.SmartPostMarriageReport;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -83,4 +84,8 @@ public class SmartPostFuneralReportServiceImpl extends ServiceImpl<SmartPostFune
 
             } }
         return Integer.toString(age); }
+    @Override
+    public SmartPostFuneralReport getByPreId(String preId) {
+        return smartPostFuneralMapper.getByPreId(preId);
+    }
 }

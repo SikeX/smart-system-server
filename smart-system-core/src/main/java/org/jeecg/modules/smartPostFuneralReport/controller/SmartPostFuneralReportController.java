@@ -190,6 +190,7 @@ public class SmartPostFuneralReportController extends JeecgController<SmartPostF
 //			return Result.error("请勿重复报备！");
 //		}
 		smartPostFuneralReport.setDepartId(id);
+		smartPostFuneralReport.setReportTime(new Date());
 		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
 		if(isVerify){
 			smartPostFuneralReportService.save(smartPostFuneralReport);
@@ -268,6 +269,17 @@ public class SmartPostFuneralReportController extends JeecgController<SmartPostF
 		}
 		return Result.OK(smartPostFuneralReport);
 	}
+
+     //根据婚前id查找后报备记录
+     @GetMapping(value = "/queryByPreId")
+     public Result<?> queryByPreId(@RequestParam(name = "preId", required = true) String preId) {
+         SmartPostFuneralReport smartPostFuneralReport = smartPostFuneralReportService.getByPreId(preId);
+         if (smartPostFuneralReport == null) {
+             return Result.error("未找到对应数据");
+         }
+         return Result.OK(smartPostFuneralReport);
+
+     }
 
     /**
     * 导出excel
@@ -384,8 +396,18 @@ public class SmartPostFuneralReportController extends JeecgController<SmartPostF
 	 public void exportWord(@RequestParam(name = "ids", required = true) String ids, HttpServletResponse response, HttpServletRequest request) {
 
 		 List<String> idsList = Arrays.asList(ids.split(","));
-		 List<FuneralReport> funeralReports = smartPostFuneralReportService.listByIds(idsList);
-		 System.out.println(funeralReports);
+		 QueryWrapper<SmartPostFuneralReport> queryWrapper = new QueryWrapper<>();
+		 queryWrapper.select("id").in("pre_id", idsList);
+		 List<SmartPostFuneralReport> list = smartPostFuneralReportService.list(queryWrapper);
+
+		 List<String> idList = new ArrayList<>();
+
+		 for(int i = 0; i < list.size(); i++){
+			 idList.add(list.get(i).getId());
+		 }
+
+		 List<FuneralReport> funeralReports = smartPostFuneralReportService.listByIds(idList);
+
 
 		 //存放数据map
 		 List<Map<String, Object>> dataList = new ArrayList<>();

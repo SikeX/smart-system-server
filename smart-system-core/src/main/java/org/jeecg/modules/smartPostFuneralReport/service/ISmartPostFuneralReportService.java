@@ -6,6 +6,7 @@ import org.jeecg.modules.interaction.vo.CommentVo;
 import org.jeecg.modules.smartPostFuneralReport.entity.SmartPostFuneralReport;
 import org.jeecg.modules.smartPostFuneralReport.vo.FuneralReport;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.jeecg.modules.smartPostMarriage.entity.SmartPostMarriageReport;
 
 import java.util.Date;
 import java.util.List;
@@ -19,5 +20,5 @@ import java.util.List;
 public interface ISmartPostFuneralReportService extends IService<SmartPostFuneralReport> {
     FuneralReport getFuneralReport(String id);
     List<FuneralReport> listByIds(List<String> ids);
-
+    SmartPostFuneralReport getByPreId(String preId);
 }

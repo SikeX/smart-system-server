@@ -167,6 +167,7 @@ public class SmartFuneralReportController extends JeecgController<SmartFuneralRe
 			return Result.error("未找到您所属部门，请检查部门是否存在！");
 		}
 		smartFuneralReport.setDepartId(id);
+		smartFuneralReport.setReportTime(new Date());
 		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
 		if(isVerify){
 			smartFuneralReportService.save(smartFuneralReport);
