@@ -50,18 +50,32 @@
         set p.paper_status ="2"
         where p.id = #{paperId}
     </update>
-
+    <!--走村入户-->
     <select id="getTriPeoList" resultType="org.jeecg.modules.SmartPaper.vo.RandomPeople">
         select sp.id as paperId,paper_name, su.depart_id,d.depart_name
         from smart_paper sp
                  left join smart_people p on sp.id = p.exam_id
                  left join sys_user su on su.id = p.person_id
                  left join sys_depart d on d.id = su.depart_id
-        where sp.del_flag = 0 and sp.paper_type = '3'
+        where sp.del_flag = 0 and sp.paper_type = #{paperType}
         <if test="paperId != null and paperId != ''">
             and sp.id = #{paperId}
         </if>
         group by sp.id,su.depart_id
+        order by sp.create_time desc
+    </select>
+    <!--廉政家访-->
+    <select id="getTriPeoGovList" resultType="org.jeecg.modules.SmartPaper.vo.RandomPeople">
+        select sp.id as paperId,paper_name, su.depart_id,d.depart_name,p.person_id as userId,su.realname,p.is_finish,sp.paper_type
+        from smart_paper sp
+        left join smart_people p on sp.id = p.exam_id
+        left join sys_user su on su.id = p.person_id
+        left join sys_depart d on d.id = su.depart_id
+        where sp.del_flag = 0 and sp.paper_type = #{paperType}
+        <if test="paperId != null and paperId != ''">
+            and sp.id = #{paperId}
+        </if>
+        group by sp.id,su.depart_id,p.person_id,su.realname,p.is_finish
         order by sp.create_time desc
     </select>
 </mapper>

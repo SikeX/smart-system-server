@@ -338,6 +338,8 @@ public class SmartCreateAdviceController {
 
 	  baseCommonService.addExportLog(mv.getModel(), "制发建议", req, response);
 
+
+
 	  mv.addObject(NormalExcelConstants.DATA_LIST, newPageList);
 
 	  return mv;

@@ -76,8 +76,8 @@ public class SmartPaperController extends JeecgController<SmartPaper, ISmartPape
 		IPage<SmartPaper> pageList = smartPaperService.page(page, queryWrapper);
 		return Result.OK(pageList);
 	}
-	 @AutoLog(value = "三员+问卷表-分页列表查询")
-	 @ApiOperation(value="三员+问卷表-分页列表查询", notes="三员+问卷表-分页列表查询")
+	 @AutoLog(value = "三员+走村入户-分页列表查询")
+	 @ApiOperation(value="三员+走村入户-分页列表查询", notes="三员+走村入户-分页列表查询")
 	 @GetMapping(value = "/triPeoList")
 	 public Result<?> querytriPeoList(RandomPeople randomPeople,
 									  @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
@@ -85,15 +85,45 @@ public class SmartPaperController extends JeecgController<SmartPaper, ISmartPape
 									  HttpServletRequest req) {
 		 QueryWrapper<RandomPeople> queryWrapper = QueryGenerator.initQueryWrapper(randomPeople, req.getParameterMap());
 		 String paperId = req.getParameter("id");
+		 String paperType = req.getParameter("paperType");
 		 //System.out.println("####################");
-		 //System.out.println(paperId);
+		 //System.out.println(paperType);
 		 Result<IPage<RandomPeople>> result = new Result<IPage<RandomPeople>>();
 
 		 Page<RandomPeople> pageList = new Page<RandomPeople>(pageNo,pageSize);
 
-		 pageList = smartPaperService.getTriPeoList(pageList,paperId);
-		 System.out.println("####################");
-		 System.out.println(pageList.getRecords());
+		 pageList = smartPaperService.getTriPeoList(pageList,paperId,paperType);
+		 // 获取登录用户信息
+		 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		 String userId = sysUser.getId();
+		 String userName = sysUser.getRealname();
+		 result.setMessage(userId+","+userName);
+		 result.setResult(pageList);
+		 result.setSuccess(true);
+		 return result;
+	 }
+	 @AutoLog(value = "三员+廉政家访-分页列表查询")
+	 @ApiOperation(value="三员+廉政家访-分页列表查询", notes="三员+廉政家访-分页列表查询")
+	 @GetMapping(value = "/triPeoGovList")
+	 public Result<?> querytriPeoGovList(RandomPeople randomPeople,
+									  @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+									  @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+									  HttpServletRequest req) {
+		 QueryWrapper<RandomPeople> queryWrapper = QueryGenerator.initQueryWrapper(randomPeople, req.getParameterMap());
+		 String paperId = req.getParameter("id");
+		 String paperType = req.getParameter("paperType");
+		 //System.out.println("####################");
+		 //System.out.println(paperType);
+		 Result<IPage<RandomPeople>> result = new Result<IPage<RandomPeople>>();
+
+		 Page<RandomPeople> pageList = new Page<RandomPeople>(pageNo,pageSize);
+
+		 pageList = smartPaperService.getTriPeoGovList(pageList,paperId,paperType);
+		 // 获取登录用户信息
+		 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		 String userId = sysUser.getId();
+		 String userName = sysUser.getRealname();
+		 result.setMessage(userId+","+userName);
 		 result.setResult(pageList);
 		 result.setSuccess(true);
 		 return result;
@@ -142,8 +172,8 @@ public class SmartPaperController extends JeecgController<SmartPaper, ISmartPape
 	  * @param smartTriSurveyPage
 	  * @return
 	  */
-	 @AutoLog(value = "三员+问卷-添加")
-	 @ApiOperation(value="三员+问卷-添加", notes="三员+问卷-添加")
+	 @AutoLog(value = "三员+走村入户问卷-添加")
+	 @ApiOperation(value="三员+走村入户问卷-添加", notes="三员+走村入户问卷-添加")
 	 @PostMapping(value = "/addTriSurvey")
 	 public Result<?> addTriSurvey(@RequestBody SmartTriSurveyPage smartTriSurveyPage) {
 		 //System.out.println("####################");
@@ -154,6 +184,17 @@ public class SmartPaperController extends JeecgController<SmartPaper, ISmartPape
 		 return Result.OK("添加成功！");
 	 }
 
+     @AutoLog(value = "三员+廉政家访问卷-添加")
+     @ApiOperation(value="三员+廉政家访问卷-添加", notes="三员+廉政家访问卷-添加")
+     @PostMapping(value = "/addTriGovSurvey")
+     public Result<?> addTriGovSurvey(@RequestBody SmartTriSurveyPage smartTriSurveyPage) {
+         //System.out.println("####################");
+         //System.out.println(smartPaperPage);
+         smartTriSurveyPage.setPaperType("4");//添加调查问卷
+         smartTriSurveyPage.setPaperStatus("2");
+         smartPaperService.insertTriGovSurvey(smartTriSurveyPage);
+         return Result.OK("添加成功！");
+     }
 	/**
 	 *  编辑
 	 *
