@@ -313,6 +313,19 @@ public interface ISysBaseAPI extends CommonAPI {
     List<DictModel> getDictItems(String dictCode);
 
     /**
+     * 根据字典code查询表中字典项
+     * @author sike
+     * @Date 2022-03-05
+     *
+     * @param table
+     * @param text
+     * @param code
+     * @param key
+     * @return
+     */
+    String translateDictFromTable(String table, String text, String code, String key);
+
+    /**
      *  根据多个字典code查询多个字典项
      * @param dictCodeList
      * @return key = dictCode ； value=对应的字典项

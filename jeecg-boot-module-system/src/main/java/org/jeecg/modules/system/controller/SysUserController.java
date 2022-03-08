@@ -25,9 +25,6 @@ import org.jeecg.common.util.ImportExcelUtil;
 import org.jeecg.common.util.PasswordUtil;
 import org.jeecg.common.util.RedisUtil;
 import org.jeecg.common.util.oConvertUtils;
-import org.jeecg.modules.SmartFirstFormPeople.entity.SmartFirstFormPeople;
-import org.jeecg.modules.SmartInnerPartyTalk.entity.SmartInnerPartyTalk;
-import org.jeecg.modules.SmartPunishPeople.entity.SmartPunishPeople;
 import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
@@ -37,7 +34,6 @@ import org.jeecg.modules.system.model.SysUserSysDepartModel;
 import org.jeecg.modules.system.service.*;
 import org.jeecg.modules.system.vo.SysDepartUsersVO;
 import org.jeecg.modules.system.vo.SysUserRoleVO;
-import org.jeecg.modules.system.entity.SysDepart;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -52,7 +48,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
-//import javax.print.MimeType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -869,6 +864,20 @@ public class SysUserController {
 
         return Result.OK(pageList);
 
+    }
+
+    @RequestMapping(value = "/queryUserByDeptIdComponentData", method = RequestMethod.GET)
+    public Result<IPage<SysUser>> queryUserByDeptIdComponentData(
+            @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+            @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+            @RequestParam(name = "departId") String departId,
+            @RequestParam(name="realname",required=false) String realname,
+            @RequestParam(name="username",required=false) String username ) {
+        if(oConvertUtils.isEmpty(departId)){
+            return Result.error("请输入要查询的部门ID");
+        }
+        IPage<SysUser> pageList = sysUserDepartService.queryRealDepartUserPageList(departId, username, realname, pageSize, pageNo);
+        return Result.OK(pageList);
     }
 
     /**

@@ -144,6 +144,7 @@ public class ShiroConfig {
 
         //app接口排除
         filterChainDefinitionMap.put("/api/client/**", "anon");
+        filterChainDefinitionMap.put("/sys/dict/getDictItems/**", "anon");
 
         // 信息公示排除
         filterChainDefinitionMap.put("/publicity/getQuery","anon");
@@ -155,6 +156,8 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/smartPublicityBenifit/smartPublicityBenifit/list","anon");
         filterChainDefinitionMap.put("/smartPublicityFinance/smartPublicityFinance/list","anon");
 
+        // TODO 政治生态排名排除
+        filterChainDefinitionMap.put("/smartAnswerInfo/rank/**","anon");
 
         //测试排除
 //        filterChainDefinitionMap.put("/testVerify/testVerify/**", "anon");//系统通知和公告
