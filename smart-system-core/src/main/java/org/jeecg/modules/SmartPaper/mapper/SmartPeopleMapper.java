@@ -43,4 +43,6 @@ public interface SmartPeopleMapper extends BaseMapper<SmartPeople> {
                      @Param("satisfaction")String satisfaction,@Param("isReport") String isReport);
 
     List<RandomPeople> getTriResultByEIdDId(Page<RandomPeople> page, @Param("examId")String examId, @Param("departId")String departId);
+
+    List<RandomPeople> getTriGovPeoList(Integer selectedCount);
 }
