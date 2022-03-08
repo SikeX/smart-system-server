@@ -1,5 +1,6 @@
 package org.jeecg.modules.smartPostMarriage.service.impl;
 
+import org.jeecg.modules.smartJob.entity.SysUser;
 import org.jeecg.modules.smartPostMarriage.entity.SmartPostMarriageReport;
 import org.jeecg.modules.smartPostMarriage.entity.SmartPostMarriageReportFile;
 import org.jeecg.modules.smartPostMarriage.mapper.SmartPostMarriageReportFileMapper;
@@ -102,6 +103,11 @@ public class SmartPostMarriageReportServiceImpl extends ServiceImpl<SmartPostMar
 	@Override
 	public void setDelFlagByPreId(String preId) {
 		smartPostMarriageReportMapper.setDelFlagByPreId(preId);
+	}
+
+	@Override
+	public SysUser getSysUser(String id) {
+		return smartPostMarriageReportMapper.getSysUser(id);
 	}
 
 }

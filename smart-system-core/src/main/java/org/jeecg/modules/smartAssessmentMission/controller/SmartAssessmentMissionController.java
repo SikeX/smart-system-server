@@ -374,13 +374,14 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
 		QueryWrapper<SmartAnswerInfo> queryWrapper = new QueryWrapper<>();
 		queryWrapper.eq("mission_id", smartAssessmentDepart.getMissionId()).eq("depart", smartAssessmentDepart.getAssessmentDepart());
 		SmartAnswerInfo answerInfo = smartAnswerInfoService.getOne(queryWrapper);
-		if (oConvertUtils.isEmpty(answerInfo)) {
-			return Result.error("错误信息");
-		}
-		// 如果时间不相等更新
-		if (answerInfo.getEndTime().getTime() != smartAssessmentDepart.getDeadline().getTime()) {
-			answerInfo.setEndTime(smartAssessmentDepart.getDeadline());
-			smartAnswerInfoService.updateById(answerInfo);
+
+		// 如果还没有发布任务则不更新
+		if (oConvertUtils.isNotEmpty(answerInfo)) {
+			// 如果时间不相等更新
+			if (answerInfo.getEndTime().getTime() != smartAssessmentDepart.getDeadline().getTime()) {
+				answerInfo.setEndTime(smartAssessmentDepart.getDeadline());
+				smartAnswerInfoService.updateById(answerInfo);
+			}
 		}
 
 		smartAssessmentDepartService.updateById(smartAssessmentDepart);

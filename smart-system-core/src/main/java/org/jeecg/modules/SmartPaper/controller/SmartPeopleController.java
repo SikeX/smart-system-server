@@ -89,9 +89,10 @@ public class SmartPeopleController extends JeecgController<SmartPeople, ISmartPe
         pageList = smartPeopleService.getTriPeoListByDptId(pageList,paperId,departId);
         // 获取登录用户信息
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+        String userId = sysUser.getId();
         String userName = sysUser.getRealname();
         result.setResult(pageList);
-        result.setMessage(userName);
+        result.setMessage(userId+","+userName);
         result.setSuccess(true);
         return result;
     }

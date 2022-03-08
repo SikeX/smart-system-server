@@ -17,12 +17,14 @@ public class RandomPeople implements Serializable {
     @Dict(dictTable = "smart_paper",dicCode = "id",dicText = "paper_name")
     private String paperId;
     private String paperName;
+    private String paperType;
     /**户主*/
-    @Excel(name="户主",width = 15,dictTable = "sys_user",dicCode = "id",dicText = "realname")
-    @Dict(dictTable = "sys_user",dicCode = "id",dicText = "realname")
-    private String hostId;
+    @Excel(name="户主",width = 15,dictTable = "sys_user",dicCode = "idnumber",dicText = "realname")
+    @Dict(dictTable = "sys_user",dicCode = "idnumber",dicText = "realname")
+    private String idnumber;
     private String hostName;
     /**被访人信息*/
+    @Dict(dictTable = "sys_user",dicCode = "id",dicText = "realname")
     private String userId;
     @Excel(name="被访人",width = 15)
     private String realname;

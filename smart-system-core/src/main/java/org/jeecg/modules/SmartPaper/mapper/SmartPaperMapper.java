@@ -40,5 +40,7 @@ public interface SmartPaperMapper extends BaseMapper<SmartPaper> {
      */
     void updateStatus(@Param("paperId")String paperId);
 
-    List<RandomPeople> getTriPeoList(Page<RandomPeople> page,@Param("paperId")String paperId);
+    List<RandomPeople> getTriPeoList(Page<RandomPeople> page,@Param("paperId")String paperId,@Param("paperType")String paperType);
+
+    List<RandomPeople> getTriPeoGovList(Page<RandomPeople> page,@Param("paperId") String paperId,@Param("paperType") String paperType);
 }

@@ -13,6 +13,8 @@ import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.smartExportWord.util.WordUtils;
+import org.jeecg.modules.smartJob.entity.SysUser;
+import org.jeecg.modules.smartJob.service.ISmartJobService;
 import org.jeecg.modules.smartPremaritalFiling.entity.SmartPremaritalFiling;
 import org.jeecg.modules.smartPremaritalFiling.service.ISmartPremaritalFilingService;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
@@ -81,6 +83,7 @@ public class SmartPostMarriageReportController {
 
     @Autowired
     private ISysBaseAPI sysBaseAPI;
+
 
 
     /**
@@ -492,9 +495,14 @@ public class SmartPostMarriageReportController {
         //获取需要的数据
         List<String> idsList = Arrays.asList(ids.split(","));
         System.out.println(ids);
+
         QueryWrapper<SmartPostMarriageReport> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("id").in("pre_id", idsList);
         List<SmartPostMarriageReport> list = smartPostMarriageReportService.list(queryWrapper);
+
+        if(list.size() == 0){
+            return;
+        }
 
         List<String> idList = new ArrayList<>();
 
@@ -535,6 +543,7 @@ public class SmartPostMarriageReportController {
         //设置模板
         String ftlTemplateName = "/templates/SmartPostMarriageReport.ftl";
         WordUtils.exportWordBatch(dataList, fileNamesList, ftlTemplateName, response, request);
+
     }
 
     //根据婚前id查找婚后报备记录
@@ -548,6 +557,17 @@ public class SmartPostMarriageReportController {
         }
         return Result.OK(smartPostMarriageReport);
 
+    }
+
+    @GetMapping("/getUserInfo")
+    public Result<?> getUserInfo(){
+        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+        System.out.println(sysUser.getId());
+        String id = sysUser.getId();
+
+        SysUser ret = smartPostMarriageReportService.getSysUser(id);
+        System.out.println(ret);
+        return Result.OK(ret);
     }
 
 }
