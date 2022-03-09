@@ -305,9 +305,9 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 	public Boolean updateDepartDataById(SysDepart sysDepart, String username) {
 		if (sysDepart != null && username != null) {
 			SysDepart deptForOld = this.queryDeptByDepartId(sysDepart.getId());
-			sysDepart.setOldDepartName(deptForOld.getOldDepartName());
-			sysDepart.setOldParentId(deptForOld.getOldParentId());
-			sysDepart.setOldBusinessParentId(deptForOld.getOldBusinessParentId());
+			sysDepart.setOldDepartName(deptForOld.getDepartName());
+			sysDepart.setOldParentId(deptForOld.getParentId());
+			sysDepart.setOldBusinessParentId(deptForOld.getBusinessParentId());
 			sysDepart.setUpdateTime(new Date());
 			sysDepart.setUpdateBy(username);
             SysDepart naturalDept = this.queryDeptByDepartId(sysDepart.getBusinessParentId());
@@ -355,6 +355,7 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
                     this.updateById(naturalChildDept2);
                 }
             }
+            this.updateById(sysDepart);
         }
             //			更换业务上级的情况下
             if(!sysDepart.getParentId().equals(sysDepart.getOldParentId()))
@@ -614,8 +615,9 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 		List<SysDepart> departList = this.list(query);
 		if(departList != null && departList.size() > 0) {
 			for(SysDepart depart : departList) {
+				if(depart.getDelFlag().equals("0")){
 				idList.add(depart.getId());
-				this.checkChildrenExists(depart.getId(), idList);
+				this.checkChildrenExists(depart.getId(), idList);}
 			}
 		}
 	}
@@ -631,8 +633,9 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 		List<SysDepart> departList = this.list(query);
 		if(departList != null && departList.size() > 0) {
 			for(SysDepart depart : departList) {
-				idList.add(depart.getId());
-				this.checkNaturalChildrenExists(depart.getId(), idList);
+				if(depart.getDelFlag().equals("0"))
+				{idList.add(depart.getId());
+				this.checkNaturalChildrenExists(depart.getId(), idList);}
 			}
 		}
 	}
