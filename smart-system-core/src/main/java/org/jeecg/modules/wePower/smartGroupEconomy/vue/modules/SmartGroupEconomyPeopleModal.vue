@@ -12,28 +12,38 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules">
         <a-row>
           <a-col :span="24">
-            <a-form-model-item label="农村集体经济组织类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="type">
-              <j-dict-select-tag type="list" v-model="model.type" dictCode="group_economy_type" placeholder="请选择农村集体经济组织类型" />
+            <a-form-model-item label="所在村" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="depart">
+              <j-select-depart v-model="model.depart"multi />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="农村集体经济组织名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="name">
-              <a-input v-model="model.name" placeholder="请输入农村集体经济组织名称" ></a-input>
+            <a-form-model-item label="姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="name">
+              <a-input v-model="model.name"placeholder="请输入姓名" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="授权额度" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="credit">
-              <a-input v-model="model.credit" placeholder="请输入授权额度" ></a-input>
+            <a-form-model-item label="职务" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="job">
+              <a-input v-model="model.job"placeholder="请输入职务" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="账户名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="accountName">
-              <a-input v-model="model.accountName" placeholder="请输入账户名称" ></a-input>
+            <a-form-model-item label="任期开始时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="termStartDate">
+              <j-date placeholder="请选择任期开始时间" v-model="model.termStartDate" style="width: 100%" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="账号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="account">
-              <a-input v-model="model.account" placeholder="请输入账号" ></a-input>
+            <a-form-model-item label="任期结束时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="termEndDate">
+              <j-date placeholder="请选择任期结束时间" v-model="model.termEndDate" style="width: 100%" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="身份证号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="idNumber">
+              <a-input v-model="model.idNumber"placeholder="请输入身份证号" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="照片" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="pic">
+              <j-image-upload isMultiple  v-model="model.pic"></j-image-upload>
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -48,8 +58,15 @@
   import { validateDuplicateValue } from '@/utils/util'
 
   export default {
-    name: "SmartGroupEconomyModal",
-    components: { 
+    name: "SmartGroupEconomyPeopleModal",
+    components: {
+    },
+    props:{
+      mainId:{
+        type:String,
+        required:false,
+        default:''
+      }
     },
     data () {
       return {
@@ -69,22 +86,34 @@
 
         confirmLoading: false,
         validatorRules: {
-           type: [
-              { required: true, message: '请输入农村集体经济组织类型!'},
+           depart: [
+              { required: true, message: '请输入所在村!'},
            ],
            name: [
-              { required: true, message: '请输入农村集体经济组织名称!'},
+              { required: true, message: '请输入姓名!'},
            ],
-           credit: [
-              { required: true, message: '请输入授权额度!'},
-              { pattern: /^(([1-9][0-9]*)|([0]\.\d{0,2}|[1-9][0-9]*\.\d{0,2}))$/, message: '请输入正确的金额!'},
+           job: [
+              { required: true, message: '请输入职务!'},
+           ],
+           termStartDate: [
+              { required: true, message: '请输入任期开始时间!'},
+           ],
+           termEndDate: [
+              { required: true, message: '请输入任期结束时间!'},
+           ],
+           idNumber: [
+              { required: true, message: '请输入身份证号!'},
+              { pattern: /^\d{6,16}$/, message: '请输入6到16位数字!'},
+           ],
+           pic: [
+              { required: true, message: '请输入照片!'},
            ],
         },
         url: {
-          add: "/smartGroupEconomy/smartGroupEconomy/add",
-          edit: "/smartGroupEconomy/smartGroupEconomy/edit",
+          add: "/smartGroupEconomy/smartGroupEconomy/addSmartGroupEconomyPeople",
+          edit: "/smartGroupEconomy/smartGroupEconomy/editSmartGroupEconomyPeople",
         }
-     
+
       }
     },
     created () {
@@ -119,6 +148,7 @@
               httpurl+=this.url.edit;
                method = 'put';
             }
+            this.model['mainId'] = this.mainId
             httpAction(httpurl,this.model,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);
@@ -139,7 +169,7 @@
         this.close()
       },
 
-      
+
     }
   }
 </script>
