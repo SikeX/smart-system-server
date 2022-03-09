@@ -5,7 +5,7 @@
     <!-- 获取道里区纪委部门信息作为业务树起点 -->
     <select id="getDaoli" resultType="org.jeecg.modules.demo.test.entity.SysDepart">
         select * from sys_depart
-        where  depart_name = "哈尔滨道里区纪委"
+        where  depart_name = "中共哈尔滨市道里区纪律检查委员会"
     </select>
 
 </mapper>
