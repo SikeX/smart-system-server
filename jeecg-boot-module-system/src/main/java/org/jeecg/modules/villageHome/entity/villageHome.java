@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.jeecg.common.aspect.annotation.Dict;
 import org.jeecg.modules.system.entity.SysUser;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -53,7 +54,8 @@ public class villageHome implements Serializable {
     @ApiModelProperty(value = "更新日期")
     private Date updateTime;
     /**所属镇*/
-    @Excel(name = "所属镇", width = 15)
+
+    @Excel(name = "所属镇", width = 15  )
     @ApiModelProperty(value = "所属镇")
     private String zhenId;
 	/**所属乡*/
