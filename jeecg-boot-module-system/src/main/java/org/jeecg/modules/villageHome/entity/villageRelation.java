@@ -61,7 +61,7 @@ public class villageRelation implements Serializable {
     /**
      * 户籍关系
      */
-    @Excel(name = "亲属关系", width = 15)
+    @Excel(name = "亲属关系", width = 15,dicCode="home_relation")
     @ApiModelProperty(value = "亲属关系")
     @Dict(dicCode = "home_relation")
     private Integer homeRelation;
