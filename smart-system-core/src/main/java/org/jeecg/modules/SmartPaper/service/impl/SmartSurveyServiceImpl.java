@@ -327,7 +327,9 @@ public class SmartSurveyServiceImpl extends ServiceImpl
                     SmartTopic topic = smartTopicList.get(i);
                     smartSubmit.setQuestionId(topic.getId());
                     smartSubmit.setUserId(userId);
-                    smartSubmitMapper.insert(smartSubmit);
+                    System.out.println("smartSubmit---"+smartSubmit);
+                    int t = smartSubmitMapper.insert(smartSubmit);
+                    System.out.println("insert---"+t);
                 }
                 if(isFinish.equals("0")){
                     //无分问卷，成绩为空代表未参与（若空数据库转换成绩为-1），0表示已参与

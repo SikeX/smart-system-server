@@ -237,6 +237,10 @@ public interface CommonConstant {
     public static final String SQL_INDEX_UNIQ_SYS_USER_WORK_NO = "uniq_sys_user_work_no";
     /** sys_user 表 phone 唯一键索引 */
     public static final String SQL_INDEX_UNIQ_SYS_USER_PHONE = "uniq_sys_user_phone";
+
+    /** sys_user 表 idnumber 唯一键索引 */
+    public static final String SQL_INDEX_UNIQ_SYS_IDNUMBER = "sys_user_idnumber_uindex";
+
     /** 达梦数据库升提示。违反表[SYS_USER]唯一性约束 */
     public static final String SQL_INDEX_UNIQ_SYS_USER = "唯一性约束";
 

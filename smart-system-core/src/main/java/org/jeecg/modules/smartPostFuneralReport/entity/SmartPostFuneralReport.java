@@ -88,7 +88,7 @@ public class SmartPostFuneralReport implements Serializable {
 	/**联系电话*/
 	@Excel(name = "联系电话", width = 15)
     @ApiModelProperty(value = "联系电话")
-    private String phone;
+    private String reportPhone;
 	/**逝世人姓名*/
 	@Excel(name = "逝世人姓名", width = 15)
     @ApiModelProperty(value = "逝世人姓名")
@@ -171,4 +171,5 @@ public class SmartPostFuneralReport implements Serializable {
     @Excel(name = "附件", width = 15)
     @ApiModelProperty(value = "附件")
     private java.lang.String files;
+
 }

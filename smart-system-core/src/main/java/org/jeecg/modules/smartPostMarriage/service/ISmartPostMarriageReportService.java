@@ -1,5 +1,6 @@
 package org.jeecg.modules.smartPostMarriage.service;
 
+import org.jeecg.modules.smartJob.entity.SysUser;
 import org.jeecg.modules.smartPostMarriage.entity.SmartPostMarriageReportFile;
 import org.jeecg.modules.smartPostMarriage.entity.SmartPostMarriageReport;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -60,4 +61,6 @@ public interface ISmartPostMarriageReportService extends IService<SmartPostMarri
 	void setPreIsReport(String preId);
 
     void setDelFlagByPreId(String id);
+
+    SysUser getSysUser(String id);
 }

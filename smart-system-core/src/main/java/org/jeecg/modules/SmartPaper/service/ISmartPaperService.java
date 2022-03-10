@@ -26,5 +26,9 @@ public interface ISmartPaperService extends IService<SmartPaper> {
 
     Result insertTriSurvey(SmartTriSurveyPage smartTriSurveyPage);
 
-    Page<RandomPeople> getTriPeoList(Page<RandomPeople> page,String paperId);
+    Page<RandomPeople> getTriPeoList(Page<RandomPeople> page,String paperId,String paperType);
+
+    Result insertTriGovSurvey(SmartTriSurveyPage smartTriSurveyPage);
+
+    Page<RandomPeople> getTriPeoGovList(Page<RandomPeople> pageList, String paperId, String paperType);
 }
