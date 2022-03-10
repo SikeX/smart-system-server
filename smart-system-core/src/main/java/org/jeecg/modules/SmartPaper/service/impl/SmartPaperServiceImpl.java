@@ -239,18 +239,27 @@ public class SmartPaperServiceImpl extends ServiceImpl<SmartPaperMapper, SmartPa
             List<RandomPeople> randomPeopleList = new ArrayList<RandomPeople>();
             //随机选择对应人数
             randomPeopleList = smartPeopleService.getTriGovPeoList(selectedCount);
+            String receiverPhones ="";
+            String content = "通知，近日道里区纪委相关部门将对您展开家访！";
+            // 获取登录用户信息
+            LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+            String realName = sysUser.getRealname();
            //发送短信
             for (int i = 0;i<randomPeopleList.size();i++){
                 String receiverPhone = (randomPeopleList.get(i)).getPhone();
-                System.out.println("发送短信.................");
-                String content = "通知，近日道里区纪委相关部门将对您展开家访！";;
-                DySmsHelper.sendSms(content, receiverPhone);
+                receiverPhones = receiverPhones+","+receiverPhone;
                 //保存发送记录
                 SmartSentMsg smartSentMsg = new SmartSentMsg();
+                smartSentMsg.setTittle("廉政家访提醒");
+                smartSentMsg.setSendFrom(realName);
+                smartSentMsg.setReceiver((randomPeopleList.get(i)).getRealname());
                 smartSentMsg.setContent(content);
                 smartSentMsg.setReceiverPhone(receiverPhone);
                 smartSentMsgService.save(smartSentMsg);
             }
+            System.out.println("发送短信.................");
+            System.out.println(receiverPhones);
+            DySmsHelper.sendSms(content, receiverPhones);
             //保存廉政家访的选人列表
             for(int j = 0;j<randomPeopleList.size();j++){
                 String personsId = randomPeopleList.get(j).getUserId();
