@@ -84,7 +84,7 @@
     </select>
     <select id="getTriResultByEIdDId" resultType="org.jeecg.modules.SmartPaper.vo.RandomPeople">
         SELECT
-            u.id as userId,u1.realname as hostName,svh.idnumber,u.depart_id,depart_name,u.realname,is_finish,is_mark,is_report,satisfaction
+            u.id as userId,u1.realname as hostName,svh.idnumber,u.depart_id,depart_name,u.realname,is_finish,is_mark,is_report
         FROM     smart_people sp
                      LEFT JOIN smart_paper p ON p.id = sp.exam_id
                      LEFT JOIN  sys_user u on u.id = sp.person_id
