@@ -81,5 +81,13 @@ public class SmartVillageLead implements Serializable {
 	/**文件*/
 	@Excel(name = "文件", width = 15)
     @ApiModelProperty(value = "文件")
-    private java.lang.String file;
+    private java.lang.String files;
+
+    /**姓名*/
+    @Excel(name = "姓名", width = 15)
+    @ApiModelProperty(value = "姓名")
+    private java.lang.String name;
+
+    private java.lang.String faceToken;
+
 }

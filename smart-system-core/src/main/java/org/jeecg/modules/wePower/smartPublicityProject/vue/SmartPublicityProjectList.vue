@@ -154,6 +154,61 @@
             dataIndex: 'sysOrgCode'
           },
           {
+            title:'参会人员',
+            align:"center",
+            dataIndex: 'people1'
+          },
+          {
+            title:'会议照片',
+            align:"center",
+            dataIndex: 'video1'
+          },
+          {
+            title:'参会人员',
+            align:"center",
+            dataIndex: 'people2'
+          },
+          {
+            title:'会议照片',
+            align:"center",
+            dataIndex: 'video2'
+          },
+          {
+            title:'参会人员',
+            align:"center",
+            dataIndex: 'people3'
+          },
+          {
+            title:'会议照片',
+            align:"center",
+            dataIndex: 'video3'
+          },
+          {
+            title:'参会人员',
+            align:"center",
+            dataIndex: 'people4'
+          },
+          {
+            title:'会议照片',
+            align:"center",
+            dataIndex: 'video4'
+          },
+          {
+            title:'村两委会议商议',
+            align:"center",
+            dataIndex: 'meetFile2'
+          },
+          {
+            title:'党员大会审议',
+            align:"center",
+            dataIndex: 'meetFile3'
+          },
+          {
+            title:'村民会议或者村民代表会议决议',
+            align:"center",
+            dataIndex: 'meetFile4'
+          },
+          {
             title: '操作',
             dataIndex: 'action',
             align:"center",
@@ -192,22 +247,33 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'title',text:'项目名称',dictCode:''})
-         fieldList.push({type:'string',value:'type',text:'项目分类'})
-         fieldList.push({type:'sel_depart',value:'location',text:'建设单位'})
-         fieldList.push({type:'string',value:'constructDep',text:'施工单位',dictCode:''})
-         fieldList.push({type:'Text',value:'projectContent',text:'简要说明',dictCode:''})
-         fieldList.push({type:'string',value:'money',text:'合同金额',dictCode:''})
-         fieldList.push({type:'string',value:'period',text:'服务年限',dictCode:''})
-         fieldList.push({type:'date',value:'endTime',text:'完成时限'})
-         fieldList.push({type:'date',value:'signTime',text:'合同签订日期'})
-         fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
-         fieldList.push({type:'datetime',value:'createTime',text:'创建日期'})
-         fieldList.push({type:'string',value:'sysOrgCode',text:'创建部门',dictCode:'sys_depart,depart_name,org_code'})
-         fieldList.push({type:'Text',value:'file1',text:'四议两公开内容',dictCode:''})
-         fieldList.push({type:'Text',value:'file2',text:'村集体经济组织相关材料',dictCode:''})
-         fieldList.push({type:'Text',value:'file3',text:'合同',dictCode:''})
-         fieldList.push({type:'Text',value:'file4',text:'验收材料',dictCode:''})
+        fieldList.push({type:'string',value:'title',text:'项目名称',dictCode:''})
+        fieldList.push({type:'string',value:'type',text:'项目分类'})
+        fieldList.push({type:'sel_depart',value:'location',text:'建设单位'})
+        fieldList.push({type:'string',value:'constructDep',text:'施工单位',dictCode:''})
+        fieldList.push({type:'Text',value:'projectContent',text:'简要说明',dictCode:''})
+        fieldList.push({type:'string',value:'money',text:'合同金额',dictCode:''})
+        fieldList.push({type:'string',value:'period',text:'服务年限',dictCode:''})
+        fieldList.push({type:'date',value:'endTime',text:'完成时限'})
+        fieldList.push({type:'date',value:'signTime',text:'合同签订日期'})
+        fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
+        fieldList.push({type:'datetime',value:'createTime',text:'创建日期'})
+        fieldList.push({type:'string',value:'sysOrgCode',text:'创建部门',dictCode:'sys_depart,depart_name,org_code'})
+        fieldList.push({type:'Text',value:'meetFile1',text:'村党支部提议文件',dictCode:''})
+        fieldList.push({type:'Text',value:'people1',text:'参会人员',dictCode:''})
+        fieldList.push({type:'Text',value:'video1',text:'会议照片',dictCode:''})
+        fieldList.push({type:'Text',value:'file2',text:'村集体经济组织相关材料',dictCode:''})
+        fieldList.push({type:'Text',value:'people2',text:'参会人员',dictCode:''})
+        fieldList.push({type:'Text',value:'video2',text:'会议照片',dictCode:''})
+        fieldList.push({type:'Text',value:'file3',text:'合同',dictCode:''})
+        fieldList.push({type:'Text',value:'people3',text:'参会人员',dictCode:''})
+        fieldList.push({type:'Text',value:'video3',text:'会议照片',dictCode:''})
+        fieldList.push({type:'Text',value:'file4',text:'验收材料',dictCode:''})
+        fieldList.push({type:'Text',value:'people4',text:'参会人员',dictCode:''})
+        fieldList.push({type:'Text',value:'video4',text:'会议照片',dictCode:''})
+        fieldList.push({type:'Text',value:'meetFile2',text:'村两委会议商议',dictCode:''})
+        fieldList.push({type:'Text',value:'meetFile3',text:'党员大会审议',dictCode:''})
+        fieldList.push({type:'Text',value:'meetFile4',text:'村民会议或者村民代表会议决议',dictCode:''})
         this.superFieldList = fieldList
       }
     }

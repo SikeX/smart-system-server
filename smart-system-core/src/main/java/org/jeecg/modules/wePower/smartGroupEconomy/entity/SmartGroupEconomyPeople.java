@@ -79,4 +79,7 @@ public class SmartGroupEconomyPeople implements Serializable {
 	/**主表id*/
     @ApiModelProperty(value = "主表id")
     private java.lang.String mainId;
+
+    private java.lang.String faceToken;
+
 }
