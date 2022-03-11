@@ -91,7 +91,11 @@ public class SmartEvaluateWindowController extends JeecgController<SmartEvaluate
 			String receiverPhone = (smartWindowUnitService.getById(windowsId)).getPhone();
 			DySmsHelper.sendSms(content, receiverPhone);
 			//保存发送记录
+			String receiver = (smartWindowUnitService.getById(windowsId)).getPrincipalName();
 			SmartSentMsg smartSentMsg = new SmartSentMsg();
+			smartSentMsg.setTittle("阳光评廉提醒");
+			smartSentMsg.setSendFrom("admin");
+			smartSentMsg.setReceiver(receiver);
 			smartSentMsg.setContent(content);
 			smartSentMsg.setReceiverPhone(receiverPhone);
 			smartSentMsgService.save(smartSentMsg);
