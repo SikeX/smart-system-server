@@ -29,7 +29,7 @@
 		<mysql-connector-java.version>8.0.27</mysql-connector-java.version>
 		<!-- 动态数据源-->
 		<dynamic-datasource-spring-boot-starter.version>3.2.0</dynamic-datasource-spring-boot-starter.version>
-		<hutool.version>5.3.8</hutool.version>
+		<hutool.version>5.7.22</hutool.version>
 		<redisson.version>3.16.1</redisson.version>
 		<commons-beanutils.version>1.9.4</commons-beanutils.version>
 		<guava.version>29.0-jre</guava.version>
