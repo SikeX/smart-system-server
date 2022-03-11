@@ -15,6 +15,7 @@ import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.DateUtil;
 import org.jeecg.common.util.DateUtils;
+import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.smartAnswerAssContent.entity.SmartAnswerAssContent;
 import org.jeecg.modules.smartAnswerAssContent.service.ISmartAnswerAssContentService;
 import org.jeecg.modules.smartAnswerInfo.entity.SmartAnswerInfo;
@@ -111,9 +112,11 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
                                          @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                                          @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                          HttpServletRequest req) {
+        if (oConvertUtils.isEmpty(smartAnswerInfo.getDepart())) {
+            return Result.error("请联系管理员！");
+        }
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
         QueryWrapper<SmartAnswerInfo> queryWrapper = QueryGenerator.initQueryWrapper(smartAnswerInfo, req.getParameterMap());
-        queryWrapper.eq("depart", sysUser.getDepartId());
         Page<SmartAnswerInfo> page = new Page<SmartAnswerInfo>(pageNo, pageSize);
         IPage<SmartAnswerInfo> pageList = smartAnswerInfoService.page(page, queryWrapper);
         return Result.OK(pageList);
