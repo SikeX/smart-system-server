@@ -5,11 +5,13 @@ import java.io.Serializable;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.jeecg.common.aspect.annotation.Dict;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * @Description: 项目管理
@@ -56,14 +58,24 @@ public class SmartPublicityProject implements Serializable {
 	@Excel(name = "服务年限", width = 15)
     @ApiModelProperty(value = "服务年限")
     private java.lang.String period;
-	/**完成时限*/
-	@Excel(name = "完成时限", width = 15)
+    /**完成时限*/
+    @Excel(name = "完成时限", width = 15)
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     @ApiModelProperty(value = "完成时限")
     private java.util.Date endTime;
-	/**合同签订日期*/
-	@Excel(name = "合同签订日期", width = 15)
+    /**合同签订日期*/
+    @Excel(name = "合同签订日期", width = 15)
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     @ApiModelProperty(value = "合同签订日期")
     private java.util.Date signTime;
+    /**合同截止日期*/
+    @Excel(name = "合同签订日期", width = 15)
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    @ApiModelProperty(value = "合同截止日期")
+    private java.util.Date signEndTime;
 	/**创建人*/
     @ApiModelProperty(value = "创建人")
     private java.lang.String createBy;
