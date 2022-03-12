@@ -12,28 +12,48 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules">
         <a-row>
           <a-col :span="24">
-            <a-form-model-item label="农村集体经济组织类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="type">
-              <j-dict-select-tag type="list" v-model="model.type" dictCode="group_economy_type" placeholder="请选择农村集体经济组织类型" />
+            <a-form-model-item label="附件1" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="file1">
+              <j-upload v-model="model.file1"  ></j-upload>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="农村集体经济组织名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="name">
-              <a-input v-model="model.name" placeholder="请输入农村集体经济组织名称" ></a-input>
+            <a-form-model-item label="参会人员" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="people1">
+              <j-multi-select-tag type="list_multi" v-model="model.people1" dictCode="smart_group_economy_people,name,id" placeholder="请选择参会人员" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="授权额度" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="credit">
-              <a-input v-model="model.credit" placeholder="请输入授权额度" ></a-input>
+            <a-form-model-item label="视频" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="video1">
+              <j-upload v-model="model.video1"  ></j-upload>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="账户名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="accountName">
-              <a-input v-model="model.accountName" placeholder="请输入账户名称" ></a-input>
+            <a-form-model-item label="附件2" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="file2">
+              <j-upload v-model="model.file2"  ></j-upload>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="账号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="account">
-              <a-input v-model="model.account" placeholder="请输入账号" ></a-input>
+            <a-form-model-item label="参会人员" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="people2">
+              <j-multi-select-tag type="list_multi" v-model="model.people2" dictCode="smart_group_economy_people,name,id" placeholder="请选择参会人员" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="视频" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="video2">
+              <j-upload v-model="model.video2"  ></j-upload>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="附件3" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="file3">
+              <j-upload v-model="model.file3"  ></j-upload>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="参会人员" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="people3">
+              <j-multi-select-tag type="list_multi" v-model="model.people3" dictCode="smart_group_economy_people,name,id" placeholder="请选择参会人员" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="视频" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="video3">
+              <j-upload v-model="model.video3"  ></j-upload>
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -48,8 +68,15 @@
   import { validateDuplicateValue } from '@/utils/util'
 
   export default {
-    name: "SmartGroupEconomyModal",
-    components: { 
+    name: "SmartGroupEconomyMeetingModal",
+    components: {
+    },
+    props:{
+      mainId:{
+        type:String,
+        required:false,
+        default:''
+      }
     },
     data () {
       return {
@@ -69,22 +96,12 @@
 
         confirmLoading: false,
         validatorRules: {
-           type: [
-              { required: true, message: '请输入农村集体经济组织类型!'},
-           ],
-           name: [
-              { required: true, message: '请输入农村集体经济组织名称!'},
-           ],
-           credit: [
-              { required: true, message: '请输入授权额度!'},
-              { pattern: /^(([1-9][0-9]*)|([0]\.\d{0,2}|[1-9][0-9]*\.\d{0,2}))$/, message: '请输入正确的金额!'},
-           ],
         },
         url: {
-          add: "/smartGroupEconomy/smartGroupEconomy/add",
-          edit: "/smartGroupEconomy/smartGroupEconomy/edit",
+          add: "/smartGroupEconomy/smartGroupEconomy/addSmartGroupEconomyMeeting",
+          edit: "/smartGroupEconomy/smartGroupEconomy/editSmartGroupEconomyMeeting",
         }
-     
+
       }
     },
     created () {
@@ -119,6 +136,7 @@
               httpurl+=this.url.edit;
                method = 'put';
             }
+            this.model['mainId'] = this.mainId
             httpAction(httpurl,this.model,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);
@@ -139,7 +157,7 @@
         this.close()
       },
 
-      
+
     }
   }
 </script>

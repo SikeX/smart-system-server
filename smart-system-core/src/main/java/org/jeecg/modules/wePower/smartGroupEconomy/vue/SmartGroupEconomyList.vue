@@ -8,7 +8,7 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
-
+    
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
@@ -18,12 +18,6 @@
       </a-upload>
       <!-- 高级查询区域 -->
       <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
-      <a-dropdown v-if="selectedRowKeys.length > 0">
-        <a-menu slot="overlay">
-          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
-        </a-menu>
-        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
-      </a-dropdown>
     </div>
 
     <!-- table区域-begin -->
@@ -36,15 +30,16 @@
       <a-table
         ref="table"
         size="middle"
-        :scroll="{x:true}"
         bordered
         rowKey="id"
+        class="j-table-force-nowrap"
+        :scroll="{x:true}"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-        class="j-table-force-nowrap"
+        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange, type:'radio'}"
+        :customRow="clickThenSelect"
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -75,9 +70,6 @@
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
               <a-menu-item>
-                <a @click="handleDetail(record)">详情</a>
-              </a-menu-item>
-              <a-menu-item>
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
                   <a>删除</a>
                 </a-popconfirm>
@@ -89,22 +81,35 @@
       </a-table>
     </div>
 
-    <smart-group-economy-modal ref="modalForm" @ok="modalFormOk"></smart-group-economy-modal>
+    <a-tabs defaultActiveKey="1">
+      <a-tab-pane tab="集体经济组织人员" key="1" >
+        <SmartGroupEconomyPeopleList :mainId="selectedMainId" />
+      </a-tab-pane>
+      <a-tab-pane tab="集体经济组织会议" key="2" forceRender>
+        <SmartGroupEconomyMeetingList :mainId="selectedMainId" />
+      </a-tab-pane>
+    </a-tabs>
+
+    <smartGroupEconomy-modal ref="modalForm" @ok="modalFormOk"></smartGroupEconomy-modal>
   </a-card>
 </template>
 
 <script>
 
-  import '@/assets/less/TableExpand.less'
-  import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import SmartGroupEconomyModal from './modules/SmartGroupEconomyModal'
-  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
+  import { getAction } from '@/api/manage'
+  import SmartGroupEconomyPeopleList from './SmartGroupEconomyPeopleList'
+  import SmartGroupEconomyMeetingList from './SmartGroupEconomyMeetingList'
+  import {initDictOptions,filterMultiDictText} from '@/components/dict/JDictSelectUtil'
+  import '@/assets/less/TableExpand.less'
 
   export default {
-    name: 'SmartGroupEconomyList',
-    mixins:[JeecgListMixin, mixinDevice],
+    name: "SmartGroupEconomyList",
+    mixins:[JeecgListMixin],
     components: {
+      SmartGroupEconomyPeopleList,
+      SmartGroupEconomyMeetingList,
       SmartGroupEconomyModal
     },
     data () {
@@ -113,19 +118,9 @@
         // 表头
         columns: [
           {
-            title: '#',
-            dataIndex: '',
-            key:'rowIndex',
-            width:60,
-            align:"center",
-            customRender:function (t,r,index) {
-              return parseInt(index)+1;
-            }
-          },
-          {
             title:'农村集体经济组织类型',
             align:"center",
-            dataIndex: 'type_dictText'
+            dataIndex: 'type_dictText',
           },
           {
             title:'农村集体经济组织名称',
@@ -133,29 +128,14 @@
             dataIndex: 'name'
           },
           {
-            title:'理事长（法定代表人）',
-            align:"center",
-            dataIndex: 'councilBoard'
-          },
-          {
-            title:'经理人',
-            align:"center",
-            dataIndex: 'manager'
-          },
-          {
             title:'授权额度',
             align:"center",
             dataIndex: 'credit'
           },
           {
-            title:'监事长',
+            title:'账户名称',
             align:"center",
-            dataIndex: 'supervisor'
-          },
-          {
-            title:'财务成员代表',
-            align:"center",
-            dataIndex: 'financialOfficer'
+            dataIndex: 'accountName'
           },
           {
             title: '操作',
@@ -163,7 +143,7 @@
             align:"center",
             fixed:"right",
             width:147,
-            scopedSlots: { customRender: 'action' }
+            scopedSlots: { customRender: 'action' },
           }
         ],
         url: {
@@ -172,45 +152,96 @@
           deleteBatch: "/smartGroupEconomy/smartGroupEconomy/deleteBatch",
           exportXlsUrl: "/smartGroupEconomy/smartGroupEconomy/exportXls",
           importExcelUrl: "smartGroupEconomy/smartGroupEconomy/importExcel",
-          
         },
-        dictOptions:{},
+        dictOptions:{
+         type:[],
+        },
+        /* 分页参数 */
+        ipagination:{
+          current: 1,
+          pageSize: 5,
+          pageSizeOptions: ['5', '10', '50'],
+          showTotal: (total, range) => {
+            return range[0] + "-" + range[1] + " 共" + total + "条"
+          },
+          showQuickJumper: true,
+          showSizeChanger: true,
+          total: 0
+        },
+        selectedMainId:'',
         superFieldList:[],
       }
     },
     created() {
-    this.getSuperFieldList();
+      this.getSuperFieldList();
     },
     computed: {
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
-      },
+      }
     },
     methods: {
       initDictConfig(){
+        initDictOptions('group_economy_type').then((res) => {
+          if (res.success) {
+            this.$set(this.dictOptions, 'type', res.result)
+          }
+        })
+      },
+      clickThenSelect(record) {
+        return {
+          on: {
+            click: () => {
+              this.onSelectChange(record.id.split(","), [record]);
+            }
+          }
+        }
+      },
+      onClearSelected() {
+        this.selectedRowKeys = [];
+        this.selectionRows = [];
+        this.selectedMainId=''
+      },
+      onSelectChange(selectedRowKeys, selectionRows) {
+        this.selectedMainId=selectedRowKeys[0]
+        this.selectedRowKeys = selectedRowKeys;
+        this.selectionRows = selectionRows;
+      },
+      loadData(arg) {
+        if(!this.url.list){
+          this.$message.error("请设置url.list属性!")
+          return
+        }
+        //加载数据 若传入参数1则加载第一页的内容
+        if (arg === 1) {
+          this.ipagination.current = 1;
+        }
+        this.onClearSelected()
+        var params = this.getQueryParams();//查询条件
+        this.loading = true;
+        getAction(this.url.list, params).then((res) => {
+          if (res.success) {
+            this.dataSource = res.result.records;
+            this.ipagination.total = res.result.total;
+          }
+          if(res.code===510){
+            this.$message.warning(res.message)
+          }
+          this.loading = false;
+        })
       },
       getSuperFieldList(){
         let fieldList=[];
         fieldList.push({type:'string',value:'type',text:'农村集体经济组织类型',dictCode:'group_economy_type'})
         fieldList.push({type:'string',value:'name',text:'农村集体经济组织名称',dictCode:''})
-        fieldList.push({type:'string',value:'councilBoard',text:'理事长（法定代表人）',dictCode:''})
-        fieldList.push({type:'Text',value:'counilMenber',text:'理事会成员',dictCode:''})
-        fieldList.push({type:'date',value:'termStartTime',text:'任期开始时间'})
-        fieldList.push({type:'date',value:'termEndTime',text:'任期结束时间'})
-        fieldList.push({type:'string',value:'manager',text:'经理人',dictCode:''})
         fieldList.push({type:'string',value:'credit',text:'授权额度',dictCode:''})
-        fieldList.push({type:'string',value:'supervisor',text:'监事长',dictCode:''})
-        fieldList.push({type:'Text',value:'supervisorMember',text:'监事会成员',dictCode:''})
-        fieldList.push({type:'date',value:'supervisorStartTime',text:'任期开始时间'})
-        fieldList.push({type:'date',value:'supervisorEndTime',text:'任期结束时间'})
-        fieldList.push({type:'string',value:'financialOfficer',text:'财务成员代表',dictCode:''})
-        fieldList.push({type:'Text',value:'financialMember',text:'财务成员',dictCode:''})
-        fieldList.push({type:'string',value:'accountInfo',text:'账户信息',dictCode:''})
+        fieldList.push({type:'string',value:'accountName',text:'账户名称',dictCode:''})
+        fieldList.push({type:'string',value:'account',text:'账号',dictCode:''})
         this.superFieldList = fieldList
       }
     }
   }
 </script>
 <style scoped>
-  @import '~@assets/less/common.less';
+  @import '~@assets/less/common.less'
 </style>

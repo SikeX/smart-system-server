@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 /**
  * @Description: 项目管理
  * @Author: jeecg-boot
- * @Date:   2022-02-16
+ * @Date:   2022-03-09
  * @Version: V1.0
  */
 public interface SmartPublicityProjectMapper extends BaseMapper<SmartPublicityProject> {

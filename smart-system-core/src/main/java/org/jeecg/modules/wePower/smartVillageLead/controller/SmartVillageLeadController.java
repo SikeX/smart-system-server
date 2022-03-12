@@ -4,6 +4,7 @@ import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jeecg.common.api.vo.Result;
+import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.wePower.smartVillageLead.entity.SmartVillageLead;
 import org.jeecg.modules.wePower.smartVillageLead.service.ISmartVillageLeadService;
@@ -34,6 +35,8 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 public class SmartVillageLeadController extends JeecgController<SmartVillageLead, ISmartVillageLeadService> {
 	@Autowired
 	private ISmartVillageLeadService smartVillageLeadService;
+	@Autowired
+	private ISysBaseAPI sysBaseAPI;
 	
 	/**
 	 * 分页列表查询
@@ -67,6 +70,11 @@ public class SmartVillageLeadController extends JeecgController<SmartVillageLead
 	@ApiOperation(value="村（社区）领导班子-添加", notes="村（社区）领导班子-添加")
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody SmartVillageLead smartVillageLead) {
+
+		String name = sysBaseAPI.translateDictFromTable("smart_village_home","home_surname", "idnumber",
+				 smartVillageLead.getPeople());
+
+		smartVillageLead.setName(name);
 		smartVillageLeadService.save(smartVillageLead);
 		return Result.OK("添加成功！");
 	}
