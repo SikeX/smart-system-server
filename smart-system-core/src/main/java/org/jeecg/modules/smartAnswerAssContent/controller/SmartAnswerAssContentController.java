@@ -428,7 +428,7 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 		while (oConvertUtils.isNotEmpty(smartAnswerAssContent.getPid())) {
 			// 查找该考核要点的上级
 			queryWrapper.clear();
-			queryWrapper.eq("ass_content_id", smartAnswerAssContent.getPid());
+			queryWrapper.eq("ass_content_id", smartAnswerAssContent.getPid()).eq("main_id", smartAnswerAssContent.getMainId());
 			smartAnswerAssContent = smartAnswerAssContentService.getOne(queryWrapper);
 			if (oConvertUtils.isEmpty(smartAnswerAssContent)) {
 				break;
