@@ -6,17 +6,23 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.constant.CommonConstant;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.PasswordUtil;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.smartFuneralReport.entity.SmartFuneralReport;
 import org.jeecg.modules.system.entity.SysDepart;
 import org.jeecg.modules.system.entity.SysUser;
 import org.jeecg.modules.system.service.ISysDepartService;
 import org.jeecg.modules.system.service.ISysUserService;
 import org.jeecg.modules.villageHome.entity.villageHome;
+import org.jeecg.modules.villageHome.vo.vHome;
 import org.jeecg.modules.villageHome.entity.villageRelation;
 import org.jeecg.modules.villageHome.service.IvillageHomeService;
 
@@ -29,7 +35,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.modules.villageHome.service.IvillageRelationService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
+import org.jeecgframework.poi.excel.def.NormalExcelConstants;
+import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.ImportParams;
+import org.jeecgframework.poi.excel.view.JeecgEntityExcelView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -89,9 +98,12 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 			villageHome home = villageHomeList.get(i);
 			if(home.getIdnumber()!=null && !home.getIdnumber().equals("")) {
 				SysUser host = sysUserService.queryByIdnumber(home.getIdnumber());
+				if(host!=null){
+				if(host.getPhone()==null)
+				{host.setPhone("");}
 				home.setPhone(host.getPhone());
 				home.setRealname(host.getRealname());
-				home.setRole(host.getRole());
+				home.setRole(host.getRole());}
 			}
 			List<SysUser> userList = sysUserService.queryByHomeCode(home.getHomeCode());
 			home.setUserList(userList);
@@ -432,8 +444,8 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
     * @param villageHome
     */
     @RequestMapping(value = "/exportXls")
-    public ModelAndView exportXls(HttpServletRequest request, villageHome villageHome) {
-        return super.exportXls(request, villageHome, villageHome.class, "乡镇户口表");
+    public ModelAndView exportXls(HttpServletRequest request,villageHome villageHome) {
+		return super.exportXls(request, villageHome, villageHome.class, "乡镇户口表");
     }
 
     /**
@@ -475,10 +487,10 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 					long start = System.currentTimeMillis();
 					//是否是户主，如果是户主，添加户籍和户主，否则添加家庭成员和家庭关系
 					List<Integer> ifHost = listForUser.stream().map(e -> e.getHomeRole()).collect(Collectors.toList());
-					List<Integer> oUse = new ArrayList<>(ifHost);
-					List<Integer> tUse = new ArrayList<>(ifHost);
-					List<Integer> thUse = new ArrayList<>(ifHost);
-					List<Integer> fUse = new ArrayList<>(ifHost);
+					List<Integer> oUse = listForUser.stream().map(e -> e.getHomeRole()).collect(Collectors.toList());
+					List<Integer> tUse = listForUser.stream().map(e -> e.getHomeRole()).collect(Collectors.toList());
+					List<Integer> thUse = listForUser.stream().map(e -> e.getHomeRole()).collect(Collectors.toList());
+					List<Integer> fUse = listForUser.stream().map(e -> e.getHomeRole()).collect(Collectors.toList());
 					for(int i=0;i<list.size();i++)
 					{
 						if(oUse.get(i) == 2)
