@@ -64,4 +64,11 @@ public class SmartRankVisible implements Serializable {
     private java.lang.String visible;
 
     private java.lang.String delFlag;
+
+    private java.lang.String contentName;
+
+    private java.lang.Integer sort;
+
+    private java.lang.String tag;
+
 }

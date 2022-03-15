@@ -41,7 +41,10 @@ public class Rank implements Serializable {
     private String departName;
 
 
-    private Map<String, Double> sourceMap;
+    private Map<String, Double> scoreMap;
+
+    private Map<String, Integer> columnMap;
+
 
     /**总分*/
     @Excel(name = "总分", width = 15)
