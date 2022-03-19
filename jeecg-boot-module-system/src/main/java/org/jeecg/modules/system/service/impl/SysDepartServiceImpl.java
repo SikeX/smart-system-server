@@ -306,7 +306,12 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 		if (sysDepart != null && username != null) {
 			SysDepart deptForOld = this.queryDeptByDepartId(sysDepart.getId());
 			sysDepart.setOldDepartName(deptForOld.getDepartName());
-			sysDepart.setOldParentId(deptForOld.getParentId());
+			if (sysDepart.getOldParentId() == null) {
+				sysDepart.setOldParentId("");
+			}
+			else{
+				sysDepart.setOldParentId(deptForOld.getParentId());
+			}
 			sysDepart.setOldBusinessParentId(deptForOld.getBusinessParentId());
 			sysDepart.setUpdateTime(new Date());
 			sysDepart.setUpdateBy(username);
@@ -363,6 +368,7 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
                 if (sysDepart.getParentId() == null) {
                     sysDepart.setParentId("");
                 }
+
                 // 先判断该对象有无父级ID,有则意味着不是最高级,否则意味着是最高级
                 // 获取父级ID
                 String parentId = sysDepart.getParentId();
@@ -890,7 +896,7 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 		String cunId = null;
 		if(cun.equals("前进村"))
 		{
-			if(zhen.equals("新农镇"))
+			if(zhen.equals("道里区新农镇"))
 			{
 				cunId = "e0ce48ecb1734d77b843d28017b95f39";
 			}else

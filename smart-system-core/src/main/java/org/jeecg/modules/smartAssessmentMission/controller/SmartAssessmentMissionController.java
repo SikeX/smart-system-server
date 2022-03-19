@@ -29,6 +29,7 @@ import org.jeecg.modules.smartAssessmentMission.entity.SmartAssessmentDepart;
 import org.jeecg.modules.smartAssessmentMission.entity.SmartAssessmentMission;
 import org.jeecg.modules.smartAssessmentMission.service.ISmartAssessmentDepartService;
 import org.jeecg.modules.smartAssessmentMission.service.ISmartAssessmentMissionService;
+import org.jeecg.modules.smartRankVisible.entity.SmartRankVisible;
 import org.jeecg.modules.smartRankVisible.service.ISmartRankVisibleService;
 import org.jeecg.modules.smartAssessmentTeam.entity.SmartAssessmentTeam;
 import org.jeecg.modules.smartAssessmentTeam.service.ISmartAssessmentTeamService;
@@ -46,11 +47,9 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @Description: 考核任务表
@@ -84,6 +83,9 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
 
 	@Autowired
 	private ISmartAssessmentDepartmentService smartAssessmentDepartmentService;
+
+	@Autowired
+	private ISmartRankVisibleService smartRankVisibleService;
 
 
 	/*---------------------------------主表处理-begin-------------------------------------*/
@@ -197,6 +199,26 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @PostMapping(value = "/add")
     public Result<?> add(@RequestBody SmartAssessmentMission smartAssessmentMission) {
         smartAssessmentMissionService.save(smartAssessmentMission);
+		// 新增每个任务排名总分、排名，去年排名字段的可见性 @author: sike
+		Map<String, String> rankMap = new HashMap<>();
+		rankMap.put("totalScore","总分");
+		rankMap.put("rank","排名");
+		rankMap.put("lastRank","上一年度排名");
+
+		Integer sortNum = 900;
+		List<SmartRankVisible> rankVisibleList = new ArrayList<>();
+		for(Map.Entry<String, String> vo : rankMap.entrySet()){
+			SmartRankVisible smartRankVisible = new SmartRankVisible();
+			smartRankVisible.setMissionId(smartAssessmentMission.getId());
+			smartRankVisible.setContentId(vo.getKey());
+			smartRankVisible.setContentName(vo.getValue());
+			smartRankVisible.setVisible("1");
+			smartRankVisible.setSort(sortNum);
+			smartRankVisible.setTag("stable");
+			rankVisibleList.add(smartRankVisible);
+			sortNum++;
+		}
+		smartRankVisibleService.saveBatch(rankVisibleList);
         return Result.OK("添加成功！");
     }
 

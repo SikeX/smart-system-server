@@ -164,13 +164,17 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
     public Result<?> add(@RequestBody SmartAssessmentContent smartAssessmentContent) {
         smartAssessmentContentService.addSmartAssessmentContent(smartAssessmentContent);
         // 配置考核排名字段是否可见
+        Integer sortNum = 1;
         if(smartAssessmentContent.getPid() == "0") {
             SmartRankVisible smartRankVisible = new SmartRankVisible();
             smartRankVisible.setMissionId(smartAssessmentContent.getMissionId());
             smartRankVisible.setContentId(smartAssessmentContent.getId());
+            smartRankVisible.setContentName(smartAssessmentContent.getName());
             smartRankVisible.setVisible("1");
+            smartRankVisible.setTag("content");
+            smartRankVisible.setSort(sortNum);
             smartRankVisibleService.save(smartRankVisible);
-
+            sortNum++;
         }
         // 如果是考核要点,则自动向上级增加分数
         Integer point = smartAssessmentContent.getPoint();
