@@ -1,5 +1,6 @@
 package org.jeecg.modules.smartAnswerAssContent.service;
 
+import org.apache.ibatis.annotations.Param;
 import org.jeecg.modules.smartAnswerAssContent.entity.SmartAnswerFile;
 import org.jeecg.modules.smartAnswerAssContent.entity.SmartAnswerAssScore;
 import org.jeecg.modules.smartAnswerAssContent.entity.SmartAnswerAssContent;
@@ -26,6 +27,15 @@ public interface ISmartAnswerAssContentService extends IService<SmartAnswerAssCo
 	 * 批量删除一对多
 	 */
 	public void delBatchMain (Collection<? extends Serializable> idList);
+
+	/**
+	 * 获取某个任务中某个考核要点所有被考核单位的得分情况
+	 *
+	 * @param missionId
+	 * @param assContentId
+	 * @return
+	 */
+	List<SmartAnswerAssContent> listAllByAssContentIdAndMissionId(String missionId, String assContentId);
 
 
 }

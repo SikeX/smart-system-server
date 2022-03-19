@@ -19,6 +19,8 @@ import org.jeecg.modules.smartAnswerAssContent.entity.SmartAnswerFile;
 import org.jeecg.modules.smartAnswerAssContent.service.ISmartAnswerAssContentService;
 import org.jeecg.modules.smartAnswerAssContent.service.ISmartAnswerAssScoreService;
 import org.jeecg.modules.smartAnswerAssContent.service.ISmartAnswerFileService;
+import org.jeecg.modules.smartAnswerInfo.entity.SmartAnswerInfo;
+import org.jeecg.modules.smartAnswerInfo.service.ISmartAnswerInfoService;
 import org.jeecg.modules.smartAssessmentContent.entity.SmartAssessmentContent;
 import org.jeecg.modules.smartAssessmentMission.entity.SmartAssessmentMission;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
@@ -35,6 +37,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +63,9 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 
 	@Autowired
 	private ISmartAnswerAssScoreService smartAnswerAssScoreService;
+
+	@Autowired
+	private ISmartAnswerInfoService smartAnswerInfoService;
 
 
 	/*---------------------------------主表处理-begin-------------------------------------*/
@@ -416,6 +422,60 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
         IPage<SmartAnswerAssScore> pageList = smartAnswerAssScoreService.page(page, queryWrapper);
         return Result.OK(pageList);
     }
+
+	/**
+	 * 修改最终成绩得分方式
+	 *
+	 * @param missionId
+	 * @param contentId
+	 * @param scoreType
+	 * @return
+	 */
+	@AutoLog(value = "答题信息表-修改最终成绩得分方式")
+	@ApiOperation(value = "答题信息表-修改最终成绩得分方式", notes = "答题信息表-修改最终成绩得分方式")
+	@GetMapping(value = "/changeFinalScore")
+	public Result<?> changeFinalScore(@RequestParam(name="missionId",required=true) String missionId,
+									  @RequestParam(name="contentId",required=true) String contentId,
+									  @RequestParam(name="scoreType",required=true) String scoreType) {
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		// 查询考核任务下的所有答题信息记录
+		QueryWrapper<SmartAnswerInfo> answerInfoQueryWrapper = new QueryWrapper<>();
+		answerInfoQueryWrapper.select("id").eq("mission_id", missionId);
+		List<SmartAnswerInfo> answerInfoList = smartAnswerInfoService.list(answerInfoQueryWrapper);
+		List<String> mainIdList = new ArrayList<>();
+		answerInfoList.forEach(smartAnswerInfo -> mainIdList.add(smartAnswerInfo.getId()));
+
+		// 查询相关的所有答题考核节点
+		QueryWrapper<SmartAnswerAssContent> assContentQueryWrapper = new QueryWrapper<>();
+		assContentQueryWrapper.in("main_id", mainIdList).eq("ass_content_id", contentId);
+		List<SmartAnswerAssContent> assContentList = smartAnswerAssContentService.list(assContentQueryWrapper);
+		for (SmartAnswerAssContent smartAnswerAssContent : assContentList) {
+			double increment = 0;
+			// 更新节点最终成绩
+			if ("low".equals(scoreType)) {
+				// 计算增量
+				increment = smartAnswerAssContent.getLowestScore() - smartAnswerAssContent.getFinalScore();
+				smartAnswerAssContent.setFinalScore(smartAnswerAssContent.getLowestScore());
+			} else if ("high".equals(scoreType)) {
+				increment = smartAnswerAssContent.getHighestScore() - smartAnswerAssContent.getFinalScore();
+				smartAnswerAssContent.setFinalScore(smartAnswerAssContent.getHighestScore());
+			} else if ("ave".equals(scoreType)) {
+				increment = smartAnswerAssContent.getAverageScore() - smartAnswerAssContent.getFinalScore();
+				smartAnswerAssContent.setFinalScore(smartAnswerAssContent.getAverageScore());
+			} else {
+				return Result.error("最终评分类型有误!");
+			}
+			// 更新当前节点信息
+			smartAnswerAssContentService.updateById(smartAnswerAssContent);
+
+			// 更新上级节点最终成绩
+			updateSuperiorScore(smartAnswerAssContent, increment);
+		}
+
+		// TODO: 更新答题信息表中的总分
+
+		return Result.OK("修改成功!");
+	}
 
 	/**
 	 * 更新上级成绩
