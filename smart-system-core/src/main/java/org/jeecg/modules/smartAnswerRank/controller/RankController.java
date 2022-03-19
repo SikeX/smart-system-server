@@ -1,5 +1,6 @@
 package org.jeecg.modules.smartAnswerRank.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -8,6 +9,9 @@ import com.google.common.base.Joiner;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.BeanComparator;
+import org.apache.commons.collections.comparators.ComparableComparator;
+import org.apache.commons.collections.comparators.ComparatorChain;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
@@ -31,6 +35,13 @@ import org.jeecg.modules.smartAssessmentMission.entity.SmartAssessmentMission;
 import org.jeecg.modules.smartAssessmentMission.service.ISmartAssessmentDepartService;
 import org.jeecg.modules.smartAssessmentMission.service.ISmartAssessmentMissionService;
 import org.jeecg.modules.smartAssessmentTeam.service.ISmartAssessmentTeamService;
+import org.jeecg.modules.smartExportWord.util.WordUtils;
+import org.jeecg.modules.smartRankVisible.entity.SmartRankVisible;
+import org.jeecg.modules.smartRankVisible.service.ISmartRankVisibleService;
+import org.jeecgframework.poi.excel.def.NormalExcelConstants;
+import org.jeecgframework.poi.excel.entity.ExportParams;
+import org.jeecgframework.poi.excel.view.JeecgEntityExcelView;
+import org.jeecgframework.poi.excel.view.JeecgTemplateWordView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -71,6 +82,9 @@ public class RankController extends JeecgController<SmartAnswerInfo, ISmartAnswe
     @Autowired
     private ISmartAssessmentMissionService smartAssessmentMissionService;
 
+    @Autowired
+    private ISmartRankVisibleService smartRankVisibleService;
+
     /**
      * 通过主表ID查询
      * @return
@@ -84,6 +98,16 @@ public class RankController extends JeecgController<SmartAnswerInfo, ISmartAnswe
                                                  HttpServletRequest req) {
 
         List<Rank> rankList = new ArrayList<>();
+
+        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+        List <String> roleList = sysBaseAPI.getRolesByUsername(sysUser.getUsername());
+
+        log.info(String.valueOf(roleList));
+
+
+        String userDepartId = sysBaseAPI.getDepartIdByUserId(sysUser.getId());
+
 
         // 查询考核内容
         QueryWrapper<SmartAssessmentContent> missionQueryWrapper = new QueryWrapper<>();
@@ -99,46 +123,99 @@ public class RankController extends JeecgController<SmartAnswerInfo, ISmartAnswe
 
         List<SmartAnswerInfo> answerInfoList = smartAnswerInfoService.list(answerInfoQueryWrapper);
 
-        answerInfoList.forEach(info -> {
+        if(roleList.contains("systemAdmin")) {
 
-            Rank rank = new Rank();
+            answerInfoList.forEach(info -> {
+                Rank rank = new Rank();
 
-            rank.setDepartId(info.getDepart());
-            rank.setDepartName(sysBaseAPI.translateDictFromTable("sys_depart","depart_name","id",info.getDepart()));
-            rank.setTotalScore(info.getTotalPoints());
+                rank.setDepartId(info.getDepart());
+                rank.setDepartName(sysBaseAPI.translateDictFromTable("sys_depart","depart_name","id",info.getDepart()));
+                log.info(sysBaseAPI.translateDictFromTable("sys_depart","depart_name","id",info.getDepart()));
+                rank.setTotalScore(info.getTotalPoints());
 
-            List scoreList = new ArrayList();
+                List scoreList = new ArrayList();
 
-            // 考核内容成绩 id:score
-            Map<String, Double> scoreMap = new HashMap<>();
+                // 考核内容成绩 id:score
+                Map<String, Double> scoreMap = new HashMap<>();
 
-            missionList.forEach(mission -> {
+                missionList.forEach(mission -> {
 
-                // 查询各单位的各内容的分数
-                QueryWrapper<SmartAnswerAssContent> answerAssContentQueryWrapper = new QueryWrapper<>();
+                    // 查询各单位的各内容的分数
+                    QueryWrapper<SmartAnswerAssContent> answerAssContentQueryWrapper = new QueryWrapper<>();
 
-                answerAssContentQueryWrapper.eq("main_id",info.getId())
-                        .eq("ass_content_id",mission.getMissionId())
-                        .eq("pid",0);
+                    answerAssContentQueryWrapper.eq("main_id",info.getId())
+                            .eq("ass_content_id",mission.getMissionId())
+                            .eq("pid",0);
 
-                SmartAnswerAssContent smartAnswerAssContent =
-                        smartAnswerAssContentService.getOne(answerAssContentQueryWrapper);
-                if(smartAnswerAssContent == null) {
-                    scoreMap.put(mission.getId(), 0.0);
-                }
-                else {
-                    scoreMap.put(mission.getId(), smartAnswerAssContent.getFinalScore());
-                }
+                    SmartAnswerAssContent smartAnswerAssContent =
+                            smartAnswerAssContentService.getOne(answerAssContentQueryWrapper);
+                    if(smartAnswerAssContent == null) {
+                        scoreMap.put(mission.getId(), 0.0);
+                    }
+                    else {
+                        scoreMap.put(mission.getId(), smartAnswerAssContent.getFinalScore());
+                    }
+                });
+
+                rank.setScoreMap(scoreMap);
+                rank.setRank(info.getRanking());
+
+                rankList.add(rank);
             });
 
-            rank.setSourceMap(scoreMap);
-            rank.setRank(info.getRanking());
+        } else {
+            answerInfoList.forEach(info -> {
 
-            rankList.add(rank);
-        });
+                if(!StrUtil.equals(userDepartId, info.getDepart())) {
+                    return;
+                }
 
-//        Page<Rank> page = new Page<Rank>(pageNo, pageSize);
-//        IPage<SmartAnswerFile> pageList = smartAssessmentContentService.page(page, queryWrapper);
+                Rank rank = new Rank();
+
+                rank.setDepartId(info.getDepart());
+                rank.setDepartName(sysBaseAPI.translateDictFromTable("sys_depart","depart_name","id",info.getDepart()));
+                log.info(sysBaseAPI.translateDictFromTable("sys_depart","depart_name","id",info.getDepart()));
+                rank.setTotalScore(info.getTotalPoints());
+
+                List scoreList = new ArrayList();
+
+                // 考核内容成绩 id:score
+                Map<String, Double> scoreMap = new HashMap<>();
+
+                missionList.forEach(mission -> {
+
+                    // 查询各单位的各内容的分数
+                    QueryWrapper<SmartAnswerAssContent> answerAssContentQueryWrapper = new QueryWrapper<>();
+
+                    answerAssContentQueryWrapper.eq("main_id",info.getId())
+                            .eq("ass_content_id",mission.getMissionId())
+                            .eq("pid",0);
+
+                    SmartAnswerAssContent smartAnswerAssContent =
+                            smartAnswerAssContentService.getOne(answerAssContentQueryWrapper);
+                    if(smartAnswerAssContent == null) {
+                        scoreMap.put(mission.getId(), 0.0);
+                    }
+                    else {
+                        scoreMap.put(mission.getId(), smartAnswerAssContent.getFinalScore());
+                    }
+                });
+
+                rank.setScoreMap(scoreMap);
+                rank.setRank(info.getRanking());
+
+                rankList.add(rank);
+            });
+        }
+
+        Comparator mycmp1 = ComparableComparator.getInstance();
+        ArrayList<Object> sortFields = new ArrayList<>();
+        sortFields.add(new BeanComparator("totalScore", mycmp1));
+        // 创建一个排序链
+        ComparatorChain multiSort = new ComparatorChain(sortFields);
+        // 开始真正的排序，按照先主，后副的规则
+        Collections.sort(rankList, multiSort);
+
         return Result.OK(rankList);
     }
 
@@ -245,96 +322,6 @@ public class RankController extends JeecgController<SmartAnswerInfo, ISmartAnswe
         return Result.OK("编辑成功!");
     }
 
-    /**
-     * 签收
-     *
-     * @param smartAnswerInfo
-     * @return
-     */
-    @AutoLog(value = "答题信息表-签收")
-    @ApiOperation(value = "答题信息表-签收", notes = "答题信息表-签收")
-    @PutMapping(value = "/sign")
-    public Result<?> sign(@RequestBody SmartAnswerInfo smartAnswerInfo) {
-        // 检查是否已截止
-        int dateDiff = DateUtils.dateDiff('s', DateUtils.getCalendar(DateUtils.getMillis(smartAnswerInfo.getEndTime())), DateUtils.getCalendar());
-        if (dateDiff <= 0) {
-            return Result.error("已过截止时间!");
-        }
-
-        smartAnswerInfo.setMissionStatus("已签收");
-        smartAnswerInfoService.updateById(smartAnswerInfo);
-        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-
-
-        // 更新考核任务被考核单位状态
-        QueryWrapper<SmartAssessmentDepart> departQueryWrapper = new QueryWrapper<>();
-        departQueryWrapper.eq("mission_id", smartAnswerInfo.getMissionId()).eq("assessment_depart", smartAnswerInfo.getDepart());
-        SmartAssessmentDepart assessmentDepart = smartAssessmentDepartService.getOne(departQueryWrapper);
-        assessmentDepart.setSignStatus("已签收");
-        assessmentDepart.setSignUser(sysUser.getId());
-        assessmentDepart.setSignTime(DateUtils.getDate());
-        smartAssessmentDepartService.updateById(assessmentDepart);
-
-
-        // 生成答题记录
-        QueryWrapper<SmartAssessmentContent> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("mission_id", smartAnswerInfo.getMissionId());
-        List<SmartAssessmentContent> smartAssessmentContentList = smartAssessmentContentService.list(queryWrapper);
-        for (SmartAssessmentContent smartAssessmentContent : smartAssessmentContentList) {
-            SmartAnswerAssContent smartAnswerAssContent = new SmartAnswerAssContent();
-            smartAnswerAssContent.setMainId(smartAnswerInfo.getId());
-            smartAnswerAssContent.setPid(smartAssessmentContent.getPid());
-            smartAnswerAssContent.setHasChild(smartAssessmentContent.getHasChild());
-            smartAnswerAssContent.setAssContentId(smartAssessmentContent.getId());
-            smartAnswerAssContentService.save(smartAnswerAssContent);
-        }
-        return Result.OK("签收成功!");
-    }
-
-    /**
-     * 通过id删除
-     *
-     * @param id
-     * @return
-     */
-    @AutoLog(value = "答题信息表-通过id删除")
-    @ApiOperation(value = "答题信息表-通过id删除", notes = "答题信息表-通过id删除")
-    @DeleteMapping(value = "/delete")
-    public Result<?> delete(@RequestParam(name = "id", required = true) String id) {
-        smartAnswerInfoService.removeById(id);
-        return Result.OK("删除成功!");
-    }
-
-    /**
-     * 批量删除
-     *
-     * @param ids
-     * @return
-     */
-    @AutoLog(value = "答题信息表-批量删除")
-    @ApiOperation(value = "答题信息表-批量删除", notes = "答题信息表-批量删除")
-    @DeleteMapping(value = "/deleteBatch")
-    public Result<?> deleteBatch(@RequestParam(name = "ids", required = true) String ids) {
-        this.smartAnswerInfoService.removeByIds(Arrays.asList(ids.split(",")));
-        return Result.OK("批量删除成功!");
-    }
-
-    /**
-     * 通过id查询
-     *
-     * @param id
-     * @return
-     */
-    @AutoLog(value = "答题信息表-通过id查询")
-    @ApiOperation(value = "答题信息表-通过id查询", notes = "答题信息表-通过id查询")
-    @GetMapping(value = "/queryById")
-    public Result<?> queryById(@RequestParam(name = "id", required = true) String id) {
-        SmartAnswerInfo smartAnswerInfo = smartAnswerInfoService.getById(id);
-        if (smartAnswerInfo == null) {
-            return Result.error("未找到对应数据");
-        }
-        return Result.OK(smartAnswerInfo);
-    }
 
     /**
      * 导出excel
@@ -345,6 +332,164 @@ public class RankController extends JeecgController<SmartAnswerInfo, ISmartAnswe
     @RequestMapping(value = "/exportXls")
     public ModelAndView exportXls(HttpServletRequest request, SmartAnswerInfo smartAnswerInfo) {
         return super.exportXls(request, smartAnswerInfo, SmartAnswerInfo.class, "答题信息表");
+    }
+
+    @GetMapping(value = "/exportWord")
+    public void exportWord(HttpServletResponse response, HttpServletRequest request, String ids) {
+
+        String id = ids;
+
+        List<Rank> rankList = new ArrayList<>();
+
+        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+        // 获取登录用户角色
+        List <String> roleList = sysBaseAPI.getRolesByUsername(sysUser.getUsername());
+
+        // 获取登录用户部门
+        String userDepartId = sysBaseAPI.getDepartIdByUserId(sysUser.getId());
+
+
+        // 查询考核内容
+        QueryWrapper<SmartAssessmentContent> missionQueryWrapper = new QueryWrapper<>();
+
+        missionQueryWrapper.eq("mission_id",id).eq("pid", 0);
+
+        List<SmartAssessmentContent> missionList =  smartAssessmentContentService.list(missionQueryWrapper);
+
+        // 查询答题信息表（需要答题的单位）
+        QueryWrapper<SmartAnswerInfo> answerInfoQueryWrapper = new QueryWrapper<>();
+
+        answerInfoQueryWrapper.eq("mission_id", id);
+
+        List<SmartAnswerInfo> answerInfoList = smartAnswerInfoService.list(answerInfoQueryWrapper);
+
+        if(roleList.contains("systemAdmin")) {
+
+            answerInfoList.forEach(info -> {
+                Rank rank = new Rank();
+
+                Map<String, Integer> columnMap = new HashMap<>();
+
+                rank.setDepartId(info.getDepart());
+                rank.setDepartName(sysBaseAPI.translateDictFromTable("sys_depart","depart_name","id",info.getDepart()));
+
+                rank.setTotalScore(info.getTotalPoints());
+                columnMap.put("totalScore",info.getTotalPoints());
+
+
+                // 考核内容成绩 id:score
+                Map<String, Double> scoreMap = new HashMap<>();
+
+                missionList.forEach(mission -> {
+
+                    // 查询各单位的各内容的分数
+                    QueryWrapper<SmartAnswerAssContent> answerAssContentQueryWrapper = new QueryWrapper<>();
+
+                    answerAssContentQueryWrapper.eq("main_id",info.getId())
+                            .eq("ass_content_id",mission.getMissionId())
+                            .eq("pid",0);
+
+                    SmartAnswerAssContent smartAnswerAssContent =
+                            smartAnswerAssContentService.getOne(answerAssContentQueryWrapper);
+                    if(smartAnswerAssContent == null) {
+                        scoreMap.put(mission.getId(), 0.0);
+                    }
+                    else {
+                        scoreMap.put(mission.getId(), smartAnswerAssContent.getFinalScore());
+                    }
+                });
+
+                rank.setScoreMap(scoreMap);
+                rank.setRank(info.getRanking());
+                columnMap.put("rank",info.getRanking() != null ? info.getRanking() : 0);
+                columnMap.put("lastRank",0);
+
+                rank.setColumnMap(columnMap);
+
+                rankList.add(rank);
+            });
+
+        } else {
+            answerInfoList.forEach(info -> {
+
+                if(!StrUtil.equals(userDepartId, info.getDepart())) {
+                    return;
+                }
+
+                Rank rank = new Rank();
+
+                Map<String, Integer> columnMap = new HashMap<>();
+
+                rank.setDepartId(info.getDepart());
+                rank.setDepartName(sysBaseAPI.translateDictFromTable("sys_depart","depart_name","id",info.getDepart()));
+                log.info(sysBaseAPI.translateDictFromTable("sys_depart","depart_name","id",info.getDepart()));
+                rank.setTotalScore(info.getTotalPoints());
+                columnMap.put("totalScore",info.getTotalPoints());
+
+                // 考核内容成绩 id:score
+                Map<String, Double> scoreMap = new HashMap<>();
+
+                missionList.forEach(mission -> {
+
+                    // 查询各单位的各内容的分数
+                    QueryWrapper<SmartAnswerAssContent> answerAssContentQueryWrapper = new QueryWrapper<>();
+
+                    answerAssContentQueryWrapper.eq("main_id",info.getId())
+                            .eq("ass_content_id",mission.getMissionId())
+                            .eq("pid",0);
+
+                    SmartAnswerAssContent smartAnswerAssContent =
+                            smartAnswerAssContentService.getOne(answerAssContentQueryWrapper);
+                    if(smartAnswerAssContent == null) {
+                        scoreMap.put(mission.getId(), 0.0);
+                    }
+                    else {
+                        scoreMap.put(mission.getId(), smartAnswerAssContent.getFinalScore());
+                    }
+                });
+
+                rank.setScoreMap(scoreMap);
+                rank.setRank(info.getRanking());
+                columnMap.put("rank",info.getRanking() != null ? info.getRanking() : 0);
+                columnMap.put("lastRank",0);
+
+                rank.setColumnMap(columnMap);
+
+                rankList.add(rank);
+            });
+        }
+
+        QueryWrapper<SmartRankVisible> rankVisibleQueryWrapper1 = new QueryWrapper<>();
+
+        rankVisibleQueryWrapper1.eq("mission_id",id)
+                .eq("tag","stable").eq("visible","1").orderByAsc("sort");
+
+        List<SmartRankVisible> stableColumnList = smartRankVisibleService.list(rankVisibleQueryWrapper1);
+
+
+        QueryWrapper<SmartRankVisible> rankVisibleQueryWrapper2 = new QueryWrapper<>();
+
+        rankVisibleQueryWrapper2.eq("mission_id",id)
+                .eq("tag","content").eq("visible","1").orderByAsc("sort");
+
+        List<SmartRankVisible> contentColumnList = smartRankVisibleService.list(rankVisibleQueryWrapper2);
+
+        Map<String, Object> dataList = new HashMap<>();
+
+        Calendar calendar = Calendar.getInstance();
+        int yearNow = calendar.get(Calendar.YEAR);
+
+        dataList.put("stableColumnList",stableColumnList);
+        dataList.put("contentColumnList", contentColumnList);
+        dataList.put("rankList",rankList);
+        dataList.put("date",yearNow);
+        dataList.put("contentCount", contentColumnList.size());
+
+        log.info(String.valueOf(dataList));
+
+        String ftlTemplateName = "/templates/rank.ftl";
+        WordUtils.exportWord(dataList, "排名", ftlTemplateName, response);
     }
 
     /**

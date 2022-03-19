@@ -2,20 +2,20 @@ package org.jeecg.modules.wePower.smartPublicityProject.vo;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.jeecg.modules.wePower.smartPublicityProject.entity.SmartPublicityProjectVerify;
 import lombok.Data;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.jeecgframework.poi.excel.annotation.ExcelCollection;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.jeecg.common.aspect.annotation.Dict;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * @Description: 项目管理
  * @Author: jeecg-boot
- * @Date:   2022-02-16
+ * @Date:   2022-03-09
  * @Version: V1.0
  */
 @Data
@@ -55,56 +55,102 @@ public class SmartPublicityProjectPage {
 	@ApiModelProperty(value = "服务年限")
     private java.lang.String period;
 	/**完成时限*/
-	@Excel(name = "完成时限", width = 15, format = "yyyy-MM-dd")
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+	@Excel(name = "完成时限", width = 15)
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
 	@ApiModelProperty(value = "完成时限")
     private java.util.Date endTime;
 	/**合同签订日期*/
-	@Excel(name = "合同签订日期", width = 15, format = "yyyy-MM-dd")
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+	@Excel(name = "合同签订日期", width = 15)
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
 	@ApiModelProperty(value = "合同签订日期")
     private java.util.Date signTime;
+	/**合同截止日期*/
+	@Excel(name = "合同签订日期", width = 15)
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+	@ApiModelProperty(value = "合同截止日期")
+	private java.util.Date signEndTime;
 	/**创建人*/
 	@ApiModelProperty(value = "创建人")
     private java.lang.String createBy;
 	/**创建日期*/
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@ApiModelProperty(value = "创建日期")
     private java.util.Date createTime;
 	/**更新人*/
 	@ApiModelProperty(value = "更新人")
     private java.lang.String updateBy;
 	/**更新日期*/
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@ApiModelProperty(value = "更新日期")
     private java.util.Date updateTime;
 	/**创建部门*/
 	@ApiModelProperty(value = "创建部门")
     private java.lang.String sysOrgCode;
-	/**四议两公开内容*/
-	@Excel(name = "四议两公开内容", width = 15)
-	@ApiModelProperty(value = "四议两公开内容")
-    private java.lang.String file1;
+	/**村党支部提议文件*/
+	@Excel(name = "村党支部提议文件", width = 15)
+	@ApiModelProperty(value = "村党支部提议文件")
+    private java.lang.String meetFile1;
+	/**参会人员*/
+	@Excel(name = "参会人员", width = 15)
+	@ApiModelProperty(value = "参会人员")
+    private java.lang.String people1;
+	/**会议照片*/
+	@Excel(name = "会议照片", width = 15)
+	@ApiModelProperty(value = "会议照片")
+    private java.lang.String video1;
 	/**村集体经济组织相关材料*/
 	@Excel(name = "村集体经济组织相关材料", width = 15)
 	@ApiModelProperty(value = "村集体经济组织相关材料")
     private java.lang.String file2;
+	/**参会人员*/
+	@Excel(name = "参会人员", width = 15)
+	@ApiModelProperty(value = "参会人员")
+    private java.lang.String people2;
+	/**会议照片*/
+	@Excel(name = "会议照片", width = 15)
+	@ApiModelProperty(value = "会议照片")
+    private java.lang.String video2;
 	/**合同*/
 	@Excel(name = "合同", width = 15)
 	@ApiModelProperty(value = "合同")
     private java.lang.String file3;
+	/**参会人员*/
+	@Excel(name = "参会人员", width = 15)
+	@ApiModelProperty(value = "参会人员")
+    private java.lang.String people3;
+	/**会议照片*/
+	@Excel(name = "会议照片", width = 15)
+	@ApiModelProperty(value = "会议照片")
+    private java.lang.String video3;
 	/**验收材料*/
 	@Excel(name = "验收材料", width = 15)
 	@ApiModelProperty(value = "验收材料")
     private java.lang.String file4;
+	/**参会人员*/
+	@Excel(name = "参会人员", width = 15)
+	@ApiModelProperty(value = "参会人员")
+    private java.lang.String people4;
+	/**会议照片*/
+	@Excel(name = "会议照片", width = 15)
+	@ApiModelProperty(value = "会议照片")
+    private java.lang.String video4;
 	/**删除标志*/
 	@Excel(name = "删除标志", width = 15)
 	@ApiModelProperty(value = "删除标志")
     private java.lang.Integer delFlag;
+	/**村两委会议商议*/
+	@Excel(name = "村两委会议商议", width = 15)
+	@ApiModelProperty(value = "村两委会议商议")
+    private java.lang.String meetFile2;
+	/**党员大会审议*/
+	@Excel(name = "党员大会审议", width = 15)
+	@ApiModelProperty(value = "党员大会审议")
+    private java.lang.String meetFile3;
+	/**村民会议或者村民代表会议决议*/
+	@Excel(name = "村民会议或者村民代表会议决议", width = 15)
+	@ApiModelProperty(value = "村民会议或者村民代表会议决议")
+    private java.lang.String meetFile4;
 
 	@ExcelCollection(name="项目审核")
 	@ApiModelProperty(value = "项目审核")

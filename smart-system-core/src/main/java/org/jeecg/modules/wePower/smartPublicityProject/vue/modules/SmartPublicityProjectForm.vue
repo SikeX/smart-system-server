@@ -50,8 +50,18 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="四议两公开内容" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="file1">
-              <j-upload v-model="model.file1"  ></j-upload>
+            <a-form-model-item label="村党支部提议文件" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetFile1">
+              <j-upload v-model="model.meetFile1"  ></j-upload>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="参会人员" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="people1">
+              <a-input v-model="model.people1" placeholder="请输入参会人员" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="会议照片" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="video1">
+              <a-input v-model="model.video1" placeholder="请输入会议照片" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -60,13 +70,58 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
+            <a-form-model-item label="参会人员" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="people2">
+              <a-input v-model="model.people2" placeholder="请输入参会人员" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="会议照片" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="video2">
+              <a-input v-model="model.video2" placeholder="请输入会议照片" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
             <a-form-model-item label="合同" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="file3">
               <j-upload v-model="model.file3"  ></j-upload>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
+            <a-form-model-item label="参会人员" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="people3">
+              <a-input v-model="model.people3" placeholder="请输入参会人员" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="会议照片" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="video3">
+              <a-input v-model="model.video3" placeholder="请输入会议照片" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
             <a-form-model-item label="验收材料" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="file4">
               <j-upload v-model="model.file4"  ></j-upload>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="参会人员" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="people4">
+              <a-input v-model="model.people4" placeholder="请输入参会人员" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="会议照片" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="video4">
+              <a-input v-model="model.video4" placeholder="请输入会议照片" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="村两委会议商议" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetFile2">
+              <a-input v-model="model.meetFile2" placeholder="请输入村两委会议商议" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="党员大会审议" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetFile3">
+              <a-input v-model="model.meetFile3" placeholder="请输入党员大会审议" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="村民会议或者村民代表会议决议" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetFile4">
+              <a-input v-model="model.meetFile4" placeholder="请输入村民会议或者村民代表会议决议" ></a-input>
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -75,7 +130,8 @@
       <!-- 子表单区域 -->
     <a-tabs v-model="activeKey" @change="handleChangeTabs">
       <a-tab-pane tab="项目审核" :key="refKeys[0]" :forceRender="true">
-        <j-editable-table
+        <j-vxe-table
+          keep-source
           :ref="refKeys[0]"
           :loading="smartPublicityProjectVerifyTable.loading"
           :columns="smartPublicityProjectVerifyTable.columns"
@@ -84,7 +140,8 @@
           :disabled="formDisabled"
           :rowNumber="true"
           :rowSelection="true"
-          :actionButton="true"/>
+          :toolbar="true"
+          />
       </a-tab-pane>
     </a-tabs>
   </a-spin>
@@ -93,14 +150,17 @@
 <script>
 
   import { getAction } from '@/api/manage'
-  import { FormTypes,getRefPromise,VALIDATE_NO_PASSED } from '@/utils/JEditableTableUtil'
-  import { JEditableTableModelMixin } from '@/mixins/JEditableTableModelMixin'
+  import { JVxeTableModelMixin } from '@/mixins/JVxeTableModelMixin.js'
+  import { JVXETypes } from '@/components/jeecg/JVxeTable'
+  import { getRefPromise,VALIDATE_FAILED} from '@/components/jeecg/JVxeTable/utils/vxeUtils.js'
   import { validateDuplicateValue } from '@/utils/util'
+  import JFormContainer from '@/components/jeecg/JFormContainer'
 
   export default {
     name: 'SmartPublicityProjectForm',
-    mixins: [JEditableTableModelMixin],
+    mixins: [JVxeTableModelMixin],
     components: {
+      JFormContainer,
     },
     data() {
       return {
@@ -121,7 +181,7 @@
           sm: { span: 20 },
         },
         model:{
-        },
+         },
         // 新增时子表默认添加几行空数据
         addDefaultRowNum: 1,
         validatorRules: {
@@ -145,7 +205,7 @@
             {
               title: '审核部门',
               key: 'verifyDepart',
-              type: FormTypes.input,
+               type: JVXETypes.input,
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
@@ -153,7 +213,7 @@
             {
               title: '审核意见',
               key: 'verifyDesc',
-              type: FormTypes.input,
+               type: JVXETypes.input,
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
@@ -161,7 +221,7 @@
             {
               title: '附件',
               key: 'file',
-              type: FormTypes.file,
+              type: JVXETypes.file,
               token:true,
               responseName:"message",
               width:"200px",
@@ -214,27 +274,27 @@
         }
       },
       //校验所有一对一子表表单
-      validateSubForm(allValues){
-          return new Promise((resolve,reject)=>{
-            Promise.all([
-            ]).then(() => {
-              resolve(allValues)
-            }).catch(e => {
-              if (e.error === VALIDATE_NO_PASSED) {
-                // 如果有未通过表单验证的子表，就自动跳转到它所在的tab
-                this.activeKey = e.index == null ? this.activeKey : this.refKeys[e.index]
-              } else {
-                console.error(e)
-              }
+        validateSubForm(allValues){
+            return new Promise((resolve,reject)=>{
+              Promise.all([
+              ]).then(() => {
+                resolve(allValues)
+              }).catch(e => {
+                if (e.error === VALIDATE_FAILED) {
+                  // 如果有未通过表单验证的子表，就自动跳转到它所在的tab
+                  this.activeKey = e.index == null ? this.activeKey : this.refKeys[e.index]
+                } else {
+                  console.error(e)
+                }
+              })
             })
-          })
-      },
+        },
       /** 整理成formData */
       classifyIntoFormData(allValues) {
         let main = Object.assign(this.model, allValues.formValue)
         return {
           ...main, // 展开
-          smartPublicityProjectVerifyList: allValues.tablesValue[0].values,
+          smartPublicityProjectVerifyList: allValues.tablesValue[0].tableData,
         }
       },
       validateError(msg){
