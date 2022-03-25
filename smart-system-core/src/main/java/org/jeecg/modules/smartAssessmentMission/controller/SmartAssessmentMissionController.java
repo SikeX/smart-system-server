@@ -261,10 +261,18 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
 	@ApiOperation(value="考核任务表-撤销任务发布", notes="考核任务表-撤销任务发布")
 	@PutMapping(value = "/reset")
 	public Result<?> reset(@RequestBody SmartAssessmentMission smartAssessmentMission) {
+
 		// 查询答题信息表相关数据的ID
 		QueryWrapper<SmartAnswerInfo> answerInfoQueryWrapper = new QueryWrapper<>();
 		answerInfoQueryWrapper.select("id").eq("mission_id", smartAssessmentMission.getId());
 		List<SmartAnswerInfo> answerInfoList = smartAnswerInfoService.list(answerInfoQueryWrapper);
+		// 如果没有被考核单位答题记录，则直接更新任务状态返回
+		if (answerInfoList.size() == 0) {
+			// 更新任务状态
+			smartAssessmentMission.setMissionStatus("未发布");
+			smartAssessmentMissionService.updateById(smartAssessmentMission);
+			return Result.OK("撤销任务成功!");
+		}
 		List<String> answerInfoIdsList = new ArrayList<>();
 		answerInfoList.forEach(smartAnswerInfo -> {
 			answerInfoIdsList.add(smartAnswerInfo.getId());
