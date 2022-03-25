@@ -442,6 +442,9 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 		QueryWrapper<SmartAnswerInfo> answerInfoQueryWrapper = new QueryWrapper<>();
 		answerInfoQueryWrapper.select("id").eq("mission_id", missionId);
 		List<SmartAnswerInfo> answerInfoList = smartAnswerInfoService.list(answerInfoQueryWrapper);
+		if (answerInfoList.size() == 0) {
+			return Result.error("没有可调的记录！");
+		}
 		List<String> mainIdList = new ArrayList<>();
 		answerInfoList.forEach(smartAnswerInfo -> mainIdList.add(smartAnswerInfo.getId()));
 
