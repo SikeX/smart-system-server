@@ -67,14 +67,17 @@ public class SmartAssessmentTeamController extends JeecgController<SmartAssessme
 	@AutoLog(value = "考核组-查询自己所属的考核组")
 	@ApiOperation(value="考核组-查询自己所属的考核组", notes="考核组-查询自己所属的考核组")
 	@GetMapping(value = "/listMyTeam")
-	public Result<?> queryMyTeamPageList() {
+	public Result<?> queryMyTeamPageList(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+										 @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+										 HttpServletRequest req) {
 		QueryWrapper<SmartAssessmentTeam> queryWrapper = new QueryWrapper<>();
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 		//  查询自己所属的考核组信息
 		queryWrapper.or().eq("team_leader", sysUser.getId())
 				.or().like("deputy_team_Leader", sysUser.getId())
 				.or().like("members", sysUser.getId());
-		List<SmartAssessmentTeam> pageList = smartAssessmentTeamService.list(queryWrapper);
+		Page<SmartAssessmentTeam> page = new Page<SmartAssessmentTeam>(pageNo, pageSize);
+		IPage<SmartAssessmentTeam> pageList = smartAssessmentTeamService.page(page, queryWrapper);
 		return Result.OK(pageList);
 	}
 	
