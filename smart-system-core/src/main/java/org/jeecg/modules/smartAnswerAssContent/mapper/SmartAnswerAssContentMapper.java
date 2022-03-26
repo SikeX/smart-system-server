@@ -13,5 +13,21 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @Version: V1.0
  */
 public interface SmartAnswerAssContentMapper extends BaseMapper<SmartAnswerAssContent> {
+    /**
+     * 获取某个任务中某个考核要点所有被考核单位的得分情况
+     *
+     * @param missionId
+     * @param assContentId
+     * @return
+     */
+    List<SmartAnswerAssContent> listAllByAssContentIdAndMissionId(@Param("missionId") String missionId, @Param("assContentId") String assContentId);
 
+    /**
+     * 更新某个考核任务中某个考核要点所有被考核单位的最终成绩
+     *
+     * @param missionId
+     * @param assContentId
+     * @param scoreType
+     */
+    void updateFinalScore(@Param("missionId") String missionId, @Param("assContentId") String assContentId, @Param("scoreType") String scoreType);
 }

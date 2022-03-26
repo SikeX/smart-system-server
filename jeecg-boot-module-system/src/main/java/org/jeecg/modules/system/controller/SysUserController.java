@@ -1040,8 +1040,13 @@ public class SysUserController {
                     String deptId = commonService.getDepartIdByOrgCode(orgCode);
                     sysUserExcel.setDepartId(deptId);
                     sysUserExcel.setDepartIds(deptId);
+                    Integer yn = sysUserExcel.getUserIdentity();
                     //初始化用户角色为单位非管理员
                     String role = "1465163864583323650";
+                    System.out.println("ynynynynyn"+yn);
+                    if(yn == 2){
+                        role = "f6817f48af4fb3af11b9e8bf182f618b";
+                    }
                     sysUserExcel.setPeopleType("1");
                     sysUserExcel.setCreateTime(new Date());
                     sysUserExcel.setDelFlag(CommonConstant.DEL_FLAG_0);
