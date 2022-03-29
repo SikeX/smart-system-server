@@ -68,12 +68,15 @@ public class SmartAssessmentDepartmentController extends JeecgController<SmartAs
 	@AutoLog(value = "负责评分的考核单位-分页列表查询")
 	@ApiOperation(value="负责评分的考核单位-分页列表查询", notes="负责评分的考核单位-分页列表查询")
 	@GetMapping(value = "/listMyDepartment")
-	public Result<?> queryPageList() {
+	public Result<?> queryPageList(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+								   HttpServletRequest req) {
 		QueryWrapper<SmartAssessmentDepartment> queryWrapper = new QueryWrapper<>();
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 		//  查询自己所属的考核组信息
 		queryWrapper.eq("depart_id", sysUser.getDepartId()).eq("depart_user", sysUser.getId());
-		List<SmartAssessmentDepartment> pageList = smartAssessmentDepartmentService.list(queryWrapper);
+		Page<SmartAssessmentDepartment> page = new Page<SmartAssessmentDepartment>(pageNo, pageSize);
+		IPage<SmartAssessmentDepartment> pageList = smartAssessmentDepartmentService.page(page, queryWrapper);
 		return Result.OK(pageList);
 	}
 

@@ -226,9 +226,11 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
 
 
         // 生成答题记录
+        // 首先查询所有考核内容、摘要、要点
         QueryWrapper<SmartAssessmentContent> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("mission_id", smartAnswerInfo.getMissionId());
         List<SmartAssessmentContent> smartAssessmentContentList = smartAssessmentContentService.list(queryWrapper);
+        // 然后遍历生成记录
         for (SmartAssessmentContent smartAssessmentContent : smartAssessmentContentList) {
             SmartAnswerAssContent smartAnswerAssContent = new SmartAnswerAssContent();
             smartAnswerAssContent.setMainId(smartAnswerInfo.getId());
