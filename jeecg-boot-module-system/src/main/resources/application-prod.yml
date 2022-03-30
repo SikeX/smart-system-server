@@ -187,6 +187,7 @@ jeecg :
     upload: /opt/smart-system/upload
     #webapp文件路径
     webapp: /opt/smart-system/webapp
+  fileBaseUrl: http://localhost:8080/smart-system/sys/common/static/
   shiro:
     excludeUrls: /test/jeecgDemo/demo3,/test/jeecgDemo/redisDemo/**,/category/**,/visual/**,/map/**,/jmreport/bigscreen2/**
   #阿里云oss存储和大鱼短信秘钥配置
