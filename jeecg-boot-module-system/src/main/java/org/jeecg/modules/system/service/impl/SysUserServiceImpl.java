@@ -601,15 +601,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	@Override
 	public List<SysUser> queryByHomeCode(String homeCode) {
 		List<SysUser> userList = userMapper.getUserByHomeCode(homeCode);
-		for(int i=0;i<userList.size();i++)
-		{
-			SysUser user = userList.get(i);
-			Integer relation = userMapper.getRelationByHomeCode(homeCode,user.getIdnumber());
-			if(relation!=null && !relation.equals("")) {
-				user.setRelation(userMapper.getRelationByHomeCode(homeCode, user.getIdnumber()));
-				userList.set(i,user);
-			}
-		}
+//		for(int i=0;i<userList.size();i++)
+//		{
+//			SysUser user = userList.get(i);
+//			Integer relation = userMapper.getRelationByHomeCode(homeCode,user.getIdnumber());
+//			if(relation!=null && !relation.equals("")) {
+//				user.setRelation(userMapper.getRelationByHomeCode(homeCode, user.getIdnumber()));
+//				userList.set(i,user);
+//			}
+//		}
 		return userList;
 	}
 
