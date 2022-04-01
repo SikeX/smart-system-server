@@ -44,8 +44,13 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 public class SmartVillageLead2Controller extends JeecgController<SmartVillageLead2, ISmartVillageLead2Service> {
 	@Autowired
 	private ISmartVillageLead2Service smartVillageLead2Service;
-	
-	/**
+
+	@Value("${jeecg.fileBaseUrl}")
+	private String fileBaseUrl;
+
+	private String groupId = "villageLead2";
+
+	 /**
 	 * 分页列表查询
 	 *
 	 * @param smartVillageLead2
@@ -81,28 +86,23 @@ public class SmartVillageLead2Controller extends JeecgController<SmartVillageLea
 
 		FaceRecognitionUtil faceRecognitionUtil = new FaceRecognitionUtil();
 
-		String baseUrl = "http://localhost:8080/smart-system/sys/common/static/";
+		smartVillageLead2Service.save(smartVillageLead2);
 
 		String imgPath = smartVillageLead2.getPic();
 
-		log.info(imgPath);
-
-		log.info(UrlUtil.urlEncodeChinese(baseUrl + imgPath));
-
-		String imgBase64 = imageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese(baseUrl + imgPath));
+		String imgBase64 = imageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese(fileBaseUrl + imgPath));
 
 		try {
-			JSONObject faceResponse = faceRecognitionUtil.registerFace(imgBase64, "test", smartVillageLead2.getName());
 
-			JSONObject response = faceResponse.getJSONObject("result");
+			faceRecognitionUtil.createUserGroup(groupId);
 
-			log.info(String.valueOf(response));
+			JSONObject faceResponse = faceRecognitionUtil.registerFace(imgBase64, groupId, smartVillageLead2.getId());
 
-			if(response.getIntValue("error_code") != 0) {
-				return Result.error(response.getString("error_msg"));
+			log.info(String.valueOf(faceResponse));
+
+			if(faceResponse.getIntValue("error_code") != 0) {
+				return Result.error(faceResponse.getString("error_msg"));
 			} else {
-				 smartVillageLead2.setFaceToken(response.getString("face_token"));
-				 smartVillageLead2Service.save(smartVillageLead2);
 				return Result.OK("添加成功！");
 			}
 
@@ -121,8 +121,29 @@ public class SmartVillageLead2Controller extends JeecgController<SmartVillageLea
 	@ApiOperation(value="领导班子-编辑", notes="领导班子-编辑")
 	@PutMapping(value = "/edit")
 	public Result<?> edit(@RequestBody SmartVillageLead2 smartVillageLead2) {
-		smartVillageLead2Service.updateById(smartVillageLead2);
-		return Result.OK("编辑成功!");
+
+		ImageUtils imageUtils = new ImageUtils();
+
+		FaceRecognitionUtil faceRecognitionUtil = new FaceRecognitionUtil();
+
+		String imgPath = smartVillageLead2.getPic();
+
+		String imgBase64 = imageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese(fileBaseUrl + imgPath));
+
+		try {
+			JSONObject faceResponse = faceRecognitionUtil.updateFace(imgBase64, groupId, smartVillageLead2.getId());
+
+			if(faceResponse.getIntValue("error_code") != 0) {
+				return Result.error(faceResponse.getString("error_msg"));
+			} else {
+				smartVillageLead2Service.updateById(smartVillageLead2);
+				return Result.OK("编辑成功！");
+			}
+
+		} catch (RuntimeException e) {
+			return Result.error(e.getMessage());
+		}
+
 	}
 	
 	/**
@@ -135,8 +156,23 @@ public class SmartVillageLead2Controller extends JeecgController<SmartVillageLea
 	@ApiOperation(value="领导班子-通过id删除", notes="领导班子-通过id删除")
 	@DeleteMapping(value = "/delete")
 	public Result<?> delete(@RequestParam(name="id",required=true) String id) {
-		smartVillageLead2Service.removeById(id);
-		return Result.OK("删除成功!");
+
+		FaceRecognitionUtil faceRecognitionUtil = new FaceRecognitionUtil();
+
+		SmartVillageLead2 smartVillageLead2 = smartVillageLead2Service.getById(id);
+
+		try {
+			JSONObject deleteResponse = faceRecognitionUtil.deleteUser(groupId, smartVillageLead2.getId(),
+					smartVillageLead2.getFaceToken());
+			if(deleteResponse.getIntValue("error_code") != 0) {
+				return Result.error(deleteResponse.getString("error_msg"));
+			} else {
+				smartVillageLead2Service.removeById(id);
+				return Result.ok("删除成功");
+			}
+		} catch (RuntimeException e) {
+			return Result.error(e.getMessage());
+		}
 	}
 	
 	/**

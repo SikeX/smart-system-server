@@ -84,7 +84,7 @@ public class SmartAnswerInfo implements Serializable {
 	/**总分*/
 	@Excel(name = "总分", width = 15)
     @ApiModelProperty(value = "总分")
-    private java.lang.Integer totalPoints;
+    private java.lang.Double totalPoints;
 	/**排名*/
 	@Excel(name = "排名", width = 15)
     @ApiModelProperty(value = "排名")

@@ -48,5 +48,10 @@ public class SmartAnswerAssContentServiceImpl extends ServiceImpl<SmartAnswerAss
 			smartAnswerAssContentMapper.deleteById(id);
 		}
 	}
-	
+
+    @Override
+    public List<SmartAnswerAssContent> listAllByAssContentIdAndMissionId(String missionId, String assContentId) {
+		return smartAnswerAssContentMapper.listAllByAssContentIdAndMissionId(missionId, assContentId);
+    }
+
 }

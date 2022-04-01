@@ -54,7 +54,7 @@ public class SmartGroupEconomyMeeting implements Serializable {
 	@Excel(name = "视频", width = 15)
     @ApiModelProperty(value = "视频")
     private java.lang.String video1;
-	/**附件2*/
+    /**附件2*/
 	@Excel(name = "附件2", width = 15)
     @ApiModelProperty(value = "附件2")
     private java.lang.String file2;
@@ -83,4 +83,8 @@ public class SmartGroupEconomyMeeting implements Serializable {
 	/**主表id*/
     @ApiModelProperty(value = "主表id")
     private java.lang.String mainId;
+
+    private java.lang.String videoPeople1;
+    private java.lang.String videoPeople2;
+    private java.lang.String videoPeople3;
 }

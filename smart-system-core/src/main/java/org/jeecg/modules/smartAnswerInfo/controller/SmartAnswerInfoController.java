@@ -19,6 +19,7 @@ import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.smartAnswerAssContent.entity.SmartAnswerAssContent;
 import org.jeecg.modules.smartAnswerAssContent.service.ISmartAnswerAssContentService;
 import org.jeecg.modules.smartAnswerInfo.entity.SmartAnswerInfo;
+import org.jeecg.modules.smartAnswerInfo.entity.SmartDepartContentScore;
 import org.jeecg.modules.smartAnswerInfo.service.ISmartAnswerInfoService;
 import org.jeecg.modules.smartAssessmentContent.entity.SmartAssessmentContent;
 import org.jeecg.modules.smartAssessmentContent.service.ISmartAssessmentContentService;
@@ -87,6 +88,10 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
             missionIdList.add(mission.getMissionId());
         });
 
+        if (missionList.size() == 0) {
+            return Result.error("无考核任务！");
+        }
+
         // 查询上面所有考核任务信息
         QueryWrapper<SmartAnswerInfo> queryWrapper = QueryGenerator.initQueryWrapper(smartAnswerInfo, req.getParameterMap());
         // 包含本单位的任务
@@ -120,6 +125,25 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
         Page<SmartAnswerInfo> page = new Page<SmartAnswerInfo>(pageNo, pageSize);
         IPage<SmartAnswerInfo> pageList = smartAnswerInfoService.page(page, queryWrapper);
         return Result.OK(pageList);
+    }
+
+    /**
+     * 考核组查看
+     *
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @AutoLog(value = "答题信息表-分页列表查询")
+    @ApiOperation(value = "答题信息表-分页列表查询", notes = "答题信息表-分页列表查询")
+    @GetMapping(value = "/listDepartContentScore")
+    public Result<?> queryChargePageList(@RequestParam(name = "missionId") String missionId,
+                                         @RequestParam(name = "assContentId") String assContentId,
+                                         @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
+                                         @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
+        Page<SmartDepartContentScore> page = new Page<>(pageNo, pageSize);
+        List<SmartDepartContentScore> departContentScores = smartAnswerInfoService.selectByMissionIdAndContentId(page, missionId, assContentId);
+        return Result.OK(departContentScores);
     }
 
     /**
@@ -202,9 +226,11 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
 
 
         // 生成答题记录
+        // 首先查询所有考核内容、摘要、要点
         QueryWrapper<SmartAssessmentContent> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("mission_id", smartAnswerInfo.getMissionId());
         List<SmartAssessmentContent> smartAssessmentContentList = smartAssessmentContentService.list(queryWrapper);
+        // 然后遍历生成记录
         for (SmartAssessmentContent smartAssessmentContent : smartAssessmentContentList) {
             SmartAnswerAssContent smartAnswerAssContent = new SmartAnswerAssContent();
             smartAnswerAssContent.setMainId(smartAnswerInfo.getId());
