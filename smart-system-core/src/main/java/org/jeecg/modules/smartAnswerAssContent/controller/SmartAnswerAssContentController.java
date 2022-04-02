@@ -299,9 +299,11 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 		smartAnswerFile.setUploadUser(sysUser.getId());
 		smartAnswerFileService.save(smartAnswerFile);
 
-		// 答题考核节点要点状态+1
+		// 答题考核节点上传附件数目+1
 		SmartAnswerAssContent assContent = smartAnswerAssContentService.getById(smartAnswerFile.getMainId());
-		assContent.setContentStatus(assContent.getContentStatus() + 1);
+		assContent.setUploadCount(assContent.getUploadCount() + 1);
+		// 2.已上报待评分
+		assContent.setContentStatus(2);
 		smartAnswerAssContentService.updateById(assContent);
 		return Result.OK("添加成功！");
 	}
@@ -329,9 +331,13 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 	@DeleteMapping(value = "/deleteSmartAnswerFile")
 	public Result<?> deleteSmartAnswerFile(@RequestParam(name="id",required=true) String id,
 										   @RequestParam(name="mainId",required=true) String mainId) {
-		// 答题考核节点要点状态 -1
+		// 答题考核节点上传附件数目 -1
 		SmartAnswerAssContent assContent = smartAnswerAssContentService.getById(mainId);
-		assContent.setContentStatus(assContent.getContentStatus() - 1);
+		assContent.setUploadCount(assContent.getUploadCount() - 1);
+		if (assContent.getUploadCount() == 0) {
+			// 1. 已签收待上报
+			assContent.setContentStatus(1);
+		}
 		smartAnswerAssContentService.updateById(assContent);
 		smartAnswerFileService.removeById(id);
 		return Result.OK("删除成功!");
@@ -348,9 +354,13 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 	public Result<?> deleteBatchSmartAnswerFile(@RequestParam(name="ids",required=true) String ids,
                                                 @RequestParam(name="mainId",required=true) String mainId,
                                                 @RequestParam(name="count",required=true) Integer count) {
-        // 答题考核节点要点状态 -count
+        // 答题考核节点上传附件数目 -count
         SmartAnswerAssContent assContent = smartAnswerAssContentService.getById(mainId);
-        assContent.setContentStatus(assContent.getContentStatus() - count);
+        assContent.setUploadCount(assContent.getUploadCount() - count);
+		if (assContent.getUploadCount() == 0) {
+			// 1. 已签收待上报
+			assContent.setContentStatus(1);
+		}
         smartAnswerAssContentService.updateById(assContent);
 	    this.smartAnswerFileService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.OK("批量删除成功!");
