@@ -1,5 +1,7 @@
 package org.jeecg.modules.wePower.smartGroupEconomy.controller;
 
+import cn.hutool.extra.pinyin.PinyinUtil;
+import com.alibaba.fastjson.JSONObject;
 import org.jeecg.common.system.query.QueryGenerator;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -7,8 +9,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.common.api.vo.Result;
+import org.jeecg.modules.utils.FaceRecognitionUtil;
+import org.jeecg.modules.utils.ImageUtils;
+import org.jeecg.modules.utils.UrlUtil;
 import org.jeecg.modules.wePower.smartEvadeRelation.entity.SmartEvadeRelation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -58,6 +64,11 @@ public class SmartGroupEconomyController extends JeecgController<SmartGroupEcono
 
 	@Autowired
 	private ISmartGroupEconomyMeetingService smartGroupEconomyMeetingService;
+
+	@Value("${jeecg.fileBaseUrl}")
+	private String fileBaseUrl;
+
+	private String groupId = "GroupEconomy";
 
 
 	/*---------------------------------主表处理-begin-------------------------------------*/
@@ -182,8 +193,36 @@ public class SmartGroupEconomyController extends JeecgController<SmartGroupEcono
 	@ApiOperation(value="集体经济组织人员-添加", notes="集体经济组织人员-添加")
 	@PostMapping(value = "/addSmartGroupEconomyPeople")
 	public Result<?> addSmartGroupEconomyPeople(@RequestBody SmartGroupEconomyPeople smartGroupEconomyPeople) {
+
 		smartGroupEconomyPeopleService.save(smartGroupEconomyPeople);
-		return Result.OK("添加成功！");
+
+		ImageUtils imageUtils = new ImageUtils();
+
+		FaceRecognitionUtil faceRecognitionUtil = new FaceRecognitionUtil();
+
+		String imgPath = smartGroupEconomyPeople.getPic();
+
+		String imgBase64 = imageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese(fileBaseUrl + imgPath));
+
+		try {
+
+			faceRecognitionUtil.createUserGroup(groupId);
+
+			JSONObject faceResponse = faceRecognitionUtil.registerFace(imgBase64, groupId,
+					smartGroupEconomyPeople.getId());
+
+			log.info(String.valueOf(faceResponse));
+
+			if(faceResponse.getIntValue("error_code") != 0) {
+				smartGroupEconomyPeopleService.removeById(smartGroupEconomyPeople.getId());
+				return Result.error(faceResponse.getString("error_msg"));
+			} else {
+				return Result.OK("添加成功！");
+			}
+
+		} catch (RuntimeException e) {
+			return Result.error(e.getMessage());
+		}
 	}
 
     /**
@@ -195,8 +234,31 @@ public class SmartGroupEconomyController extends JeecgController<SmartGroupEcono
 	@ApiOperation(value="集体经济组织人员-编辑", notes="集体经济组织人员-编辑")
 	@PutMapping(value = "/editSmartGroupEconomyPeople")
 	public Result<?> editSmartGroupEconomyPeople(@RequestBody SmartGroupEconomyPeople smartGroupEconomyPeople) {
-		smartGroupEconomyPeopleService.updateById(smartGroupEconomyPeople);
-		return Result.OK("编辑成功!");
+		ImageUtils imageUtils = new ImageUtils();
+
+		FaceRecognitionUtil faceRecognitionUtil = new FaceRecognitionUtil();
+
+		String imgPath = smartGroupEconomyPeople.getPic();
+
+		String imgBase64 = imageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese(fileBaseUrl + imgPath));
+
+		try {
+			JSONObject faceResponse = faceRecognitionUtil.updateFace(imgBase64, groupId,
+					smartGroupEconomyPeople.getId());
+
+			log.info(String.valueOf(faceResponse));
+
+			if(faceResponse.getIntValue("error_code") != 0) {
+				return Result.error(faceResponse.getString("error_msg"));
+			} else {
+				log.info(String.valueOf(faceResponse));
+				smartGroupEconomyPeopleService.updateById(smartGroupEconomyPeople);
+				return Result.OK("编辑成功！");
+			}
+
+		} catch (RuntimeException e) {
+			return Result.error(e.getMessage());
+		}
 	}
 
 	/**
@@ -208,8 +270,22 @@ public class SmartGroupEconomyController extends JeecgController<SmartGroupEcono
 	@ApiOperation(value="集体经济组织人员-通过id删除", notes="集体经济组织人员-通过id删除")
 	@DeleteMapping(value = "/deleteSmartGroupEconomyPeople")
 	public Result<?> deleteSmartGroupEconomyPeople(@RequestParam(name="id",required=true) String id) {
-		smartGroupEconomyPeopleService.removeById(id);
-		return Result.OK("删除成功!");
+		FaceRecognitionUtil faceRecognitionUtil = new FaceRecognitionUtil();
+
+		SmartGroupEconomyPeople smartGroupEconomyPeople = smartGroupEconomyPeopleService.getById(id);
+
+		try {
+			JSONObject deleteResponse = faceRecognitionUtil.deleteUser(groupId, smartGroupEconomyPeople.getId(),
+					smartGroupEconomyPeople.getFaceToken());
+			if(deleteResponse.getIntValue("error_code") != 0) {
+				return Result.error(deleteResponse.getString("error_msg"));
+			} else {
+				smartGroupEconomyPeopleService.removeById(id);
+				return Result.ok("删除成功");
+			}
+		} catch (RuntimeException e) {
+			return Result.error(e.getMessage());
+		}
 	}
 
 	/**
@@ -326,6 +402,7 @@ public class SmartGroupEconomyController extends JeecgController<SmartGroupEcono
 		smartGroupEconomyMeetingService.save(smartGroupEconomyMeeting);
 		SmartGroupEconomy smartGroupEconomy = smartGroupEconomyService.getById(smartGroupEconomyMeeting.getMainId());
 		smartGroupEconomy.setMeetingStatus("1");
+		smartGroupEconomyService.updateById(smartGroupEconomy);
 		return Result.OK("添加成功！");
 	}
 

@@ -1,5 +1,6 @@
 package org.jeecg.modules.tasks.smartVerifyTask.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
@@ -68,18 +69,19 @@ public class SmartVerifyImpl implements SmartVerify {
         String first = parentId;
         log.info(first);
 
-        if(first == null || first.equals("")){
+        if(StrUtil.isEmpty(first)){
             String[] userIdList = new String[1];
             userIdList[0] = userId;
             sysBaseAPI.sendWebSocketMsg(userIdList,"申请已通过");
             return;
         }
-        else if(first == "3708dc8170414dde8a069225e0724a65"){
-            first = sysBaseAPI.getBusDepartIdByUserId("3708dc8170414dde8a069225e0724a65");
+        // 如果是教育局则绕开
+        else if(first == "e389cf6bc9a54fd58f2e74f09d8f1b1f"){
+            first = sysBaseAPI.getParentDepIdByDepartId("e389cf6bc9a54fd58f2e74f09d8f1b1f");
         }
         String second = sysBaseAPI.getParentDepIdByDepartId(first);
 
-        if(second == null || first.equals("")){
+        if(StrUtil.isEmpty(second)){
             String[] userIdList = new String[1];
             userIdList[0] = userId;
             sysBaseAPI.sendWebSocketMsg(userIdList,"申请已通过");
