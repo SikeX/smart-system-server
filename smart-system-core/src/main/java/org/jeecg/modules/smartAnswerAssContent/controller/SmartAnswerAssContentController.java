@@ -37,10 +37,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -161,6 +158,31 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 			QueryWrapper<SmartAnswerAssContent> queryWrapper = new QueryWrapper<>();
 			List<String> parentIdList = Arrays.asList(parentIds.split(","));
 			queryWrapper.in("pid", parentIdList);
+			List<SmartAnswerAssContent> list = smartAnswerAssContentService.list(queryWrapper);
+			IPage<SmartAnswerAssContent> pageList = new Page<>(1, 10, list.size());
+			pageList.setRecords(list);
+			return Result.OK(pageList);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			return Result.error("批量查询子节点失败：" + e.getMessage());
+		}
+	}
+
+	/**
+	 * 批量查询指定任务的子节点
+	 * @param parentIds 父ID（多个采用半角逗号分割）
+	 * @return 返回 IPage
+	 * @param parentIds
+	 * @return
+	 */
+	@AutoLog(value = "考核节点表-批量获取子数据")
+	@ApiOperation(value="考核节点表-批量获取子数据", notes="考核节点表-批量获取子数据")
+	@GetMapping("/getChildListBatchWithMainId")
+	public Result getChildListBatchWithMainId(@RequestParam("parentIds") String parentIds, @RequestParam("mainId") String mainId) {
+		try {
+			QueryWrapper<SmartAnswerAssContent> queryWrapper = new QueryWrapper<>();
+			List<String> parentIdList = Arrays.asList(parentIds.split(","));
+			queryWrapper.in("pid", parentIdList).eq("main_id", mainId);
 			List<SmartAnswerAssContent> list = smartAnswerAssContentService.list(queryWrapper);
 			IPage<SmartAnswerAssContent> pageList = new Page<>(1, 10, list.size());
 			pageList.setRecords(list);
@@ -440,17 +462,26 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 		// 查询考核任务下的所有答题信息记录
 		QueryWrapper<SmartAnswerInfo> answerInfoQueryWrapper = new QueryWrapper<>();
-		answerInfoQueryWrapper.select("id").eq("mission_id", missionId);
+		answerInfoQueryWrapper.eq("mission_id", missionId);
 		List<SmartAnswerInfo> answerInfoList = smartAnswerInfoService.list(answerInfoQueryWrapper);
+		if (answerInfoList.size() == 0) {
+			return Result.error("没有可调的记录！");
+		}
+		Map<String, Double> answerInfoScoreMap = new HashMap<String, Double>();
 		List<String> mainIdList = new ArrayList<>();
-		answerInfoList.forEach(smartAnswerInfo -> mainIdList.add(smartAnswerInfo.getId()));
+		for (SmartAnswerInfo smartAnswerInfo : answerInfoList) {
+			mainIdList.add(smartAnswerInfo.getId());
+			if (answerInfoScoreMap.get(smartAnswerInfo.getId()) == null) {
+				answerInfoScoreMap.put(smartAnswerInfo.getId(), smartAnswerInfo.getTotalPoints());
+			}
+		}
 
 		// 查询相关的所有答题考核节点
 		QueryWrapper<SmartAnswerAssContent> assContentQueryWrapper = new QueryWrapper<>();
 		assContentQueryWrapper.in("main_id", mainIdList).eq("ass_content_id", contentId);
 		List<SmartAnswerAssContent> assContentList = smartAnswerAssContentService.list(assContentQueryWrapper);
 		for (SmartAnswerAssContent smartAnswerAssContent : assContentList) {
-			double increment = 0;
+			double increment;
 			// 更新节点最终成绩
 			if ("low".equals(scoreType)) {
 				// 计算增量
@@ -470,9 +501,14 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 
 			// 更新上级节点最终成绩
 			updateSuperiorScore(smartAnswerAssContent, increment);
-		}
 
-		// TODO: 更新答题信息表中的总分
+			// 直接更新答题信息表中的总分
+			SmartAnswerInfo smartAnswerInfo = new SmartAnswerInfo();
+			smartAnswerInfo.setId(smartAnswerAssContent.getMainId());
+			smartAnswerInfo.setTotalPoints(answerInfoScoreMap.get(smartAnswerAssContent.getMainId()) + increment);
+			smartAnswerInfoService.updateById(smartAnswerInfo);
+
+		}
 
 		return Result.OK("修改成功!");
 	}
@@ -512,28 +548,39 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 		smartAnswerAssScoreService.save(smartAnswerAssScore);
 
 		SmartAnswerAssContent answerAssContent = smartAnswerAssContentService.getById(smartAnswerAssScore.getMainId());
-		// 如果大于最高分则更新最高分和最终得分
+		// 最终得分增量
+		double increment;
+
+		// 如果大于最高分则更新最高分
 		if (smartAnswerAssScore.getScore() > answerAssContent.getHighestScore()) {
 			answerAssContent.setHighestScore(smartAnswerAssScore.getScore());
-			// 先更新上级最终得分
-			updateSuperiorScore(answerAssContent, smartAnswerAssScore.getScore() - answerAssContent.getFinalScore());
-
-			// 默认取最高得分为最终得分
-			answerAssContent.setFinalScore(smartAnswerAssScore.getScore());
 		}
+		// 如果小于最低分或最低分为0则更新最低分
 		if (smartAnswerAssScore.getScore() < answerAssContent.getLowestScore() || answerAssContent.getLowestScore() == 0) {
-			// 如果小于最低分或最低分为0则更新最低分
 			answerAssContent.setLowestScore(smartAnswerAssScore.getScore());
 		}
 		// 平均分应该是所有人评分的平均分，但好像只有两个评分
 		answerAssContent.setAverageScore((answerAssContent.getHighestScore() + answerAssContent.getLowestScore())/ 2);
+		// 默认取平均得分为最终得分,先计算最终得分增量
+		increment = answerAssContent.getAverageScore() - answerAssContent.getFinalScore();
+		// 然后设置最终得分未平均得分
+		answerAssContent.setFinalScore(answerAssContent.getAverageScore());
 		// 更新考核内容节点分数
 		smartAnswerAssContentService.updateById(answerAssContent);
+
+		// TODO： 如果增量不为零则更新上级分数和总分
+		if (increment != 0) {
+			// 先更新上级最终得分
+			updateSuperiorScore(answerAssContent, increment);
+			SmartAnswerInfo smartAnswerInfo = smartAnswerInfoService.getById(answerAssContent.getMainId());
+			smartAnswerInfo.setTotalPoints(smartAnswerInfo.getTotalPoints() + increment);
+			smartAnswerInfoService.updateById(smartAnswerInfo);
+		}
 		return Result.OK("添加成功！");
 	}
 
     /**
-	 * 编辑
+	 * 编辑评分，默认取平均得分为最终得分
 	 * @param smartAnswerAssScore
 	 * @return
 	 */
@@ -558,14 +605,20 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 
 
 		SmartAnswerAssContent answerAssContent = smartAnswerAssContentService.getById(smartAnswerAssScore.getMainId());
-		// 如果最高成绩改变了，则更新上级节点成绩
-		if (!maxScore.getScore().equals(answerAssContent.getFinalScore())) {
-			updateSuperiorScore(answerAssContent, maxScore.getScore() - answerAssContent.getFinalScore());
+		// 如果平均成绩和更新前的最终成绩不一样了，则更新上级节点成绩和总分
+		if (!avgScore.getScore().equals(answerAssContent.getFinalScore())) {
+			double increment = avgScore.getScore() - answerAssContent.getFinalScore();
+			// 更新上级成绩
+			updateSuperiorScore(answerAssContent, increment);
+			// 更新总分
+			SmartAnswerInfo smartAnswerInfo = smartAnswerInfoService.getById(answerAssContent.getMainId());
+			smartAnswerInfo.setTotalPoints(smartAnswerInfo.getTotalPoints() + increment);
+			smartAnswerInfoService.updateById(smartAnswerInfo);
 		}
 		answerAssContent.setHighestScore(maxScore.getScore());
-		answerAssContent.setFinalScore(maxScore.getScore());
 		answerAssContent.setLowestScore(minScore.getScore());
 		answerAssContent.setAverageScore(avgScore.getScore());
+		answerAssContent.setFinalScore(maxScore.getScore());
 		// 更新考核内容节点分数
 		smartAnswerAssContentService.updateById(answerAssContent);
 

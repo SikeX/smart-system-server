@@ -4,14 +4,14 @@
 
     <select id="selectByMissionIdAndContentId"
             resultType="org.jeecg.modules.smartAnswerInfo.entity.SmartDepartContentScore">
-        select sai.id as id, saac.id as answer_ass_content_id, depart, depart_name, mission_id, final_score, highest_score, lowest_score, average_score
+        select sai.id as id, saac.id as answer_ass_content_id, depart, depart_name, mission_id, final_score, highest_score, lowest_score, average_score, total_points
         from smart_answer_info sai
                  inner join sys_depart sd on sai.depart = sd.id
                  left join smart_answer_ass_content saac on saac.main_id = sai.id
         where mission_id = #{missionId}
           and ass_content_id = #{assContentId}
         union
-        select sai.id as id, saac.id as answer_ass_content_id, depart, depart_name, mission_id, final_score, highest_score, lowest_score, average_score
+        select sai.id as id, saac.id as answer_ass_content_id, depart, depart_name, mission_id, final_score, highest_score, lowest_score, average_score, total_points
         from smart_answer_info sai
                  inner join sys_depart sd on sai.depart = sd.id
                  left join smart_answer_ass_content saac on saac.main_id = sai.id

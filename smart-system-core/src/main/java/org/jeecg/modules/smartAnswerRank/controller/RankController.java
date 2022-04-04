@@ -369,7 +369,7 @@ public class RankController extends JeecgController<SmartAnswerInfo, ISmartAnswe
             answerInfoList.forEach(info -> {
                 Rank rank = new Rank();
 
-                Map<String, Integer> columnMap = new HashMap<>();
+                Map<String, Double> columnMap = new HashMap<>();
 
                 rank.setDepartId(info.getDepart());
                 rank.setDepartName(sysBaseAPI.translateDictFromTable("sys_depart","depart_name","id",info.getDepart()));
@@ -402,8 +402,8 @@ public class RankController extends JeecgController<SmartAnswerInfo, ISmartAnswe
 
                 rank.setScoreMap(scoreMap);
                 rank.setRank(info.getRanking());
-                columnMap.put("rank",info.getRanking() != null ? info.getRanking() : 0);
-                columnMap.put("lastRank",0);
+                columnMap.put("rank",info.getRanking() != null ? info.getRanking() : 0.0);
+                columnMap.put("lastRank",0.0);
 
                 rank.setColumnMap(columnMap);
 
@@ -419,7 +419,7 @@ public class RankController extends JeecgController<SmartAnswerInfo, ISmartAnswe
 
                 Rank rank = new Rank();
 
-                Map<String, Integer> columnMap = new HashMap<>();
+                Map<String, Double> columnMap = new HashMap<>();
 
                 rank.setDepartId(info.getDepart());
                 rank.setDepartName(sysBaseAPI.translateDictFromTable("sys_depart","depart_name","id",info.getDepart()));
@@ -451,8 +451,8 @@ public class RankController extends JeecgController<SmartAnswerInfo, ISmartAnswe
 
                 rank.setScoreMap(scoreMap);
                 rank.setRank(info.getRanking());
-                columnMap.put("rank",info.getRanking() != null ? info.getRanking() : 0);
-                columnMap.put("lastRank",0);
+                columnMap.put("rank",info.getRanking() != null ? info.getRanking() : 0.0);
+                columnMap.put("lastRank",0.0);
 
                 rank.setColumnMap(columnMap);
 

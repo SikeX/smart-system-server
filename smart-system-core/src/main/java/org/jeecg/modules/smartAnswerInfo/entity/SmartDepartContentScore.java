@@ -45,5 +45,8 @@ public class SmartDepartContentScore implements Serializable {
     /**最终得分*/
     @ApiModelProperty(value = "最终得分")
     private java.lang.Double finalScore;
+    /**总分*/
+    @ApiModelProperty(value = "总分")
+    private java.lang.Double totalPoints;
 
 }

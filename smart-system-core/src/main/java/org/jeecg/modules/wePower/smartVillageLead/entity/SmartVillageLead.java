@@ -40,6 +40,7 @@ public class SmartVillageLead implements Serializable {
     private java.lang.String people;
 	/**职务*/
 	@Excel(name = "职务", width = 15)
+    @Dict(dicCode = "lead_job")
     @ApiModelProperty(value = "职务")
     private java.lang.String job;
 	/**照片*/
