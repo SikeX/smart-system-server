@@ -37,7 +37,7 @@ import java.util.*;
 @Slf4j
 @Component
 public class DySmsHelper {
-	
+
 	private final static Logger logger=LoggerFactory.getLogger(DySmsHelper.class);
 
     //产品名称:云通信短信API产品,开发者无需替换
@@ -124,7 +124,7 @@ public class DySmsHelper {
 //        return result;
 //
 //    }
-    
+
     private static void validateParam(JSONObject templateParamJson,DySmsEnum dySmsEnum) {
     	String keys = dySmsEnum.getKeys();
     	String [] keyArr = keys.split(",");
@@ -134,7 +134,7 @@ public class DySmsHelper {
     		}
     	}
     }
-    
+
 
 //    public static void main(String[] args) throws ClientException, InterruptedException {
 //    	JSONObject obj = new JSONObject();
@@ -264,8 +264,8 @@ public class DySmsHelper {
 
         map.put("msg", content);//短信内容
         map.put("phone", phones);//手机号
-         map.put("report","true");//是否需要状态报告
-         map.put("extend","123");//自定义扩展码
+//         map.put("report","true");//是否需要状态报告
+//         map.put("extend","123");//自定义扩展码
         JSONObject js = (JSONObject) JSONObject.toJSON(map);
 
         String reString = sendSmsByPost(sendUrl, js.toString());
