@@ -56,12 +56,12 @@ public class SmartFuneralReport implements Serializable {
     @ApiModelProperty(value = "所属部门")
     private String sysOrgCode;
 	/**报备人ID*/
-	@Excel(name = "报备人ID", width = 15)
-    @ApiModelProperty(value = "报备人ID")
+	@Excel(name = "报备人", width = 15,dictTable ="sys_user",dicText = "realname",dicCode = "id")
+    @ApiModelProperty(value = "报备人")
     @Dict(dictTable ="sys_user",dicText = "realname",dicCode = "id")
     private String peopleId;
 	/**工作单位*/
-	@Excel(name = "工作单位", width = 15)
+	@Excel(name = "工作单位", width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
     @ApiModelProperty(value = "工作单位")
     @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
     private String departId;
@@ -85,7 +85,7 @@ public class SmartFuneralReport implements Serializable {
     private String peopleType;
 	/**删除标志*/
     @TableLogic
-	@Excel(name = "删除标志", width = 15)
+//	@Excel(name = "删除标志", width = 15)
     @ApiModelProperty(value = "删除标志")
     private Integer delFlag;
 	/**报告时间*/
@@ -99,7 +99,7 @@ public class SmartFuneralReport implements Serializable {
     private String verifyStatus;
     private Integer ifReport;
     /**附件*/
-    @Excel(name = "附件", width = 15)
+//    @Excel(name = "附件", width = 15)
     @ApiModelProperty(value = "附件")
     private java.lang.String files;
 }

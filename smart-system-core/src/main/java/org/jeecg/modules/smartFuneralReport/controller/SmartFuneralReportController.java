@@ -1,9 +1,6 @@
 package org.jeecg.modules.smartFuneralReport.controller;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -11,6 +8,7 @@ import java.net.URLDecoder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.hutool.core.util.ObjectUtil;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.api.ISysBaseAPI;
@@ -21,6 +19,9 @@ import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.smartEvaluateMeeting.entity.SmartEvaluateMeeting;
+import org.jeecg.modules.smartEvaluateMeeting.entity.SmartEvaluateMeetingAnnex;
+import org.jeecg.modules.smartEvaluateMeeting.entity.SmartEvaluateMeetingPacpa;
+import org.jeecg.modules.smartEvaluateMeeting.vo.SmartEvaluateMeetingPage;
 import org.jeecg.modules.smartFuneralReport.entity.SmartFuneralReport;
 import org.jeecg.modules.smartFuneralReport.service.ISmartFuneralReportService;
 
@@ -29,6 +30,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
+import org.jeecg.modules.smartPostFuneralReport.entity.SmartPostFuneralReport;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
 import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
@@ -37,6 +39,7 @@ import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.ImportParams;
 import org.jeecgframework.poi.excel.view.JeecgEntityExcelView;
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -164,6 +167,7 @@ public class SmartFuneralReportController extends JeecgController<SmartFuneralRe
 			return Result.error("未找到您所属部门，请检查部门是否存在！");
 		}
 		smartFuneralReport.setDepartId(id);
+		smartFuneralReport.setReportTime(new Date());
 		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
 		if(isVerify){
 			smartFuneralReportService.save(smartFuneralReport);
@@ -243,12 +247,98 @@ public class SmartFuneralReportController extends JeecgController<SmartFuneralRe
     /**
     * 导出excel
     *
-    * @param request
+    * @param req
     * @param smartFuneralReport
     */
     @RequestMapping(value = "/exportXls")
-    public ModelAndView exportXls(HttpServletRequest request, SmartFuneralReport smartFuneralReport) {
-        return super.exportXls(request, smartFuneralReport, SmartFuneralReport.class, "丧事口头报备表");
+    public ModelAndView exportXls(HttpServletRequest req,  HttpServletResponse response, SmartFuneralReport smartFuneralReport)throws Exception {
+		// 获取登录用户信息，可以用来查询单位部门信息
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+		String username = sysUser.getUsername();
+
+		// 获取用户角色
+		List<String> role = sysBaseAPI.getRolesByUsername(username);
+
+		List<SmartFuneralReport> queryList = new ArrayList<SmartFuneralReport>();
+
+
+		// 如果是普通用户，则只能看到自己创建的数据
+		if(role.contains("CommonUser")) {
+			QueryWrapper<SmartFuneralReport> queryWrapper = new QueryWrapper<>();
+			queryWrapper.eq("create_by",username);
+			queryList = smartFuneralReportService.list(queryWrapper);
+		} else {
+			// 1. 规则，下面是 以**开始
+			String rule = "in";
+			// 2. 查询字段
+			String field = "departId";
+
+			// 获取子单位ID
+			String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
+
+			HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+			// 获取请求参数中的superQueryParams
+			List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+
+			// 添加额外查询条件，用于权限控制
+			paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+					+ childrenIdString
+					+ "%22,%22field%22:%22" + field + "%22%7D%5D");
+			String[] params = new String[paramsList.size()];
+			paramsList.toArray(params);
+			map.put("superQueryParams", params);
+			params = new String[]{"and"};
+			map.put("superQueryMatchType", params);
+			QueryWrapper<SmartFuneralReport> queryWrapper = QueryGenerator.initQueryWrapper(smartFuneralReport, map);
+
+			queryList = smartFuneralReportService.list(queryWrapper);
+		}
+
+
+
+		// Step.1 组装查询条件查询数据
+//      QueryWrapper<SmartEvaluateMeeting> queryWrapper = QueryGenerator.initQueryWrapper(smartEvaluateMeeting, request.getParameterMap());
+//      LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+		//Step.2 获取导出数据
+//      List<SmartEvaluateMeeting> queryList = smartEvaluateMeetingService.list(queryWrapper);
+		// 过滤选中数据
+		String selections = req.getParameter("selections");
+		List<SmartFuneralReport> smartFuneralReportList = new ArrayList<SmartFuneralReport>();
+		if(oConvertUtils.isEmpty(selections)) {
+			smartFuneralReportList = queryList;
+		}else {
+			List<String> selectionList = Arrays.asList(selections.split(","));
+			smartFuneralReportList = queryList.stream().filter(item -> selectionList.contains(item.getId())).collect(Collectors.toList());
+		}
+
+		// Step.3 组装pageList
+//		List<SmartFuneralReport> pageList = new ArrayList<SmartFuneralReport>();
+//		for (SmartFuneralReport main : smartFuneralReportList) {
+//			SmartFuneralReportPage vo = new SmartFuneralReportPage();
+//			BeanUtils.copyProperties(main, vo);
+//			List<SmartEvaluateMeetingPacpa> smartEvaluateMeetingPacpaList = smartEvaluateMeetingPacpaService.selectByMainId(main.getId());
+//			vo.setSmartEvaluateMeetingPacpaList(smartEvaluateMeetingPacpaList);
+//			List<SmartEvaluateMeetingAnnex> smartEvaluateMeetingAnnexList = smartEvaluateMeetingAnnexService.selectByMainId(main.getId());
+//			vo.setSmartEvaluateMeetingAnnexList(smartEvaluateMeetingAnnexList);
+//			pageList.add(vo);
+//		}
+
+		// Step.4 AutoPoi 导出Excel
+		ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
+		mv.addObject(NormalExcelConstants.FILE_NAME, "丧事口头报备表");
+		mv.addObject(NormalExcelConstants.CLASS, SmartFuneralReport.class);
+		mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("丧事口头报备表数据", "导出人:"+sysUser.getRealname(), "述责述廉表"));
+		mv.addObject(NormalExcelConstants.DATA_LIST, smartFuneralReportList);
+
+		// List深拷贝，否则返回前端会没数据
+		List<SmartFuneralReport> newPageList = ObjectUtil.cloneByStream(smartFuneralReportList);
+
+		baseCommonService.addExportLog(mv.getModel(), "丧事报备", req, response);
+
+		mv.addObject(NormalExcelConstants.DATA_LIST, newPageList);
+		return mv;
     }
 
     /**

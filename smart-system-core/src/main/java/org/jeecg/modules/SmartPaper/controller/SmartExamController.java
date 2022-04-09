@@ -63,7 +63,7 @@ public class SmartExamController extends JeecgController<SmartPeople, ISmartExam
    @ApiOperation(value = "提交三员+调查问卷")
    @PostMapping(value = "/submitTriPreSurvey" )
    public Result submitTriPreSurvey(@RequestBody SmartSubmitSurveyVo smartSubmitSurveyVO){
-      //System.out.println(smartSubmitSurveyVO);
+      System.out.println(smartSubmitSurveyVO);
       Result res = smartSurveyService.submitTriPreSurvey(smartSubmitSurveyVO);
       return res;
    }

@@ -30,4 +30,6 @@ public interface ISmartPeopleService extends IService<SmartPeople> {
     Page<RandomPeople> getTriPeoListByDptId(Page<RandomPeople> page, String paperId, String departId);
 
     Page<RandomPeople> getTriResultByEIdDId(Page<RandomPeople> page, String examId, String departId);
+
+    List<RandomPeople> getTriGovPeoList(Integer selectedCount);
 }

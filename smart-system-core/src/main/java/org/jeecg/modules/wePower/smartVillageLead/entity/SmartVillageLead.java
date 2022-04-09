@@ -40,6 +40,7 @@ public class SmartVillageLead implements Serializable {
     private java.lang.String people;
 	/**职务*/
 	@Excel(name = "职务", width = 15)
+    @Dict(dicCode = "lead_job")
     @ApiModelProperty(value = "职务")
     private java.lang.String job;
 	/**照片*/
@@ -81,5 +82,13 @@ public class SmartVillageLead implements Serializable {
 	/**文件*/
 	@Excel(name = "文件", width = 15)
     @ApiModelProperty(value = "文件")
-    private java.lang.String file;
+    private java.lang.String files;
+
+    /**姓名*/
+    @Excel(name = "姓名", width = 15)
+    @ApiModelProperty(value = "姓名")
+    private java.lang.String name;
+
+    private java.lang.String faceToken;
+
 }

@@ -89,9 +89,10 @@ public class SmartPeopleController extends JeecgController<SmartPeople, ISmartPe
         pageList = smartPeopleService.getTriPeoListByDptId(pageList,paperId,departId);
         // 获取登录用户信息
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+        String userId = sysUser.getId();
         String userName = sysUser.getRealname();
         result.setResult(pageList);
-        result.setMessage(userName);
+        result.setMessage(userId+","+userName);
         result.setSuccess(true);
         return result;
     }
@@ -282,6 +283,7 @@ public class SmartPeopleController extends JeecgController<SmartPeople, ISmartPe
      * @param randomPeople
      */
     @RequestMapping(value = "/exportTriSurResultXls")
+    @ResponseBody
     public ModelAndView exportTriSurResultXls(HttpServletRequest req,
                                            HttpServletResponse response, RandomPeople randomPeople,
                                            @RequestParam(name="examId",required=true) String examId,
@@ -300,16 +302,16 @@ public class SmartPeopleController extends JeecgController<SmartPeople, ISmartPe
         System.out.println("##############################");
         exportList = pageList;
         System.out.println(exportList);
-        System.out.println(exportList);
 
         // 过滤选中数据
-/*        String selections = request.getParameter("selections");
-        if (oConvertUtils.isNotEmpty(selections)) {
-            List<String> selectionList = Arrays.asList(selections.split(","));
-            exportList = pageList.stream().filter(item -> selectionList.contains(item.getDeptId())).collect(Collectors.toList());
-        } else {
-            exportList = pageList;
-        }*/
+        String selections = req.getParameter("selections");
+        System.out.println(selections);
+//        if (oConvertUtils.isNotEmpty(selections)) {
+//            List<String> selectionList = Arrays.asList(selections.split(","));
+//            exportList = pageList.stream().filter(item -> selectionList.contains(item.getDeptId())).collect(Collectors.toList());
+//        } else {
+//            exportList = pageList;
+//        }
 
         // Step.3 AutoPoi 导出Excel
         ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());

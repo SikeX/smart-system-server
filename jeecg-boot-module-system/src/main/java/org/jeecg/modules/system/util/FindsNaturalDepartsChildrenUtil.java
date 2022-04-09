@@ -107,7 +107,7 @@ public class FindsNaturalDepartsChildrenUtil {
         List<SysDepartTreeModel> treeList = new ArrayList<>();
         for (int i = 0; i < recordList.size(); i++) {
             SysDepartTreeModel branch = recordList.get(i);
-            if(branch.getDepartName().equals("哈尔滨道里区纪委")){
+            if(branch.getDepartName().equals("中共哈尔滨市道里区纪律检查委员会")){
                 treeList.add(branch);
                 DepartIdModel departIdModel = new DepartIdModel().convert(branch);
                 departIdList.add(departIdModel);

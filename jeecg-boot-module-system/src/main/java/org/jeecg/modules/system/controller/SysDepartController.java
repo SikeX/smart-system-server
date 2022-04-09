@@ -187,7 +187,7 @@ public class SysDepartController {
 	 * @param departId 根据departId查
 	 * @param orgCode  根据orgCode查，departId和orgCode必须有一个不为空
 	 */
-	@GetMapping("/queryAllParentId")
+	@GetMapping("/tqueryAllParenId")
 	public Result queryParentIds(
 			@RequestParam(name = "departId", required = false) String departId,
 			@RequestParam(name = "orgCode", required = false) String orgCode

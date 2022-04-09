@@ -305,9 +305,14 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 	public Boolean updateDepartDataById(SysDepart sysDepart, String username) {
 		if (sysDepart != null && username != null) {
 			SysDepart deptForOld = this.queryDeptByDepartId(sysDepart.getId());
-			sysDepart.setOldDepartName(deptForOld.getOldDepartName());
-			sysDepart.setOldParentId(deptForOld.getOldParentId());
-			sysDepart.setOldBusinessParentId(deptForOld.getOldBusinessParentId());
+			sysDepart.setOldDepartName(deptForOld.getDepartName());
+			if (sysDepart.getOldParentId() == null) {
+				sysDepart.setOldParentId("");
+			}
+			else{
+				sysDepart.setOldParentId(deptForOld.getParentId());
+			}
+			sysDepart.setOldBusinessParentId(deptForOld.getBusinessParentId());
 			sysDepart.setUpdateTime(new Date());
 			sysDepart.setUpdateBy(username);
             SysDepart naturalDept = this.queryDeptByDepartId(sysDepart.getBusinessParentId());
@@ -355,6 +360,7 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
                     this.updateById(naturalChildDept2);
                 }
             }
+            this.updateById(sysDepart);
         }
             //			更换业务上级的情况下
             if(!sysDepart.getParentId().equals(sysDepart.getOldParentId()))
@@ -362,6 +368,7 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
                 if (sysDepart.getParentId() == null) {
                     sysDepart.setParentId("");
                 }
+
                 // 先判断该对象有无父级ID,有则意味着不是最高级,否则意味着是最高级
                 // 获取父级ID
                 String parentId = sysDepart.getParentId();
@@ -614,8 +621,9 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 		List<SysDepart> departList = this.list(query);
 		if(departList != null && departList.size() > 0) {
 			for(SysDepart depart : departList) {
+				if(depart.getDelFlag().equals("0")){
 				idList.add(depart.getId());
-				this.checkChildrenExists(depart.getId(), idList);
+				this.checkChildrenExists(depart.getId(), idList);}
 			}
 		}
 	}
@@ -631,8 +639,9 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 		List<SysDepart> departList = this.list(query);
 		if(departList != null && departList.size() > 0) {
 			for(SysDepart depart : departList) {
-				idList.add(depart.getId());
-				this.checkNaturalChildrenExists(depart.getId(), idList);
+				if(depart.getDelFlag().equals("0"))
+				{idList.add(depart.getId());
+				this.checkNaturalChildrenExists(depart.getId(), idList);}
 			}
 		}
 	}
@@ -887,7 +896,7 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 		String cunId = null;
 		if(cun.equals("前进村"))
 		{
-			if(zhen.equals("新农镇"))
+			if(zhen.equals("道里区新农镇"))
 			{
 				cunId = "e0ce48ecb1734d77b843d28017b95f39";
 			}else

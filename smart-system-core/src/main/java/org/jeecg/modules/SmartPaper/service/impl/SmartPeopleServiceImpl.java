@@ -63,4 +63,9 @@ public class SmartPeopleServiceImpl extends ServiceImpl<SmartPeopleMapper, Smart
     public Page<RandomPeople> getTriResultByEIdDId(Page<RandomPeople> page, String examId, String departId) {
         return page.setRecords(smartPeopleMapper.getTriResultByEIdDId(page, examId,departId));
     }
+
+    @Override
+    public List<RandomPeople> getTriGovPeoList(Integer selectedCount) {
+        return smartPeopleMapper.getTriGovPeoList(selectedCount);
+    }
 }

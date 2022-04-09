@@ -56,8 +56,8 @@ public class SmartPostFuneralReport implements Serializable {
     @ApiModelProperty(value = "所属部门")
     private String sysOrgCode;
 	/**报备人ID*/
-	@Excel(name = "报备人ID", width = 15)
-    @ApiModelProperty(value = "报备人ID")
+	@Excel(name = "报备人", width = 15,dictTable ="sys_user",dicText = "realname",dicCode = "id")
+    @ApiModelProperty(value = "报备人")
     @Dict(dictTable ="sys_user",dicText = "realname",dicCode = "id")
     private String peopleId;
 	/**性别*/
@@ -69,7 +69,7 @@ public class SmartPostFuneralReport implements Serializable {
     @ApiModelProperty(value = "年龄")
     private String reportAge;
 	/**政治面貌*/
-	@Excel(name = "政治面貌", width = 15)
+	@Excel(name = "政治面貌", width = 15,dicCode="political_status")
     @ApiModelProperty(value = "政治面貌")
     private String politics;
 	/**工作单位*/
@@ -78,17 +78,18 @@ public class SmartPostFuneralReport implements Serializable {
     @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
     private String departId;
 	/**职务*/
-	@Excel(name = "职务", width = 15)
+	@Excel(name = "职务", width = 15,dictTable ="sys_position",dicText = "name",dicCode = "code")
     @ApiModelProperty(value = "职务")
     private String zhiwu;
 	/**职级*/
-	@Excel(name = "职级", width = 15)
+	@Excel(name = "职级", width = 15,dicCode="position_rank")
     @ApiModelProperty(value = "职级")
+    @Dict(dicCode = "position_rank")
     private String zhiji;
 	/**联系电话*/
 	@Excel(name = "联系电话", width = 15)
     @ApiModelProperty(value = "联系电话")
-    private String phone;
+    private String reportPhone;
 	/**逝世人姓名*/
 	@Excel(name = "逝世人姓名", width = 15)
     @ApiModelProperty(value = "逝世人姓名")
@@ -153,7 +154,7 @@ public class SmartPostFuneralReport implements Serializable {
     private String elseState;
 	/**删除状态*/
     @TableLogic
-	@Excel(name = "删除状态", width = 15)
+//	@Excel(name = "删除状态", width = 15)
     @ApiModelProperty(value = "删除状态")
     private Integer delFlag;
 	/**报备时间*/
@@ -168,7 +169,8 @@ public class SmartPostFuneralReport implements Serializable {
     /**口头报备ID*/
     private String preId;
     /**附件*/
-    @Excel(name = "附件", width = 15)
+//    @Excel(name = "附件", width = 15)
     @ApiModelProperty(value = "附件")
     private java.lang.String files;
+
 }
