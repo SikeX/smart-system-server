@@ -155,4 +155,10 @@ public class SmartPublicityProject implements Serializable {
 	@Excel(name = "村民会议或者村民代表会议决议", width = 15)
     @ApiModelProperty(value = "村民会议或者村民代表会议决议")
     private java.lang.String meetFile4;
+
+    private java.lang.String videoPeople1;
+    private java.lang.String videoPeople2;
+    private java.lang.String videoPeople3;
+    private java.lang.String videoPeople4;
+
 }

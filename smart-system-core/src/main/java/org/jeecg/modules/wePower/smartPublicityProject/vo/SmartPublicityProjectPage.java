@@ -152,6 +152,11 @@ public class SmartPublicityProjectPage {
 	@ApiModelProperty(value = "村民会议或者村民代表会议决议")
     private java.lang.String meetFile4;
 
+	private java.lang.String videoPeople1;
+	private java.lang.String videoPeople2;
+	private java.lang.String videoPeople3;
+	private java.lang.String videoPeople4;
+
 	@ExcelCollection(name="项目审核")
 	@ApiModelProperty(value = "项目审核")
 	private List<SmartPublicityProjectVerify> smartPublicityProjectVerifyList;
