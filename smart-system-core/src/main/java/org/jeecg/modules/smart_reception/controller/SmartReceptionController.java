@@ -10,6 +10,8 @@ import org.jeecg.common.api.vo.Result;
 import org.jeecg.modules.smart_8_escorted_meal.controller.Smart_8EscortedMealController;
 import org.jeecg.modules.smart_8_escorted_meal.entity.Smart_8EscortedMeal;
 import org.jeecg.modules.smart_8_escorted_meal.service.ISmart_8EscortedMealService;
+import org.jeecg.modules.smart_8regulations_for_reception.service.impl.Smart_8regulationsForReceptionServiceImpl;
+import org.jeecg.modules.smart_8regulations_for_reception.vo.Smart_8regulationsForReceptionPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
@@ -107,6 +109,14 @@ public class SmartReceptionController extends JeecgController<SmartReception, IS
     @ApiOperation(value="公务接待2.0-添加", notes="公务接待2.0-添加")
     @PostMapping(value = "/add")
     public Result<?> add(@RequestBody SmartReception smartReception) {
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		String orgCode = sysUser.getOrgCode();
+		if ("".equals(orgCode)) {
+			return Result.error("本用户没有操作权限！");
+		}
+		String id = smartReceptionService.getDepartIdByOrgCode(orgCode);
+		smartReception.setDepartmentId(id);
+
         smartReceptionService.save(smartReception);
         return Result.OK("添加成功！");
     }
