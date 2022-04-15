@@ -363,11 +363,11 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
             this.updateById(sysDepart);
         }
             //			更换业务上级的情况下
+			if (sysDepart.getParentId() == null) {
+				sysDepart.setParentId("");
+			}
             if(!sysDepart.getParentId().equals(sysDepart.getOldParentId()))
             {
-                if (sysDepart.getParentId() == null) {
-                    sysDepart.setParentId("");
-                }
 
                 // 先判断该对象有无父级ID,有则意味着不是最高级,否则意味着是最高级
                 // 获取父级ID

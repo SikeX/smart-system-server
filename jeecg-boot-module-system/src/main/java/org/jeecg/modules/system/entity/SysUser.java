@@ -270,6 +270,9 @@ public class SysUser implements Serializable {
     @Dict(dicCode = "home_role")
     private Integer homeRole;
 
+    @ApiModelProperty(value = "亲属关系")
+    @Excel(name = "亲属关系", width = 15,dicCode="home_relation")
+    @Dict(dicCode = "home_relation")
     private Integer relation;
 
 }

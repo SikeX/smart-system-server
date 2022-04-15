@@ -171,12 +171,14 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 						user.setHomeCode(homeCode);
 						user.setHomeRole(2);
 						sysUserService.updateById(user);
+						if(user.getRelation()!=null)
+						{
 						villageRelation relation = new villageRelation();
 						relation.setHomeRelation(user.getRelation());
 						relation.setIdnumber(user.getIdnumber());
 						relation.setHomeCode(homeCode);
 						relation.setHostIdnumber(host.getIdnumber());
-						villageRelationService.save(relation);
+						villageRelationService.save(relation);}
 					}
 			}
 		}
@@ -223,22 +225,24 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 		}
 		if(!bHostId.equals(lHostId))
 		{
-			SysUser lHost = sysUserService.queryByIdnumber(lHostId);
-			if(lHost.getHomeCode() != null && !lHost.getHomeCode().equals(""))
-			{
-				result.setSuccess(false);
-				result.setMessage("更换的户主已有户籍信息！");
-				return result;
-			}
-			if(lHost.getPhone()==null || lHost.getPhone().equals(""))
-			{
-				result.setSuccess(false);
-				result.setMessage("户主电话号不可为空！");
-				return result;
-			}
-
+//			SysUser lHost = sysUserService.queryByIdnumber(lHostId);
+//			if(lHost.getHomeCode() != null && !lHost.getHomeCode().equals(""))
+//			{
+//				result.setSuccess(false);
+//				result.setMessage("更换的户主已有户籍信息！");
+//				return result;
+//			}
+//			if(lHost.getPhone()==null || lHost.getPhone().equals(""))
+//			{
+//				result.setSuccess(false);
+//				result.setMessage("户主电话号不可为空！");
+//				return result;
+//			}
+			result.setSuccess(false);
+			result.setMessage("户主不可更改！");
+			return result;
 		}
-		//判断家庭成员是否已有户籍关系
+		//判断家庭成员是否已有户籍关系以及编辑关系更改的家庭成员
 		if(!lUserList.isEmpty())
 		{
 			//新增的成员
@@ -265,20 +269,65 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 					}
 				}
 			}
+			//删去的成员
+			for(SysUser buser:bUserList)
+			{
+				String bUserId = buser.getId();
+				for(SysUser luser: lUserList )
+				{
+					if(luser.getId()!=null || !luser.getId().equals("")){
+						String lUserId = luser.getId();
+						if(lUserId.equals(bUserId))
+						{   if(buser.getRelation() == null && luser.getRelation() == null)
+						     {
+								 break;
+							 }
+							 if(buser.getRelation() == null)
+							 {
+								 sysUserService.updateById(luser);
+								 villageRelation relation = new villageRelation();
+								 relation.setHostIdnumber(lHostId);
+								 relation.setIdnumber(luser.getIdnumber());
+								 relation.setHomeRelation(luser.getRelation());
+								 relation.setHomeCode(lHomeCode);
+								 villageRelationService.save(relation);
+								 break;
+							 }
+							if(luser.getRelation() == null)
+							{
+								sysUserService.updateById(luser);
+								break;
+							}
+							if(!buser.getRelation().equals(luser.getRelation()))
+							{
+								sysUserService.updateById(luser);
+								villageRelation relation = new villageRelation();
+								relation.setHostIdnumber(lHostId);
+								relation.setIdnumber(luser.getIdnumber());
+								relation.setHomeRelation(luser.getRelation());
+								relation.setHomeCode(lHomeCode);
+								villageRelationService.save(relation);
+								break;
+							}
+						}
+
+					}
+				}
+			}
 		}
         //保存编辑后的户主信息（假设户口本编号未更改，编辑后的户主保存原户口本编号信息）
-		 if(!bHostId.equals(lHostId))
-		 {
-		 	SysUser laterHost = sysUserService.queryByIdnumber(lHostId);
-		 	SysUser bHost = sysUserService.queryByIdnumber(bHostId);
-
-		 	bHost.setHomeCode("");
-		 	bHost.setHomeRole(0);
-		 	sysUserService.updateById(bHost);
-		 	laterHost.setHomeCode(bHomeCode);
-		 	laterHost.setHomeRole(1);
-		 	sysUserService.updateById(laterHost);
-		 }
+//		 if(!bHostId.equals(lHostId))
+//		 {
+//		 	SysUser laterHost = sysUserService.queryByIdnumber(lHostId);
+//		 	SysUser bHost = sysUserService.queryByIdnumber(bHostId);
+//
+//		 	bHost.setHomeCode("");
+//		 	bHost.setHomeRole(0);
+//		 	sysUserService.updateById(bHost);
+//		 	laterHost.setHomeCode(bHomeCode);
+//		 	laterHost.setHomeRole(1);
+//		 	sysUserService.updateById(laterHost);
+//		 }
         //保存编辑后的成员信息(假设户口本编号未更改，编辑后的成员字段中保存原户口本编号信息)
 		//新增的成员
 		for(SysUser luser:lUserList)
@@ -297,12 +346,14 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 					luser.setHomeCode(bHomeCode);
 					luser.setHomeRole(2);
 					sysUserService.updateById(luser);
+					if(luser.getRelation()!=null)
+					{
 					villageRelation relation = new villageRelation();
 					relation.setHostIdnumber(lHostId);
 					relation.setIdnumber(luser.getIdnumber());
 					relation.setHomeRelation(luser.getRelation());
 					relation.setHomeCode(bHomeCode);
-					villageRelationService.save(relation);
+					villageRelationService.save(relation);}
 				}
 			}
 		}
@@ -324,38 +375,41 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 			{
 				buser.setHomeCode("");
 				buser.setHomeRole(0);
+				if(buser.getRelation()!=null)
+				{buser.setRelation(-1);}
 				sysUserService.updateById(buser);
 			}
 		}
         //保存编辑后的户口信息,如果户口本编号变动，更新户主和家庭成员的home_code
-		if(!lHomeCode.equals(bHomeCode))
-		{
-			SysUser host = sysUserService.queryByIdnumber(lHostId);
-			host.setHomeCode(lHomeCode);
-			sysUserService.updateById(host);
-			for(SysUser user:lUserList)
-			{
-				if(user.getId()!=null && !user.getId().equals(""))
-				{user.setHomeCode(lHomeCode);
-				user.setHomeCode(lHomeCode);
-				sysUserService.updateById(user);}
-			}
-		}
-		//户主变动后，保存新户主和家庭成员的关系，否则只考虑更新了家庭关系的部分
-		if(!bHostId.equals(lHostId))
-		{
-			List<SysUser> userList = sysUserService.queryByHomeCode(bHomeCode);
-			for(int i=0;i<userList.size();i++)
-			{
-				SysUser user = userList.get(i);
-				villageRelation relation = new villageRelation();
-				relation.setHomeCode(bHomeCode);
-				relation.setHostIdnumber(lHostId);
-				relation.setIdnumber(user.getIdnumber());
-				relation.setIdnumber(user.getId());
-				villageRelationService.save(relation);
-			}
-		}
+//		if(!lHomeCode.equals(bHomeCode))
+//		{
+//			SysUser host = sysUserService.queryByIdnumber(lHostId);
+//			host.setHomeCode(lHomeCode);
+//			sysUserService.updateById(host);
+//			for(SysUser user:lUserList)
+//			{
+//				if(user.getId()!=null && !user.getId().equals(""))
+//				{user.setHomeCode(lHomeCode);
+//				user.setHomeCode(lHomeCode);
+//				sysUserService.updateById(user);}
+//			}
+//		}
+//		//户主变动后，保存新户主和家庭成员的关系，否则只考虑更新了家庭关系的部分
+//		if(!bHostId.equals(lHostId))
+//		{
+//			List<SysUser> userList = sysUserService.queryByHomeCode(bHomeCode);
+//			for(int i=0;i<userList.size();i++)
+//			{
+//				SysUser user = userList.get(i);
+//				villageRelation relation = new villageRelation();
+//				relation.setHomeCode(bHomeCode);
+//				relation.setHostIdnumber(lHostId);
+//				relation.setIdnumber(user.getIdnumber());
+//				relation.setIdnumber(user.getId());
+//				villageRelationService.save(relation);
+//			}
+
+
 		villageHome.setUserList(null);
 		villageHome.setRealname(null);
 		villageHome.setPhone(null);
@@ -384,6 +438,8 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 		{
 			user.setHomeCode("");
 			user.setHomeRole(0);
+			if(user.getRelation()!=null)
+			{user.setRelation(-1);}
 			sysUserService.updateById(user);
 		}
 		villageHomeService.removeById(id);
@@ -413,6 +469,8 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 			{
 				user.setHomeCode("");
 				user.setHomeRole(0);
+				if(user.getRelation()!=null){
+				user.setRelation(-1);}
 				sysUserService.updateById(user);
 			}
 		}
