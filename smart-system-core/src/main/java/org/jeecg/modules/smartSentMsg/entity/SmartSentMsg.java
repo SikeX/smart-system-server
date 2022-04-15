@@ -68,6 +68,7 @@ public class SmartSentMsg implements Serializable {
 	/**发送类型*/
 	@Excel(name = "发送类型", width = 15)
     @ApiModelProperty(value = "发送类型")
+    @Dict(dicCode = "SMSType")
     private java.lang.String sendType;
 	/**标题*/
 	@Excel(name = "标题", width = 15)
