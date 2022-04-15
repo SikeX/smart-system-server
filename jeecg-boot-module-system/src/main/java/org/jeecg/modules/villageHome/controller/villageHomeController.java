@@ -13,6 +13,7 @@ import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.constant.CommonConstant;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.util.ImportExcelUtil;
 import org.jeecg.common.util.PasswordUtil;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.common.util.ParamsUtil;
@@ -22,6 +23,7 @@ import org.jeecg.modules.system.entity.SysUser;
 import org.jeecg.modules.system.service.ISysDepartService;
 import org.jeecg.modules.system.service.ISysUserService;
 import org.jeecg.modules.villageHome.entity.villageHome;
+import org.jeecg.modules.villageHome.mapper.villageHomeMapper;
 import org.jeecg.modules.villageHome.vo.vHome;
 import org.jeecg.modules.villageHome.entity.villageRelation;
 import org.jeecg.modules.villageHome.service.IvillageHomeService;
@@ -71,6 +73,8 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 	 @Autowired
 	 private ISysDepartService sysDepartService;
 
+	 @Autowired
+	 private villageHomeMapper homeMapper;
 
 	 /**
 	 * 分页列表查询
@@ -514,10 +518,12 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
     * @return
     */
     @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
-    public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
-//        return super.importExcelForVillageHome(request, response, villageHome.class);
+    public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
 			MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 			Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
+		// 错误信息
+		List<String> errorMessage = new ArrayList<>();
+		int errorLines = 0;
 			for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
 				MultipartFile file = entity.getValue();// 获取上传文件对象
 				ImportParams params = new ImportParams();
@@ -525,16 +531,6 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 				params.setHeadRows(1);
 				params.setNeedSave(true);
 				try {
-//                InputStream inputStream = file.getInputStream();
-//                Workbook wb = WorkbookFactory.create(inputStream);
-//                //获取某个sheet
-//                Sheet sheet = wb.getSheetAt(0);
-//                //获取某一行
-//                Row row = sheet.getRow(0);
-//                //获取行的某一列
-//                Cell cell0 = row.getCell(0);
-//                //获取单元格中的字符串
-//                RichTextString fileData = cell0.getRichStringCellValue();
 					//获取villageHome类
 					List<villageHome> list = ExcelImportUtil.importExcel(file.getInputStream(), villageHome.class, params);
 					//获取user类
@@ -549,6 +545,7 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 					List<Integer> tUse = listForUser.stream().map(e -> e.getHomeRole()).collect(Collectors.toList());
 					List<Integer> thUse = listForUser.stream().map(e -> e.getHomeRole()).collect(Collectors.toList());
 					List<Integer> fUse = listForUser.stream().map(e -> e.getHomeRole()).collect(Collectors.toList());
+					//检查户籍是否存在，如果存在就打印出来，检查人员是否存在，如果存在就打印出来
 					for(int i=0;i<list.size();i++)
 					{
 						if(oUse.get(i) == 2)
@@ -561,6 +558,22 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 					for(int i=0;i<list.size();i++)
 					{
 						villageHome home = list.get(i);
+						if(homeMapper.getByHomeCode(home.getHomeCode())!=null)
+						{
+							return Result.error("导入失败:编号为"+home.getHomeCode()+"的户籍已存在");
+						}
+						if(sysUserService.queryByIdnumber(home.getIdnumber())!=null)
+						{
+							return Result.error("导入失败:身份证号为"+home.getIdnumber()+"的村民已存在");
+						}
+						if(home.getPhone()==""||home.getPhone()==null)
+						{
+							return Result.error("导入失败:身份证号为"+home.getIdnumber()+"的户主电话号为空，请补全信息");
+						}
+						if(sysUserService.getUserByPhone(home.getPhone())!=null)
+						{
+							return Result.error("导入失败:身份证号为"+home.getIdnumber()+"的户主的电话号系统中已存在");
+						}
 						home.setZhenId(sysDepartService.getZhenIdByName(home.getZhenId()));
 						home.setDepartId(sysDepartService.getCunIdByNames(home.getZhenId(),home.getDepartId()));
 						list.set(i,home);
@@ -578,7 +591,8 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 							user.setRole("1463074308371800066");
 						}
 						else{
-							return Result.error("文件导入信息有误，用户角色不存在！");
+							errorLines++;
+							errorMessage.add("身份证号为 " + user.getIdnumber() + "的村民角色信息有误，请及时在村民管理页面编辑");
 						}
 						user.setZhenId(sysDepartService.getZhenIdByName(user.getZhenId()));
 						user.setDepartId(sysDepartService.getCunIdByNames(user.getZhenId(),user.getDepartId()));
@@ -597,11 +611,6 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 					for(int i=0;i<listForHost.size();i++)
 					{
 						SysUser host = listForHost.get(i);
-//						host.setDelFlag(0);
-//						host.setPeopleType("2");
-//						host.setUsername(host.getPhone());
-//						host.setPassword("123456");
-//						listForHost.set(i,host);
 						host.setPeopleType("2");
 						String phone = host.getPhone();
 						if(phone == null)
@@ -627,9 +636,7 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 							host.setOrgCode(userOrgCode);
 						}
 						sysUserService.saveUser(host, host.getRole(), host.getDepartId());
-						listForHost.set(i,host);
 					}
-//					sysUserService.saveBatch(listForHost);
 					List<SysUser> listForMember = new ArrayList<>(listForUser);
 					for(int i=0;i<listForMember.size();i++)
 					{
@@ -643,16 +650,21 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 					for(int i=0;i<listForMember.size();i++)
 					{
 						SysUser member = listForMember.get(i);
-//						member.setDelFlag(0);
-//						member.setPeopleType("2");
-//						member.setUsername(member.getPhone());
-//						member.setPassword("123456");
-//						listForMember.set(i,member);
+						if(sysUserService.queryByIdnumber(member.getIdnumber())!=null)
+						{
+							errorLines++;
+							errorMessage.add("身份证号为 " + member.getIdnumber() + "的村民已存在，请及时通过户籍管理编辑该村民的户籍信息");
+						}else if(sysUserService.getUserByPhone(member.getPhone())!=null)
+						{
+							errorLines++;
+							errorMessage.add("身份证号为 " + member.getIdnumber() + "的村民手机号在系统中已存在，请及时通过村民管理页面添加或编辑该村民的相关信息，并在户籍管理页面添加该村民的户籍信息");
+						}
+						else{
 						member.setPeopleType("2");
 						String phone = member.getPhone();
 						if(phone == null)
 						{
-							return Result.error("文件导入失败,户主电话号不可为空！");
+
 						}else {
 							//设置初始账号：手机号
 							member.setUsername(phone);
@@ -671,10 +683,9 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 							String userOrgCode = depart.getOrgCode();
 							depart.setOrgCode(userOrgCode);
 						}
-						sysUserService.saveUser(member, member.getRole(), member.getDepartId());
-						listForMember.set(i,member);
+						sysUserService.saveUser(member, member.getRole(), member.getDepartId());}
 					}
-//					sysUserService.saveBatch(listForMember);
+
 					for(int i=0;i<listForRelation.size();i++)
 					{
 						if(fUse.get(i) == 1)
@@ -694,10 +705,9 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 					//1200条  saveBatch消耗时间3687毫秒 循环插入消耗时间5212毫秒
 					log.info("消耗时间" + (System.currentTimeMillis() - start) + "毫秒");
 					//update-end-author:taoyan date:20190528 for:批量插入数据
-					return Result.ok("文件导入成功！数据行数：" + list.size());
 				} catch (Exception e) {
+					errorMessage.add("发生异常,可能是表格中数据重复或者存在空数据：" + e.getMessage());
 					log.error(e.getMessage(), e);
-					return Result.error("文件导入失败:" + e.getMessage());
 				} finally {
 					try {
 						file.getInputStream().close();
@@ -706,7 +716,7 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 					}
 				}
 			}
-			return Result.error("文件导入失败！");
+			return ImportExcelUtil.importReturnRes(errorLines,errorMessage);
 
     }
 
