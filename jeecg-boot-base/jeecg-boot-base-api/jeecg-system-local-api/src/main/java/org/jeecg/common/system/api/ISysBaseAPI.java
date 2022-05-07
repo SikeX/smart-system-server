@@ -394,4 +394,14 @@ public interface ISysBaseAPI extends CommonAPI {
      */
     public List<JSONObject> getUserIdsByTypes(String peopleType);
 
+
+    /**
+     * 2022-03-31 @author sike
+     * 通过
+     *
+     * @param locationId
+     * @return
+     */
+    public VillageInfo getVillageInfoByDepartId(String locationId);
+
 }

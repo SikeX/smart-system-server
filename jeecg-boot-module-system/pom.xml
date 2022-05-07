@@ -71,11 +71,11 @@
 			<artifactId>smart-system-core</artifactId>
 			<version>3.1.0</version>
 		</dependency>
-		<dependency>
-			<groupId>org.yaml</groupId>
-			<artifactId>snakeyaml</artifactId>
-			<version>${snakeyaml.version}</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.yaml</groupId>-->
+<!--			<artifactId>snakeyaml</artifactId>-->
+<!--			<version>${snakeyaml.version}</version>-->
+<!--		</dependency>-->
 
 <!--		<dependency>-->
 <!--			<groupId>org.jeecgframework.boot</groupId>-->

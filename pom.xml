@@ -57,7 +57,6 @@
         <module>jeecg-boot-module-demo</module>
         <module>jeecg-boot-module-system</module>
         <module>smart-system-core</module>
-        <!--<module>system-flowable</module>-->
         <!--需要微服务，请打开
         <module>jeecg-boot-starter</module>
         <module>jeecg-cloud-module</module>-->
@@ -104,6 +103,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<!-- json -->
 		<dependency>
@@ -116,21 +116,21 @@
 	<dependencyManagement>
 		<dependencies>
 			<!-- spring-cloud-->
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<!-- spring-cloud-alibaba -->
-			<dependency>
-				<groupId>com.alibaba.cloud</groupId>
-				<artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>${spring-cloud-alibaba.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
+<!--			<dependency>-->
+<!--				<groupId>org.springframework.cloud</groupId>-->
+<!--				<artifactId>spring-cloud-dependencies</artifactId>-->
+<!--                <version>${spring-cloud.version}</version>-->
+<!--				<type>pom</type>-->
+<!--				<scope>import</scope>-->
+<!--			</dependency>-->
+<!--			&lt;!&ndash; spring-cloud-alibaba &ndash;&gt;-->
+<!--			<dependency>-->
+<!--				<groupId>com.alibaba.cloud</groupId>-->
+<!--				<artifactId>spring-cloud-alibaba-dependencies</artifactId>-->
+<!--                <version>${spring-cloud-alibaba.version}</version>-->
+<!--				<type>pom</type>-->
+<!--				<scope>import</scope>-->
+<!--			</dependency>-->
 
 			<!-- system 模块-->
 			<dependency>
@@ -158,11 +158,11 @@
 				<version>${jeecgboot.version}</version>
 			</dependency>
 			<!-- system 微服务 api -->
-			<dependency>
-				<groupId>org.jeecgframework.boot</groupId>
-				<artifactId>jeecg-system-cloud-api</artifactId>
-				<version>${jeecgboot.version}</version>
-			</dependency>
+<!--			<dependency>-->
+<!--				<groupId>org.jeecgframework.boot</groupId>-->
+<!--				<artifactId>jeecg-system-cloud-api</artifactId>-->
+<!--				<version>${jeecgboot.version}</version>-->
+<!--			</dependency>-->
 
             <!--微服务模块-->
 <!--            <dependency>-->
@@ -194,17 +194,17 @@
 
 
 			<!-- 七牛云SDK -->
-			<dependency>
-				<groupId>com.qiniu</groupId>
-				<artifactId>qiniu-java-sdk</artifactId>
-				<version>${qiniu-java-sdk.version}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>okhttp</artifactId>
-						<groupId>com.squareup.okhttp3</groupId>
-					</exclusion>
-				</exclusions>
-			</dependency>
+<!--			<dependency>-->
+<!--				<groupId>com.qiniu</groupId>-->
+<!--				<artifactId>qiniu-java-sdk</artifactId>-->
+<!--				<version>${qiniu-java-sdk.version}</version>-->
+<!--				<exclusions>-->
+<!--					<exclusion>-->
+<!--						<artifactId>okhttp</artifactId>-->
+<!--						<groupId>com.squareup.okhttp3</groupId>-->
+<!--					</exclusion>-->
+<!--				</exclusions>-->
+<!--			</dependency>-->
 			<!-- dom4j -->
 			<dependency>
 				<groupId>dom4j</groupId>
@@ -228,12 +228,7 @@
 			<!-- hutool工具类-->
 			<dependency>
 				<groupId>cn.hutool</groupId>
-				<artifactId>hutool-core</artifactId>
-				<version>${hutool.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>cn.hutool</groupId>
-				<artifactId>hutool-crypto</artifactId>
+				<artifactId>hutool-all</artifactId>
 				<version>${hutool.version}</version>
 			</dependency>
 			<dependency>

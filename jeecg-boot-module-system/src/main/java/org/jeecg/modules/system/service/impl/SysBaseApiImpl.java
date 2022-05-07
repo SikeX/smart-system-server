@@ -1321,4 +1321,32 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 		return JSON.parseArray(JSON.toJSONString(userMapper.selectList(queryWrapper))).toJavaList(JSONObject.class);
 
 	}
+
+	@Override
+	public VillageInfo getVillageInfoByDepartId(String locationId) {
+		VillageInfo villageInfo = new VillageInfo();
+		QueryWrapper<SysDepart> departQueryWrapper = new QueryWrapper<>();
+		departQueryWrapper.eq("id",locationId);
+		villageInfo.setLocationName(sysDepartService.getOne(departQueryWrapper).getDepartName());
+
+		QueryWrapper<SysUser> userQueryWrapper1 = new QueryWrapper<>();
+
+		userQueryWrapper1
+				.eq("depart_id",locationId)
+				.eq("home_role", 1)
+				.eq("del_flag",0);
+		villageInfo.setHomeNumber(userMapper.selectCount(userQueryWrapper1));
+
+		QueryWrapper<SysUser> userQueryWrapper2 = new QueryWrapper<>();
+
+		userQueryWrapper2
+				.eq("depart_id",locationId)
+				.eq("del_flag",0)
+				.and(wrapper -> wrapper.eq("home_role", 1).or().eq("home_role", 2));
+
+
+		villageInfo.setPopulation(userMapper.selectCount(userQueryWrapper2));
+
+		return villageInfo;
+	}
 }

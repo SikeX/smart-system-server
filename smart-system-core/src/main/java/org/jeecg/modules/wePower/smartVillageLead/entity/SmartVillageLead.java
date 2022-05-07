@@ -91,4 +91,9 @@ public class SmartVillageLead implements Serializable {
 
     private java.lang.String faceToken;
 
+    @Dict(dicCode = "lead_job")
+    @Excel(name = "人员类型", width = 15)
+    @ApiModelProperty(value = "人员类型")
+    private java.lang.String peopleType;
+
 }
