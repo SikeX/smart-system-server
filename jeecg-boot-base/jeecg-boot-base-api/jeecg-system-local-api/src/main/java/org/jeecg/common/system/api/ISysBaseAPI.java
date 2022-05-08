@@ -89,7 +89,7 @@ public interface ISysBaseAPI extends CommonAPI {
      * 12查询所有分类字典
      * @return
      */
-    public List<SysCategoryModel> queryAllDSysCategory();
+    public List<SysCategoryModel> queryAllSysCategory();
 
 
     /**

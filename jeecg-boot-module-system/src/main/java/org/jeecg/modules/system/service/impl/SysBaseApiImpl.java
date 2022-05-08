@@ -53,7 +53,7 @@ import java.util.*;
 /**
  * @Description: 底层共通业务API，提供其他独立模块调用
  * @Author: scott
- * @Date:2019-4-20 
+ * @Date:2019-4-20
  * @Version:V1.0
  */
 @Slf4j
@@ -78,7 +78,7 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 	@Resource
 	private SysAnnouncementSendMapper sysAnnouncementSendMapper;
 	@Resource
-    private WebSocket webSocket;
+	private WebSocket webSocket;
 	@Resource
 	private SysRoleMapper roleMapper;
 	@Resource
@@ -156,7 +156,9 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 				//通过自定义URL匹配规则 获取菜单（实现通过菜单配置数据权限规则，实际上针对获取数据接口进行数据规则控制）
 				String userMatchUrl = UrlMatchEnum.getMatchResultByUrl(requestPath);
 				LambdaQueryWrapper<SysPermission> queryQserMatch = new LambdaQueryWrapper<SysPermission>();
-				queryQserMatch.eq(SysPermission::getMenuType, 1);
+				// update-begin-author:taoyan date:20211027 for: online菜单如果配置成一级菜单 权限查询不到 取消menuType = 1
+				//queryQserMatch.eq(SysPermission::getMenuType, 1);
+				// update-end-author:taoyan date:20211027 for: online菜单如果配置成一级菜单 权限查询不到 取消menuType = 1
 				queryQserMatch.eq(SysPermission::getDelFlag, 0);
 				queryQserMatch.eq(SysPermission::getUrl, userMatchUrl);
 				if(oConvertUtils.isNotEmpty(userMatchUrl)){
@@ -592,7 +594,7 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 	}
 
 	@Override
-	public List<SysCategoryModel> queryAllDSysCategory() {
+	public List<SysCategoryModel> queryAllSysCategory() {
 		List<SysCategory> ls = categoryMapper.selectList(null);
 		List<SysCategoryModel> res = oConvertUtils.entityListToModelList(ls,SysCategoryModel.class);
 		return res;
@@ -663,26 +665,26 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 		return list;
 	}
 
-    @Override
-    public List<ComboModel> queryAllRole(String[] roleIds) {
-        List<ComboModel> list = new ArrayList<ComboModel>();
-        List<SysRole> roleList = roleMapper.selectList(new QueryWrapper<SysRole>());
-        for(SysRole role : roleList){
-            ComboModel model = new ComboModel();
-            model.setTitle(role.getRoleName());
-            model.setId(role.getId());
-            model.setRoleCode(role.getRoleCode());
-            if(oConvertUtils.isNotEmpty(roleIds)) {
-                for (int i = 0; i < roleIds.length; i++) {
-                    if (roleIds[i].equals(role.getId())) {
-                        model.setChecked(true);
-                    }
-                }
-            }
-            list.add(model);
-        }
-        return list;
-    }
+	@Override
+	public List<ComboModel> queryAllRole(String[] roleIds) {
+		List<ComboModel> list = new ArrayList<ComboModel>();
+		List<SysRole> roleList = roleMapper.selectList(new QueryWrapper<SysRole>());
+		for(SysRole role : roleList){
+			ComboModel model = new ComboModel();
+			model.setTitle(role.getRoleName());
+			model.setId(role.getId());
+			model.setRoleCode(role.getRoleCode());
+			if(oConvertUtils.isNotEmpty(roleIds)) {
+				for (int i = 0; i < roleIds.length; i++) {
+					if (roleIds[i].equals(role.getId())) {
+						model.setChecked(true);
+					}
+				}
+			}
+			list.add(model);
+		}
+		return list;
+	}
 
 	@Override
 	public List<String> getRoleIdsByUsername(String username) {
@@ -1138,8 +1140,8 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 	 */
 	@Override
 	public void sendEmailMsg(String email, String title, String content) {
-			EmailSendMsgHandle emailHandle=new EmailSendMsgHandle();
-			emailHandle.SendMsg(email, title, content);
+		EmailSendMsgHandle emailHandle=new EmailSendMsgHandle();
+		emailHandle.SendMsg(email, title, content);
 	}
 
 	/**
@@ -1155,10 +1157,10 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 			//2.获取公司下级部门
 			List<SysDepart> departs=sysDepartService.queryDeptByPid(comp.getId());
 			//3.获取部门下的人员信息
-			 List<Map> list=new ArrayList();
-			 //4.处理部门和下级用户数据
+			List<Map> list=new ArrayList();
+			//4.处理部门和下级用户数据
 			for (SysDepart dept:departs) {
-				Map map=new HashMap();
+				Map map=new HashMap(5);
 				//部门名称
 				String departName = dept.getDepartName();
 				//根据部门编码获取下级部门id
@@ -1335,7 +1337,7 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 				.eq("depart_id",locationId)
 				.eq("home_role", 1)
 				.eq("del_flag",0);
-		villageInfo.setHomeNumber(userMapper.selectCount(userQueryWrapper1));
+		villageInfo.setHomeNumber(Math.toIntExact(userMapper.selectCount(userQueryWrapper1)));
 
 		QueryWrapper<SysUser> userQueryWrapper2 = new QueryWrapper<>();
 
@@ -1345,7 +1347,7 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 				.and(wrapper -> wrapper.eq("home_role", 1).or().eq("home_role", 2));
 
 
-		villageInfo.setPopulation(userMapper.selectCount(userQueryWrapper2));
+		villageInfo.setPopulation(Math.toIntExact(userMapper.selectCount(userQueryWrapper2)));
 
 		return villageInfo;
 	}

@@ -125,7 +125,7 @@ public class SmartAssessmentContentServiceImpl extends ServiceImpl<SmartAssessme
 	 */
 	private void updateOldParentNode(String pid) {
 		if(!ISmartAssessmentContentService.ROOT_PID_VALUE.equals(pid)) {
-			Integer count = baseMapper.selectCount(new QueryWrapper<SmartAssessmentContent>().eq("pid", pid));
+			Long count = baseMapper.selectCount(new QueryWrapper<SmartAssessmentContent>().eq("pid", pid));
 			if(count==null || count<=1) {
 				baseMapper.updateTreeNodeStatus(pid, ISmartAssessmentContentService.NOCHILD);
 			}

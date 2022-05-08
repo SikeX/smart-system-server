@@ -51,8 +51,6 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 	private SysDepartRoleUserMapper departRoleUserMapper;
 	@Autowired
 	private SysUserMapper sysUserMapper;
-	@Autowired
-	private SysUserServiceImpl sysUserServiceImpl;
 
 	@Override
 	public List<SysDepartTreeModel> queryMyDeptTreeList(String departIds) {
@@ -384,11 +382,11 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 				//修改相关人员的orgCode
 				LambdaQueryWrapper<SysUser> queryPeople = new LambdaQueryWrapper<SysUser>();
 				queryPeople.eq(SysUser::getDepartId,sysDepart.getId());
-				List<SysUser> userList = sysUserServiceImpl.list(queryPeople);
+				List<SysUser> userList = sysUserMapper.selectList(queryPeople);
 				for(SysUser user : userList)
 				{
 					user.setOrgCode(sysDepart.getOrgCode());
-					sysUserServiceImpl.updateById(user);
+					sysUserMapper.updateById(user);
 				}
 				List<SysDepart> parentList = new ArrayList<>();
 				parentList.add(sysDepart);
@@ -449,11 +447,11 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 					//修改相关人员的orgCode
 					LambdaQueryWrapper<SysUser> queryPeople = new LambdaQueryWrapper<SysUser>();
 					queryPeople.eq(SysUser::getDepartId,nextParentDept.getId());
-					List<SysUser> userList = sysUserServiceImpl.list(queryPeople);
+					List<SysUser> userList = sysUserMapper.selectList(queryPeople);
 					for(SysUser user : userList)
 					{
 						user.setOrgCode(newOrgCode);
-						sysUserServiceImpl.updateById(user);
+						sysUserMapper.updateById(user);
 					}
 					lastDepart = nextParentDept;
 					i = 1;
@@ -467,11 +465,11 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 					//修改相关人员的orgCode
 					LambdaQueryWrapper<SysUser> queryPeople = new LambdaQueryWrapper<SysUser>();
 					queryPeople.eq(SysUser::getDepartId,nextParentDept.getId());
-					List<SysUser> userList = sysUserServiceImpl.list(queryPeople);
+					List<SysUser> userList = sysUserMapper.selectList(queryPeople);
 					for(SysUser user : userList)
 					{
 						user.setOrgCode(newOrgCode);
-						sysUserServiceImpl.updateById(user);
+						sysUserMapper.updateById(user);
 					}
 					lastDepart = nextParentDept;
 				}
