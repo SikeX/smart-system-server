@@ -545,14 +545,14 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 					List<Integer> tUse = listForUser.stream().map(e -> e.getHomeRole()).collect(Collectors.toList());
 					List<Integer> thUse = listForUser.stream().map(e -> e.getHomeRole()).collect(Collectors.toList());
 					List<Integer> fUse = listForUser.stream().map(e -> e.getHomeRole()).collect(Collectors.toList());
-					//检查户籍是否存在，如果存在就打印出来，检查人员是否存在，如果存在就打印出来
-					for(int i=0;i<list.size();i++)
+					for(int i=0,len=list.size();i<len;i++)
 					{
 						if(oUse.get(i) == 2)
 						{
 							list.remove(i);
 							oUse.remove(i);
 							i--;
+							len--;
 						}
 					}
 					for(int i=0;i<list.size();i++)
@@ -599,13 +599,14 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 						listForUser.set(i,user);
 					}
 					List<SysUser> listForHost = new ArrayList<>(listForUser);
-					for(int i=0;i<listForHost.size();i++)
+					for(int i=0,len=listForHost.size();i<len;i++)
 					{
 						if(tUse.get(i) == 2)
 						{
 							listForHost.remove(i);
 							tUse.remove(i);
 							i--;
+							len--;
 						}
 					}
 					for(int i=0;i<listForHost.size();i++)
@@ -638,13 +639,14 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 						sysUserService.saveUser(host, host.getRole(), host.getDepartId());
 					}
 					List<SysUser> listForMember = new ArrayList<>(listForUser);
-					for(int i=0;i<listForMember.size();i++)
+					for(int i=0,len=listForMember.size();i<len;i++)
 					{
 						if(thUse.get(i) == 1)
 						{
 							listForMember.remove(i);
 							thUse.remove(i);
 							i--;
+							len--;
 						}
 					}
 					for(int i=0;i<listForMember.size();i++)
@@ -686,13 +688,14 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 						sysUserService.saveUser(member, member.getRole(), member.getDepartId());}
 					}
 
-					for(int i=0;i<listForRelation.size();i++)
+					for(int i=0,len=listForRelation.size();i<len;i++)
 					{
 						if(fUse.get(i) == 1)
 						{
 							listForRelation.remove(i);
 							fUse.remove(i);
 							i--;
+							len--;
 						}
 					}
 					for(int i=0;i<listForRelation.size();i++)
@@ -706,6 +709,7 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 					log.info("消耗时间" + (System.currentTimeMillis() - start) + "毫秒");
 					//update-end-author:taoyan date:20190528 for:批量插入数据
 				} catch (Exception e) {
+					errorLines++;
 					errorMessage.add("发生异常,可能是表格中数据重复或者存在空数据：" + e.getMessage());
 					log.error(e.getMessage(), e);
 				} finally {
