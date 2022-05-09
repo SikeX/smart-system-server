@@ -21,5 +21,15 @@
         select count(*)  from smart_punish_people s
         where  substr(s.remove_time,1,7) = #{currentMonth}
     </select>
+    <select id="countMainPeopleByDepart" resultType="java.lang.Integer">
+        select count(*)
+        from smart_punish_people
+        where punish_id in (
+            select id
+            from sys_user
+            where depart_ids = #{departId}
+              and user_identity = '2'
+        )
+    </select>
 
 </mapper>
