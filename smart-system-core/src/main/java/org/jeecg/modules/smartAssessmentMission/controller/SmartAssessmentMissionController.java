@@ -113,6 +113,31 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     }
 
     /**
+     * 首页考核任务列表
+     *
+     * @param smartAssessmentMission
+     * @param pageNo
+     * @param pageSize
+     * @param req
+     * @return
+     */
+    @AutoLog(value = "考核任务表-分页列表查询")
+    @ApiOperation(value = "考核任务表-分页列表查询", notes = "考核任务表-分页列表查询")
+    @GetMapping(value = "/indexList")
+    public Result<?> queryIndexPageList(SmartAssessmentMission smartAssessmentMission,
+                                   @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
+                                   @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
+                                   HttpServletRequest req) {
+        QueryWrapper<SmartAssessmentMission> queryWrapper = QueryGenerator.initQueryWrapper(smartAssessmentMission, req.getParameterMap());
+        // TODO： 权限控制
+        // 只查看正在考核的任务
+        queryWrapper.eq("mission_status", "已发布");
+        Page<SmartAssessmentMission> page = new Page<SmartAssessmentMission>(pageNo, pageSize);
+        IPage<SmartAssessmentMission> pageList = smartAssessmentMissionService.page(page, queryWrapper);
+        return Result.OK(pageList);
+    }
+
+    /**
      * 分页列表查询用户考核组参与评分的考核任务
      *
      * @param smartAssessmentMission
@@ -373,6 +398,20 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
         Page<SmartAssessmentDepart> page = new Page<SmartAssessmentDepart>(pageNo, pageSize);
         IPage<SmartAssessmentDepart> pageList = smartAssessmentDepartService.page(page, queryWrapper);
         return Result.OK(pageList);
+    }
+
+    /**
+     * 通过id查询
+     *
+     * @param id
+     * @return
+     */
+    @AutoLog(value = "考核任务被考核单位通过主表ID查询")
+    @ApiOperation(value="考核任务被考核单位主表ID查询", notes="考核任务被考核单位-通主表ID查询")
+    @GetMapping(value = "/querySmartAssessmentDepartByMainId")
+    public Result<?> querySmartAssessmentDepartListByMainId(@RequestParam(name="id",required=true) String id) {
+        List<SmartAssessmentDepart> smartAssessmentDepartList = smartAssessmentDepartService.selectByMainId(id);
+        return Result.OK(smartAssessmentDepartList);
     }
 
     /**
