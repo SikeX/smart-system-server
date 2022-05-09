@@ -113,6 +113,29 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     }
 
     /**
+     * 最终评分页面分页列表查询
+     *
+     * @param smartAssessmentMission
+     * @param pageNo
+     * @param pageSize
+     * @param req
+     * @return
+     */
+    @AutoLog(value = "考核任务表-分页列表查询")
+    @ApiOperation(value = "考核任务表-分页列表查询", notes = "考核任务表-分页列表查询")
+    @GetMapping(value = "/finalScoreList")
+    public Result<?> queryFinalScorePageList(SmartAssessmentMission smartAssessmentMission,
+                                   @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
+                                   @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
+                                   HttpServletRequest req) {
+        QueryWrapper<SmartAssessmentMission> queryWrapper = QueryGenerator.initQueryWrapper(smartAssessmentMission, req.getParameterMap());
+        queryWrapper.eq("mission_status", "已发布");
+        Page<SmartAssessmentMission> page = new Page<SmartAssessmentMission>(pageNo, pageSize);
+        IPage<SmartAssessmentMission> pageList = smartAssessmentMissionService.page(page, queryWrapper);
+        return Result.OK(pageList);
+    }
+
+    /**
      * 首页考核任务列表
      *
      * @param smartAssessmentMission
@@ -339,6 +362,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
             smartAnswerInfo.setMissionStatus("未签收");
             smartAnswerInfo.setEndTime(smartAssessmentDepart.getDeadline());
             smartAnswerInfo.setDepart(smartAssessmentDepart.getAssessmentDepart());
+            smartAnswerInfo.setMarkedContent("");
             smartAnswerInfoService.save(smartAnswerInfo);
         });
         return Result.OK("发布成功");
