@@ -7,6 +7,7 @@ import com.google.common.base.Joiner;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
@@ -23,8 +24,11 @@ import org.jeecg.modules.smartAnswerInfo.entity.SmartDepartContentScore;
 import org.jeecg.modules.smartAnswerInfo.service.ISmartAnswerInfoService;
 import org.jeecg.modules.smartAssessmentContent.entity.SmartAssessmentContent;
 import org.jeecg.modules.smartAssessmentContent.service.ISmartAssessmentContentService;
+import org.jeecg.modules.smartAssessmentDepartment.entity.SmartAssessmentDepartment;
+import org.jeecg.modules.smartAssessmentDepartment.service.ISmartAssessmentDepartmentService;
 import org.jeecg.modules.smartAssessmentMission.entity.SmartAssessmentDepart;
 import org.jeecg.modules.smartAssessmentMission.service.ISmartAssessmentDepartService;
+import org.jeecg.modules.smartAssessmentTeam.entity.SmartAssessmentTeam;
 import org.jeecg.modules.smartAssessmentTeam.service.ISmartAssessmentTeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -58,6 +62,9 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
 
     @Autowired
     private ISmartAssessmentTeamService smartAssessmentTeamService;
+
+    @Autowired
+    private ISmartAssessmentDepartmentService smartAssessmentDepartmentService;
 
     @Autowired
     private ISmartAssessmentDepartService smartAssessmentDepartService;
@@ -102,9 +109,10 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
     }
 
     /**
-     * 考核组查看
+     * 评分时查看被考核单位
      *
      * @param smartAnswerInfo
+     * @param type
      * @param pageNo
      * @param pageSize
      * @param req
@@ -114,21 +122,64 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
     @ApiOperation(value = "答题信息表-分页列表查询", notes = "答题信息表-分页列表查询")
     @GetMapping(value = "/listInCharge")
     public Result<?> queryChargePageList(SmartAnswerInfo smartAnswerInfo,
+                                         @RequestParam(name = "type", defaultValue = "depart") String type,
+                                         @RequestParam(name = "contentId", defaultValue = "depart") String contentId,
                                          @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                                          @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                          HttpServletRequest req) {
-        if (oConvertUtils.isEmpty(smartAnswerInfo.getDepart())) {
-            return Result.error("请联系管理员！");
-        }
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+        if (oConvertUtils.isEmpty(smartAnswerInfo.getDepart())) {
+            return Result.error("没有权限！");
+        }
+        if ("depart".equals(type)) {
+            QueryWrapper<SmartAssessmentDepartment> departmentQueryWrapper = new QueryWrapper<>();
+            departmentQueryWrapper.eq("depart_user", sysUser.getId()).eq("responsible_depart", smartAnswerInfo.getDepart());
+            SmartAssessmentDepartment one = smartAssessmentDepartmentService.getOne(departmentQueryWrapper);
+            if (oConvertUtils.isEmpty(one)) {
+                return Result.error("权限不正确！");
+            }
+        } else {
+            QueryWrapper<SmartAssessmentTeam> teamQueryWrapper = new QueryWrapper<>();
+            teamQueryWrapper.and(QueryWrapper -> QueryWrapper.eq("team_leader", sysUser.getId())
+                    .or().like("deputy_team_Leader", sysUser.getId())
+                    .or().like("members", sysUser.getId()));
+            teamQueryWrapper.eq("departs", smartAnswerInfo.getDepart());
+            SmartAssessmentTeam one = smartAssessmentTeamService.getOne(teamQueryWrapper);
+            if (oConvertUtils.isEmpty(one)) {
+                return Result.error("权限不正确！");
+            }
+        }
+
+        String content = smartAnswerInfo.getMarkedContent();
+        smartAnswerInfo.setMarkedContent(null);
+
+
         QueryWrapper<SmartAnswerInfo> queryWrapper = QueryGenerator.initQueryWrapper(smartAnswerInfo, req.getParameterMap());
+        if (oConvertUtils.isNotEmpty(content)) {
+            if (StringUtils.startsWith(content, "!")) {
+                queryWrapper.notLike("marked_content", content.replace("!", ""));
+            } else {
+                queryWrapper.like("marked_content", content);
+            }
+        }
+
         Page<SmartAnswerInfo> page = new Page<SmartAnswerInfo>(pageNo, pageSize);
         IPage<SmartAnswerInfo> pageList = smartAnswerInfoService.page(page, queryWrapper);
+        pageList.getRecords().forEach(item -> {
+            String markedContent = item.getMarkedContent();
+            int index = StringUtils.indexOf(markedContent, contentId);
+            if (index == -1) {
+                item.setMarkedContent("未评分");
+            } else {
+                item.setMarkedContent("已评分");
+            }
+        });
         return Result.OK(pageList);
     }
 
     /**
-     * 考核组查看
+     * 最终评分列表成绩
      *
      * @param pageNo
      * @param pageSize

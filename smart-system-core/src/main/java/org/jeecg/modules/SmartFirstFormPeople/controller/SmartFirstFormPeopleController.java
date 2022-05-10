@@ -9,11 +9,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.system.vo.SysDepartModel;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.SmartFirstFormPeople.entity.SmartFirstFormPeople;
 import org.jeecg.modules.SmartFirstFormPeople.service.ISmartFirstFormPeopleService;
@@ -122,6 +124,30 @@ public class SmartFirstFormPeopleController extends JeecgController<SmartFirstFo
 		}
 		return Result.OK(pageList);
 	}
+
+	 /**
+	  * 获取单位执行第一形态人员数目
+	  * @param departId 单位ID
+	  *
+	  * @return
+	  */
+	 @GetMapping(value = "/countByDepartId")
+	 public Result<JSONObject> countByDepartId(@RequestParam(name = "departId", required = true) String departId) {
+		 Result<JSONObject> result = new Result<JSONObject>();
+		 JSONObject obj = new JSONObject();
+
+		 // 先根据单位ID查询单位
+		 SysDepartModel sysDepartModel = sysBaseAPI.selectAllById(departId);
+
+		 QueryWrapper<SmartFirstFormPeople> queryWrapper = new QueryWrapper<>();
+		 queryWrapper.eq("interviewee_dept", sysDepartModel.getOrgCode()).eq("del_flag", 0);
+		 long count = smartFirstFormPeopleService.count(queryWrapper);
+
+		 obj.put("count", count);
+		 result.setResult(obj);
+
+		 return result;
+	 }
 	
 	/**
 	 *   添加

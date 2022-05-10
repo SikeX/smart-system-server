@@ -22,7 +22,10 @@ import org.jeecg.modules.smartAnswerAssContent.service.ISmartAnswerFileService;
 import org.jeecg.modules.smartAnswerInfo.entity.SmartAnswerInfo;
 import org.jeecg.modules.smartAnswerInfo.service.ISmartAnswerInfoService;
 import org.jeecg.modules.smartAssessmentContent.entity.SmartAssessmentContent;
+import org.jeecg.modules.smartAssessmentDepartment.service.ISmartAssessmentDepartmentService;
+import org.jeecg.modules.smartAssessmentMission.entity.SmartAssessmentDepart;
 import org.jeecg.modules.smartAssessmentMission.entity.SmartAssessmentMission;
+import org.jeecg.modules.smartAssessmentMission.service.ISmartAssessmentDepartService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -584,6 +587,12 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 			updateSuperiorScore(answerAssContent, increment);
 			SmartAnswerInfo smartAnswerInfo = smartAnswerInfoService.getById(answerAssContent.getMainId());
 			smartAnswerInfo.setTotalPoints(smartAnswerInfo.getTotalPoints() + increment);
+			String markedContent = smartAnswerInfo.getMarkedContent();
+			if (oConvertUtils.isEmpty(markedContent)) {
+				smartAnswerInfo.setMarkedContent(answerAssContent.getAssContentId());
+			} else {
+				smartAnswerInfo.setMarkedContent(markedContent + "," + answerAssContent.getAssContentId());
+			}
 			smartAnswerInfoService.updateById(smartAnswerInfo);
 		}
 		return Result.OK("添加成功！");

@@ -4,9 +4,8 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.math.BigDecimal;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -73,6 +72,10 @@ public class SmartAnswerInfo implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "截止时间")
     private java.util.Date endTime;
+    /**已评分内容ID*/
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
+    @ApiModelProperty(value = "已评分内容ID")
+    private java.lang.String markedContent;
 	/**完成要点个数*/
 	@Excel(name = "完成要点个数", width = 15)
     @ApiModelProperty(value = "完成要点个数")
