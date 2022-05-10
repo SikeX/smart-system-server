@@ -59,6 +59,9 @@ public interface ISysBaseAPI extends CommonAPI {
      */
     LoginUser getUserById(String id);
 
+    LoginUser getUserByIdNumber(String idNumber);
+
+
     /**
      * 7通过用户账号查询角色集合
      * @param username
@@ -403,5 +406,7 @@ public interface ISysBaseAPI extends CommonAPI {
      * @return
      */
     public VillageInfo getVillageInfoByDepartId(String locationId);
+
+    public List<VillageRelationModel> getVillageRelation(String idnumber, String label);
 
 }
