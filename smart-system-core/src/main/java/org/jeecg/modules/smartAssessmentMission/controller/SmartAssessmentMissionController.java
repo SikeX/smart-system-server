@@ -382,6 +382,38 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     }
 
     /**
+     * 发布评分结果
+     *
+     * @param smartAssessmentMission
+     * @return
+     */
+    @AutoLog(value = "考核任务表-发布评分结果")
+    @ApiOperation(value = "考核任务表-发布评分结果", notes = "考核任务表-发布评分结果")
+    @PutMapping(value = "/publishScore")
+    public Result<?> publishScore(@RequestBody SmartAssessmentMission smartAssessmentMission) {
+        smartAssessmentMission.setMissionStatus("发布评分结果");
+        smartAssessmentMissionService.updateById(smartAssessmentMission);
+
+        return Result.OK("发布成功");
+    }
+
+    /**
+     * 取消发布评分结果
+     *
+     * @param smartAssessmentMission
+     * @return
+     */
+    @AutoLog(value = "考核任务表-取消发布评分结果")
+    @ApiOperation(value = "考核任务表-取消发布评分结果", notes = "考核任务表-取消发布评分结果")
+    @PutMapping(value = "/recallScoreResult")
+    public Result<?> recallScoreResult(@RequestBody SmartAssessmentMission smartAssessmentMission) {
+        // 更新任务状态
+        smartAssessmentMission.setMissionStatus("已发布");
+        smartAssessmentMissionService.updateById(smartAssessmentMission);
+        return Result.OK("取消发布评分结果成功!");
+    }
+
+    /**
      * 批量删除
      *
      * @param ids
