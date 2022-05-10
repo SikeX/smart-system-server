@@ -353,18 +353,31 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @ApiOperation(value = "考核任务表-发布", notes = "考核任务表-发布")
     @PutMapping(value = "/publish")
     public Result<?> publish(@RequestBody SmartAssessmentMission smartAssessmentMission) {
-        smartAssessmentMission.setMissionStatus("已发布");
-        smartAssessmentMissionService.updateById(smartAssessmentMission);
         List<SmartAssessmentDepart> smartAssessmentDeparts = smartAssessmentDepartService.selectByMainId(smartAssessmentMission.getId());
-        smartAssessmentDeparts.forEach(smartAssessmentDepart -> {
+        // 答题信息表生成记录
+        List<SmartAnswerInfo> list = new ArrayList<>();
+        for (SmartAssessmentDepart smartAssessmentDepart:smartAssessmentDeparts) {
             SmartAnswerInfo smartAnswerInfo = new SmartAnswerInfo();
             smartAnswerInfo.setMissionId(smartAssessmentMission.getId());
             smartAnswerInfo.setMissionStatus("未签收");
             smartAnswerInfo.setEndTime(smartAssessmentDepart.getDeadline());
             smartAnswerInfo.setDepart(smartAssessmentDepart.getAssessmentDepart());
             smartAnswerInfo.setMarkedContent("");
-            smartAnswerInfoService.save(smartAnswerInfo);
-        });
+            list.add(smartAnswerInfo);
+        }
+        if (list.size() > 0) {
+            smartAnswerInfoService.saveBatch(list);
+        }
+
+        // 统计考核要点数目
+        QueryWrapper<SmartAssessmentContent> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("mission_id", smartAssessmentMission.getId()).eq("is_key", 1).eq("has_child", "0");
+        Integer count = Math.toIntExact(smartAssessmentContentService.count(queryWrapper));
+        smartAssessmentMission.setKeyPointsAmount(count);
+
+        smartAssessmentMission.setMissionStatus("已发布");
+        smartAssessmentMissionService.updateById(smartAssessmentMission);
+
         return Result.OK("发布成功");
     }
 
