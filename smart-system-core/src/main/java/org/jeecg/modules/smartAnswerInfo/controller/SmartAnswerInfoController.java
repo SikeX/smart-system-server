@@ -146,7 +146,7 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
             }
             // 对考核要点进行权限控制，检查是否在负责范围内
             QueryWrapper<SmartAssessmentContent> contentQueryWrapper = new QueryWrapper<>();
-            contentQueryWrapper.eq("mission_id", smartAnswerInfo.getMissionId()).eq("content_id", contentId).eq("ass_depart", one.getId());
+            contentQueryWrapper.eq("mission_id", smartAnswerInfo.getMissionId()).eq("id", contentId).eq("ass_depart", one.getId());
             SmartAssessmentContent content = smartAssessmentContentService.getOne(contentQueryWrapper);
             if (oConvertUtils.isEmpty(content)) {
                 return Result.error("不负责该考核要点评分！");
