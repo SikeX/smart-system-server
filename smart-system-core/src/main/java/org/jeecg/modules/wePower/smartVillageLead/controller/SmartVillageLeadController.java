@@ -1,7 +1,9 @@
 package org.jeecg.modules.wePower.smartVillageLead.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -9,9 +11,13 @@ import com.alibaba.fastjson.JSONObject;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.system.vo.VillageRelationModel;
 import org.jeecg.modules.utils.FaceRecognitionUtil;
 import org.jeecg.modules.utils.ImageUtils;
 import org.jeecg.modules.utils.UrlUtil;
+import org.jeecg.modules.wePower.smartEvadeRelation.entity.SmartEvadeRelation;
+import org.jeecg.modules.wePower.smartEvadeRelation.service.ISmartEvadeRelationService;
 import org.jeecg.modules.wePower.smartVillageLead.entity.SmartVillageLead;
 import org.jeecg.modules.wePower.smartVillageLead.service.ISmartVillageLeadService;
 
@@ -44,6 +50,8 @@ public class SmartVillageLeadController extends JeecgController<SmartVillageLead
 	private ISmartVillageLeadService smartVillageLeadService;
 	@Autowired
 	private ISysBaseAPI sysBaseAPI;
+	@Autowired
+	private ISmartEvadeRelationService smartEvadeRelationService;
 
 	@Value("${jeecg.fileBaseUrl}")
 	private String fileBaseUrl;
@@ -83,12 +91,29 @@ public class SmartVillageLeadController extends JeecgController<SmartVillageLead
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody SmartVillageLead smartVillageLead) throws UnsupportedEncodingException {
 
-		String name = sysBaseAPI.translateDictFromTable("smart_village_home","home_surname", "idnumber",
-				 smartVillageLead.getPeople());
-
-		smartVillageLead.setName(name);
 
 		smartVillageLeadService.save(smartVillageLead);
+
+		LoginUser user = sysBaseAPI.getUserByIdNumber(smartVillageLead.getPeople());
+
+		if(user.getHomeRole().equals("1")){
+			SmartEvadeRelation relation = new SmartEvadeRelation();
+			relation.setHostName(smartVillageLead.getPeople());
+		} else if (user.getHomeRole().equals("2")){
+			List<VillageRelationModel> relationList = sysBaseAPI.getVillageRelation(smartVillageLead.getPeople(), "2");
+//			List<String> hostList = new ArrayList<>();
+//			relationList.forEach(relation -> {
+//				hostList.add(relation.get);
+//			});
+			smartEvadeRelationService.list().forEach(relation -> {
+				relationList.forEach(relationModel -> {
+					if(relation.getHostName().equals(relationModel.getHostIdnumber())){
+						relation.setRelation(relationModel.getHomeRelation().toString());
+						smartEvadeRelationService.updateById(relation);
+					}
+				});
+			});
+		}
 
 		ImageUtils imageUtils = new ImageUtils();
 
