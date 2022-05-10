@@ -277,6 +277,9 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
     @ApiOperation(value = "答题信息表-更新完成度", notes = "答题信息表-更新完成度")
     @PutMapping(value = "/updateCompletionDegree")
     public Result<?> updateCompletionDegree(@RequestBody SmartAnswerInfo smartAnswerInfo) {
+        if (smartAnswerInfo.getTotalKeyPointAmount() == 0) {
+            return Result.error("该考核任务总要点个数为0，无法计算！");
+        }
         // 查询上传文件数目大于0的要点个数
         QueryWrapper<SmartAnswerAssContent> assContentQueryWrapper = new QueryWrapper<>();
         assContentQueryWrapper.eq("main_id", smartAnswerInfo.getId())
@@ -284,15 +287,9 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
                 .eq("has_child", "0")
                 .ne("upload_count", 0);
         double count = smartAnswerAssContentService.count(assContentQueryWrapper);
-        smartAnswerInfo.setFinishedPoint((int) count);
-        SmartAssessmentMission mission = smartAssessmentMissionService.getById(smartAnswerInfo.getMissionId());
-        if (oConvertUtils.isEmpty(mission)) {
-            return Result.error("考核任务出错了！");
-        }
+        smartAnswerInfo.setFinishedKeyPointAmount((int) count);
 
-        if (mission.getKeyPointsAmount() != 0) {
-            smartAnswerInfo.setCompletionDegree(count / mission.getKeyPointsAmount());
-        }
+        smartAnswerInfo.setCompletionDegree(count / smartAnswerInfo.getTotalKeyPointAmount());
 
 
         smartAnswerInfoService.updateById(smartAnswerInfo);

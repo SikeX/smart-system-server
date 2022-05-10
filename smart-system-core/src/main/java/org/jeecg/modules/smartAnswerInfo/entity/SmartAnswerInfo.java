@@ -79,7 +79,11 @@ public class SmartAnswerInfo implements Serializable {
 	/**完成要点个数*/
 	@Excel(name = "完成要点个数", width = 15)
     @ApiModelProperty(value = "完成要点个数")
-    private java.lang.Integer finishedPoint;
+    private java.lang.Integer finishedKeyPointAmount;
+    /**总要点个数*/
+    @Excel(name = "总要点个数", width = 15)
+    @ApiModelProperty(value = "总要点个数")
+    private java.lang.Integer totalKeyPointAmount;
 	/**完成度*/
 	@Excel(name = "完成度", width = 15)
     @ApiModelProperty(value = "完成度")
