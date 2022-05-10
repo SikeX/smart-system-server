@@ -8,4 +8,12 @@
             left outer join sys_depart sd on sad.depart_id = sd.id
         where sad.del_flag = 0
     </select>
+
+    <select id="getAssessmentDepartmentIdByDepartName" resultType="java.lang.String">
+        select sad.id
+        from smart_assessment_department sad
+                 left outer join sys_depart sd on sad.depart_id = sd.id
+        where sad.del_flag = 0 and depart_name = #{departName}
+        limit 1
+    </select>
 </mapper>

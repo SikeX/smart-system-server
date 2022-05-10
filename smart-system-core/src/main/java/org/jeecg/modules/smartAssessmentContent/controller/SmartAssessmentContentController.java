@@ -3,29 +3,51 @@ package org.jeecg.modules.smartAssessmentContent.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.common.base.Joiner;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
+import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.system.vo.SysDepartModel;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.smartAssessmentContent.entity.SmartAssessmentContent;
 import org.jeecg.modules.smartAssessmentContent.service.ISmartAssessmentContentService;
+import org.jeecg.modules.smartAssessmentDepartment.entity.SmartAssessmentDepartment;
+import org.jeecg.modules.smartAssessmentDepartment.service.ISmartAssessmentDepartmentService;
 import org.jeecg.modules.smartAssessmentMission.entity.SmartAssessmentMission;
 import org.jeecg.modules.smartAssessmentMission.service.ISmartAssessmentMissionService;
+import org.jeecg.modules.smartAssessmentTeam.service.ISmartAssessmentTeamService;
+import org.jeecg.modules.smartFinanceResult.entity.SmartFinanceResult;
 import org.jeecg.modules.smartRankVisible.entity.SmartRankVisible;
 import org.jeecg.modules.smartRankVisible.service.ISmartRankVisibleService;
+import org.jeecgframework.poi.excel.ExcelImportUtil;
+import org.jeecgframework.poi.excel.def.NormalExcelConstants;
+import org.jeecgframework.poi.excel.entity.ExportParams;
+import org.jeecgframework.poi.excel.entity.ImportParams;
+import org.jeecgframework.poi.excel.view.JeecgEntityExcelView;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 /**
  * @Description: 考核节点表
@@ -46,6 +68,18 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
 
     @Autowired
     private ISmartRankVisibleService smartRankVisibleService;
+
+    @Autowired
+    private ISmartAssessmentDepartmentService smartAssessmentDepartmentService;
+
+    @Autowired
+    private ISmartAssessmentTeamService smartAssessmentTeamService;
+
+    @Autowired
+    ISysBaseAPI iSysBaseAPI;
+
+    @Value("${jeecg.path.upload}")
+    private String upLoadPath;
 
     /**
      * 分页列表查询
@@ -344,7 +378,50 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
      */
     @RequestMapping(value = "/exportXls")
     public ModelAndView exportXls(HttpServletRequest request, SmartAssessmentContent smartAssessmentContent) {
-        return super.exportXls(request, smartAssessmentContent, SmartAssessmentContent.class, "考核节点表");
+        // Step.1 组装查询条件
+        QueryWrapper<SmartAssessmentContent> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("mission_id", smartAssessmentContent.getMissionId());
+        queryWrapper.orderByAsc("pid", "is_key");
+//        QueryWrapper<SmartAssessmentContent> queryWrapper = QueryGenerator.initQueryWrapper(smartAssessmentContent, request.getParameterMap());
+        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+//        queryWrapper.orderByAsc("pid");
+//        queryWrapper.orderByAsc("is_key");
+
+        // Step.2 获取导出数据
+        List<SmartAssessmentContent> pageList = service.list(queryWrapper);
+        List<SmartAssessmentContent> exportList = null;
+
+        // 过滤选中数据
+        String selections = request.getParameter("selections");
+        if (oConvertUtils.isNotEmpty(selections)) {
+            List<String> selectionList = Arrays.asList(selections.split(","));
+            exportList = pageList.stream().filter(item -> selectionList.contains(getId(item))).collect(Collectors.toList());
+        } else {
+            exportList = pageList;
+        }
+
+
+        for (SmartAssessmentContent item : exportList) {
+            if (oConvertUtils.isNotEmpty(item.getAssDepart())) {
+                SmartAssessmentDepartment assessmentDepartment = smartAssessmentDepartmentService.getById(item.getAssDepart());
+                SysDepartModel sysDepartModel = iSysBaseAPI.selectAllById(assessmentDepartment.getDepartId());
+                if (oConvertUtils.isNotEmpty(sysDepartModel)) {
+                    item.setAssDepart(sysDepartModel.getDepartName());
+                }
+            }
+        }
+
+        // Step.3 AutoPoi 导出Excel
+        ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
+        mv.addObject(NormalExcelConstants.FILE_NAME, "考核节点表"); //此处设置的filename无效 ,前端会重更新设置一下
+        mv.addObject(NormalExcelConstants.CLASS, SmartAssessmentContent.class);
+        //update-begin--Author:liusq  Date:20210126 for：图片导出报错，ImageBasePath未设置--------------------
+        ExportParams exportParams=new ExportParams("考核节点表" + "报表", "导出人:" + sysUser.getRealname(), "考核节点表");
+        exportParams.setImageBasePath(upLoadPath);
+        //update-end--Author:liusq  Date:20210126 for：图片导出报错，ImageBasePath未设置----------------------
+        mv.addObject(NormalExcelConstants.PARAMS,exportParams);
+        mv.addObject(NormalExcelConstants.DATA_LIST, exportList);
+        return mv;
     }
 
     /**
@@ -356,7 +433,89 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
      */
     @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
-        return super.importExcel(request, response, SmartAssessmentContent.class);
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
+        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+        for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
+            MultipartFile file = entity.getValue();// 获取上传文件对象
+            ImportParams params = new ImportParams();
+            params.setTitleRows(2);
+            params.setHeadRows(1);
+            params.setNeedSave(true);
+            try {
+                List<SmartAssessmentContent> list = ExcelImportUtil.importExcel(file.getInputStream(), SmartAssessmentContent.class, params);
+                //update-begin-author:taoyan date:20190528 for:批量插入数据
+                long start = System.currentTimeMillis();
+                List<SmartAssessmentContent> successList = new ArrayList<>();
+
+
+                for (SmartAssessmentContent item : list) {
+                    SmartAssessmentContent content = new SmartAssessmentContent();
+                    BeanUtils.copyProperties(item, content);
+
+                    // 4. 父级节点
+                    if (oConvertUtils.isNotEmpty(content.getPid()) && !"0".equals(content.getPid())) {
+                        SmartAssessmentContent temp = smartAssessmentContentService.getById(content.getPid());
+
+                        for (SmartAssessmentContent successItem: successList) {
+                            if (StringUtils.equals(successItem.getName(), temp.getName())) {
+                                content.setPid(successItem.getId());
+                                break;
+                            }
+                        }
+                    } else {
+                        content.setPid("0");
+                    }
+                    // 考核单位
+                    String assessmentDepartmentId = smartAssessmentDepartmentService.getAssessmentDepartmentIdByDepartName(content.getAssDepart());
+                    content.setAssDepart(assessmentDepartmentId);
+
+                    smartAssessmentContentService.addSmartAssessmentContent(content);
+                    successList.add(content);
+
+                }
+
+                //400条 saveBatch消耗时间1592毫秒  循环插入消耗时间1947毫秒
+                //1200条  saveBatch消耗时间3687毫秒 循环插入消耗时间5212毫秒
+                log.info("消耗时间" + (System.currentTimeMillis() - start) + "毫秒");
+
+                //update-end-author:taoyan date:20190528 for:批量插入数据
+                return Result.ok("文件导入成功！数据行数：" + list.size());
+
+            } catch (Exception e) {
+                //update-begin-author:taoyan date:20211124 for: 导入数据重复增加提示
+                String msg = e.getMessage();
+                log.error(msg, e);
+                if(msg!=null && msg.indexOf("Duplicate entry")>=0){
+                    return Result.error("文件导入失败:有重复数据！");
+                }else{
+                    return Result.error("文件导入失败:" + e.getMessage());
+                }
+                //update-end-author:taoyan date:20211124 for: 导入数据重复增加提示
+            } finally {
+                try {
+                    file.getInputStream().close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return Result.error("文件导入失败！");
+//        return super.importExcel(request, response, SmartAssessmentContent.class);
+    }
+
+    /**
+     * 获取对象ID
+     *
+     * @return
+     */
+    private String getId(SmartAssessmentContent item) {
+        try {
+            return PropertyUtils.getProperty(item, "id").toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }
