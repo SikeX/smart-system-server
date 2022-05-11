@@ -336,3 +336,12 @@ flowable:
 wechat:
   appid: "wxcd1dbe5d7680899c"
   secret: "92f896dabf08699396dd6a3e20873d12"
+
+aliyun:
+  appcode: "1b638e4b0ead44c593727fffa06a82c8"
+
+baiduyun:
+  apiKey: "tzWA3CjcTSoTSGRsFyln4ARB"
+  apiSecret: "fxCwK0FKG0QEWSp45OrDRMzxG5TgCa7z"
+
+

@@ -79,10 +79,32 @@ public class InvoiceController {
 
        String imgBase64 = ImageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese(fileBaseUrl + imgPath));
 
+       InvoiceResult invoiceResult = new InvoiceResult();
+
+       JSONObject recgnizeObject = new JSONObject();
+
        try {
            JSONObject response = InvoiceUtil.recognize(imgBase64);
-           log.info("发票识别结果：{}", response);
-           log.info("发票识别结果：{}", response.getJSONObject("data").getString("发票代码"));
+           recgnizeObject.put("success", true);
+           recgnizeObject.put("data", response);
+           invoiceResult.setInvoiceData(recgnizeObject);
+           invoiceResult = this.verify(response, invoiceResult);
+           return Result.ok(invoiceResult);
+       } catch (Exception e) {
+           String errorMessage = e.getMessage();
+           errorMessage = errorMessage.substring(errorMessage.indexOf("{"), errorMessage.lastIndexOf("}") + 1);
+           JSONObject errorJson = JSONObject.parseObject(errorMessage);
+           recgnizeObject.put("success", false);
+           recgnizeObject.put("data", errorJson.getString("error_msg"));
+           invoiceResult.setInvoiceData(recgnizeObject);
+           return Result.ok(invoiceResult);
+       }
+
+   }
+
+   public InvoiceResult verify(JSONObject response, InvoiceResult invoiceResult) {
+       JSONObject verifyObject = new JSONObject();
+       try {
            String fpdm = response.getJSONObject("data").getString("发票代码");
            String fphm = response.getJSONObject("data").getString("发票号码");
            String kprq = response.getJSONObject("data").getString("开票日期");
@@ -90,14 +112,20 @@ public class InvoiceController {
            String checkCode = response.getJSONObject("data").getString("校验码");
 
            JSONObject verificateResult = InvoiceUtil.verificate(fpdm, fphm, kprq, noTaxAmount, checkCode);
-           InvoiceResult invoiceResult = new InvoiceResult();
-           invoiceResult.setInvoiceData(response);
-           invoiceResult.setVerificationData(verificateResult);
-           return Result.OK(invoiceResult);
+           verifyObject.put("success", true);
+           verifyObject.put("data", verificateResult);
+           invoiceResult.setVerificationData(verifyObject);
+           return invoiceResult;
        } catch (Exception e) {
-           return Result.error(e.getMessage());
+           String errorMessage = e.getMessage();
+           errorMessage = errorMessage.substring(errorMessage.indexOf("{"), errorMessage.lastIndexOf("}") + 1);
+           JSONObject errorJson = JSONObject.parseObject(errorMessage);
+           verifyObject.put("success", false);
+           verifyObject.put("data", errorJson.getString("message"));
+           invoiceResult.setVerificationData(verifyObject);
+           return invoiceResult;
        }
-
    }
+
 
 }

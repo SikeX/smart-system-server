@@ -6,6 +6,7 @@ import cn.hutool.extra.pinyin.PinyinUtil;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,9 +27,11 @@ import java.util.Random;
 @Slf4j
 public class FaceRecognitionUtil {
 
-    private String apiKey = "tzWA3CjcTSoTSGRsFyln4ARB";
+    @Value("${baiduyun.apiKey}")
+    private String apiKey;
 
-    private String apiSecret = "fxCwK0FKG0QEWSp45OrDRMzxG5TgCa7z";
+    @Value("${baiduyun.apiSecret}")
+    private String apiSecret;
 
     private static RestTemplate restTemplate;
 
