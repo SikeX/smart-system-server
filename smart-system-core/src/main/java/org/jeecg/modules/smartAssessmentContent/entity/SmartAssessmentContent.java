@@ -76,7 +76,7 @@ public class SmartAssessmentContent implements Serializable {
     @ApiModelProperty(value = "填报说明")
     private java.lang.String instructions;
 	/**评分考核单位*/
-	@Excel(name = "评分考核单位", width = 15, dictTable = "smart_assessment_department", dicText = "depart_id", dicCode = "id")
+	@Excel(name = "评分考核单位")
     @ApiModelProperty(value = "评分考核单位")
     @TableField(updateStrategy = FieldStrategy.IGNORED)
     private java.lang.String assDepart;
@@ -90,7 +90,7 @@ public class SmartAssessmentContent implements Serializable {
     @ApiModelProperty(value = "排序")
     private java.lang.Double sortNo;
 	/**是否考核要点*/
-	@Excel(name = "是否考核要点", width = 15)
+	@Excel(name = "是否考核要点", width = 15, dicCode = "yn")
     @ApiModelProperty(value = "是否考核要点")
     private java.lang.Integer isKey;
 }

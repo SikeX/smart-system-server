@@ -125,9 +125,9 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @ApiOperation(value = "考核任务表-分页列表查询", notes = "考核任务表-分页列表查询")
     @GetMapping(value = "/finalScoreList")
     public Result<?> queryFinalScorePageList(SmartAssessmentMission smartAssessmentMission,
-                                   @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
-                                   @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
-                                   HttpServletRequest req) {
+                                             @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
+                                             @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
+                                             HttpServletRequest req) {
         QueryWrapper<SmartAssessmentMission> queryWrapper = QueryGenerator.initQueryWrapper(smartAssessmentMission, req.getParameterMap());
         queryWrapper.eq("mission_status", "已发布");
         Page<SmartAssessmentMission> page = new Page<SmartAssessmentMission>(pageNo, pageSize);
@@ -148,9 +148,9 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @ApiOperation(value = "考核任务表-分页列表查询", notes = "考核任务表-分页列表查询")
     @GetMapping(value = "/indexList")
     public Result<?> queryIndexPageList(SmartAssessmentMission smartAssessmentMission,
-                                   @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
-                                   @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
-                                   HttpServletRequest req) {
+                                        @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
+                                        @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
+                                        HttpServletRequest req) {
         QueryWrapper<SmartAssessmentMission> queryWrapper = QueryGenerator.initQueryWrapper(smartAssessmentMission, req.getParameterMap());
         // TODO： 权限控制
         // 只查看正在考核的任务
@@ -291,6 +291,58 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     }
 
     /**
+     * 更新全区完成度
+     *
+     * @param smartAssessmentMission
+     * @return
+     */
+    @AutoLog(value = "考核任务表-更新全区完成度")
+    @ApiOperation(value = "考核任务表-更新全区完成度", notes = "考核任务表-更新全区完成度")
+    @PutMapping(value = "/updateCompletionDegree")
+    public Result<?> updateCompletionDegree(@RequestBody SmartAssessmentMission smartAssessmentMission) {
+        if (smartAssessmentMission.getKeyPointsAmount() == 0) {
+            return Result.error("该考核任务总要点个数为0，无法计算！");
+        }
+
+        QueryWrapper<SmartAnswerInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("mission_id", smartAssessmentMission.getId());
+        List<SmartAnswerInfo> answerInfoList = smartAnswerInfoService.list(queryWrapper);
+        if (answerInfoList.size() == 0) {
+            return Result.error("该考核任务没有被考核单位，无法计算！");
+        }
+        double allFinishedCount = 0;
+
+        for (SmartAnswerInfo smartAnswerInfo : answerInfoList) {
+            if ("未签收".equals(smartAnswerInfo.getMissionStatus())) {
+                continue;
+            }
+            // 查询上传文件数目大于0的要点个数
+            QueryWrapper<SmartAnswerAssContent> assContentQueryWrapper = new QueryWrapper<>();
+            assContentQueryWrapper.eq("main_id", smartAnswerInfo.getId())
+                    .eq("is_key", 1)
+                    .eq("has_child", "0")
+                    .ne("upload_count", 0);
+            double count = smartAnswerAssContentService.count(assContentQueryWrapper);
+            allFinishedCount += count;
+
+            // 如果完成要点数没有改变则不进行更新
+            if (smartAnswerInfo.getFinishedKeyPointAmount() != (int) count) {
+                smartAnswerInfo.setFinishedKeyPointAmount((int) count);
+
+                smartAnswerInfo.setCompletionDegree(count / smartAnswerInfo.getTotalKeyPointAmount());
+
+                smartAnswerInfoService.updateById(smartAnswerInfo);
+            }
+        }
+
+        smartAssessmentMission.setCompletionDegree(allFinishedCount / (answerInfoList.size() * smartAssessmentMission.getKeyPointsAmount()));
+
+
+        smartAssessmentMissionService.updateById(smartAssessmentMission);
+        return Result.OK("编辑成功!");
+    }
+
+    /**
      * 撤销任务发布
      *
      * @param smartAssessmentMission
@@ -353,19 +405,65 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @ApiOperation(value = "考核任务表-发布", notes = "考核任务表-发布")
     @PutMapping(value = "/publish")
     public Result<?> publish(@RequestBody SmartAssessmentMission smartAssessmentMission) {
-        smartAssessmentMission.setMissionStatus("已发布");
-        smartAssessmentMissionService.updateById(smartAssessmentMission);
+        // 统计考核要点数目
+        QueryWrapper<SmartAssessmentContent> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("mission_id", smartAssessmentMission.getId()).eq("is_key", 1).eq("has_child", "0");
+        Integer count = Math.toIntExact(smartAssessmentContentService.count(queryWrapper));
+        smartAssessmentMission.setKeyPointsAmount(count);
+
         List<SmartAssessmentDepart> smartAssessmentDeparts = smartAssessmentDepartService.selectByMainId(smartAssessmentMission.getId());
-        smartAssessmentDeparts.forEach(smartAssessmentDepart -> {
+        // 答题信息表生成记录
+        List<SmartAnswerInfo> list = new ArrayList<>();
+        for (SmartAssessmentDepart smartAssessmentDepart : smartAssessmentDeparts) {
             SmartAnswerInfo smartAnswerInfo = new SmartAnswerInfo();
             smartAnswerInfo.setMissionId(smartAssessmentMission.getId());
             smartAnswerInfo.setMissionStatus("未签收");
             smartAnswerInfo.setEndTime(smartAssessmentDepart.getDeadline());
             smartAnswerInfo.setDepart(smartAssessmentDepart.getAssessmentDepart());
+            smartAnswerInfo.setTotalKeyPointAmount(count);
             smartAnswerInfo.setMarkedContent("");
-            smartAnswerInfoService.save(smartAnswerInfo);
-        });
+            list.add(smartAnswerInfo);
+        }
+        if (list.size() > 0) {
+            smartAnswerInfoService.saveBatch(list);
+        }
+
+        smartAssessmentMission.setMissionStatus("已发布");
+        smartAssessmentMissionService.updateById(smartAssessmentMission);
+
         return Result.OK("发布成功");
+    }
+
+    /**
+     * 发布评分结果
+     *
+     * @param smartAssessmentMission
+     * @return
+     */
+    @AutoLog(value = "考核任务表-发布评分结果")
+    @ApiOperation(value = "考核任务表-发布评分结果", notes = "考核任务表-发布评分结果")
+    @PutMapping(value = "/publishScore")
+    public Result<?> publishScore(@RequestBody SmartAssessmentMission smartAssessmentMission) {
+        smartAssessmentMission.setMissionStatus("发布评分结果");
+        smartAssessmentMissionService.updateById(smartAssessmentMission);
+
+        return Result.OK("发布成功");
+    }
+
+    /**
+     * 取消发布评分结果
+     *
+     * @param smartAssessmentMission
+     * @return
+     */
+    @AutoLog(value = "考核任务表-取消发布评分结果")
+    @ApiOperation(value = "考核任务表-取消发布评分结果", notes = "考核任务表-取消发布评分结果")
+    @PutMapping(value = "/recallScoreResult")
+    public Result<?> recallScoreResult(@RequestBody SmartAssessmentMission smartAssessmentMission) {
+        // 更新任务状态
+        smartAssessmentMission.setMissionStatus("已发布");
+        smartAssessmentMissionService.updateById(smartAssessmentMission);
+        return Result.OK("取消发布评分结果成功!");
     }
 
     /**
@@ -431,9 +529,9 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
      * @return
      */
     @AutoLog(value = "考核任务被考核单位通过主表ID查询")
-    @ApiOperation(value="考核任务被考核单位主表ID查询", notes="考核任务被考核单位-通主表ID查询")
+    @ApiOperation(value = "考核任务被考核单位主表ID查询", notes = "考核任务被考核单位-通主表ID查询")
     @GetMapping(value = "/querySmartAssessmentDepartByMainId")
-    public Result<?> querySmartAssessmentDepartListByMainId(@RequestParam(name="id",required=true) String id) {
+    public Result<?> querySmartAssessmentDepartListByMainId(@RequestParam(name = "id", required = true) String id) {
         List<SmartAssessmentDepart> smartAssessmentDepartList = smartAssessmentDepartService.selectByMainId(id);
         return Result.OK(smartAssessmentDepartList);
     }

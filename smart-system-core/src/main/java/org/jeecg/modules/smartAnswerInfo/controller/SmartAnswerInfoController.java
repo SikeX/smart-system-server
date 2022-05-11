@@ -27,7 +27,9 @@ import org.jeecg.modules.smartAssessmentContent.service.ISmartAssessmentContentS
 import org.jeecg.modules.smartAssessmentDepartment.entity.SmartAssessmentDepartment;
 import org.jeecg.modules.smartAssessmentDepartment.service.ISmartAssessmentDepartmentService;
 import org.jeecg.modules.smartAssessmentMission.entity.SmartAssessmentDepart;
+import org.jeecg.modules.smartAssessmentMission.entity.SmartAssessmentMission;
 import org.jeecg.modules.smartAssessmentMission.service.ISmartAssessmentDepartService;
+import org.jeecg.modules.smartAssessmentMission.service.ISmartAssessmentMissionService;
 import org.jeecg.modules.smartAssessmentTeam.entity.SmartAssessmentTeam;
 import org.jeecg.modules.smartAssessmentTeam.service.ISmartAssessmentTeamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +58,9 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
 
     @Autowired
     private ISmartAnswerAssContentService smartAnswerAssContentService;
+
+    @Autowired
+    private ISmartAssessmentMissionService smartAssessmentMissionService;
 
     @Autowired
     private ISmartAssessmentContentService smartAssessmentContentService;
@@ -139,6 +144,13 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
             if (oConvertUtils.isEmpty(one)) {
                 return Result.error("权限不正确！");
             }
+            // 对考核要点进行权限控制，检查是否在负责范围内
+            QueryWrapper<SmartAssessmentContent> contentQueryWrapper = new QueryWrapper<>();
+            contentQueryWrapper.eq("mission_id", smartAnswerInfo.getMissionId()).eq("id", contentId).eq("ass_depart", one.getId());
+            SmartAssessmentContent content = smartAssessmentContentService.getOne(contentQueryWrapper);
+            if (oConvertUtils.isEmpty(content)) {
+                return Result.error("不负责该考核要点评分！");
+            }
         } else {
             QueryWrapper<SmartAssessmentTeam> teamQueryWrapper = new QueryWrapper<>();
             teamQueryWrapper.and(QueryWrapper -> QueryWrapper.eq("team_leader", sysUser.getId())
@@ -148,6 +160,14 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
             SmartAssessmentTeam one = smartAssessmentTeamService.getOne(teamQueryWrapper);
             if (oConvertUtils.isEmpty(one)) {
                 return Result.error("权限不正确！");
+            }
+
+            // 对考核要点进行权限控制，检查是否在负责范围内
+            QueryWrapper<SmartAssessmentContent> contentQueryWrapper = new QueryWrapper<>();
+            contentQueryWrapper.eq("mission_id", smartAnswerInfo.getMissionId()).eq("id", contentId).eq("ass_team", one.getId());
+            SmartAssessmentContent content = smartAssessmentContentService.getOne(contentQueryWrapper);
+            if (oConvertUtils.isEmpty(content)) {
+                return Result.error("不负责该考核要点评分！");
             }
         }
 
@@ -245,6 +265,35 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
     public Result<?> edit(@RequestBody SmartAnswerInfo smartAnswerInfo) {
         smartAnswerInfoService.updateById(smartAnswerInfo);
         return Result.OK("编辑成功!");
+    }
+
+    /**
+     * 更新完成度
+     *
+     * @param smartAnswerInfo
+     * @return
+     */
+    @AutoLog(value = "答题信息表-更新完成度")
+    @ApiOperation(value = "答题信息表-更新完成度", notes = "答题信息表-更新完成度")
+    @PutMapping(value = "/updateCompletionDegree")
+    public Result<?> updateCompletionDegree(@RequestBody SmartAnswerInfo smartAnswerInfo) {
+        if (smartAnswerInfo.getTotalKeyPointAmount() == 0) {
+            return Result.error("该考核任务总要点个数为0，无法计算！");
+        }
+        // 查询上传文件数目大于0的要点个数
+        QueryWrapper<SmartAnswerAssContent> assContentQueryWrapper = new QueryWrapper<>();
+        assContentQueryWrapper.eq("main_id", smartAnswerInfo.getId())
+                .eq("is_key", 1)
+                .eq("has_child", "0")
+                .ne("upload_count", 0);
+        double count = smartAnswerAssContentService.count(assContentQueryWrapper);
+        smartAnswerInfo.setFinishedKeyPointAmount((int) count);
+
+        smartAnswerInfo.setCompletionDegree(count / smartAnswerInfo.getTotalKeyPointAmount());
+
+
+        smartAnswerInfoService.updateById(smartAnswerInfo);
+        return Result.OK("更新完成度成功!");
     }
 
     /**
