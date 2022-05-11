@@ -199,7 +199,7 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
         smartAssessmentContentService.addSmartAssessmentContent(smartAssessmentContent);
         // 配置考核排名字段是否可见
         Integer sortNum = 1;
-        if(smartAssessmentContent.getPid() == "0") {
+        if (Objects.equals(smartAssessmentContent.getPid(), "0")) {
             SmartRankVisible smartRankVisible = new SmartRankVisible();
             smartRankVisible.setMissionId(smartAssessmentContent.getMissionId());
             smartRankVisible.setContentId(smartAssessmentContent.getId());
@@ -334,7 +334,7 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
         smartAssessmentContentService.deleteSmartAssessmentContent(id);
         // 同步删除排名字段可见表中的内容
         QueryWrapper<SmartRankVisible> rankVisibleQueryWrapper = new QueryWrapper<>();
-        rankVisibleQueryWrapper.eq("content_id",id);
+        rankVisibleQueryWrapper.eq("content_id", id);
         smartRankVisibleService.remove(rankVisibleQueryWrapper);
         return Result.OK("删除成功!");
     }
@@ -416,10 +416,10 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
         mv.addObject(NormalExcelConstants.FILE_NAME, "考核节点表"); //此处设置的filename无效 ,前端会重更新设置一下
         mv.addObject(NormalExcelConstants.CLASS, SmartAssessmentContent.class);
         //update-begin--Author:liusq  Date:20210126 for：图片导出报错，ImageBasePath未设置--------------------
-        ExportParams exportParams=new ExportParams("考核节点表" + "报表", "导出人:" + sysUser.getRealname(), "考核节点表");
+        ExportParams exportParams = new ExportParams("考核节点表" + "报表", "导出人:" + sysUser.getRealname(), "考核节点表");
         exportParams.setImageBasePath(upLoadPath);
         //update-end--Author:liusq  Date:20210126 for：图片导出报错，ImageBasePath未设置----------------------
-        mv.addObject(NormalExcelConstants.PARAMS,exportParams);
+        mv.addObject(NormalExcelConstants.PARAMS, exportParams);
         mv.addObject(NormalExcelConstants.DATA_LIST, exportList);
         return mv;
     }
@@ -447,6 +447,7 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
                 //update-begin-author:taoyan date:20190528 for:批量插入数据
                 long start = System.currentTimeMillis();
                 List<SmartAssessmentContent> successList = new ArrayList<>();
+                List<SmartRankVisible> rankVisibleList = new ArrayList<>();
 
 
                 for (SmartAssessmentContent item : list) {
@@ -457,7 +458,7 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
                     if (oConvertUtils.isNotEmpty(content.getPid()) && !"0".equals(content.getPid())) {
                         SmartAssessmentContent temp = smartAssessmentContentService.getById(content.getPid());
 
-                        for (SmartAssessmentContent successItem: successList) {
+                        for (SmartAssessmentContent successItem : successList) {
                             if (StringUtils.equals(successItem.getName(), temp.getName())) {
                                 content.setPid(successItem.getId());
                                 break;
@@ -465,6 +466,15 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
                         }
                     } else {
                         content.setPid("0");
+                        Integer sortNum = 1;
+                        SmartRankVisible smartRankVisible = new SmartRankVisible();
+                        smartRankVisible.setMissionId(content.getMissionId());
+                        smartRankVisible.setContentId(content.getId());
+                        smartRankVisible.setContentName(content.getName());
+                        smartRankVisible.setVisible("1");
+                        smartRankVisible.setTag("content");
+                        smartRankVisible.setSort(sortNum);
+                        rankVisibleList.add(smartRankVisible);
                     }
                     // 考核单位
                     String assessmentDepartmentId = smartAssessmentDepartmentService.getAssessmentDepartmentIdByDepartName(content.getAssDepart());
@@ -474,6 +484,7 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
                     successList.add(content);
 
                 }
+                smartRankVisibleService.saveBatch(rankVisibleList);
 
                 //400条 saveBatch消耗时间1592毫秒  循环插入消耗时间1947毫秒
                 //1200条  saveBatch消耗时间3687毫秒 循环插入消耗时间5212毫秒
@@ -486,9 +497,9 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
                 //update-begin-author:taoyan date:20211124 for: 导入数据重复增加提示
                 String msg = e.getMessage();
                 log.error(msg, e);
-                if(msg!=null && msg.indexOf("Duplicate entry")>=0){
+                if (msg != null && msg.indexOf("Duplicate entry") >= 0) {
                     return Result.error("文件导入失败:有重复数据！");
-                }else{
+                } else {
                     return Result.error("文件导入失败:" + e.getMessage());
                 }
                 //update-end-author:taoyan date:20211124 for: 导入数据重复增加提示
