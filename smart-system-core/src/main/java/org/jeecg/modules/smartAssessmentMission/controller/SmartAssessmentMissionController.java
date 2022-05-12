@@ -239,7 +239,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
         contentList.forEach(smartAssessmentContent -> missionIdList.add(smartAssessmentContent.getMissionId()));
 
         QueryWrapper<SmartAssessmentMission> queryWrapper = QueryGenerator.initQueryWrapper(smartAssessmentMission, req.getParameterMap());
-        queryWrapper.ne("mission_status", "未发布").in("id", missionIdList);
+        queryWrapper.eq("mission_status", "已发布").in("id", missionIdList);
         Page<SmartAssessmentMission> page = new Page<SmartAssessmentMission>(pageNo, pageSize);
         IPage<SmartAssessmentMission> pageList = smartAssessmentMissionService.page(page, queryWrapper);
         return Result.OK(pageList);
@@ -271,7 +271,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
         contentList.forEach(smartAssessmentContent -> missionIdList.add(smartAssessmentContent.getMissionId()));
 
         QueryWrapper<SmartAssessmentMission> queryWrapper = QueryGenerator.initQueryWrapper(smartAssessmentMission, req.getParameterMap());
-        queryWrapper.ne("mission_status", "未发布").in("id", missionIdList);
+        queryWrapper.eq("mission_status", "已发布").in("id", missionIdList);
         Page<SmartAssessmentMission> page = new Page<SmartAssessmentMission>(pageNo, pageSize);
         IPage<SmartAssessmentMission> pageList = smartAssessmentMissionService.page(page, queryWrapper);
         return Result.OK(pageList);
