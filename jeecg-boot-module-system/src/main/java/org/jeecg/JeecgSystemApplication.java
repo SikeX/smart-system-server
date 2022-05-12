@@ -2,6 +2,7 @@ package org.jeecg;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.smartJob.util.TaskInit;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -40,6 +41,9 @@ public class JeecgSystemApplication extends SpringBootServletInitializer {
                 "External: \thttp://" + ip + ":" + port + path + "/\n\t" +
                 "Swagger文档: \thttp://" + ip + ":" + port + path + "/doc.html\n" +
                 "----------------------------------------------------------");
+
+        //定时任务初始化，不要删除
+        TaskInit.init();
 
     }
 
