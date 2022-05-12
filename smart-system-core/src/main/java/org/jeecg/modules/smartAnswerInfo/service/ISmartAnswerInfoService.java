@@ -17,4 +17,11 @@ import java.util.List;
 public interface ISmartAnswerInfoService extends IService<SmartAnswerInfo> {
     List<SmartDepartContentScore> selectByMissionIdAndContentId(Page<SmartDepartContentScore> page, @Param("missionId") String missionId, @Param("assContentId") String assContentId);
 
+    /**
+     * 更新答题信息表中的任务状态
+     *
+     * @param missionId
+     * @param missionStatus
+     */
+    void updateMissionStatus(String missionId, String missionStatus);
 }
