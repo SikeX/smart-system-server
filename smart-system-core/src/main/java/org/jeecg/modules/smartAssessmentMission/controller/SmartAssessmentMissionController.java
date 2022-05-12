@@ -406,7 +406,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @ApiOperation("考核任务被考核单位的重复校验接口")
     public Result<Object> doDuplicateCheckWithDelFlag(@RequestParam(name = "departId", required = true) String departId,
                                                       @RequestParam(name = "missionId", required = true) String missionId,
-                                                      @RequestParam(name = "departId", required = true) String dataId,
+                                                      @RequestParam(name = "dataId", required = false) String dataId,
                                                       HttpServletRequest request) {
         Long num = null;
 
@@ -428,7 +428,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
         } else {
             // 该值不可用
             log.info("该值不可用，系统中已存在！");
-            return Result.error("该值不可用，系统中已存在！");
+            return Result.error("考核任务已添加该被考核单位！");
         }
     }
 
