@@ -8,6 +8,7 @@ import com.google.common.base.Joiner;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
@@ -16,6 +17,7 @@ import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.DateUtil;
 import org.jeecg.common.util.DateUtils;
+import org.jeecg.common.util.SqlInjectionUtil;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.smartAnswerAssContent.entity.SmartAnswerAssContent;
 import org.jeecg.modules.smartAnswerAssContent.service.ISmartAnswerAssContentService;
@@ -393,6 +395,41 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
         smartAssessmentMission.setMissionStatus("未发布");
         smartAssessmentMissionService.updateById(smartAssessmentMission);
         return Result.OK("撤销任务成功!");
+    }
+
+    /**
+     * 考核任务被考核单位的重复校验接口
+     *
+     * @return
+     */
+    @GetMapping(value = "/duplicateCheck")
+    @ApiOperation("考核任务被考核单位的重复校验接口")
+    public Result<Object> doDuplicateCheckWithDelFlag(@RequestParam(name = "departId", required = true) String departId,
+                                                      @RequestParam(name = "missionId", required = true) String missionId,
+                                                      @RequestParam(name = "departId", required = true) String dataId,
+                                                      HttpServletRequest request) {
+        Long num = null;
+
+        log.info("----duplicate check------："+ departId);
+        QueryWrapper<SmartAssessmentDepart> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("mission_id", missionId).eq("assessment_depart", departId);
+        if (StringUtils.isNotBlank(dataId)) {
+            // [2].编辑页面校验
+            queryWrapper.ne("id", dataId);
+            num = smartAssessmentDepartService.count(queryWrapper);
+        } else {
+            // [1].添加页面校验
+            num = smartAssessmentDepartService.count(queryWrapper);
+        }
+
+        if (num == null || num == 0) {
+            // 该值可用
+            return Result.ok("该值可用！");
+        } else {
+            // 该值不可用
+            log.info("该值不可用，系统中已存在！");
+            return Result.error("该值不可用，系统中已存在！");
+        }
     }
 
     /**
