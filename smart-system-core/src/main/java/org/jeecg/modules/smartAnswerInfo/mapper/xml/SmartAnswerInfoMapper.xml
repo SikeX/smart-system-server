@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.smartAnswerInfo.mapper.SmartAnswerInfoMapper">
+    <update id="updateMissionStatus">
+        UPDATE smart_answer_info
+        SET mission_status = #{missionStatus}
+        WHERE
+            mission_id = #{missionId}
+    </update>
 
+    <select id="selectByMissionIdAndContentId"
+            resultType="org.jeecg.modules.smartAnswerInfo.entity.SmartDepartContentScore">
+        select sai.id as id, saac.id as answer_ass_content_id, depart, depart_name, mission_id, final_score, highest_score, lowest_score, average_score, total_points
+        from smart_answer_info sai
+                 inner join sys_depart sd on sai.depart = sd.id
+                 left join smart_answer_ass_content saac on saac.main_id = sai.id
+        where mission_id = #{missionId}
+          and ass_content_id = #{assContentId}
+        union
+        select sai.id as id, saac.id as answer_ass_content_id, depart, depart_name, mission_id, final_score, highest_score, lowest_score, average_score, total_points
+        from smart_answer_info sai
+                 inner join sys_depart sd on sai.depart = sd.id
+                 left join smart_answer_ass_content saac on saac.main_id = sai.id
+        where mission_id = #{missionId} and final_score IS NULL
+        order by final_score desc
+    </select>
 </mapper>

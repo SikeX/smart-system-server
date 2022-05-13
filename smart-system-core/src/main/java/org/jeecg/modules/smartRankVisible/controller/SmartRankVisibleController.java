@@ -9,8 +9,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
+import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.smartRankVisible.entity.SmartRankVisible;
 import org.jeecg.modules.smartRankVisible.service.ISmartRankVisibleService;
@@ -49,6 +53,8 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 public class SmartRankVisibleController extends JeecgController<SmartRankVisible, ISmartRankVisibleService> {
 	@Autowired
 	private ISmartRankVisibleService smartRankVisibleService;
+	@Autowired
+	private ISysBaseAPI sysBaseAPI;
 	
 	/**
 	 * 分页列表查询
@@ -89,15 +95,29 @@ public class SmartRankVisibleController extends JeecgController<SmartRankVisible
 	/**
 	 *  编辑
 	 *
-	 * @param smartRankVisible
+	 * @param smartRankVisibleList
 	 * @return
 	 */
 	@AutoLog(value = "排名字段可见性-编辑")
 	@ApiOperation(value="排名字段可见性-编辑", notes="排名字段可见性-编辑")
 	@PutMapping(value = "/edit")
-	public Result<?> edit(@RequestBody SmartRankVisible smartRankVisible) {
-		smartRankVisibleService.updateById(smartRankVisible);
-		return Result.OK("编辑成功!");
+	public Result<?> edit(@RequestBody List<SmartRankVisible> smartRankVisibleList) {
+
+		//获取登录用户信息
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+		// 获取用户角色
+		List<String> role = sysBaseAPI.getRolesByUsername(sysUser.getUsername());
+
+		if(role.contains("CCDIAdmin")){
+			smartRankVisibleList.forEach(item -> {
+				smartRankVisibleService.updateById(item);
+			});
+			return Result.OK("编辑成功!");
+		}
+		else {
+			return Result.error("您没有此操作的权限!");
+		}
 	}
 	
 	/**
@@ -113,6 +133,7 @@ public class SmartRankVisibleController extends JeecgController<SmartRankVisible
 		smartRankVisibleService.removeById(id);
 		return Result.OK("删除成功!");
 	}
+
 	
 	/**
 	 *  批量删除
@@ -129,20 +150,23 @@ public class SmartRankVisibleController extends JeecgController<SmartRankVisible
 	}
 	
 	/**
-	 * 通过id查询
+	 * 通过missionId查询
 	 *
-	 * @param id
+	 * @param missionId
 	 * @return
 	 */
 	@AutoLog(value = "排名字段可见性-通过id查询")
 	@ApiOperation(value="排名字段可见性-通过id查询", notes="排名字段可见性-通过id查询")
-	@GetMapping(value = "/queryById")
-	public Result<?> queryById(@RequestParam(name="id",required=true) String id) {
-		SmartRankVisible smartRankVisible = smartRankVisibleService.getById(id);
-		if(smartRankVisible==null) {
-			return Result.error("未找到对应数据");
-		}
-		return Result.OK(smartRankVisible);
+	@GetMapping(value = "/queryByMissionId")
+	public Result<?> queryById(@RequestParam(name="missionId",required=true) String missionId) {
+
+		QueryWrapper<SmartRankVisible> smartRankVisibleQueryWrapper = new QueryWrapper<>();
+
+		smartRankVisibleQueryWrapper.eq("mission_id",missionId).orderByAsc("sort");
+
+		List<SmartRankVisible> rankVisibleList = smartRankVisibleService.list(smartRankVisibleQueryWrapper);
+
+		return Result.OK(rankVisibleList);
 	}
 
     /**

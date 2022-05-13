@@ -1,10 +1,23 @@
 package org.jeecg.modules.wePower.smartVillageLead.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.fastjson.JSONObject;
 import org.jeecg.common.api.vo.Result;
+import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.system.vo.VillageRelationModel;
+import org.jeecg.modules.utils.FaceRecognitionUtil;
+import org.jeecg.modules.utils.ImageUtils;
+import org.jeecg.modules.utils.UrlUtil;
+import org.jeecg.modules.wePower.smartEvadeRelation.entity.SmartEvadeRelation;
+import org.jeecg.modules.wePower.smartEvadeRelation.service.ISmartEvadeRelationService;
 import org.jeecg.modules.wePower.smartVillageLead.entity.SmartVillageLead;
 import org.jeecg.modules.wePower.smartVillageLead.service.ISmartVillageLeadService;
 
@@ -15,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import io.swagger.annotations.Api;
@@ -34,6 +48,15 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 public class SmartVillageLeadController extends JeecgController<SmartVillageLead, ISmartVillageLeadService> {
 	@Autowired
 	private ISmartVillageLeadService smartVillageLeadService;
+	@Autowired
+	private ISysBaseAPI sysBaseAPI;
+	@Autowired
+	private ISmartEvadeRelationService smartEvadeRelationService;
+
+	@Value("${jeecg.fileBaseUrl}")
+	private String fileBaseUrl;
+
+	private String groupId = "villageLead";
 	
 	/**
 	 * 分页列表查询
@@ -66,9 +89,58 @@ public class SmartVillageLeadController extends JeecgController<SmartVillageLead
 	@AutoLog(value = "村（社区）领导班子-添加")
 	@ApiOperation(value="村（社区）领导班子-添加", notes="村（社区）领导班子-添加")
 	@PostMapping(value = "/add")
-	public Result<?> add(@RequestBody SmartVillageLead smartVillageLead) {
+	public Result<?> add(@RequestBody SmartVillageLead smartVillageLead) throws UnsupportedEncodingException {
+
+
 		smartVillageLeadService.save(smartVillageLead);
-		return Result.OK("添加成功！");
+
+		LoginUser user = sysBaseAPI.getUserByIdNumber(smartVillageLead.getPeople());
+
+		if(user.getHomeRole().equals("1")){
+			SmartEvadeRelation relation = new SmartEvadeRelation();
+			relation.setHostName(smartVillageLead.getPeople());
+		} else if (user.getHomeRole().equals("2")){
+			List<VillageRelationModel> relationList = sysBaseAPI.getVillageRelation(smartVillageLead.getPeople(), "2");
+//			List<String> hostList = new ArrayList<>();
+//			relationList.forEach(relation -> {
+//				hostList.add(relation.get);
+//			});
+			smartEvadeRelationService.list().forEach(relation -> {
+				relationList.forEach(relationModel -> {
+					if(relation.getHostName().equals(relationModel.getHostIdnumber())){
+						relation.setRelation(relationModel.getHomeRelation().toString());
+						smartEvadeRelationService.updateById(relation);
+					}
+				});
+			});
+		}
+
+		ImageUtils imageUtils = new ImageUtils();
+
+		FaceRecognitionUtil faceRecognitionUtil = new FaceRecognitionUtil();
+
+		String imgPath = smartVillageLead.getPicture();
+
+		String imgBase64 = imageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese(fileBaseUrl + imgPath));
+
+		try {
+
+			faceRecognitionUtil.createUserGroup(groupId);
+
+			JSONObject faceResponse = faceRecognitionUtil.registerFace(imgBase64, groupId, smartVillageLead.getId());
+
+			log.info(String.valueOf(faceResponse));
+
+			if(faceResponse.getIntValue("error_code") != 0) {
+				smartVillageLeadService.removeById(smartVillageLead.getId());
+				return Result.error(faceResponse.getString("error_msg"));
+			} else {
+				return Result.OK("添加成功！");
+			}
+
+		} catch (RuntimeException e) {
+			return Result.error(e.getMessage());
+		}
 	}
 	
 	/**
@@ -81,8 +153,33 @@ public class SmartVillageLeadController extends JeecgController<SmartVillageLead
 	@ApiOperation(value="村（社区）领导班子-编辑", notes="村（社区）领导班子-编辑")
 	@PutMapping(value = "/edit")
 	public Result<?> edit(@RequestBody SmartVillageLead smartVillageLead) {
-		smartVillageLeadService.updateById(smartVillageLead);
-		return Result.OK("编辑成功!");
+
+		String name = sysBaseAPI.translateDictFromTable("smart_village_home","home_surname", "idnumber",
+				smartVillageLead.getPeople());
+
+		smartVillageLead.setName(name);
+
+		ImageUtils imageUtils = new ImageUtils();
+
+		FaceRecognitionUtil faceRecognitionUtil = new FaceRecognitionUtil();
+
+		String imgPath = smartVillageLead.getPicture();
+
+		String imgBase64 = imageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese(fileBaseUrl + imgPath));
+
+		try {
+			JSONObject faceResponse = faceRecognitionUtil.updateFace(imgBase64, groupId, smartVillageLead.getId());
+
+			if(faceResponse.getIntValue("error_code") != 0) {
+				return Result.error(faceResponse.getString("error_msg"));
+			} else {
+				smartVillageLeadService.updateById(smartVillageLead);
+				return Result.OK("编辑成功！");
+			}
+
+		} catch (RuntimeException e) {
+			return Result.error(e.getMessage());
+		}
 	}
 	
 	/**
@@ -95,8 +192,22 @@ public class SmartVillageLeadController extends JeecgController<SmartVillageLead
 	@ApiOperation(value="村（社区）领导班子-通过id删除", notes="村（社区）领导班子-通过id删除")
 	@DeleteMapping(value = "/delete")
 	public Result<?> delete(@RequestParam(name="id",required=true) String id) {
-		smartVillageLeadService.removeById(id);
-		return Result.OK("删除成功!");
+		FaceRecognitionUtil faceRecognitionUtil = new FaceRecognitionUtil();
+
+		SmartVillageLead smartVillageLead = smartVillageLeadService.getById(id);
+
+		try {
+			JSONObject deleteResponse = faceRecognitionUtil.deleteUser(groupId, smartVillageLead.getId(),
+					smartVillageLead.getFaceToken());
+			if(deleteResponse.getIntValue("error_code") != 0) {
+				return Result.error(deleteResponse.getString("error_msg"));
+			} else {
+				smartVillageLeadService.removeById(id);
+				return Result.ok("删除成功");
+			}
+		} catch (RuntimeException e) {
+			return Result.error(e.getMessage());
+		}
 	}
 	
 	/**

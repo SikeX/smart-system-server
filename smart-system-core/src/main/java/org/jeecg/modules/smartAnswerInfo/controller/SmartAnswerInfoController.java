@@ -7,22 +7,30 @@ import com.google.common.base.Joiner;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
-import org.jeecg.common.util.DateUtil;
+//import org.jeecg.common.util.DateUtil;
 import org.jeecg.common.util.DateUtils;
+import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.smartAnswerAssContent.entity.SmartAnswerAssContent;
 import org.jeecg.modules.smartAnswerAssContent.service.ISmartAnswerAssContentService;
 import org.jeecg.modules.smartAnswerInfo.entity.SmartAnswerInfo;
+import org.jeecg.modules.smartAnswerInfo.entity.SmartDepartContentScore;
 import org.jeecg.modules.smartAnswerInfo.service.ISmartAnswerInfoService;
 import org.jeecg.modules.smartAssessmentContent.entity.SmartAssessmentContent;
 import org.jeecg.modules.smartAssessmentContent.service.ISmartAssessmentContentService;
+import org.jeecg.modules.smartAssessmentDepartment.entity.SmartAssessmentDepartment;
+import org.jeecg.modules.smartAssessmentDepartment.service.ISmartAssessmentDepartmentService;
 import org.jeecg.modules.smartAssessmentMission.entity.SmartAssessmentDepart;
+import org.jeecg.modules.smartAssessmentMission.entity.SmartAssessmentMission;
 import org.jeecg.modules.smartAssessmentMission.service.ISmartAssessmentDepartService;
+import org.jeecg.modules.smartAssessmentMission.service.ISmartAssessmentMissionService;
+import org.jeecg.modules.smartAssessmentTeam.entity.SmartAssessmentTeam;
 import org.jeecg.modules.smartAssessmentTeam.service.ISmartAssessmentTeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -52,16 +60,22 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
     private ISmartAnswerAssContentService smartAnswerAssContentService;
 
     @Autowired
+    private ISmartAssessmentMissionService smartAssessmentMissionService;
+
+    @Autowired
     private ISmartAssessmentContentService smartAssessmentContentService;
 
     @Autowired
     private ISmartAssessmentTeamService smartAssessmentTeamService;
 
     @Autowired
+    private ISmartAssessmentDepartmentService smartAssessmentDepartmentService;
+
+    @Autowired
     private ISmartAssessmentDepartService smartAssessmentDepartService;
 
     /**
-     * 分页列表查询
+     * 分页列表查询正在进行中的的考核任务
      *
      * @param smartAnswerInfo
      * @param pageNo
@@ -69,36 +83,45 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
      * @param req
      * @return
      */
-    @AutoLog(value = "答题信息表-分页列表查询")
-    @ApiOperation(value = "答题信息表-分页列表查询", notes = "答题信息表-分页列表查询")
+    @AutoLog(value = "答题信息表-分页列表查询正在进行中的的考核任务")
+    @ApiOperation(value = "答题信息表-分页列表查询正在进行中的的考核任务", notes = "答题信息表-分页列表查询正在进行中的的考核任务")
     @GetMapping(value = "/list")
     public Result<?> queryPageList(SmartAnswerInfo smartAnswerInfo,
                                    @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                                    @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                    HttpServletRequest req) {
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-        // 被考核单位查询包含自己的所有考核任务ID
+        // 被考核单位登录账号查询包含自己的所有考核任务ID
         QueryWrapper<SmartAssessmentDepart> smartAssessmentDepartQueryWrapper = new QueryWrapper<>();
-        smartAssessmentDepartQueryWrapper.select("distinct mission_id").eq("depart_user", sysUser.getId()).eq("assessment_depart", sysUser.getDepartId());
+        smartAssessmentDepartQueryWrapper.select("distinct mission_id")
+                .eq("depart_user", sysUser.getId())
+                .eq("assessment_depart", sysUser.getDepartId());
         List<SmartAssessmentDepart> missionList = smartAssessmentDepartService.list(smartAssessmentDepartQueryWrapper);
         List<String> missionIdList = new ArrayList<>();
         missionList.forEach(mission -> {
             missionIdList.add(mission.getMissionId());
         });
 
+        if (missionList.size() == 0) {
+            return Result.error("无考核任务！");
+        }
+
         // 查询上面所有考核任务信息
         QueryWrapper<SmartAnswerInfo> queryWrapper = QueryGenerator.initQueryWrapper(smartAnswerInfo, req.getParameterMap());
         // 包含本单位的任务
-        queryWrapper.eq("depart", sysUser.getDepartId()).in("mission_id", missionIdList);
+        queryWrapper.select(SmartAnswerInfo.class,i -> !i.getColumn().equals("total_points") && !i.getColumn().equals("ranking"))
+                .eq("depart", sysUser.getDepartId()).in("mission_id", missionIdList)
+                .ne("mission_status", "发布评分结果");
         Page<SmartAnswerInfo> page = new Page<SmartAnswerInfo>(pageNo, pageSize);
         IPage<SmartAnswerInfo> pageList = smartAnswerInfoService.page(page, queryWrapper);
         return Result.OK(pageList);
     }
 
     /**
-     * 考核组查看
+     * 评分时查看被考核单位
      *
      * @param smartAnswerInfo
+     * @param type
      * @param pageNo
      * @param pageSize
      * @param req
@@ -108,15 +131,94 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
     @ApiOperation(value = "答题信息表-分页列表查询", notes = "答题信息表-分页列表查询")
     @GetMapping(value = "/listInCharge")
     public Result<?> queryChargePageList(SmartAnswerInfo smartAnswerInfo,
+                                         @RequestParam(name = "type", defaultValue = "depart") String type,
+                                         @RequestParam(name = "contentId", defaultValue = "depart") String contentId,
                                          @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                                          @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                          HttpServletRequest req) {
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+        if (oConvertUtils.isEmpty(smartAnswerInfo.getDepart())) {
+            return Result.error("没有权限！");
+        }
+        if ("depart".equals(type)) {
+            QueryWrapper<SmartAssessmentDepartment> departmentQueryWrapper = new QueryWrapper<>();
+            departmentQueryWrapper.eq("depart_user", sysUser.getId()).eq("responsible_depart", smartAnswerInfo.getDepart());
+            SmartAssessmentDepartment one = smartAssessmentDepartmentService.getOne(departmentQueryWrapper);
+            if (oConvertUtils.isEmpty(one)) {
+                return Result.error("权限不正确！");
+            }
+            // 对考核要点进行权限控制，检查是否在负责范围内
+            QueryWrapper<SmartAssessmentContent> contentQueryWrapper = new QueryWrapper<>();
+            contentQueryWrapper.eq("mission_id", smartAnswerInfo.getMissionId()).eq("id", contentId).eq("ass_depart", one.getId());
+            SmartAssessmentContent content = smartAssessmentContentService.getOne(contentQueryWrapper);
+            if (oConvertUtils.isEmpty(content)) {
+                return Result.error("不负责该考核要点评分！");
+            }
+        } else {
+            QueryWrapper<SmartAssessmentTeam> teamQueryWrapper = new QueryWrapper<>();
+            teamQueryWrapper.and(QueryWrapper -> QueryWrapper.eq("team_leader", sysUser.getId())
+                    .or().like("deputy_team_Leader", sysUser.getId())
+                    .or().like("members", sysUser.getId()));
+            teamQueryWrapper.eq("departs", smartAnswerInfo.getDepart());
+            SmartAssessmentTeam one = smartAssessmentTeamService.getOne(teamQueryWrapper);
+            if (oConvertUtils.isEmpty(one)) {
+                return Result.error("权限不正确！");
+            }
+
+            // 对考核要点进行权限控制，检查是否在负责范围内
+            QueryWrapper<SmartAssessmentContent> contentQueryWrapper = new QueryWrapper<>();
+            contentQueryWrapper.eq("mission_id", smartAnswerInfo.getMissionId()).eq("id", contentId).eq("ass_team", one.getId());
+            SmartAssessmentContent content = smartAssessmentContentService.getOne(contentQueryWrapper);
+            if (oConvertUtils.isEmpty(content)) {
+                return Result.error("不负责该考核要点评分！");
+            }
+        }
+
+        String content = smartAnswerInfo.getMarkedContent();
+        smartAnswerInfo.setMarkedContent(null);
+
+
         QueryWrapper<SmartAnswerInfo> queryWrapper = QueryGenerator.initQueryWrapper(smartAnswerInfo, req.getParameterMap());
-        queryWrapper.eq("depart", sysUser.getDepartId());
+        if (oConvertUtils.isNotEmpty(content)) {
+            if (StringUtils.startsWith(content, "!")) {
+                queryWrapper.notLike("marked_content", content.replace("!", ""));
+            } else {
+                queryWrapper.like("marked_content", content);
+            }
+        }
+
         Page<SmartAnswerInfo> page = new Page<SmartAnswerInfo>(pageNo, pageSize);
         IPage<SmartAnswerInfo> pageList = smartAnswerInfoService.page(page, queryWrapper);
+        pageList.getRecords().forEach(item -> {
+            String markedContent = item.getMarkedContent();
+            int index = StringUtils.indexOf(markedContent, contentId);
+            if (index == -1) {
+                item.setMarkedContent("未评分");
+            } else {
+                item.setMarkedContent("已评分");
+            }
+        });
         return Result.OK(pageList);
+    }
+
+    /**
+     * 最终评分列表成绩
+     *
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @AutoLog(value = "答题信息表-分页列表查询")
+    @ApiOperation(value = "答题信息表-分页列表查询", notes = "答题信息表-分页列表查询")
+    @GetMapping(value = "/listDepartContentScore")
+    public Result<?> queryChargePageList(@RequestParam(name = "missionId") String missionId,
+                                         @RequestParam(name = "assContentId") String assContentId,
+                                         @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
+                                         @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
+        Page<SmartDepartContentScore> page = new Page<>(pageNo, pageSize);
+        List<SmartDepartContentScore> departContentScores = smartAnswerInfoService.selectByMissionIdAndContentId(page, missionId, assContentId);
+        return Result.OK(departContentScores);
     }
 
     /**
@@ -170,6 +272,35 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
     }
 
     /**
+     * 更新完成度
+     *
+     * @param smartAnswerInfo
+     * @return
+     */
+    @AutoLog(value = "答题信息表-更新完成度")
+    @ApiOperation(value = "答题信息表-更新完成度", notes = "答题信息表-更新完成度")
+    @PutMapping(value = "/updateCompletionDegree")
+    public Result<?> updateCompletionDegree(@RequestBody SmartAnswerInfo smartAnswerInfo) {
+        if (smartAnswerInfo.getTotalKeyPointAmount() == 0) {
+            return Result.error("该考核任务总要点个数为0，无法计算！");
+        }
+        // 查询上传文件数目大于0的要点个数
+        QueryWrapper<SmartAnswerAssContent> assContentQueryWrapper = new QueryWrapper<>();
+        assContentQueryWrapper.eq("main_id", smartAnswerInfo.getId())
+                .eq("is_key", 1)
+                .eq("has_child", "0")
+                .ne("upload_count", 0);
+        double count = smartAnswerAssContentService.count(assContentQueryWrapper);
+        smartAnswerInfo.setFinishedKeyPointAmount((int) count);
+
+        smartAnswerInfo.setCompletionDegree(count / smartAnswerInfo.getTotalKeyPointAmount());
+
+
+        smartAnswerInfoService.updateById(smartAnswerInfo);
+        return Result.OK("更新完成度成功!");
+    }
+
+    /**
      * 签收
      *
      * @param smartAnswerInfo
@@ -199,9 +330,11 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
 
 
         // 生成答题记录
+        // 首先查询所有考核内容、摘要、要点
         QueryWrapper<SmartAssessmentContent> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("mission_id", smartAnswerInfo.getMissionId());
         List<SmartAssessmentContent> smartAssessmentContentList = smartAssessmentContentService.list(queryWrapper);
+        // 然后遍历生成记录
         for (SmartAssessmentContent smartAssessmentContent : smartAssessmentContentList) {
             SmartAnswerAssContent smartAnswerAssContent = new SmartAnswerAssContent();
             smartAnswerAssContent.setMainId(smartAnswerInfo.getId());

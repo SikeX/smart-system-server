@@ -37,4 +37,9 @@ public class SmartPunishPeopleServiceImpl extends ServiceImpl<SmartPunishPeopleM
     public Integer punishPeopleCountByMonth(String currentMonth) {
         return smartPunishPeopleMapper.punishPeopleCountByMonth(currentMonth);
     }
+
+    @Override
+    public Integer countMainPeopleByDepart(String departId) {
+        return smartPunishPeopleMapper.countMainPeopleByDepart(departId);
+    }
 }
