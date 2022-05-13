@@ -12,6 +12,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.util.DateUtils;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.smartAnswerAssContent.entity.SmartAnswerAssContent;
 import org.jeecg.modules.smartAnswerAssContent.entity.SmartAnswerAssScore;
@@ -26,6 +27,7 @@ import org.jeecg.modules.smartAssessmentDepartment.service.ISmartAssessmentDepar
 import org.jeecg.modules.smartAssessmentMission.entity.SmartAssessmentDepart;
 import org.jeecg.modules.smartAssessmentMission.entity.SmartAssessmentMission;
 import org.jeecg.modules.smartAssessmentMission.service.ISmartAssessmentDepartService;
+import org.jeecg.modules.smart_video.commonutils.R;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -296,6 +298,11 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 	@ApiOperation(value="要点答题附件-添加", notes="要点答题附件-添加")
 	@PostMapping(value = "/addSmartAnswerFile")
 	public Result<?> addSmartAnswerFile(@RequestBody SmartAnswerFile smartAnswerFile) {
+		Boolean isDisabled = checkIsDisabled(smartAnswerFile.getMainId());
+		if (isDisabled == null || isDisabled) {
+			return Result.error("已经到截止时间了!");
+		}
+
 		// 获取登录用户信息，可以用来查询单位部门信息
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 		// 存储上报人ID
@@ -320,8 +327,39 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 	@ApiOperation(value="要点答题附件-编辑", notes="要点答题附件-编辑")
 	@PutMapping(value = "/editSmartAnswerFile")
 	public Result<?> editSmartAnswerFile(@RequestBody SmartAnswerFile smartAnswerFile) {
+		Boolean isDisabled = checkIsDisabled(smartAnswerFile.getMainId());
+		if (isDisabled == null || isDisabled) {
+			return Result.error("已经到截止时间了!");
+		}
 		smartAnswerFileService.updateById(smartAnswerFile);
 		return Result.OK("编辑成功!");
+	}
+
+	/**
+	 * 检查附件是否截止提交
+	 *
+	 * @param mainId
+	 * @return
+	 */
+	private Boolean checkIsDisabled(String mainId) {
+		SmartAnswerAssContent answerAssContent = smartAnswerAssContentService.getById(mainId);
+		if (oConvertUtils.isEmpty(answerAssContent)) {
+			return true;
+		}
+		SmartAnswerInfo answerInfo = smartAnswerInfoService.getById(answerAssContent.getMainId());
+		if (oConvertUtils.isEmpty(answerInfo)) {
+			return true;
+		}
+
+		if (Objects.equals(answerInfo.getMissionStatus(), "发布评分结果")) {
+			return null;
+		}
+
+		int dateDiff = DateUtils.dateDiff('s', DateUtils.getCalendar(DateUtils.getMillis(answerInfo.getEndTime())), DateUtils.getCalendar());
+        if (dateDiff > 0) {
+			return false;
+        }
+		return true;
 	}
 
 	/**
@@ -334,6 +372,11 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 	@DeleteMapping(value = "/deleteSmartAnswerFile")
 	public Result<?> deleteSmartAnswerFile(@RequestParam(name="id",required=true) String id,
 										   @RequestParam(name="mainId",required=true) String mainId) {
+		Boolean isDisabled = checkIsDisabled(mainId);
+		if (isDisabled == null || isDisabled) {
+			return Result.error("已经到截止时间了!");
+		}
+
 		// 答题考核节点上传附件数目 -1
 		SmartAnswerAssContent assContent = smartAnswerAssContentService.getById(mainId);
 		assContent.setUploadCount(assContent.getUploadCount() - 1);
@@ -357,6 +400,10 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 	public Result<?> deleteBatchSmartAnswerFile(@RequestParam(name="ids",required=true) String ids,
                                                 @RequestParam(name="mainId",required=true) String mainId,
                                                 @RequestParam(name="count",required=true) Integer count) {
+		Boolean isDisabled = checkIsDisabled(mainId);
+		if (isDisabled == null || isDisabled) {
+			return Result.error("已经到截止时间了!");
+		}
         // 答题考核节点上传附件数目 -count
         SmartAnswerAssContent assContent = smartAnswerAssContentService.getById(mainId);
         assContent.setUploadCount(assContent.getUploadCount() - count);
@@ -556,6 +603,10 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 	@ApiOperation(value="答题评分表-添加", notes="答题评分表-添加")
 	@PostMapping(value = "/addSmartAnswerAssScore")
 	public Result<?> addSmartAnswerAssScore(@RequestBody SmartAnswerAssScore smartAnswerAssScore) {
+		Boolean isDisabled = checkIsDisabled(smartAnswerAssScore.getMainId());
+		if (isDisabled == null || !isDisabled) {
+			return Result.error("该单位还没有到截止时间!");
+		}
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 		smartAnswerAssScore.setRatingUser(sysUser.getId());
 		smartAnswerAssScoreService.save(smartAnswerAssScore);
@@ -607,6 +658,11 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 	@ApiOperation(value="答题评分表-编辑", notes="答题评分表-编辑")
 	@PutMapping(value = "/editSmartAnswerAssScore")
 	public Result<?> editSmartAnswerAssScore(@RequestBody SmartAnswerAssScore smartAnswerAssScore) {
+		Boolean isDisabled = checkIsDisabled(smartAnswerAssScore.getMainId());
+		if (isDisabled == null || !isDisabled) {
+			return Result.error("该单位还没有到截止时间!");
+		}
+
 		smartAnswerAssScoreService.updateById(smartAnswerAssScore);
 
 		// TODO: 如果更新的分数原来是最高分呢或者最低分呢

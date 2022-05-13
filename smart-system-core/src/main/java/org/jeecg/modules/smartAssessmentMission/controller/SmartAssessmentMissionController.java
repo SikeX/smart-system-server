@@ -8,6 +8,7 @@ import com.google.common.base.Joiner;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
@@ -16,6 +17,7 @@ import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.DateUtil;
 import org.jeecg.common.util.DateUtils;
+import org.jeecg.common.util.SqlInjectionUtil;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.smartAnswerAssContent.entity.SmartAnswerAssContent;
 import org.jeecg.modules.smartAnswerAssContent.service.ISmartAnswerAssContentService;
@@ -136,7 +138,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     }
 
     /**
-     * 首页考核任务列表
+     * 首页考核正在进行任务列表
      *
      * @param smartAssessmentMission
      * @param pageNo
@@ -158,6 +160,58 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
         Page<SmartAssessmentMission> page = new Page<SmartAssessmentMission>(pageNo, pageSize);
         IPage<SmartAssessmentMission> pageList = smartAssessmentMissionService.page(page, queryWrapper);
         return Result.OK(pageList);
+    }
+
+    /**
+     * 分页列表查询历史考核任务
+     *
+     * @param smartAssessmentMission
+     * @param pageNo
+     * @param pageSize
+     * @param req
+     * @return
+     */
+    @AutoLog(value = "答题信息表-分页列表查询历史考核任务")
+    @ApiOperation(value = "答题信息表-分页列表查询历史考核任务", notes = "答题信息表-分页列表查询历史考核任务")
+    @GetMapping(value = "/historyList")
+    public Result<?> queryPageHistoryList(SmartAssessmentMission smartAssessmentMission,
+                                          @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
+                                          @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
+                                          HttpServletRequest req) {
+        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+        String hasQuery = req.getParameter("hasQuery");
+        if (hasQuery != null && "true".equals(hasQuery)) {
+            QueryWrapper<SmartAssessmentMission> queryWrapper = QueryGenerator.initQueryWrapper(smartAssessmentMission, req.getParameterMap());
+            queryWrapper.select("distinct id").eq("mission_status", "发布评分结果");
+            List<SmartAssessmentMission> missionList = smartAssessmentMissionService.list(queryWrapper);
+            List<String> missionIdList = new ArrayList<>();
+            missionList.forEach(mission -> {
+                missionIdList.add(mission.getId());
+            });
+
+            if (missionList.size() == 0) {
+                return Result.error("没有找到符合条件的考核任务!");
+            }
+
+            // 查询上面所有考核任务信息
+            QueryWrapper<SmartAnswerInfo> answerInfoQueryWrapper = new QueryWrapper<>();
+            // 包含本单位的任务
+            answerInfoQueryWrapper.eq("depart", sysUser.getDepartId())
+                    .in("mission_id", missionIdList)
+                    .eq("mission_status", "发布评分结果");
+            Page<SmartAnswerInfo> page = new Page<SmartAnswerInfo>(pageNo, pageSize);
+            IPage<SmartAnswerInfo> pageList = smartAnswerInfoService.page(page, answerInfoQueryWrapper);
+            return Result.OK(pageList);
+        } else {
+            QueryWrapper<SmartAnswerInfo> queryWrapper = new QueryWrapper<>();
+            // 包含本单位的任务
+            queryWrapper.eq("depart", sysUser.getDepartId())
+                    .eq("mission_status", "发布评分结果");
+            Page<SmartAnswerInfo> page = new Page<SmartAnswerInfo>(pageNo, pageSize);
+            IPage<SmartAnswerInfo> pageList = smartAnswerInfoService.page(page, queryWrapper);
+            return Result.OK(pageList);
+        }
+
     }
 
     /**
@@ -185,7 +239,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
         contentList.forEach(smartAssessmentContent -> missionIdList.add(smartAssessmentContent.getMissionId()));
 
         QueryWrapper<SmartAssessmentMission> queryWrapper = QueryGenerator.initQueryWrapper(smartAssessmentMission, req.getParameterMap());
-        queryWrapper.ne("mission_status", "未发布").in("id", missionIdList);
+        queryWrapper.eq("mission_status", "已发布").in("id", missionIdList);
         Page<SmartAssessmentMission> page = new Page<SmartAssessmentMission>(pageNo, pageSize);
         IPage<SmartAssessmentMission> pageList = smartAssessmentMissionService.page(page, queryWrapper);
         return Result.OK(pageList);
@@ -217,7 +271,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
         contentList.forEach(smartAssessmentContent -> missionIdList.add(smartAssessmentContent.getMissionId()));
 
         QueryWrapper<SmartAssessmentMission> queryWrapper = QueryGenerator.initQueryWrapper(smartAssessmentMission, req.getParameterMap());
-        queryWrapper.ne("mission_status", "未发布").in("id", missionIdList);
+        queryWrapper.eq("mission_status", "已发布").in("id", missionIdList);
         Page<SmartAssessmentMission> page = new Page<SmartAssessmentMission>(pageNo, pageSize);
         IPage<SmartAssessmentMission> pageList = smartAssessmentMissionService.page(page, queryWrapper);
         return Result.OK(pageList);
@@ -396,6 +450,41 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     }
 
     /**
+     * 考核任务被考核单位的重复校验接口
+     *
+     * @return
+     */
+    @GetMapping(value = "/duplicateCheck")
+    @ApiOperation("考核任务被考核单位的重复校验接口")
+    public Result<Object> doDuplicateCheckWithDelFlag(@RequestParam(name = "departId", required = true) String departId,
+                                                      @RequestParam(name = "missionId", required = true) String missionId,
+                                                      @RequestParam(name = "dataId", required = false) String dataId,
+                                                      HttpServletRequest request) {
+        Long num = null;
+
+        log.info("----duplicate check------："+ departId);
+        QueryWrapper<SmartAssessmentDepart> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("mission_id", missionId).eq("assessment_depart", departId);
+        if (StringUtils.isNotBlank(dataId)) {
+            // [2].编辑页面校验
+            queryWrapper.ne("id", dataId);
+            num = smartAssessmentDepartService.count(queryWrapper);
+        } else {
+            // [1].添加页面校验
+            num = smartAssessmentDepartService.count(queryWrapper);
+        }
+
+        if (num == null || num == 0) {
+            // 该值可用
+            return Result.ok("该值可用！");
+        } else {
+            // 该值不可用
+            log.info("该值不可用，系统中已存在！");
+            return Result.error("考核任务已添加该被考核单位！");
+        }
+    }
+
+    /**
      * 发布
      *
      * @param smartAssessmentMission
@@ -444,10 +533,36 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @ApiOperation(value = "考核任务表-发布评分结果", notes = "考核任务表-发布评分结果")
     @PutMapping(value = "/publishScore")
     public Result<?> publishScore(@RequestBody SmartAssessmentMission smartAssessmentMission) {
+        if (oConvertUtils.isEmpty(smartAssessmentMission.getId())) {
+            return Result.error("数据错误!");
+        }
+
+        QueryWrapper<SmartAnswerInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("mission_status", "未签收").eq("mission_id", smartAssessmentMission.getId());
+        long count = smartAnswerInfoService.count(queryWrapper);
+        if (count != 0) {
+            return Result.error("存在未签收的单位,无法发布评分结果!");
+        }
+        // 生成排名
+        generateRank(smartAssessmentMission.getId());
+        // 修改任务状态
+        smartAnswerInfoService.updateMissionStatus(smartAssessmentMission.getId(), "发布评分结果");
         smartAssessmentMission.setMissionStatus("发布评分结果");
         smartAssessmentMissionService.updateById(smartAssessmentMission);
 
         return Result.OK("发布成功");
+    }
+
+    private void generateRank(String missionId) {
+        QueryWrapper<SmartAnswerInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("mission_id", missionId).orderByDesc("total_points");
+        List<SmartAnswerInfo> list = smartAnswerInfoService.list(queryWrapper);
+        for (int i = 0; i < list.size(); i++) {
+            SmartAnswerInfo smartAnswerInfo = list.get(i);
+            smartAnswerInfo.setRanking(i + 1);
+        }
+
+        smartAnswerInfoService.updateBatchById(list);
     }
 
     /**
@@ -460,6 +575,10 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @ApiOperation(value = "考核任务表-取消发布评分结果", notes = "考核任务表-取消发布评分结果")
     @PutMapping(value = "/recallScoreResult")
     public Result<?> recallScoreResult(@RequestBody SmartAssessmentMission smartAssessmentMission) {
+        if (oConvertUtils.isEmpty(smartAssessmentMission.getId())) {
+            return Result.error("数据错误!");
+        }
+        smartAnswerInfoService.updateMissionStatus(smartAssessmentMission.getId(), "已签收");
         // 更新任务状态
         smartAssessmentMission.setMissionStatus("已发布");
         smartAssessmentMissionService.updateById(smartAssessmentMission);

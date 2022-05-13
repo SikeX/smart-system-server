@@ -101,10 +101,20 @@
 	<select id="duplicateCheckCountSql" resultType="Long" parameterType="org.jeecg.modules.system.model.DuplicateCheckVo">
 		SELECT COUNT(*) FROM ${tableName} WHERE ${fieldName} = #{fieldVal} and id &lt;&gt; #{dataId}
 	</select>
+
+	<!-- 重复校验 sql语句, 过滤已经删除的数据 -->
+	<select id="duplicateCheckCountSqlWithDelFlag" resultType="Long" parameterType="org.jeecg.modules.system.model.DuplicateCheckVo">
+		SELECT COUNT(*) FROM ${tableName} WHERE ${fieldName} = #{fieldVal} and id &lt;&gt; #{dataId} and del_flag = '0'
+	</select>
 	
 	<!-- 重复校验 sql语句 -->
 	<select id="duplicateCheckCountSqlNoDataId" resultType="Long" parameterType="org.jeecg.modules.system.model.DuplicateCheckVo">
 		SELECT COUNT(*) FROM ${tableName} WHERE ${fieldName} = #{fieldVal}
+	</select>
+
+	<!-- 重复校验 sql语句, 过滤已经删除的数据  -->
+	<select id="duplicateCheckCountSqlNoDataIdWithDelFlag" resultType="Long" parameterType="org.jeecg.modules.system.model.DuplicateCheckVo">
+		SELECT COUNT(*) FROM ${tableName} WHERE ${fieldName} = #{fieldVal} and del_flag = '0'
 	</select>
 		
 	<!-- 查询部门信息 作为字典数据 -->

@@ -75,7 +75,7 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
     private ISmartAssessmentDepartService smartAssessmentDepartService;
 
     /**
-     * 分页列表查询
+     * 分页列表查询正在进行中的的考核任务
      *
      * @param smartAnswerInfo
      * @param pageNo
@@ -83,17 +83,19 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
      * @param req
      * @return
      */
-    @AutoLog(value = "答题信息表-分页列表查询")
-    @ApiOperation(value = "答题信息表-分页列表查询", notes = "答题信息表-分页列表查询")
+    @AutoLog(value = "答题信息表-分页列表查询正在进行中的的考核任务")
+    @ApiOperation(value = "答题信息表-分页列表查询正在进行中的的考核任务", notes = "答题信息表-分页列表查询正在进行中的的考核任务")
     @GetMapping(value = "/list")
     public Result<?> queryPageList(SmartAnswerInfo smartAnswerInfo,
                                    @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                                    @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                    HttpServletRequest req) {
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-        // 被考核单位查询包含自己的所有考核任务ID
+        // 被考核单位登录账号查询包含自己的所有考核任务ID
         QueryWrapper<SmartAssessmentDepart> smartAssessmentDepartQueryWrapper = new QueryWrapper<>();
-        smartAssessmentDepartQueryWrapper.select("distinct mission_id").eq("depart_user", sysUser.getId()).eq("assessment_depart", sysUser.getDepartId());
+        smartAssessmentDepartQueryWrapper.select("distinct mission_id")
+                .eq("depart_user", sysUser.getId())
+                .eq("assessment_depart", sysUser.getDepartId());
         List<SmartAssessmentDepart> missionList = smartAssessmentDepartService.list(smartAssessmentDepartQueryWrapper);
         List<String> missionIdList = new ArrayList<>();
         missionList.forEach(mission -> {
@@ -107,7 +109,9 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
         // 查询上面所有考核任务信息
         QueryWrapper<SmartAnswerInfo> queryWrapper = QueryGenerator.initQueryWrapper(smartAnswerInfo, req.getParameterMap());
         // 包含本单位的任务
-        queryWrapper.eq("depart", sysUser.getDepartId()).in("mission_id", missionIdList);
+        queryWrapper.select(SmartAnswerInfo.class,i -> !i.getColumn().equals("total_points") && !i.getColumn().equals("ranking"))
+                .eq("depart", sysUser.getDepartId()).in("mission_id", missionIdList)
+                .ne("mission_status", "发布评分结果");
         Page<SmartAnswerInfo> page = new Page<SmartAnswerInfo>(pageNo, pageSize);
         IPage<SmartAnswerInfo> pageList = smartAnswerInfoService.page(page, queryWrapper);
         return Result.OK(pageList);

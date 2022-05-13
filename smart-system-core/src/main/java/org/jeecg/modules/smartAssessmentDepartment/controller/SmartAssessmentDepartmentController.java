@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
@@ -15,6 +16,7 @@ import org.jeecg.common.system.vo.DictModel;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.modules.smartAssessmentDepartment.entity.SmartAssessmentDepartment;
 import org.jeecg.modules.smartAssessmentDepartment.service.ISmartAssessmentDepartmentService;
+import org.jeecg.modules.smartAssessmentTeam.entity.SmartAssessmentTeam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -95,6 +97,43 @@ public class SmartAssessmentDepartmentController extends JeecgController<SmartAs
 			return Result.error("暂时没有评分考核单位信息,请先添加");
 		}
 		return Result.OK(dictItems);
+	}
+
+	/**
+	 * 考核单位负责单位重复值校验
+	 *
+	 * @return
+	 */
+	@GetMapping(value = "/duplicateCheck")
+	@ApiOperation("考核组负责单位重复值校验")
+	public Result<Object> doDuplicateCheckWithDelFlag(@RequestParam(name = "departIds", required = true) String departIds,
+													  @RequestParam(name = "dataId", required = false) String dataId,
+													  HttpServletRequest request) {
+		Long num = null;
+
+		log.info("----duplicate check------："+ departIds);
+		QueryWrapper<SmartAssessmentDepartment> queryWrapper = new QueryWrapper<>();
+		String[] departIdList = departIds.split(",");
+		for (String departId : departIdList) {
+			queryWrapper.or().like("responsible_depart", departId);
+		}
+		if (StringUtils.isNotBlank(dataId)) {
+			// [2].编辑页面校验
+			queryWrapper.and(qw -> qw.ne("id", dataId));
+			num = smartAssessmentDepartmentService.count(queryWrapper);
+		} else {
+			// [1].添加页面校验
+			num = smartAssessmentDepartmentService.count(queryWrapper);
+		}
+
+		if (num == null || num == 0) {
+			// 该值可用
+			return Result.ok("该值可用！");
+		} else {
+			// 该值不可用
+			log.info("该值不可用，系统中已存在！");
+			return Result.error("负责单位与别的考核单位有重复！");
+		}
 	}
 	
 	/**
