@@ -1060,13 +1060,22 @@ public class SysUserController {
                     sysUserExcel.setPassword(passwordEncode);
                     //部门ID,设置所属单位及负责单位
                     String orgCode = sysUserExcel.getOrgCode();
-                    String deptId = commonService.getDepartIdByOrgCode(orgCode);
+                    List<String> orgCodeList = Arrays.asList(orgCode.split(","));
+                    List<String> deptIdList = new ArrayList<>();
+                    for (int index = 0; index<orgCodeList.size();index++){
+                        deptIdList.add(commonService.getDepartIdByOrgCode(orgCodeList.get(index)));
+                    }
+                    String deptId = String.join(",", deptIdList);
                     sysUserExcel.setDepartId(deptId);
-                    sysUserExcel.setDepartIds(deptId);
+
+                    if(sysUserExcel.getUserIdentity() == 2){
+                        sysUserExcel.setDepartIds(deptId);
+                    }
                     Integer yn = sysUserExcel.getUserIdentity();
                     //初始化用户角色为单位非管理员
                     String role = "1465163864583323650";
-                    System.out.println("ynynynynyn"+yn);
+                    //System.out.println("ynynynynyn"+yn);
+
                     if(yn == 2){
                         role = "f6817f48af4fb3af11b9e8bf182f618b";
                     }
