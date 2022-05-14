@@ -101,6 +101,7 @@ public class Smart_8EscortedMealController extends JeecgController<Smart_8Escort
     @ApiOperation(value = "陪同用餐人员表-添加", notes = "陪同用餐人员表-添加")
     @PostMapping(value = "/addByMainId")
     public Result<?> add(@RequestBody Smart_8EscortedMeal smart_8EscortedMeal) {
+
         smart_8EscortedMealService.save(smart_8EscortedMeal);
         return Result.OK("添加成功！");
     }

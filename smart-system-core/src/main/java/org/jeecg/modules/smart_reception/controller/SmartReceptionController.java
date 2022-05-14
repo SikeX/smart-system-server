@@ -13,6 +13,7 @@ import org.jeecg.modules.smart_8_escorted_meal.service.ISmart_8EscortedMealServi
 import org.jeecg.modules.smart_8regulations_for_reception.service.impl.Smart_8regulationsForReceptionServiceImpl;
 import org.jeecg.modules.smart_8regulations_for_reception.vo.Smart_8regulationsForReceptionPage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -75,6 +76,8 @@ public class SmartReceptionController extends JeecgController<SmartReception, IS
 
 	@Autowired
 	private ISmart_8EscortedMealService smart_8EscortedMealService;
+
+
 
 
 	/*---------------------------------主表处理-begin-------------------------------------*/
@@ -203,10 +206,20 @@ public class SmartReceptionController extends JeecgController<SmartReception, IS
 	 * @param smart_8Visitor
 	 * @return
 	 */
+
+
+
 	@AutoLog(value = "来访人员信息表-添加")
 	@ApiOperation(value="来访人员信息表-添加", notes="来访人员信息表-添加")
 	@PostMapping(value = "/addSmart_8Visitor")
 	public Result<?> addSmart_8Visitor(@RequestBody Smart_8Visitor smart_8Visitor) {
+
+		QueryWrapper<SmartReception> queryWrapper = new QueryWrapper<SmartReception>();
+		queryWrapper.eq("id", smart_8Visitor.getMainId());
+		SmartReception smartReception = smartReceptionService.getOne(queryWrapper);
+		smartReception.setVisitorsNum(smartReception.getVisitorsNum()+1);
+		smartReceptionService.updateById(smartReception);
+
 		smart_8VisitorService.save(smart_8Visitor);
 		return Result.OK("添加成功！");
 	}
@@ -233,6 +246,13 @@ public class SmartReceptionController extends JeecgController<SmartReception, IS
 	@ApiOperation(value="来访人员信息表-通过id删除", notes="来访人员信息表-通过id删除")
 	@DeleteMapping(value = "/deleteSmart_8Visitor")
 	public Result<?> deleteSmart_8Visitor(@RequestParam(name="id",required=true) String id) {
+
+		QueryWrapper<SmartReception> queryWrapper = new QueryWrapper<SmartReception>();
+		queryWrapper.eq("id", smart_8VisitorService.getMainIdById(id));
+		SmartReception smartReception = smartReceptionService.getOne(queryWrapper);
+		smartReception.setVisitorsNum(smartReception.getVisitorsNum() - 1);
+		smartReceptionService.updateById(smartReception);
+
 		smart_8VisitorService.removeById(id);
 		return Result.OK("删除成功!");
 	}
@@ -490,9 +510,9 @@ public class SmartReceptionController extends JeecgController<SmartReception, IS
 	@PostMapping(value = "/addSmart_8Dining")
 	public Result<?> addSmart_8Dining(@RequestBody Smart_8Dining smart_8Dining) {
 		smart_8DiningService.save(smart_8Dining);
-		Smart_8EscortedMeal smart_8EscortedMeal = new Smart_8EscortedMeal();
-		smart_8EscortedMeal.setMainId(smart_8Dining.getId());
-		smart_8EscortedMealService.save(smart_8EscortedMeal);
+//		Smart_8EscortedMeal smart_8EscortedMeal = new Smart_8EscortedMeal();
+//		smart_8EscortedMeal.setMainId(smart_8Dining.getId());
+//		smart_8EscortedMealService.save(smart_8EscortedMeal);
 
 		return Result.OK("添加成功！");
 	}
