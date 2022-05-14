@@ -81,6 +81,7 @@ public class villageHome implements Serializable {
 
     private String realname;
 
+    @Excel(name = "手机号码", width = 15)
     private String phone;
 
     private List<SysUser> userList;

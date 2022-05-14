@@ -50,7 +50,16 @@ public class SmartAnswerAssScore implements Serializable {
 	/**评分人*/
 	@Excel(name = "评分人", width = 15)
     @ApiModelProperty(value = "评分人")
+    @Dict(dicCode = "id", dicText = "realname", dictTable = "sys_user")
     private java.lang.String ratingUser;
+    /**评分人*/
+    @Excel(name = "评分人所属考核组或考核单位ID", width = 15)
+    @ApiModelProperty(value = "评分人所属考核组或考核单位ID")
+    private java.lang.String roleId;
+    /**评分人*/
+    @Excel(name = "评分人所属类别", width = 15)
+    @ApiModelProperty(value = "评分人所属类别")
+    private java.lang.Integer roleType;
 	/**评分*/
 	@Excel(name = "评分", width = 15)
     @ApiModelProperty(value = "评分")

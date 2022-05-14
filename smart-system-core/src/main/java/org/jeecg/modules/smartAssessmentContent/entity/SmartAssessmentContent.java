@@ -50,7 +50,7 @@ public class SmartAssessmentContent implements Serializable {
     @ApiModelProperty(value = "所属部门")
     private java.lang.String sysOrgCode;
 	/**父级节点*/
-	@Excel(name = "父级节点", width = 15)
+	@Excel(name = "父级节点", width = 15, dictTable = "smart_assessment_content", dicText = "name", dicCode = "id")
     @ApiModelProperty(value = "父级节点")
     private java.lang.String pid;
 	/**是否有子节点*/
@@ -58,9 +58,9 @@ public class SmartAssessmentContent implements Serializable {
 	@Dict(dicCode = "yn")
     @ApiModelProperty(value = "是否有子节点")
     private java.lang.String hasChild;
-	/**考核任务ID*/
-	@Excel(name = "考核任务ID", width = 15)
-    @ApiModelProperty(value = "考核任务ID")
+	/**考核任务*/
+	@Excel(name = "考核任务", width = 15, dictTable = "smart_assessment_mission", dicText = "mission_name", dicCode = "id")
+    @ApiModelProperty(value = "考核任务")
     private java.lang.String missionId;
 	/**名称*/
 	@Excel(name = "名称", width = 15)
@@ -75,8 +75,8 @@ public class SmartAssessmentContent implements Serializable {
 	@Excel(name = "填报说明", width = 15)
     @ApiModelProperty(value = "填报说明")
     private java.lang.String instructions;
-	/**考核单位评分人员*/
-	@Excel(name = "评分考核单位", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
+	/**评分考核单位*/
+	@Excel(name = "评分考核单位")
     @ApiModelProperty(value = "评分考核单位")
     @TableField(updateStrategy = FieldStrategy.IGNORED)
     private java.lang.String assDepart;
@@ -87,11 +87,10 @@ public class SmartAssessmentContent implements Serializable {
     @TableField(updateStrategy = FieldStrategy.IGNORED)
     private java.lang.String assTeam;
 	/**排序*/
-	@Excel(name = "排序", width = 15)
     @ApiModelProperty(value = "排序")
     private java.lang.Double sortNo;
 	/**是否考核要点*/
-	@Excel(name = "是否考核要点", width = 15)
+	@Excel(name = "是否考核要点", width = 15, dicCode = "yn")
     @ApiModelProperty(value = "是否考核要点")
     private java.lang.Integer isKey;
 }

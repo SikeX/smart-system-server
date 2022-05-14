@@ -41,12 +41,15 @@ public class Rank implements Serializable {
     private String departName;
 
 
-    private Map<String, Double> sourceMap;
+    private Map<String, Double> scoreMap;
+
+    private Map<String, Double> columnMap;
+
 
     /**总分*/
     @Excel(name = "总分", width = 15)
     @ApiModelProperty(value = "总分")
-    private Integer totalScore;
+    private Double totalScore;
 	/**排名*/
 	@Excel(name = "排名", width = 15)
     @ApiModelProperty(value = "排名")

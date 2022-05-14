@@ -1,6 +1,7 @@
 package org.jeecg.modules.SmartPunishPeople.controller;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -15,7 +16,9 @@ import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.system.vo.SysDepartModel;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.SmartFirstFormPeople.entity.SmartFirstFormPeople;
 import org.jeecg.modules.SmartInnerPartyTalk.entity.SmartInnerPartyTalk;
 import org.jeecg.modules.SmartPunishPeople.entity.SmartPunishPeople;
 import org.jeecg.modules.SmartPunishPeople.entity.TypeCount;
@@ -129,6 +132,35 @@ public class SmartPunishPeopleController extends JeecgController<SmartPunishPeop
 			});
 		}
 		return Result.OK(pageList);
+	}
+
+	/**
+	 * 获取单位处分人员数目
+	 * @param departId 单位ID
+	 *
+	 * @return
+	 */
+	@GetMapping(value = "/countByDepartId")
+	public Result<JSONObject> countByDepartId(@RequestParam(name = "departId", required = true) String departId) {
+		Result<JSONObject> result = new Result<JSONObject>();
+		JSONObject obj = new JSONObject();
+
+		// 先根据单位ID获取单位信息
+		SysDepartModel sysDepartModel = sysBaseAPI.selectAllById(departId);
+
+		// 查询单位处分人员数目
+		QueryWrapper<SmartPunishPeople> queryWrapper = new QueryWrapper<>();
+		queryWrapper.eq("depart_code", sysDepartModel.getOrgCode()).eq("del_flag", 0);
+		long count = smartPunishPeopleService.count(queryWrapper);
+
+		// 查询单位负责人是否被处分
+		Integer mainPeopleCount = smartPunishPeopleService.countMainPeopleByDepart(departId);
+
+		obj.put("count", count);
+		obj.put("mainPeopleCount", mainPeopleCount);
+		result.setResult(obj);
+
+		return result;
 	}
 	
 	/**
