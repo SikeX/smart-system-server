@@ -135,6 +135,8 @@ public class SmartVillageLeadController extends JeecgController<SmartVillageLead
 				smartVillageLeadService.removeById(smartVillageLead.getId());
 				return Result.error(faceResponse.getString("error_msg"));
 			} else {
+				smartVillageLead.setFaceToken(faceResponse.getJSONObject("result").getString("face_token"));
+				smartVillageLeadService.updateById(smartVillageLead);
 				return Result.OK("添加成功！");
 			}
 
@@ -170,9 +172,12 @@ public class SmartVillageLeadController extends JeecgController<SmartVillageLead
 		try {
 			JSONObject faceResponse = faceRecognitionUtil.updateFace(imgBase64, groupId, smartVillageLead.getId());
 
+			log.info(String.valueOf(faceResponse));
+
 			if(faceResponse.getIntValue("error_code") != 0) {
 				return Result.error(faceResponse.getString("error_msg"));
 			} else {
+				smartVillageLead.setFaceToken(faceResponse.getJSONObject("result").getString("face_token"));
 				smartVillageLeadService.updateById(smartVillageLead);
 				return Result.OK("编辑成功！");
 			}

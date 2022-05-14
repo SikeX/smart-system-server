@@ -272,9 +272,9 @@ public class FaceRecognitionUtil {
      *
      * @return
      */
-    public JSONObject deleteUser(String groupId, String userName, String faceToken) {
+    public JSONObject deleteUser(String groupId, String userId, String faceToken) {
 
-        String userId = PinyinUtil.getPinyin(userName, "_");
+//        String userId = PinyinUtil.getPinyin(userName, "_");
 
         String host = "https://aip.baidubce.com/rest/2.0/face/v3/faceset/face/delete?";
 
@@ -291,6 +291,8 @@ public class FaceRecognitionUtil {
             String url = host + "access_token=" + access_token;
 
             Map<String, Object> bodyMap = new HashMap<>();
+
+            log.info("groupId:{},userId:{},faceToken:{}",groupId,userId,faceToken);
 
             bodyMap.put("log_id", RandomUtil.randomInt(6,10));
             bodyMap.put("group_id", groupId);
