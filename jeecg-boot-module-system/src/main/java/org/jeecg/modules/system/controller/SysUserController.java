@@ -34,6 +34,7 @@ import org.jeecg.modules.system.model.SysUserSysDepartModel;
 import org.jeecg.modules.system.service.*;
 import org.jeecg.modules.system.vo.SysDepartUsersVO;
 import org.jeecg.modules.system.vo.SysUserRoleVO;
+import org.jeecg.modules.system.vo.SysUserVo;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -947,22 +948,26 @@ public class SysUserController {
         }
 
         // Step.3 组装pageList
-        List<SysUser> pageList = new ArrayList<SysUser>();
+        //List<SysUser> pageList = new ArrayList<SysUser>();
+        List<SysUserVo> voPageList = new ArrayList<>();
         for (SysUser main : sysUserList) {
-            SysUser vo = new SysUser();
+            //SysUser user = new SysUser();
+            SysUserVo vo = new SysUserVo();
+            //BeanUtils.copyProperties(main, user);
             BeanUtils.copyProperties(main, vo);
-            pageList.add(vo);
+            //pageList.add(user);
+            voPageList.add(vo);
         }
 
         // Step.4 AutoPoi 导出Excel
         ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
         mv.addObject(NormalExcelConstants.FILE_NAME, "人员列表");
-        mv.addObject(NormalExcelConstants.CLASS, SysUser.class);
+        mv.addObject(NormalExcelConstants.CLASS, SysUserVo.class);
         mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("人员数据", "导出人:"+currentUser.getRealname(), "人员表"));
-        mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
+        mv.addObject(NormalExcelConstants.DATA_LIST, voPageList);
 
         // List深拷贝，否则返回前端会没数据
-        List<SysUser> newPageList = ObjectUtil.cloneByStream(pageList);
+        List<SysUserVo> newPageList = ObjectUtil.cloneByStream(voPageList);
 
         baseCommon_Service.addExportLog(mv.getModel(), "人员", req, response);
 
