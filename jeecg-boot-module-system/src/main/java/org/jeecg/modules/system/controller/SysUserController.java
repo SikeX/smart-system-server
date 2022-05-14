@@ -116,19 +116,21 @@ public class SysUserController {
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public Result<IPage<SysUser>> queryPageList(SysUser user,@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 									  @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,HttpServletRequest req) {
-        HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+//        HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
         // 获取登录用户信息，可以用来查询单位部门信息
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
         // 获取用户角色
         String userName = sysUser.getUsername();
+        String departId = sysUser.getDepartId();
         List<String> role = sysBaseAPI.getRolesByUsername(userName);
-        //纪委管理员可以看到全区人员
-        if(role.contains("CCDIAdmin")){
-
+        QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(user, req.getParameterMap());
+        //纪委管理员、系统管理员可以看到全区人员
+        if(role.contains("CCDIAdmin") || role.contains("systemAdmin")){
         }
         //单位管理员-设置部门，只能看到本部门人员
         else {
-            // 1. 规则，下面是 以**开始
+            queryWrapper.eq("depart_id",departId);
+           /* // 1. 规则，下面是 以**开始
             String rule = "in";
             // 2. 查询字段
             String field = "departId";
@@ -139,9 +141,9 @@ public class SysUserController {
             // 获取请求参数中的superQueryParams
             List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
             // 添加额外查询条件，用于权限控制
-            /*paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+            *//*paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
                     + childrenIdString
-                    + "%22,%22field%22:%22" + field + "%22%7D%5D");*/
+                    + "%22,%22field%22:%22" + field + "%22%7D%5D");*//*
             paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
                     + departId
                     + "%22,%22field%22:%22" + field + "%22%7D%5D");
@@ -149,11 +151,10 @@ public class SysUserController {
             paramsList.toArray(params);
             map.put("superQueryParams", params);
             params = new String[]{"and"};
-            map.put("superQueryMatchType", params);
+            map.put("superQueryMatchType", params);*/
         }
 
         Result<IPage<SysUser>> result = new Result<IPage<SysUser>>();
-		QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(user, map);
     	//TODO 外部模拟登陆临时账号，列表不显示
         queryWrapper.ne("username","_reserve_user_external");
 		Page<SysUser> page = new Page<SysUser>(pageNo, pageSize);
