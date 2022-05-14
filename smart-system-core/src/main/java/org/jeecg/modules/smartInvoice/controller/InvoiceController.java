@@ -16,11 +16,15 @@ import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.smartInvoice.entity.Invoice;
+import org.jeecg.modules.smartInvoice.vo.InvoiceResult;
 import org.jeecg.modules.test.testAttached.entity.TestAttached;
 import org.jeecg.modules.test.testAttached.entity.TestAttachedFile;
 import org.jeecg.modules.test.testAttached.service.ITestAttachedFileService;
 import org.jeecg.modules.test.testAttached.service.ITestAttachedService;
 import org.jeecg.modules.test.testAttached.vo.TestAttachedPage;
+import org.jeecg.modules.utils.ImageUtils;
+import org.jeecg.modules.utils.InvoiceUtil;
+import org.jeecg.modules.utils.UrlUtil;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -28,6 +32,7 @@ import org.jeecgframework.poi.excel.entity.ImportParams;
 import org.jeecgframework.poi.excel.view.JeecgEntityExcelView;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -57,55 +62,70 @@ public class InvoiceController {
 
     @Autowired
     private RestTemplate restTemplate;
+    @Value("${jeecg.fileBaseUrl}")
+    private String fileBaseUrl;
 
-   /**
-    *   发票识别
-    *
-    * @param imgBase64
-    * @return
-    */
+    /**
+     * 发票识别及验真
+     * @param invoice
+     * @return
+     */
    @AutoLog(value = "发票识别")
    @ApiOperation(value="发票识别", notes="发票识别")
    @PostMapping(value = "/recognize")
    public Result<?> add(@RequestBody Invoice invoice) {
-       log.info(invoice.getImg());
-       String host = "https://ocrapi-invoice.taobao.com";
-       String path = "/ocrservice/invoice";
-       String method = "POST";
-       String appcode = "1b638e4b0ead44c593727fffa06a82c8";
-       HttpHeaders headers = new HttpHeaders();
-       //最后在header中的格式(中间是英文空格)为Authorization:APPCODE 83359fd73fe94948385f570e3c139105
-       headers.add("Authorization", "APPCODE " + appcode);
-       //根据API的要求，定义相对应的Content-Type
-       headers.add("Content-Type", "application/json; charset=UTF-8");
-       Map<String, String> querys = new HashMap<String, String>();
-//       String body = "{\"img\": " + imgBase64 + "}";
 
-       HttpEntity httpEntity = new HttpEntity<>(invoice, headers);
-       JSONObject response = restTemplate.postForObject(host + path, httpEntity,JSONObject.class);
-       System.out.println("带header的Post数据请求:" + response);
+       String imgPath = invoice.getImg();
 
+       String imgBase64 = ImageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese(fileBaseUrl + imgPath));
 
-//       try {
-//           /**
-//            * 重要提示如下:
-//            * HttpUtils请从
-//            * https://github.com/aliyun/api-gateway-demo-sign-java/blob/master/src/main/java/com/aliyun/api/gateway/demo/util/HttpUtils.java
-//            * 下载
-//            *
-//            * 相应的依赖请参照
-//            * https://github.com/aliyun/api-gateway-demo-sign-java/blob/master/pom.xml
-//            */
-//           HttpResponse response = HttpRequest.post(host + path)
-//                   .body(body)
-//                   .execute();
-//           log.info(response.toString());
-//           //获取response的body
-////           System.out.println(EntityUtils.toString( .getEntity()));
-//       } catch (Exception e) {
-//           e.printStackTrace();
-//       }
-       return Result.OK("添加成功！");
+       InvoiceResult invoiceResult = new InvoiceResult();
+
+       JSONObject recgnizeObject = new JSONObject();
+
+       try {
+           JSONObject response = InvoiceUtil.recognize(imgBase64);
+           recgnizeObject.put("success", true);
+           recgnizeObject.put("data", response);
+           invoiceResult.setInvoiceData(recgnizeObject);
+           invoiceResult = this.verify(response, invoiceResult);
+           return Result.ok(invoiceResult);
+       } catch (Exception e) {
+           String errorMessage = e.getMessage();
+           errorMessage = errorMessage.substring(errorMessage.indexOf("{"), errorMessage.lastIndexOf("}") + 1);
+           JSONObject errorJson = JSONObject.parseObject(errorMessage);
+           recgnizeObject.put("success", false);
+           recgnizeObject.put("data", errorJson.getString("error_msg"));
+           invoiceResult.setInvoiceData(recgnizeObject);
+           return Result.ok(invoiceResult);
+       }
+
    }
+
+   public InvoiceResult verify(JSONObject response, InvoiceResult invoiceResult) {
+       JSONObject verifyObject = new JSONObject();
+       try {
+           String fpdm = response.getJSONObject("data").getString("发票代码");
+           String fphm = response.getJSONObject("data").getString("发票号码");
+           String kprq = response.getJSONObject("data").getString("开票日期");
+           String noTaxAmount = response.getJSONObject("data").getString("不含税金额");
+           String checkCode = response.getJSONObject("data").getString("校验码");
+
+           JSONObject verificateResult = InvoiceUtil.verificate(fpdm, fphm, kprq, noTaxAmount, checkCode);
+           verifyObject.put("success", true);
+           verifyObject.put("data", verificateResult);
+           invoiceResult.setVerificationData(verifyObject);
+           return invoiceResult;
+       } catch (Exception e) {
+           String errorMessage = e.getMessage();
+           errorMessage = errorMessage.substring(errorMessage.indexOf("{"), errorMessage.lastIndexOf("}") + 1);
+           JSONObject errorJson = JSONObject.parseObject(errorMessage);
+           verifyObject.put("success", false);
+           verifyObject.put("data", errorJson.getString("message"));
+           invoiceResult.setVerificationData(verifyObject);
+           return invoiceResult;
+       }
+   }
+
 
 }

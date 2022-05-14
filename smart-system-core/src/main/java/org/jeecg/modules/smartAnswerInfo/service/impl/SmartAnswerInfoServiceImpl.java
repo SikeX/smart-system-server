@@ -24,4 +24,9 @@ public class SmartAnswerInfoServiceImpl extends ServiceImpl<SmartAnswerInfoMappe
     public List<SmartDepartContentScore> selectByMissionIdAndContentId(Page<SmartDepartContentScore> page, String missionId, String assContentId) {
         return baseMapper.selectByMissionIdAndContentId(page, missionId, assContentId);
     }
+
+    @Override
+    public void updateMissionStatus(String missionId, String missionStatus) {
+        baseMapper.updateMissionStatus(missionId, missionStatus);
+    }
 }

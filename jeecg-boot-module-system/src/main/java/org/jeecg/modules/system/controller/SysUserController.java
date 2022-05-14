@@ -248,6 +248,29 @@ public class SysUserController {
     }
 
 
+    /**
+     * 获取单位党员数量
+     *
+     * @return
+     */
+    @RequestMapping(value = "/countByPoliticalStatus", method = RequestMethod.GET)
+    public Result<JSONObject> queryPageListByPoliticalStatus(@RequestParam(name = "departId", required = true) String departId) {
+        Result<JSONObject> result = new Result<JSONObject>();
+        JSONObject obj = new JSONObject();
+        // 获取登录用户信息，可以用来查询单位部门信息
+        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("depart_id", departId).eq("del_flag", 0);
+        long count = sysUserService.count(queryWrapper);
+
+        obj.put("count", count);
+        result.setResult(obj);
+
+        return result;
+    }
+
+
     //@RequiresRoles({"admin"})
     //@RequiresPermissions("user:add")
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
@@ -1037,13 +1060,22 @@ public class SysUserController {
                     sysUserExcel.setPassword(passwordEncode);
                     //部门ID,设置所属单位及负责单位
                     String orgCode = sysUserExcel.getOrgCode();
-                    String deptId = commonService.getDepartIdByOrgCode(orgCode);
+                    List<String> orgCodeList = Arrays.asList(orgCode.split(","));
+                    List<String> deptIdList = new ArrayList<>();
+                    for (int index = 0; index<orgCodeList.size();index++){
+                        deptIdList.add(commonService.getDepartIdByOrgCode(orgCodeList.get(index)));
+                    }
+                    String deptId = String.join(",", deptIdList);
                     sysUserExcel.setDepartId(deptId);
-                    sysUserExcel.setDepartIds(deptId);
+
+                    if(sysUserExcel.getUserIdentity() == 2){
+                        sysUserExcel.setDepartIds(deptId);
+                    }
                     Integer yn = sysUserExcel.getUserIdentity();
                     //初始化用户角色为单位非管理员
                     String role = "1465163864583323650";
-                    System.out.println("ynynynynyn"+yn);
+                    //System.out.println("ynynynynyn"+yn);
+
                     if(yn == 2){
                         role = "f6817f48af4fb3af11b9e8bf182f618b";
                     }

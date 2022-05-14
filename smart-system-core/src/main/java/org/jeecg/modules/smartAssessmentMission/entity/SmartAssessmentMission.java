@@ -75,4 +75,8 @@ public class SmartAssessmentMission implements Serializable {
     @Excel(name = "考核要点总数", width = 15)
     @ApiModelProperty(value = "考核要点总数")
     private java.lang.Integer keyPointsAmount;
+    /**全区完成度*/
+    @Excel(name = "全区完成度", width = 15)
+    @ApiModelProperty(value = "全区完成度")
+    private java.lang.Double completionDegree;
 }

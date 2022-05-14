@@ -16,4 +16,12 @@ import org.jeecg.modules.smartAnswerInfo.entity.SmartDepartContentScore;
  */
 public interface SmartAnswerInfoMapper extends BaseMapper<SmartAnswerInfo> {
     List<SmartDepartContentScore> selectByMissionIdAndContentId(Page<SmartDepartContentScore> page, @Param("missionId") String missionId, @Param("assContentId") String assContentId);
+
+    /**
+     * 更新答题信息表中的任务状态
+     *
+     * @param missionId
+     * @param missionStatus
+     */
+    void updateMissionStatus(@Param("missionId") String missionId, @Param("missionStatus") String missionStatus);
 }

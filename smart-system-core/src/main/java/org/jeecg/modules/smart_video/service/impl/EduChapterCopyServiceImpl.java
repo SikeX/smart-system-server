@@ -77,7 +77,7 @@ public class EduChapterCopyServiceImpl extends ServiceImpl<EduChapterCopyMapper,
         //根绝chapterid章节id 查询小节表，如果查询数据，不进行删除
         QueryWrapper<EduVideoCopy> wrapper =new QueryWrapper<>();
         wrapper.eq("chapter_id",chapterId);
-        int count = eduVideoCopyService.count(wrapper);
+        Long count = eduVideoCopyService.count(wrapper);
         if(count>0){//查出小节不进行删除
             throw new NullPointerException("不能删除");/////后续完善异常！！！！！！！！！！！！！！！
 

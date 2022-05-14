@@ -5,7 +5,9 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.pinyin.PinyinUtil;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
+import org.jeecg.common.util.PmsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,11 +28,21 @@ import java.util.Random;
 @Slf4j
 public class FaceRecognitionUtil {
 
-    private String apiKey = "tzWA3CjcTSoTSGRsFyln4ARB";
+    private static String apiKey;
 
-    private String apiSecret = "fxCwK0FKG0QEWSp45OrDRMzxG5TgCa7z";
+    private static String apiSecret;
 
     private static RestTemplate restTemplate;
+
+    @Value("${baiduyun.apiKey}")
+    public void setApiKey(String apiKey) {
+        FaceRecognitionUtil.apiKey = apiKey;
+    }
+
+    @Value("${baiduyun.apiSecret}")
+    public void setApiSecret(String apiSecret) {
+        FaceRecognitionUtil.apiSecret = apiSecret;
+    }
 
     @Resource
     public void setRestTemplate(RestTemplate restTemplate) {
@@ -260,9 +272,9 @@ public class FaceRecognitionUtil {
      *
      * @return
      */
-    public JSONObject deleteUser(String groupId, String userName, String faceToken) {
+    public JSONObject deleteUser(String groupId, String userId, String faceToken) {
 
-        String userId = PinyinUtil.getPinyin(userName, "_");
+//        String userId = PinyinUtil.getPinyin(userName, "_");
 
         String host = "https://aip.baidubce.com/rest/2.0/face/v3/faceset/face/delete?";
 
@@ -279,6 +291,8 @@ public class FaceRecognitionUtil {
             String url = host + "access_token=" + access_token;
 
             Map<String, Object> bodyMap = new HashMap<>();
+
+            log.info("groupId:{},userId:{},faceToken:{}",groupId,userId,faceToken);
 
             bodyMap.put("log_id", RandomUtil.randomInt(6,10));
             bodyMap.put("group_id", groupId);
