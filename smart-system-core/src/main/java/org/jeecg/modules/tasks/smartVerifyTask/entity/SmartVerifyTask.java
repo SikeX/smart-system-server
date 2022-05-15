@@ -59,6 +59,7 @@ public class SmartVerifyTask implements Serializable {
 	/**填报单位*/
 	@Excel(name = "填报单位", width = 15)
     @ApiModelProperty(value = "填报单位")
+    @Dict(dictTable = "sys_depart",dicText = "depart_name",dicCode = "id")
     private java.lang.String fillDepart;
 	/**填报人*/
 	@Excel(name = "填报人", width = 15)

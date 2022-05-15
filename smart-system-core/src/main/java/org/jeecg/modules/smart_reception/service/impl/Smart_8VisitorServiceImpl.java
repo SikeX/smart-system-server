@@ -24,4 +24,9 @@ public class Smart_8VisitorServiceImpl extends ServiceImpl<Smart_8VisitorMapper,
 	public List<Smart_8Visitor> selectByMainId(String mainId) {
 		return smart_8VisitorMapper.selectByMainId(mainId);
 	}
+
+	@Override
+	public  String getMainIdById(String id){
+		return smart_8VisitorMapper.getMainIdById(id);
+	}
 }
