@@ -3,6 +3,7 @@ package org.jeecg.modules.SmartPunishPeople.service;
 import org.jeecg.modules.SmartPunishPeople.entity.SmartPunishPeople;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.jeecg.modules.SmartPunishPeople.entity.TypeCount;
+import org.jeecg.modules.SmartPunishPeople.entity.punishInfo;
 import org.jeecg.modules.SmartPunishPeople.mapper.SmartPunishPeopleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -27,4 +28,8 @@ public interface ISmartPunishPeopleService extends IService<SmartPunishPeople> {
      * @return
      */
     Integer countMainPeopleByDepart(String departId);
+
+    List<punishInfo> sendInformation();
+
+    List<String> getLeadersByOrgCode(String departCode);
 }
