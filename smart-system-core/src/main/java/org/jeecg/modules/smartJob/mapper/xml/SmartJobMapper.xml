@@ -70,7 +70,7 @@
     <select id="selectByPreId" resultType="org.jeecg.modules.smartPostMarriage.entity.SmartPostMarriageReport">
         SELECT *
         from smart_post_marriage_report
-        where pre_id = #{preId}
+        where pre_id = #{preId} and del_flag != 1
     </select>
 
     <select id="getByBean" resultType="org.jeecg.modules.smartJob.entity.SmartJob">

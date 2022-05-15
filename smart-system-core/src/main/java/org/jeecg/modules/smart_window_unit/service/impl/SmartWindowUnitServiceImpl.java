@@ -1,6 +1,6 @@
 package org.jeecg.modules.smart_window_unit.service.impl;
 
-import org.jeecg.modules.smart_8regulations_for_reception.mapper.Smart_8regulationsForReceptionMapper;
+
 import org.jeecg.modules.smart_window_unit.entity.SmartWindowUnit;
 import org.jeecg.modules.smart_window_unit.mapper.SmartWindowUnitMapper;
 import org.jeecg.modules.smart_window_unit.service.ISmartWindowUnitService;

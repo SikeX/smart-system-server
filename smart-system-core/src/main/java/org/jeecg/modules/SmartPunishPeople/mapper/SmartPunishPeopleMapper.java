@@ -21,4 +21,12 @@ public interface SmartPunishPeopleMapper extends BaseMapper<SmartPunishPeople> {
     List<TypeCount> punishPeopleCountByType();
     //本月即将解除处分人员数量
     Integer punishPeopleCountByMonth(String currentMonth);
+
+    /**
+     * 查询单位主要领导是否被处分
+     *
+     * @param departId 单位ID
+     * @return
+     */
+    Integer countMainPeopleByDepart(@Param("departId") String departId);
 }

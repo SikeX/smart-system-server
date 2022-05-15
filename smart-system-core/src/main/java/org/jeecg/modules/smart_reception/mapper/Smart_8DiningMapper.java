@@ -7,6 +7,7 @@ import org.jeecg.modules.smartReportingInformation.entity.SysRole;
 import org.jeecg.modules.smart_reception.entity.Smart_8Dining;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
+import org.jeecg.modules.smart_reception.entity.Smart_8Visitor;
 
 /**
  * @Description: 用餐情况
@@ -31,4 +32,6 @@ public interface Smart_8DiningMapper extends BaseMapper<Smart_8Dining> {
 	String getReceptionDepBymainId(String mainId);
 
 	String getUserNameByUsername(String username);
+
+	String getMainIdById(String id);
 }

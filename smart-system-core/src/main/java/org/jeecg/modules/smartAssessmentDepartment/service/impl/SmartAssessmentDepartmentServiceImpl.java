@@ -23,4 +23,9 @@ public class SmartAssessmentDepartmentServiceImpl extends ServiceImpl<SmartAsses
     public List<DictModel> getDictItems() {
         return baseMapper.getDictItems();
     }
+
+    @Override
+    public String getAssessmentDepartmentIdByDepartName(String departName) {
+        return baseMapper.getAssessmentDepartmentIdByDepartName(departName);
+    }
 }

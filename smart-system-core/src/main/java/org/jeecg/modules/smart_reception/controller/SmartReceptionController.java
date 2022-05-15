@@ -10,8 +10,6 @@ import org.jeecg.common.api.vo.Result;
 import org.jeecg.modules.smart_8_escorted_meal.controller.Smart_8EscortedMealController;
 import org.jeecg.modules.smart_8_escorted_meal.entity.Smart_8EscortedMeal;
 import org.jeecg.modules.smart_8_escorted_meal.service.ISmart_8EscortedMealService;
-import org.jeecg.modules.smart_8regulations_for_reception.service.impl.Smart_8regulationsForReceptionServiceImpl;
-import org.jeecg.modules.smart_8regulations_for_reception.vo.Smart_8regulationsForReceptionPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.*;
@@ -150,6 +148,25 @@ public class SmartReceptionController extends JeecgController<SmartReception, IS
         return Result.OK("删除成功!");
     }
 
+	 /**
+	  *
+	  * @param id,cost
+	  * @return
+	  */
+
+	 @AutoLog(value = "发票识别金额汇总总金额")
+	 @ApiOperation(value = "课表时间表-发布", notes = "课表时间表-发布")
+	 @RequestMapping(value = "/updateCost", method = {RequestMethod.PUT, RequestMethod.POST})
+	 public Result<String> editCurriculumSchedulesTime(@RequestBody String id,Integer cost) {
+		 QueryWrapper<SmartReception> queryWrapper = new QueryWrapper<>();
+		 queryWrapper.eq("id",id);
+		 SmartReception smartReception = smartReceptionService.getOne(queryWrapper);
+		 smartReception.setCost(smartReception.getCost() + cost);
+		 return Result.OK("Ok");
+	 }
+
+
+
     /**
      * 批量删除
      * @param ids
@@ -217,12 +234,15 @@ public class SmartReceptionController extends JeecgController<SmartReception, IS
 		QueryWrapper<SmartReception> queryWrapper = new QueryWrapper<SmartReception>();
 		queryWrapper.eq("id", smart_8Visitor.getMainId());
 		SmartReception smartReception = smartReceptionService.getOne(queryWrapper);
-		smartReception.setVisitorsNum(smartReception.getVisitorsNum()+1);
+		smartReception.setVisitorsNum(smartReception.getVisitorsNum() + 1);
 		smartReceptionService.updateById(smartReception);
 
 		smart_8VisitorService.save(smart_8Visitor);
 		return Result.OK("添加成功！");
 	}
+
+
+
 
     /**
 	 * 编辑
@@ -233,6 +253,7 @@ public class SmartReceptionController extends JeecgController<SmartReception, IS
 	@ApiOperation(value="来访人员信息表-编辑", notes="来访人员信息表-编辑")
 	@PutMapping(value = "/editSmart_8Visitor")
 	public Result<?> editSmart_8Visitor(@RequestBody Smart_8Visitor smart_8Visitor) {
+
 		smart_8VisitorService.updateById(smart_8Visitor);
 		return Result.OK("编辑成功!");
 	}
@@ -526,6 +547,7 @@ public class SmartReceptionController extends JeecgController<SmartReception, IS
 	@ApiOperation(value="用餐情况-编辑", notes="用餐情况-编辑")
 	@PutMapping(value = "/editSmart_8Dining")
 	public Result<?> editSmart_8Dining(@RequestBody Smart_8Dining smart_8Dining) {
+		smart_8Dining.setNum(smart_8Dining.getNumR() + smart_8Dining.getNum());
 		smart_8DiningService.updateById(smart_8Dining);
 		return Result.OK("编辑成功!");
 	}

@@ -1,5 +1,4 @@
 package org.jeecg.modules.smart_video.service.impl;
-
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.modules.smart_video.commonutils.R;
 import org.jeecg.modules.smart_video.entity.EduChapterCopy;
@@ -30,9 +29,8 @@ import java.util.List;
 public class EduChapterCopyServiceImpl extends ServiceImpl<EduChapterCopyMapper, EduChapterCopy> implements EduChapterCopyService {
 
     @Autowired
-    private EduVideoCopyService eduVideoCopyService;
-    @Autowired
-    private EduChapterCopyService chapterCopyService;
+    private EduVideoCopyServiceImpl eduVideoCopyService;
+
     @Override
     public List<ChapterCopyVo> getChapterVideoByCourseId(String courseId) {
         //1.根据id查询课程里面的所有章节
@@ -86,12 +84,12 @@ public class EduChapterCopyServiceImpl extends ServiceImpl<EduChapterCopyMapper,
         for (EduVideoCopy A : video){
             IdList.add(A.getId());
         }
-        int count = eduVideoCopyService.count(wrapper);
+        Long count = eduVideoCopyService.count(wrapper);
         if(count>0){//查出小节不进行删除
             for(String ID : IdList){
                 eduVideoCopyService.removeById(ID);
             }
-            chapterCopyService.deleteChapter(chapterId);
+            this.deleteChapter(chapterId);
             return true;
         }else{//不能查出数据，进行删除
             int result = baseMapper.deleteById(chapterId);

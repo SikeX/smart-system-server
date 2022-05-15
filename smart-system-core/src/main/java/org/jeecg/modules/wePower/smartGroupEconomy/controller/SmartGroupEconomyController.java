@@ -217,6 +217,7 @@ public class SmartGroupEconomyController extends JeecgController<SmartGroupEcono
 				smartGroupEconomyPeopleService.removeById(smartGroupEconomyPeople.getId());
 				return Result.error(faceResponse.getString("error_msg"));
 			} else {
+				smartGroupEconomyPeople.setFaceToken(faceResponse.getJSONObject("result").getString("face_token"));
 				return Result.OK("添加成功！");
 			}
 
@@ -251,7 +252,7 @@ public class SmartGroupEconomyController extends JeecgController<SmartGroupEcono
 			if(faceResponse.getIntValue("error_code") != 0) {
 				return Result.error(faceResponse.getString("error_msg"));
 			} else {
-				log.info(String.valueOf(faceResponse));
+				smartGroupEconomyPeople.setFaceToken(faceResponse.getJSONObject("result").getString("face_token"));
 				smartGroupEconomyPeopleService.updateById(smartGroupEconomyPeople);
 				return Result.OK("编辑成功！");
 			}

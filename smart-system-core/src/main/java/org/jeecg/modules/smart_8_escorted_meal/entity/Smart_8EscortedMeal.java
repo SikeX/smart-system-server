@@ -37,7 +37,7 @@ public class Smart_8EscortedMeal implements Serializable {
     private java.lang.String id;
 	/**姓名*/
 	@Excel(name = "姓名", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
-	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "id")
+	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @ApiModelProperty(value = "姓名")
     private java.lang.String name;
 	/**职务*/

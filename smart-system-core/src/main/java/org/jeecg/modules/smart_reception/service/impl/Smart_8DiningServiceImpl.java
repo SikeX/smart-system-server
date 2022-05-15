@@ -55,4 +55,11 @@ public class Smart_8DiningServiceImpl extends ServiceImpl<Smart_8DiningMapper, S
 	public 	String getUserNameByUsername(String username){
 		return smart_8DiningMapper.getUserNameByUsername(username);
 	}
+
+	@Override
+	public  String getMainIdById(String id){
+		return smart_8DiningMapper.getMainIdById(id);
+	}
+
+
 }

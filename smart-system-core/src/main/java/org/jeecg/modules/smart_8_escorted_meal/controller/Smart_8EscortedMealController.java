@@ -21,7 +21,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
+import org.jeecg.modules.smart_reception.entity.SmartReception;
+import org.jeecg.modules.smart_reception.entity.Smart_8Dining;
 import org.jeecg.modules.smart_reception.service.ISmart_8DiningService;
+import org.jeecg.modules.smart_reception.service.impl.SmartReceptionServiceImpl;
+import org.jeecg.modules.smart_reception.service.impl.Smart_8DiningServiceImpl;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -51,6 +55,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 public class Smart_8EscortedMealController extends JeecgController<Smart_8EscortedMeal, ISmart_8EscortedMealService> {
     @Autowired
     private ISmart_8EscortedMealService smart_8EscortedMealService;
+    @Autowired
     private ISmart_8DiningService smart_8DiningService;
 
     /**
@@ -102,7 +107,17 @@ public class Smart_8EscortedMealController extends JeecgController<Smart_8Escort
     @PostMapping(value = "/addByMainId")
     public Result<?> add(@RequestBody Smart_8EscortedMeal smart_8EscortedMeal) {
 
+
+//        QueryWrapper<Smart_8Dining> queryWrapper = new QueryWrapper<Smart_8Dining>();
+//        queryWrapper.eq("id", smart_8EscortedMeal.getMainId());
+        Smart_8Dining smart_8Dining = smart_8DiningService.getById(smart_8EscortedMeal.getMainId());
+        smart_8Dining.setNumR(smart_8Dining.getNumR() + 1);
+        smart_8Dining.setNum(smart_8Dining.getNum() +1 );
+
+
         smart_8EscortedMealService.save(smart_8EscortedMeal);
+        smart_8DiningService.updateById(smart_8Dining);
+
         return Result.OK("添加成功！");
     }
 
@@ -130,7 +145,15 @@ public class Smart_8EscortedMealController extends JeecgController<Smart_8Escort
     @ApiOperation(value = "陪同用餐人员表-通过id删除", notes = "陪同用餐人员表-通过id删除")
     @DeleteMapping(value = "/delete")
     public Result<?> delete(@RequestParam(name = "id", required = true) String id) {
+        QueryWrapper<Smart_8Dining> queryWrapper = new QueryWrapper<Smart_8Dining>();
+        queryWrapper.eq("id", smart_8EscortedMealService.getMainIdById(id));
+        Smart_8Dining smart_8Dining = smart_8DiningService.getOne(queryWrapper);
+//        Smart_8Dining smart_8Dining = smart_8DiningService.getById(id);
+        smart_8Dining.setNumR(smart_8Dining.getNumR() - 1);
+        smart_8Dining.setNum(smart_8Dining.getNum() - 1 );
+
         smart_8EscortedMealService.removeById(id);
+        smart_8DiningService.updateById(smart_8Dining);
         return Result.OK("删除成功!");
     }
 

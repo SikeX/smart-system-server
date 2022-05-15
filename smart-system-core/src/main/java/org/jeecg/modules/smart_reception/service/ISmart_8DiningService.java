@@ -26,4 +26,6 @@ public interface ISmart_8DiningService extends IService<Smart_8Dining> {
 	String getDepartmentNameById(String departmentId);
 
 	String getUserNameByUsername(String username);
+
+	String getMainIdById(String id);
 }

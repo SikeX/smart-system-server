@@ -166,7 +166,7 @@ public class SystemAPIController {
      */
     @GetMapping("/queryAllDSysCategory")
     List<SysCategoryModel> queryAllDSysCategory(){
-        return sysBaseAPI.queryAllDSysCategory();
+        return sysBaseAPI.queryAllSysCategory();
     }
 
 

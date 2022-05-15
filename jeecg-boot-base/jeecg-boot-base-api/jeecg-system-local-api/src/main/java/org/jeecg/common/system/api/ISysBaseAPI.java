@@ -59,6 +59,9 @@ public interface ISysBaseAPI extends CommonAPI {
      */
     LoginUser getUserById(String id);
 
+    LoginUser getUserByIdNumber(String idNumber);
+
+
     /**
      * 7通过用户账号查询角色集合
      * @param username
@@ -89,7 +92,7 @@ public interface ISysBaseAPI extends CommonAPI {
      * 12查询所有分类字典
      * @return
      */
-    public List<SysCategoryModel> queryAllDSysCategory();
+    public List<SysCategoryModel> queryAllSysCategory();
 
 
     /**
@@ -393,5 +396,17 @@ public interface ISysBaseAPI extends CommonAPI {
      * @return
      */
     public List<JSONObject> getUserIdsByTypes(String peopleType);
+
+
+    /**
+     * 2022-03-31 @author sike
+     * 通过
+     *
+     * @param locationId
+     * @return
+     */
+    public VillageInfo getVillageInfoByDepartId(String locationId);
+
+    public List<VillageRelationModel> getVillageRelation(String idnumber, String label);
 
 }

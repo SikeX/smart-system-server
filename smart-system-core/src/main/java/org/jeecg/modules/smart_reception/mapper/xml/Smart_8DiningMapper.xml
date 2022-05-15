@@ -51,4 +51,12 @@
 		from sys_user
 		where username = #{username}
 	</select>
+
+	<select id="getMainIdById" resultType="java.lang.String" >
+		select main_id
+		from smart_8_dining
+		WHERE
+			id = #{id}
+
+	</select>
 </mapper>

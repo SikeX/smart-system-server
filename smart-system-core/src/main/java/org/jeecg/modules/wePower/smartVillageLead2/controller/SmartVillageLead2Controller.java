@@ -103,6 +103,8 @@ public class SmartVillageLead2Controller extends JeecgController<SmartVillageLea
 			if(faceResponse.getIntValue("error_code") != 0) {
 				return Result.error(faceResponse.getString("error_msg"));
 			} else {
+				smartVillageLead2.setFaceToken(faceResponse.getJSONObject("result").getString("face_token"));
+				smartVillageLead2Service.updateById(smartVillageLead2);
 				return Result.OK("添加成功！");
 			}
 
@@ -136,6 +138,7 @@ public class SmartVillageLead2Controller extends JeecgController<SmartVillageLea
 			if(faceResponse.getIntValue("error_code") != 0) {
 				return Result.error(faceResponse.getString("error_msg"));
 			} else {
+				smartVillageLead2.setFaceToken(faceResponse.getJSONObject("result").getString("face_token"));
 				smartVillageLead2Service.updateById(smartVillageLead2);
 				return Result.OK("编辑成功！");
 			}
