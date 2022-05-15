@@ -15,12 +15,8 @@ import org.jeecg.modules.SmartPunishPeople.entity.TypeCount;
  * @Version: V1.0
  */
 public interface SmartPunishPeopleMapper extends BaseMapper<SmartPunishPeople> {
-    //处分人员总数量
-    Integer punishPeopleCount();
     //按处分类型统计
     List<TypeCount> punishPeopleCountByType();
-    //本月即将解除处分人员数量
-    Integer punishPeopleCountByMonth(String currentMonth);
 
     /**
      * 查询单位主要领导是否被处分
