@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.SmartFirstFormPeople.mapper.SmartFirstFormPeopleMapper">
-
+    <select id="statistics" resultType="org.jeecg.modules.SmartFirstFormPeople.entity.MonthCount">
+        select month(create_time) as month,
+            count(*) as count
+        from smart_first_form_people p
+        where year(create_time)= #{year}
+        <if test="departCode != null and departCode != ''">
+        and p.interviewee_dept = #{departCode}
+        </if>
+        group by  year(create_time), month(create_time)
+    </select>
 </mapper>

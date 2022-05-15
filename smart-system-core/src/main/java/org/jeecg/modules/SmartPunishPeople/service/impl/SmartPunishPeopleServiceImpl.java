@@ -22,20 +22,10 @@ import java.util.List;
 public class SmartPunishPeopleServiceImpl extends ServiceImpl<SmartPunishPeopleMapper, SmartPunishPeople> implements ISmartPunishPeopleService {
     @Autowired
     private SmartPunishPeopleMapper smartPunishPeopleMapper;
-    //处分人员总数量
-    @Override
-    public Integer punishPeopleCount() {
-        return smartPunishPeopleMapper.punishPeopleCount();
-    }
     //按处分类型统计
     @Override
     public List<TypeCount> punishPeopleCountByType() {
         return smartPunishPeopleMapper.punishPeopleCountByType();
-    }
-    //本月即将解除处分人员数量
-    @Override
-    public Integer punishPeopleCountByMonth(String currentMonth) {
-        return smartPunishPeopleMapper.punishPeopleCountByMonth(currentMonth);
     }
 
     @Override
