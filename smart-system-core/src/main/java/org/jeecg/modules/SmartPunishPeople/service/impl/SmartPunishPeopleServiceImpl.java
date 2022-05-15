@@ -3,6 +3,7 @@ package org.jeecg.modules.SmartPunishPeople.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.jeecg.modules.SmartPunishPeople.entity.SmartPunishPeople;
 import org.jeecg.modules.SmartPunishPeople.entity.TypeCount;
+import org.jeecg.modules.SmartPunishPeople.entity.punishInfo;
 import org.jeecg.modules.SmartPunishPeople.mapper.SmartPunishPeopleMapper;
 import org.jeecg.modules.SmartPunishPeople.service.ISmartPunishPeopleService;
 
@@ -31,5 +32,15 @@ public class SmartPunishPeopleServiceImpl extends ServiceImpl<SmartPunishPeopleM
     @Override
     public Integer countMainPeopleByDepart(String departId) {
         return smartPunishPeopleMapper.countMainPeopleByDepart(departId);
+    }
+
+    @Override
+    public List<punishInfo> sendInformation() {
+        return smartPunishPeopleMapper.sendInformation();
+    }
+
+    @Override
+    public List<String> getLeadersByOrgCode(String departCode) {
+        return smartPunishPeopleMapper.getLeadersByOrgCode(departCode);
     }
 }

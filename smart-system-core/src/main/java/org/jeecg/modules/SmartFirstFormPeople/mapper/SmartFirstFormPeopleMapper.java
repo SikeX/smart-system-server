@@ -3,6 +3,7 @@ package org.jeecg.modules.SmartFirstFormPeople.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
+import org.jeecg.modules.SmartFirstFormPeople.entity.FirstFormInfo;
 import org.jeecg.modules.SmartFirstFormPeople.entity.SmartFirstFormPeople;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.jeecg.modules.smartEvaluateList.entity.MonthCount;
@@ -14,5 +15,9 @@ import org.jeecg.modules.smartEvaluateList.entity.MonthCount;
  * @Version: V1.0
  */
 public interface SmartFirstFormPeopleMapper extends BaseMapper<SmartFirstFormPeople> {
-    List<MonthCount> statistics(@Param("year") String year,@Param("departCode") String departCode);
+    List<FirstFormInfo> sendInformation();
+
+    List<String> getLeadersByOrgCode(@Param("departCode") String departCode);
+
+    List<MonthCount> statistics(@Param("year") String year, @Param("departCode") String departCode);
 }
