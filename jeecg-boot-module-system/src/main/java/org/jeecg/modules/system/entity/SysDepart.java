@@ -31,17 +31,11 @@ public class SysDepart implements Serializable {
 	private String id;
 	/**父机构ID*/
 	private String parentId;
-	/**原父机构ID*/
-	private String oldParentId;
 	/**自然父机构ID*/
 	private String businessParentId;
-	/**原自然父机构ID*/
-	private String oldBusinessParentId;
 	/**机构/部门名称*/
 	@Excel(name="机构/部门名称",width=15)
 	private String departName;
-	/**机构/部门名称*/
-	private String oldDepartName;
 	/**机构/部门类型*/
 	@Excel(name="机构/部门类型",width=15)
 	private String departType;
@@ -114,11 +108,8 @@ public class SysDepart implements Serializable {
         SysDepart depart = (SysDepart) o;
         return Objects.equals(id, depart.id) &&
                 Objects.equals(parentId, depart.parentId) &&
-				Objects.equals(oldParentId, depart.oldParentId) &&
 				Objects.equals(businessParentId, depart.businessParentId) &&
-				Objects.equals(oldBusinessParentId, depart.oldBusinessParentId) &&
                 Objects.equals(departName, depart.departName) &&
-				Objects.equals(oldDepartName, depart.oldDepartName) &&
                 Objects.equals(departNameEn, depart.departNameEn) &&
                 Objects.equals(departNameAbbr, depart.departNameAbbr) &&
                 Objects.equals(departOrder, depart.departOrder) &&
@@ -145,7 +136,7 @@ public class SysDepart implements Serializable {
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), id, parentId,oldParentId,businessParentId,oldBusinessParentId,departName,oldDepartName,
+        return Objects.hash(super.hashCode(), id, parentId,businessParentId,departName,
         		departNameEn, departNameAbbr, departOrder, description,orgCategory, 
         		orgType, orgCode, mobile, fax, address, memo, status, 
         		delFlag, createBy, createTime, updateBy, updateTime);
