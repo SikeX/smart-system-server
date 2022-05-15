@@ -1,5 +1,6 @@
 package org.jeecg.modules.SmartFirstFormPeople.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.io.IOException;
@@ -28,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.smartEvaluateList.entity.MonthCount;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
 import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
@@ -360,5 +362,30 @@ public class SmartFirstFormPeopleController extends JeecgController<SmartFirstFo
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
         return super.importExcel(request, response, SmartFirstFormPeople.class);
     }
+
+	 @AutoLog(value = "按月统计")
+	 @ApiOperation(value="按月统计", notes="按月统计")
+	 @ResponseBody
+	 @GetMapping(value = "/statistics")
+	 public Result<List<MonthCount>> statistics(@RequestParam (value="year",required = false) String year,
+								 @RequestParam (value="departCode",required = false) String departCode) {
+		 try{
+			 if(year == null || year.isEmpty()){
+				 //获取当前年份
+				 SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+				 Date date = new Date();
+				 year =sdf.format(date);
+			 }else{
+				 year = year.substring(1,year.length()-1);
+			 }
+			 System.out.println(year+","+departCode);
+			 List<MonthCount> list = smartFirstFormPeopleService.statistics(year,departCode);
+			 System.out.println("list"+list);
+			 return Result.OK(list);
+		 }catch (Exception e){
+			 return Result.error("error");
+		 }
+
+	 }
 
 }

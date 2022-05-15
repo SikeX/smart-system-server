@@ -34,6 +34,7 @@ import org.jeecg.modules.system.model.SysUserSysDepartModel;
 import org.jeecg.modules.system.service.*;
 import org.jeecg.modules.system.vo.SysDepartUsersVO;
 import org.jeecg.modules.system.vo.SysUserRoleVO;
+import org.jeecg.modules.system.vo.SysUserVo;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -115,19 +116,21 @@ public class SysUserController {
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public Result<IPage<SysUser>> queryPageList(SysUser user,@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 									  @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,HttpServletRequest req) {
-        HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+//        HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
         // 获取登录用户信息，可以用来查询单位部门信息
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
         // 获取用户角色
         String userName = sysUser.getUsername();
+        String departId = sysUser.getDepartId();
         List<String> role = sysBaseAPI.getRolesByUsername(userName);
-        //纪委管理员可以看到全区人员
-        if(role.contains("CCDIAdmin")){
-
+        QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(user, req.getParameterMap());
+        //纪委管理员、系统管理员可以看到全区人员
+        if(role.contains("CCDIAdmin") || role.contains("systemAdmin")){
         }
         //单位管理员-设置部门，只能看到本部门人员
         else {
-            // 1. 规则，下面是 以**开始
+            queryWrapper.eq("depart_id",departId);
+           /* // 1. 规则，下面是 以**开始
             String rule = "in";
             // 2. 查询字段
             String field = "departId";
@@ -138,9 +141,9 @@ public class SysUserController {
             // 获取请求参数中的superQueryParams
             List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
             // 添加额外查询条件，用于权限控制
-            /*paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+            *//*paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
                     + childrenIdString
-                    + "%22,%22field%22:%22" + field + "%22%7D%5D");*/
+                    + "%22,%22field%22:%22" + field + "%22%7D%5D");*//*
             paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
                     + departId
                     + "%22,%22field%22:%22" + field + "%22%7D%5D");
@@ -148,11 +151,10 @@ public class SysUserController {
             paramsList.toArray(params);
             map.put("superQueryParams", params);
             params = new String[]{"and"};
-            map.put("superQueryMatchType", params);
+            map.put("superQueryMatchType", params);*/
         }
 
         Result<IPage<SysUser>> result = new Result<IPage<SysUser>>();
-		QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(user, map);
     	//TODO 外部模拟登陆临时账号，列表不显示
         queryWrapper.ne("username","_reserve_user_external");
 		Page<SysUser> page = new Page<SysUser>(pageNo, pageSize);
@@ -244,29 +246,6 @@ public class SysUserController {
 //                item.setDepartId(useDepNames.get(item.getDepartId()));
 //            });
 //        }
-        return result;
-    }
-
-
-    /**
-     * 获取单位党员数量
-     *
-     * @return
-     */
-    @RequestMapping(value = "/countByPoliticalStatus", method = RequestMethod.GET)
-    public Result<JSONObject> queryPageListByPoliticalStatus(@RequestParam(name = "departId", required = true) String departId) {
-        Result<JSONObject> result = new Result<JSONObject>();
-        JSONObject obj = new JSONObject();
-        // 获取登录用户信息，可以用来查询单位部门信息
-        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-
-        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("depart_id", departId).eq("del_flag", 0);
-        long count = sysUserService.count(queryWrapper);
-
-        obj.put("count", count);
-        result.setResult(obj);
-
         return result;
     }
 
@@ -930,29 +909,31 @@ public class SysUserController {
         }
         else {
             // 1. 规则，下面是 以**开始
-            String rule = "in";
+            //String rule = "in";
             // 2. 查询字段
-            String field = "departId";
+            //String field = "departId";
 
             // 获取子单位ID
-            String childrenIdString = commonService.getChildrenIdStringByOrgCode(currentUser.getOrgCode());
+            //String childrenIdString = commonService.getChildrenIdStringByOrgCode(currentUser.getOrgCode());
 
-            HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+           // HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
             // 获取请求参数中的superQueryParams
-            List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+            //List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
 
             // 添加额外查询条件，用于权限控制
-            paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
-                    + childrenIdString
-                    + "%22,%22field%22:%22" + field + "%22%7D%5D");
-            String[] params = new String[paramsList.size()];
-            paramsList.toArray(params);
-            map.put("superQueryParams", params);
-            params = new String[]{"and"};
-            map.put("superQueryMatchType", params);
-            QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(sysUser, map);
-
-            queryList = sysUserService.list(queryWrapper);
+//            paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+//                    + childrenIdString
+//                    + "%22,%22field%22:%22" + field + "%22%7D%5D");
+//            String[] params = new String[paramsList.size()];
+//            paramsList.toArray(params);
+//            map.put("superQueryParams", params);
+//            params = new String[]{"and"};
+//            map.put("superQueryMatchType", params);
+            //QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(sysUser, map);
+            String departId = currentUser.getDepartId();
+            QueryWrapper<SysUser> sysUserQueryWrapper = new QueryWrapper<>();
+            sysUserQueryWrapper.eq("depart_id",departId);
+            queryList = sysUserService.list(sysUserQueryWrapper);
         }
 
 
@@ -970,22 +951,26 @@ public class SysUserController {
         }
 
         // Step.3 组装pageList
-        List<SysUser> pageList = new ArrayList<SysUser>();
+        //List<SysUser> pageList = new ArrayList<SysUser>();
+        List<SysUserVo> voPageList = new ArrayList<>();
         for (SysUser main : sysUserList) {
-            SysUser vo = new SysUser();
+            //SysUser user = new SysUser();
+            SysUserVo vo = new SysUserVo();
+            //BeanUtils.copyProperties(main, user);
             BeanUtils.copyProperties(main, vo);
-            pageList.add(vo);
+            //pageList.add(user);
+            voPageList.add(vo);
         }
 
         // Step.4 AutoPoi 导出Excel
         ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
         mv.addObject(NormalExcelConstants.FILE_NAME, "人员列表");
-        mv.addObject(NormalExcelConstants.CLASS, SysUser.class);
+        mv.addObject(NormalExcelConstants.CLASS, SysUserVo.class);
         mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("人员数据", "导出人:"+currentUser.getRealname(), "人员表"));
-        mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
+        mv.addObject(NormalExcelConstants.DATA_LIST, voPageList);
 
         // List深拷贝，否则返回前端会没数据
-        List<SysUser> newPageList = ObjectUtil.cloneByStream(pageList);
+        List<SysUserVo> newPageList = ObjectUtil.cloneByStream(voPageList);
 
         baseCommon_Service.addExportLog(mv.getModel(), "人员", req, response);
 
@@ -1067,7 +1052,6 @@ public class SysUserController {
                     }
                     String deptId = String.join(",", deptIdList);
                     sysUserExcel.setDepartId(deptId);
-
                     if(sysUserExcel.getUserIdentity() == 2){
                         sysUserExcel.setDepartIds(deptId);
                     }
@@ -1075,7 +1059,6 @@ public class SysUserController {
                     //初始化用户角色为单位非管理员
                     String role = "1465163864583323650";
                     //System.out.println("ynynynynyn"+yn);
-
                     if(yn == 2){
                         role = "f6817f48af4fb3af11b9e8bf182f618b";
                     }

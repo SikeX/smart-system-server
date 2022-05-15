@@ -2,6 +2,9 @@ package org.jeecg.modules.SmartFirstFormPeople.service;
 
 import org.jeecg.modules.SmartFirstFormPeople.entity.SmartFirstFormPeople;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.jeecg.modules.smartEvaluateList.entity.MonthCount;
+
+import java.util.List;
 
 /**
  * @Description: 执行第一种形态人员表
@@ -11,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ISmartFirstFormPeopleService extends IService<SmartFirstFormPeople> {
 
+    List<MonthCount> statistics(String year,String departCode);
 }

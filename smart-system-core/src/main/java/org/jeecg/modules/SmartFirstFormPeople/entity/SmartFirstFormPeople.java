@@ -79,8 +79,9 @@ public class SmartFirstFormPeople implements Serializable {
     @ApiModelProperty(value = "被谈话人姓名")
     private java.lang.String intervieweeName;
 	/**被谈话人性别*/
-	@Excel(name = "被谈话人性别", width = 15)
+	@Excel(name = "被谈话人性别", width = 15,dicCode = "sex")
     @ApiModelProperty(value = "被谈话人性别")
+    @Dict(dicCode = "sex")
     private java.lang.String intervieweeSex;
 	/**被谈话人民族*/
 	@Excel(name = "被谈话人民族", width = 15,dicCode = "ethnicity")
