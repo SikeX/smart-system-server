@@ -15,6 +15,7 @@ import org.jeecg.common.system.vo.SysUserCacheInfo;
 import org.jeecg.common.util.PasswordUtil;
 import org.jeecg.common.util.UUIDGenerator;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.SmartFirstFormPeople.entity.FirstFormInfo;
 import org.jeecg.modules.app.entity.WXUser;
 import org.jeecg.modules.app.mapper.AppUserMapper;
 import org.jeecg.modules.app.mapper.WXUserMapper;
@@ -24,6 +25,7 @@ import org.jeecg.modules.system.mapper.*;
 import org.jeecg.modules.system.model.SysUserSysDepartModel;
 import org.jeecg.modules.system.service.ISysUserService;
 import org.jeecg.modules.system.vo.SysUserDepVo;
+import org.jeecg.modules.system.vo.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -617,6 +619,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 //			}
 //		}
 		return userList;
+	}
+
+	@Override
+	public List<UserInfo> sendInformation() {
+		return userMapper.sendInformation();
+	}
+
+	@Override
+	public List<String> getLeadersByOrgCode(String departCode) {
+		return userMapper.getLeadersByOrgCode(departCode);
 	}
 
 }

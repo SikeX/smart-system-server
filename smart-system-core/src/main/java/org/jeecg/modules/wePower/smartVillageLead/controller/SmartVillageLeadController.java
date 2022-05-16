@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSONObject;
+import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.system.query.QueryGenerator;
@@ -18,6 +19,7 @@ import org.jeecg.modules.utils.ImageUtils;
 import org.jeecg.modules.utils.UrlUtil;
 import org.jeecg.modules.wePower.smartEvadeRelation.entity.SmartEvadeRelation;
 import org.jeecg.modules.wePower.smartEvadeRelation.service.ISmartEvadeRelationService;
+import org.jeecg.modules.wePower.smartPublicityResource.entity.SmartPublicityResource;
 import org.jeecg.modules.wePower.smartVillageLead.entity.SmartVillageLead;
 import org.jeecg.modules.wePower.smartVillageLead.service.ISmartVillageLeadService;
 
@@ -79,6 +81,26 @@ public class SmartVillageLeadController extends JeecgController<SmartVillageLead
 		IPage<SmartVillageLead> pageList = smartVillageLeadService.page(page, queryWrapper);
 		return Result.OK(pageList);
 	}
+
+	 @AutoLog(value = "农村集体经济组织-分页列表查询")
+	 @ApiOperation(value="农村集体经济组织-分页列表查询", notes="农村集体经济组织-分页列表查询")
+	 @GetMapping(value = "/listAdmin")
+	 public Result<?> queryPageListAdmin(SmartVillageLead smartVillageLead,
+										 @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+										 @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+										 HttpServletRequest req) {
+
+		 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		 String orgCode = sysUser.getOrgCode();
+		 if ("".equals(orgCode)) {
+			 return Result.error("本用户没有操作权限！");
+		 }
+		 QueryWrapper<SmartVillageLead> queryWrapper = QueryGenerator.initQueryWrapper(smartVillageLead, req.getParameterMap());
+		 queryWrapper.eq("sys_org_code", orgCode);
+		 Page<SmartVillageLead> page = new Page<SmartVillageLead>(pageNo, pageSize);
+		 IPage<SmartVillageLead> pageList = smartVillageLeadService.page(page, queryWrapper);
+		 return Result.OK(pageList);
+	 }
 	
 	/**
 	 *   添加
@@ -135,6 +157,8 @@ public class SmartVillageLeadController extends JeecgController<SmartVillageLead
 				smartVillageLeadService.removeById(smartVillageLead.getId());
 				return Result.error(faceResponse.getString("error_msg"));
 			} else {
+				smartVillageLead.setFaceToken(faceResponse.getJSONObject("result").getString("face_token"));
+				smartVillageLeadService.updateById(smartVillageLead);
 				return Result.OK("添加成功！");
 			}
 
@@ -170,9 +194,12 @@ public class SmartVillageLeadController extends JeecgController<SmartVillageLead
 		try {
 			JSONObject faceResponse = faceRecognitionUtil.updateFace(imgBase64, groupId, smartVillageLead.getId());
 
+			log.info(String.valueOf(faceResponse));
+
 			if(faceResponse.getIntValue("error_code") != 0) {
 				return Result.error(faceResponse.getString("error_msg"));
 			} else {
+				smartVillageLead.setFaceToken(faceResponse.getJSONObject("result").getString("face_token"));
 				smartVillageLeadService.updateById(smartVillageLead);
 				return Result.OK("编辑成功！");
 			}

@@ -38,7 +38,17 @@ public class SmartReceptionServiceImpl extends ServiceImpl<SmartReceptionMapper,
 	private Smart_8DiningMapper smart_8DiningMapper;
 	@Autowired
 	private Smart_8ListMapper smart_8ListMapper;
-	
+
+	@Override
+	public String getDepartIdByOrgCode(String orgCode) {
+		return smartReceptionMapper.getDepartIdByOrgCode(orgCode);
+	}
+
+	@Override
+	public List<String> getChildrenIdByOrgCode(String orgCode) {
+		return smartReceptionMapper.getChildrenIdByOrgCode(orgCode);
+	}
+
 	@Override
 	@Transactional
 	public void delMain(String id) {
@@ -60,5 +70,6 @@ public class SmartReceptionServiceImpl extends ServiceImpl<SmartReceptionMapper,
 			smartReceptionMapper.deleteById(id);
 		}
 	}
+
 	
 }

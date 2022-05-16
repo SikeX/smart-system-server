@@ -94,6 +94,26 @@ public class SmartGroupEconomyController extends JeecgController<SmartGroupEcono
 		return Result.OK(pageList);
 	}
 
+	 @AutoLog(value = "农村集体经济组织-分页列表查询")
+	 @ApiOperation(value="农村集体经济组织-分页列表查询", notes="农村集体经济组织-分页列表查询")
+	 @GetMapping(value = "/listAdmin")
+	 public Result<?> queryPageListAdmin(SmartGroupEconomy smartGroupEconomy,
+									@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+									@RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+									HttpServletRequest req) {
+
+		 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		 String orgCode = sysUser.getOrgCode();
+		 if ("".equals(orgCode)) {
+			 return Result.error("本用户没有操作权限！");
+		 }
+		 QueryWrapper<SmartGroupEconomy> queryWrapper = QueryGenerator.initQueryWrapper(smartGroupEconomy, req.getParameterMap());
+		 queryWrapper.eq("sys_org_code", orgCode);
+		 Page<SmartGroupEconomy> page = new Page<SmartGroupEconomy>(pageNo, pageSize);
+		 IPage<SmartGroupEconomy> pageList = smartGroupEconomyService.page(page, queryWrapper);
+		 return Result.OK(pageList);
+	 }
+
 	/**
      *   添加
      * @param smartGroupEconomy
@@ -217,6 +237,7 @@ public class SmartGroupEconomyController extends JeecgController<SmartGroupEcono
 				smartGroupEconomyPeopleService.removeById(smartGroupEconomyPeople.getId());
 				return Result.error(faceResponse.getString("error_msg"));
 			} else {
+				smartGroupEconomyPeople.setFaceToken(faceResponse.getJSONObject("result").getString("face_token"));
 				return Result.OK("添加成功！");
 			}
 
@@ -251,7 +272,7 @@ public class SmartGroupEconomyController extends JeecgController<SmartGroupEcono
 			if(faceResponse.getIntValue("error_code") != 0) {
 				return Result.error(faceResponse.getString("error_msg"));
 			} else {
-				log.info(String.valueOf(faceResponse));
+				smartGroupEconomyPeople.setFaceToken(faceResponse.getJSONObject("result").getString("face_token"));
 				smartGroupEconomyPeopleService.updateById(smartGroupEconomyPeople);
 				return Result.OK("编辑成功！");
 			}

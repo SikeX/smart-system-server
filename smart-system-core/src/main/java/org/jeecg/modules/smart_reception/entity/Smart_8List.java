@@ -61,7 +61,7 @@ public class Smart_8List implements Serializable {
 	/**更新人*/
 	@Excel(name = "更新人", width = 15)
     @ApiModelProperty(value = "更新人")
-    private java.lang.String updateName;
+    private java.lang.String updateBy;
 	/**更新时间*/
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern="yyyy-MM-dd")

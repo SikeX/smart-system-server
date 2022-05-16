@@ -7,13 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONObject;
-import com.aliyuncs.DefaultAcsClient;
-import com.aliyuncs.IAcsClient;
-import com.aliyuncs.dysmsapi.model.v20170525.SendSmsRequest;
-import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
-import com.aliyuncs.exceptions.ClientException;
-import com.aliyuncs.profile.DefaultProfile;
-import com.aliyuncs.profile.IClientProfile;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -264,8 +257,9 @@ public class DySmsHelper {
 
         map.put("msg", content);//短信内容
         map.put("phone", phones);//手机号
-//         map.put("report","true");//是否需要状态报告
-//         map.put("extend","123");//自定义扩展码
+        map.put("report","true");//是否需要状态报告
+        map.put("extend","123");//自定义扩展码
+
         JSONObject js = (JSONObject) JSONObject.toJSON(map);
 
         String reString = sendSmsByPost(sendUrl, js.toString());

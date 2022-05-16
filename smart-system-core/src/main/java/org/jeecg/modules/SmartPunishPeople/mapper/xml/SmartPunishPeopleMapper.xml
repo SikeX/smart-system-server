@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.SmartPunishPeople.mapper.SmartPunishPeopleMapper">
-    <!--处分人员总数量-->
-    <select id="punishPeopleCount" resultType="java.lang.Integer">
-        select count(1) from smart_punish_people
-    </select>
     <!--统计处分类型 End -->
     <resultMap id="StaticMap" type="org.jeecg.modules.SmartPunishPeople.entity.TypeCount">
         <result property="type" column="punish_type"/>
@@ -13,13 +9,8 @@
     <!--按处分类型统计-->
     <select id="punishPeopleCountByType" resultMap="StaticMap">
         select count(*) as count,i.item_text as punish_type from smart_punish_people as p ,sys_dict as d,sys_dict_item as i
-        where p.punish_type = i.item_value and d.dict_code = 'punish_type' and i.dict_id = d.id
+        where p.punish_type = i.item_value and d.dict_code = 'punish_type' and i.dict_id = d.id and p.del_flag = 0
         group by p.punish_type,i.item_text
-    </select>
-    <!--本月即将解除处分人员数量-->
-    <select id="punishPeopleCountByMonth" resultType="java.lang.Integer">
-        select count(*)  from smart_punish_people s
-        where  substr(s.remove_time,1,7) = #{currentMonth}
     </select>
     <select id="countMainPeopleByDepart" resultType="java.lang.Integer">
         select count(*)
@@ -30,6 +21,19 @@
             where depart_ids = #{departId}
               and user_identity = '2'
         )
+    </select>
+    <select id="sendInformation" resultType="org.jeecg.modules.SmartPunishPeople.entity.punishInfo">
+        select p.depart_code,group_concat(distinct punish_name) as punishers
+        from smart_punish_people p
+        where p.del_flag = 0 and year(p.create_time ) = year(NOW())
+          and month(p.create_time) = MONTH(date_sub(NOW(),interval 1 month))
+        group by depart_code
+    </select>
+    <select id="getLeadersByOrgCode" resultType="String">
+        select username
+        from sys_user
+        where user_identity = 2
+          and org_code = #{departCode}
     </select>
 
 </mapper>
