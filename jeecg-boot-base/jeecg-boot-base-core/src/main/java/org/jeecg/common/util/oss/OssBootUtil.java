@@ -34,9 +34,14 @@ public class OssBootUtil {
     private static String accessKeySecret;
     private static String bucketName;
     private static String staticDomain;
+    private static String internalEndPoint;
 
     public static void setEndPoint(String endPoint) {
         OssBootUtil.endPoint = endPoint;
+    }
+
+    public static void setInternalEndpoint(String internalEndpoint) {
+        OssBootUtil.internalEndPoint = internalEndpoint;
     }
 
     public static void setAccessKeyId(String accessKeyId) {
@@ -62,6 +67,8 @@ public class OssBootUtil {
     public static String getEndPoint() {
         return endPoint;
     }
+
+    public static String getInternalEndPoint() { return internalEndPoint;}
 
     public static String getAccessKeyId() {
         return accessKeyId;
@@ -257,7 +264,7 @@ public class OssBootUtil {
             if(oConvertUtils.isNotEmpty(bucket)){
                 newBucket = bucket;
             }
-            initOSS(endPoint, accessKeyId, accessKeySecret);
+            initOSS(internalEndPoint, accessKeyId, accessKeySecret);
             //update-begin---author:liusq  Date:20220120  for：替换objectName前缀，防止key不一致导致获取不到文件----
             objectName = OssBootUtil.replacePrefix(objectName,bucket);
             //update-end---author:liusq  Date:20220120  for：替换objectName前缀，防止key不一致导致获取不到文件----
@@ -369,4 +376,6 @@ public class OssBootUtil {
         log.info("------replacePrefix---替换后---objectName:{}",objectName);
         return objectName;
     }
+
+
 }
