@@ -29,6 +29,7 @@ import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.system.entity.*;
+import org.jeecg.modules.system.mapper.SysDepartMapper;
 import org.jeecg.modules.system.model.DepartIdModel;
 import org.jeecg.modules.system.model.SysUserSysDepartModel;
 import org.jeecg.modules.system.service.*;
@@ -103,6 +104,8 @@ public class SysUserController {
 
     @Resource
     private BaseCommonService baseCommonService;
+    @Autowired
+    private SysDepartMapper sysDepartMapper;
 
     /**
      * 获取用户列表数据
@@ -121,15 +124,26 @@ public class SysUserController {
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
         // 获取用户角色
         String userName = sysUser.getUsername();
-        String departId = sysUser.getDepartId();
         List<String> role = sysBaseAPI.getRolesByUsername(userName);
         QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(user, req.getParameterMap());
         //纪委管理员、系统管理员可以看到全区人员
         if(role.contains("CCDIAdmin") || role.contains("systemAdmin")){
         }
         //单位管理员-设置部门，只能看到本部门人员
-        else {
-            queryWrapper.eq("depart_id",departId);
+        else if(role.contains("admin")){
+//            String ordCode = sysUser.getOrgCode();
+//            String departId = commonService.getDepartIdByOrgCode(ordCode);
+            //获取负责单位ID
+            String departId = sysUserService.getById(sysUser.getId()).getDepartIds();
+            List<String> list = Arrays.asList(departId.split(","));
+            if(list.size()==1){
+                queryWrapper.like("depart_id",departId);
+            }else if(list.size()>1){
+                queryWrapper.like("depart_id",list.get(0));
+                for(int i =1;i < list.size();i++){
+                    queryWrapper.or().like("depart_id",list.get(i));
+                }
+            }
            /* // 1. 规则，下面是 以**开始
             String rule = "in";
             // 2. 查询字段
@@ -164,7 +178,7 @@ public class SysUserController {
         //step.1 先拿到全部的 useids
         //step.2 通过 useids，一次性查询用户的所属部门名字
         List<String> userIds = pageList.getRecords().stream().map(SysUser::getId).collect(Collectors.toList());
-        if(userIds!=null && userIds.size()>0){
+        if(userIds.size()>0){
             Map<String,String>  useDepNames = sysUserService.getDepNamesByUserIds(userIds);
             pageList.getRecords().forEach(item->{
                 item.setOrgCodeTxt(useDepNames.get(item.getId()));
@@ -257,6 +271,7 @@ public class SysUserController {
 		Result<SysUser> result = new Result<SysUser>();
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
         String orgCode = sysUser.getOrgCode();
+        System.out.println("sysUser:"+sysUser);
         // 获取用户角色
         String userName = sysUser.getUsername();
         List<String> role = sysBaseAPI.getRolesByUsername(userName);
@@ -270,14 +285,20 @@ public class SysUserController {
         //纪委管理员可以选择角色和单位，单位管理员默认为单位非管理员，只能添加本部门人员
         String selectedRoles = "";
         String selectedDeparts="";
-        if(role.contains("CCDIAdmin")){
+        if(role.contains("CCDIAdmin") || role.contains("systemAdmin")){
             selectedRoles = jsonObject.getString("selectedroles");
             selectedDeparts = jsonObject.getString("selecteddeparts");
+
+            String departId = selectedDeparts.split(",",-1)[0];
+            String orgCodes = sysDepartService.getById(departId).getOrgCode();
+            jsonObject.put("orgCode",orgCodes);
         }
-		else {
+		else if(role.contains("admin")){
             selectedRoles = "1465163864583323650";
             //单位管理员-设置部门，只能添加本部门人员
-            selectedDeparts = id;
+            selectedDeparts = sysUser.getDepartIds();
+
+            jsonObject.put("orgCode",sysDepartService.getById(selectedDeparts).getOrgCode());
         }
 
 		try {
@@ -299,15 +320,13 @@ public class SysUserController {
             if(password == null || password.isEmpty()){
                 user.setPassword("123456");
             }
-            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-            System.out.println(username);
-            System.out.println(password);
 			String salt = oConvertUtils.randomGen(8);
 			user.setSalt(salt);
 			String passwordEncode = PasswordUtil.encrypt(user.getUsername(), user.getPassword(), salt);
 			user.setPassword(passwordEncode);
 			user.setStatus(1);
 			user.setDelFlag(CommonConstant.DEL_FLAG_0);
+            System.out.println("addUser:"+user);
 			// 保存用户走一个service 保证事务，更新user表和关联表
             sysUserService.saveUser(user, selectedRoles, selectedDeparts);
 			result.success("添加成功！");
@@ -1044,13 +1063,15 @@ public class SysUserController {
                     String passwordEncode = PasswordUtil.encrypt(sysUserExcel.getUsername(), sysUserExcel.getPassword(), salt);
                     sysUserExcel.setPassword(passwordEncode);
                     //部门ID,设置所属单位及负责单位
+
                     String orgCode = sysUserExcel.getOrgCode();
-                    List<String> orgCodeList = Arrays.asList(orgCode.split(","));
-                    List<String> deptIdList = new ArrayList<>();
-                    for (int index = 0; index<orgCodeList.size();index++){
-                        deptIdList.add(commonService.getDepartIdByOrgCode(orgCodeList.get(index)));
-                    }
-                    String deptId = String.join(",", deptIdList);
+//                    List<String> orgCodeList = Arrays.asList(orgCode.split(","));
+//                    List<String> deptIdList = new ArrayList<>();
+//                    for (int index = 0; index<orgCodeList.size();index++){
+//                        deptIdList.add(commonService.getDepartIdByOrgCode(orgCodeList.get(index)));
+//                    }
+//                    String deptId = String.join(",", deptIdList);
+                    String deptId = commonService.getDepartIdByOrgCode(orgCode);
                     sysUserExcel.setDepartId(deptId);
                     if(sysUserExcel.getUserIdentity() == 2){
                         sysUserExcel.setDepartIds(deptId);
