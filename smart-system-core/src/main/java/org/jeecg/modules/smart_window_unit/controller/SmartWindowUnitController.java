@@ -127,7 +127,7 @@ public class SmartWindowUnitController<ISysDepartService> extends JeecgControlle
 
 			String windowsId = smartWindowUnit.getId();
 			System.out.println("##################################");
-			String content = "http://47.99.39.59:3000/SmartEvaluate/modules/SmartEvaluateForm?" +
+			String content = "https://zhjj.dlqzzst.com:543/SmartEvaluate/modules/SmartEvaluateForm?" +
 												"exeDeptId="+pid+"&exeDept="+departName+
 												"&windowsId="+windowsId+"&windowsName="+smartWindowUnit.getName()+
 												"&personId="+""+"&personName=大厅";//exeDept主管部门名称，windowsName窗口名称，personName具体被举报人名，可删除留空判断

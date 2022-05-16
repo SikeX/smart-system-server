@@ -12,6 +12,7 @@ import org.apache.ibatis.annotations.Param;
  * @Version: V1.0
  */
 public interface Smart_8VisitorMapper extends BaseMapper<Smart_8Visitor> {
+	String getMainIdById(String id);
 
 	public boolean deleteByMainId(@Param("mainId") String mainId);
     

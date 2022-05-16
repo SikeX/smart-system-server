@@ -89,6 +89,7 @@ public class SmartPublicityProject implements Serializable {
     @ApiModelProperty(value = "更新日期")
     private java.util.Date updateTime;
 	/**创建部门*/
+    @Dict(dictTable = "sys_depart", dicText = "depart_name", dicCode = "org_code")
     @ApiModelProperty(value = "创建部门")
     private java.lang.String sysOrgCode;
 	/**村党支部提议文件*/
