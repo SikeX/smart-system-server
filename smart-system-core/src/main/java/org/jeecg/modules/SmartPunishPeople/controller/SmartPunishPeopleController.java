@@ -122,6 +122,7 @@ public class SmartPunishPeopleController extends JeecgController<SmartPunishPeop
 		map.put("superQueryMatchType", params);
 		QueryWrapper<SmartPunishPeople> queryWrapper = QueryGenerator.initQueryWrapper(smartPunishPeople, map);*/
 		QueryWrapper<SmartPunishPeople> queryWrapper = QueryGenerator.initQueryWrapper(smartPunishPeople, req.getParameterMap());
+
 		Page<SmartPunishPeople> page = new Page<SmartPunishPeople>(pageNo, pageSize);
 		IPage<SmartPunishPeople> pageList = smartPunishPeopleService.page(page, queryWrapper);
 		// 请同步修改edit函数中，将departId变为null，不然会更新成名称
