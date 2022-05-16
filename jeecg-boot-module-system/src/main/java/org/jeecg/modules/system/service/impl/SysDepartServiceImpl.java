@@ -364,6 +364,9 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 			if (sysDepart.getParentId() == null) {
 				sysDepart.setParentId("");
 			}
+			if (deptForOld.getParentId() == null) {
+				deptForOld.setParentId("");
+			}
             if(!sysDepart.getParentId().equals(deptForOld.getParentId()))
             {
 
