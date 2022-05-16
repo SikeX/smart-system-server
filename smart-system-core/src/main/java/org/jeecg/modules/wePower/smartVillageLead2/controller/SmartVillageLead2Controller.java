@@ -9,11 +9,14 @@ import javax.servlet.http.HttpServletResponse;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.pinyin.PinyinUtil;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.modules.utils.FaceRecognitionUtil;
 import org.jeecg.modules.utils.ImageUtils;
 import org.jeecg.modules.utils.UrlUtil;
+import org.jeecg.modules.wePower.smartVillageLead.entity.SmartVillageLead;
 import org.jeecg.modules.wePower.smartVillageLead2.entity.SmartVillageLead2;
 import org.jeecg.modules.wePower.smartVillageLead2.service.ISmartVillageLead2Service;
 
@@ -71,6 +74,26 @@ public class SmartVillageLead2Controller extends JeecgController<SmartVillageLea
 		IPage<SmartVillageLead2> pageList = smartVillageLead2Service.page(page, queryWrapper);
 		return Result.OK(pageList);
 	}
+
+	 @AutoLog(value = "农村集体经济组织-分页列表查询")
+	 @ApiOperation(value="农村集体经济组织-分页列表查询", notes="农村集体经济组织-分页列表查询")
+	 @GetMapping(value = "/listAdmin")
+	 public Result<?> queryPageListAdmin(SmartVillageLead2 smartVillageLead,
+										 @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+										 @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+										 HttpServletRequest req) {
+
+		 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		 String orgCode = sysUser.getOrgCode();
+		 if ("".equals(orgCode)) {
+			 return Result.error("本用户没有操作权限！");
+		 }
+		 QueryWrapper<SmartVillageLead2> queryWrapper = QueryGenerator.initQueryWrapper(smartVillageLead, req.getParameterMap());
+		 queryWrapper.eq("sys_org_code", orgCode);
+		 Page<SmartVillageLead2> page = new Page<SmartVillageLead2>(pageNo, pageSize);
+		 IPage<SmartVillageLead2> pageList = smartVillageLead2Service.page(page, queryWrapper);
+		 return Result.OK(pageList);
+	 }
 	
 	/**
 	 *   添加
