@@ -138,11 +138,8 @@ public class SmartFirstFormPeopleController extends JeecgController<SmartFirstFo
 		 Result<JSONObject> result = new Result<JSONObject>();
 		 JSONObject obj = new JSONObject();
 
-		 // 先根据单位ID查询单位
-		 SysDepartModel sysDepartModel = sysBaseAPI.selectAllById(departId);
-
 		 QueryWrapper<SmartFirstFormPeople> queryWrapper = new QueryWrapper<>();
-		 queryWrapper.eq("interviewee_dept", sysDepartModel.getOrgCode()).eq("del_flag", 0);
+		 queryWrapper.eq("interviewee_dept", departId).eq("del_flag", 0);
 		 long count = smartFirstFormPeopleService.count(queryWrapper);
 
 		 obj.put("count", count);
