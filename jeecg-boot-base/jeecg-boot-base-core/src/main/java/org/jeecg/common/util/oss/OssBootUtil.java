@@ -102,7 +102,7 @@ public class OssBootUtil {
      */
     public static String upload(MultipartFile file, String fileDir,String customBucket) {
         String FILE_URL = null;
-        initOSS(endPoint, accessKeyId, accessKeySecret);
+        initOSS(internalEndPoint, accessKeyId, accessKeySecret);
         StringBuilder fileUrl = new StringBuilder();
         String newBucket = bucketName;
         if(oConvertUtils.isNotEmpty(customBucket)){
@@ -136,7 +136,8 @@ public class OssBootUtil {
             if (oConvertUtils.isNotEmpty(staticDomain) && staticDomain.toLowerCase().startsWith("http")) {
                 FILE_URL = staticDomain + "/" + fileUrl;
             } else {
-                FILE_URL = "https://" + newBucket + "." + endPoint + "/" + fileUrl;
+                FILE_URL = "https://zhjj.dlqzzst.com:543/files" + "/" + fileUrl;
+//                FILE_URL = "https://" + newBucket + "." + endPoint + "/" + fileUrl;
             }
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, fileUrl.toString(),file.getInputStream(),
                     new ObjectMetadata()).withCannedAcl(CannedAccessControlList.PublicRead);
@@ -264,7 +265,7 @@ public class OssBootUtil {
             if(oConvertUtils.isNotEmpty(bucket)){
                 newBucket = bucket;
             }
-            initOSS(internalEndPoint, accessKeyId, accessKeySecret);
+            initOSS(endPoint, accessKeyId, accessKeySecret);
             //update-begin---author:liusq  Date:20220120  for：替换objectName前缀，防止key不一致导致获取不到文件----
             objectName = OssBootUtil.replacePrefix(objectName,bucket);
             //update-end---author:liusq  Date:20220120  for：替换objectName前缀，防止key不一致导致获取不到文件----
@@ -370,6 +371,7 @@ public class OssBootUtil {
             if(oConvertUtils.isNotEmpty(customBucket)){
                 newBucket = customBucket;
             }
+//            String path ="https://zhjj.dlqzzst.com:543/" + newBucket + "." + endPoint + "/";
             String path ="https://" + newBucket + "." + endPoint + "/";
             objectName = objectName.replace(path,"");
         }
