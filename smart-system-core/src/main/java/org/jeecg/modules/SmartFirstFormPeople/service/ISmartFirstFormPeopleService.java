@@ -19,5 +19,5 @@ public interface ISmartFirstFormPeopleService extends IService<SmartFirstFormPeo
 
     List<FirstFormInfo> sendInformation();
 
-    List<String> getLeadersByOrgCode(String departCode);
+    List<String> getLeadersByDepartId(List<String> departIds);
 }

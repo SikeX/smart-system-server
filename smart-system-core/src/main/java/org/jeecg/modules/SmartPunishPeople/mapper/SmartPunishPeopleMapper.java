@@ -29,5 +29,5 @@ public interface SmartPunishPeopleMapper extends BaseMapper<SmartPunishPeople> {
 
     List<punishInfo> sendInformation();
 
-    List<String> getLeadersByOrgCode(@Param("departCode") String departCode);
+    List<String> getLeadersByDepartId(@Param("departIds") List<String> departIds);
 }

@@ -18,10 +18,15 @@
           and month(f.create_time) = MONTH(date_sub(NOW(),interval 1 month))
         group by interviewee_dept
     </select>
-    <select id="getLeadersByOrgCode" resultType="String">
+    <select id="getLeadersByDepartId" resultType="String">
         select username
         from sys_user
         where user_identity = 2
-          and org_code = #{departCode}
+          and depart_ids in
+        <foreach item="item" index="index" collection="departIds"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and del_flag = 0
     </select>
 </mapper>
