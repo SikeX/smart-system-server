@@ -89,7 +89,7 @@ public class SmartInnerPartyTalk implements Serializable {
     @ApiModelProperty(value = "受诫勉谈话人ID")
     private java.lang.String inquirerId;
     /**受诫勉谈话人姓名*/
-    @Excel(name = "受诫勉谈话人ID", width = 15)
+    @Excel(name = "受诫勉谈话人姓名", width = 15)
     @ApiModelProperty(value = "受诫勉谈话人姓名")
     private java.lang.String inquirerName;
 	/**受党纪处分人ID*/
