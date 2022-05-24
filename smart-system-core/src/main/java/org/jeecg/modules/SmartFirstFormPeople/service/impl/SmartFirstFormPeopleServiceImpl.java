@@ -34,8 +34,8 @@ public class SmartFirstFormPeopleServiceImpl extends ServiceImpl<SmartFirstFormP
     }
 
     @Override
-    public List<String> getLeadersByOrgCode(String departCode) {
-        return smartFirstFormPeopleMapper.getLeadersByOrgCode(departCode);
+    public List<String> getLeadersByDepartId(List<String> departIds) {
+        return smartFirstFormPeopleMapper.getLeadersByDepartId(departIds);
     }
 
 

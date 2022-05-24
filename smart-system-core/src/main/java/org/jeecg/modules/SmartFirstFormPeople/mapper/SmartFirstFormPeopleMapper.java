@@ -17,7 +17,7 @@ import org.jeecg.modules.smartEvaluateList.entity.MonthCount;
 public interface SmartFirstFormPeopleMapper extends BaseMapper<SmartFirstFormPeople> {
     List<FirstFormInfo> sendInformation();
 
-    List<String> getLeadersByOrgCode(@Param("departCode") String departCode);
+    List<String> getLeadersByDepartId(@Param("departIds") List<String> departIds);
 
     List<MonthCount> statistics(@Param("year") String year, @Param("departCode") String departCode);
 }

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -32,7 +33,8 @@ public class FirstFormSendCaution {
         if (list.size()>0){
             //获取单位负责人
             for(FirstFormInfo p : list){
-                p.setLeaders(smartFirstFormPeopleService.getLeadersByOrgCode(p.getDepartCode()));
+                List<String> departIds = Arrays.asList((p.getDepartCode()).split(","));
+                p.setLeaders(smartFirstFormPeopleService.getLeadersByDepartId(departIds));
                 //System.out.println(p);
             }
             for (int i = 0;i<list.size();i++){

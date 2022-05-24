@@ -16,10 +16,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Component
@@ -40,7 +37,9 @@ public class PunishSendCaution {
         if (list.size()>0){
             //获取单位负责人
             for(punishInfo p : list){
-                p.setLeaders(smartPunishPeopleService.getLeadersByOrgCode(p.getDepartCode()));
+                List<String> departIds = Arrays.asList((p.getDepartCode()).split(","));
+                //System.out.println(departIds);
+                p.setLeaders(smartPunishPeopleService.getLeadersByDepartId(departIds));
                 //System.out.println(p);
             }
             for (int i = 0;i<list.size();i++){
