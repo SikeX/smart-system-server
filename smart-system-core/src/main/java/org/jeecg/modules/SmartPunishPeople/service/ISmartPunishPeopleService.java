@@ -31,5 +31,5 @@ public interface ISmartPunishPeopleService extends IService<SmartPunishPeople> {
 
     List<punishInfo> sendInformation();
 
-    List<String> getLeadersByOrgCode(String departCode);
+    List<String> getLeadersByDepartId(List<String> departIds);
 }

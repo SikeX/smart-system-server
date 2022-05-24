@@ -23,17 +23,22 @@
         )
     </select>
     <select id="sendInformation" resultType="org.jeecg.modules.SmartPunishPeople.entity.punishInfo">
-        select p.depart_code,group_concat(distinct punish_name) as punishers
+        select p.depart_code,group_concat(punish_name) as punishers
         from smart_punish_people p
-        where p.del_flag = 0 and year(p.create_time ) = year(NOW())
-          and month(p.create_time) = MONTH(date_sub(NOW(),interval 1 month))
+        where p.del_flag = 0 and year(p.begin_time ) = year(NOW())
+          and month(p.begin_time) = MONTH(date_sub(NOW(),interval 1 month))
         group by depart_code
     </select>
-    <select id="getLeadersByOrgCode" resultType="String">
+    <select id="getLeadersByDepartId" resultType="String">
         select username
         from sys_user
         where user_identity = 2
-          and org_code = #{departCode}
+          and depart_ids in
+        <foreach item="item" index="index" collection="departIds"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and del_flag = 0
     </select>
 
 </mapper>
