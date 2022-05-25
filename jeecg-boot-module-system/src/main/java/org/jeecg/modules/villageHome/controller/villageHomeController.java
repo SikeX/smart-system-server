@@ -564,7 +564,7 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 						}
 						if(sysUserService.queryByIdnumber(home.getIdnumber())!=null)
 						{
-							return Result.error("导入失败:身份证号为"+home.getIdnumber()+"的村民已存在");
+							return Result.error("导入失败:身份证号为"+home.getIdnumber()+"的户主已存在");
 						}
 						if(home.getPhone()==""||home.getPhone()==null)
 						{
