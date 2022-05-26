@@ -40,7 +40,7 @@ public class SmartPunishPeopleServiceImpl extends ServiceImpl<SmartPunishPeopleM
     }
 
     @Override
-    public List<String> getLeadersByOrgCode(String departCode) {
-        return smartPunishPeopleMapper.getLeadersByOrgCode(departCode);
+    public List<String> getLeadersByDepartId(List<String> departIds) {
+        return smartPunishPeopleMapper.getLeadersByDepartId(departIds);
     }
 }

@@ -47,7 +47,7 @@ public class Smart_8Dining implements Serializable {
 	/**陪同人数*/
 	@Excel(name = "陪同人数", width = 15)
     @ApiModelProperty(value = "陪同人数")
-    private java.lang.String numR;
+    private java.lang.Integer numR;
 	/**创建人*/
     @ApiModelProperty(value = "创建人")
     private java.lang.String createBy;

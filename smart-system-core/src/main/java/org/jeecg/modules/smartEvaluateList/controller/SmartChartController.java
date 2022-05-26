@@ -215,7 +215,7 @@ public class SmartChartController extends JeecgController<peopleAvg, ISmartChart
 			}else{
 				year = year.substring(1,year.length()-1);
 			}
-			System.out.println("ggggggggggggggggggggggg");
+			//System.out.println("ggggggggggggggggggggggg");
 			System.out.println(year);
 			List<TypeCount> rankCountlist = smartChartService.windowsRankByCount(year);
 			return Result.OK(rankCountlist);

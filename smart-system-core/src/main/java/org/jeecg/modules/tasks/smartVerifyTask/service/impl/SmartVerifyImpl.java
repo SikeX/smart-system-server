@@ -52,18 +52,25 @@ public class SmartVerifyImpl implements SmartVerify {
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
         String userId = sysUser.getId();
+        log.info("当前用户id：" + userId);
 
-        // 获取登录用户业务父部门id
-        String parentId = sysBaseAPI.getParentIdByUserId(userId);
         String departType = sysBaseAPI.getDepTypeByUserId(userId);
-
         String userDepartId = sysBaseAPI.getDepartIdsByOrgCode(sysUser.getOrgCode());
         smartVerifyTask.setFillPerson(sysUser.getRealname());
         smartVerifyTask.setFillDepart(userDepartId);
         smartVerifyTask.setTaskType(verifyType);
         smartVerifyTask.setFlowNo(id);
-        smartVerifyTask.setFlowStatus(2);
         smartVerifyTask.setDepartType(departType);
+
+        // 获取登录用户业务父部门id
+        String parentId = sysBaseAPI.getParentIdByUserId(userId);
+        if(StrUtil.isBlank(parentId)){
+            smartVerifyTask.setFlowStatus(1);
+            smartVerifyTaskMapper.insert(smartVerifyTask);
+            return;
+        }
+        smartVerifyTask.setFlowStatus(2);
+
         smartVerifyTaskMapper.insert(smartVerifyTask);
 
         String first = parentId;
@@ -76,7 +83,7 @@ public class SmartVerifyImpl implements SmartVerify {
             return;
         }
         // 如果是教育局则绕开
-        else if(first == "e389cf6bc9a54fd58f2e74f09d8f1b1f"){
+        else if(first.equals("e389cf6bc9a54fd58f2e74f09d8f1b1f")){
             first = sysBaseAPI.getParentDepIdByDepartId("e389cf6bc9a54fd58f2e74f09d8f1b1f");
         }
         String second = sysBaseAPI.getParentDepIdByDepartId(first);

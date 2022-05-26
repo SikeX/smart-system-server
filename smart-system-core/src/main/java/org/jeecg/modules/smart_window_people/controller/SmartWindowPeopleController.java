@@ -110,7 +110,7 @@ public class SmartWindowPeopleController extends JeecgController<SmartWindowPeop
 		// 1. 根据ID生成二维码，并存储到本地
 		//String content = "http://47.99.39.59:3000/SmartEvaluate/modules/SmartEvaluateForm?exeDept="+departName+"&windowsName="+windowName+"&personName="+smartWindowPeople.getPersonName();//exeDept主管部门名称，windowsName窗口名称，personName具体被举报人名
 
-		String content = "http://47.99.39.59:3000/SmartEvaluate/modules/SmartEvaluateForm?" +
+		String content = "https://zhjj.dlqzzst.com:543/SmartEvaluate/modules/SmartEvaluateForm?" +
 				"exeDeptId="+pid+"&exeDept="+departName+
 				"&windowsId="+departmentId+"&windowsName="+windowName+
 				"&personId="+smartWindowPeople.getPersonId()+"&personName="+smartWindowPeople.getPersonName();//exeDept主管部门名称，windowsName窗口名称，personName具体被举报人名，可删除留空判断

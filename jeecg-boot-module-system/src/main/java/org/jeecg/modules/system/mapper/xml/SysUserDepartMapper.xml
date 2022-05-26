@@ -23,7 +23,7 @@
 		select a.*, c.depart_name as org_code_txt from sys_user a
 		join sys_user_depart b on b.user_id = a.id
 		join sys_depart c on b.dep_id = c.id
-		where a.del_flag = 0 and c.org_code like '${orgCode}%'
+		where a.del_flag = 0 and c.org_code like '${orgCode}%' and a.people_type = 1
 		<if test="username!=null and username!=''">
 			and a.username like '%${username}%'
 		</if>
