@@ -897,7 +897,7 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 		String cunId = null;
 		if(cun.equals("前进村"))
 		{
-			if(zhen.equals("道里区新农镇"))
+			if(zhen.equals("新农镇"))
 			{
 				cunId = "e0ce48ecb1734d77b843d28017b95f39";
 			}else

@@ -55,8 +55,9 @@ public class villageHome implements Serializable {
     private Date updateTime;
     /**所属镇*/
 
-    @Excel(name = "所属镇", width = 15  )
+    @Excel(name = "所属镇", width = 15, dictTable = "sys_depart",dicText = "depart_name",dicCode = "id")
     @ApiModelProperty(value = "所属镇")
+    @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
     private String zhenId;
 	/**所属乡*/
 	@Excel(name = "所属村", width = 15)
