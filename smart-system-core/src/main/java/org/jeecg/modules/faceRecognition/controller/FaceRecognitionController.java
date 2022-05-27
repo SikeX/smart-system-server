@@ -68,7 +68,7 @@ public class FaceRecognitionController {
 
                 FaceRecognitionUtil faceRecognitionUtil = new FaceRecognitionUtil();
 
-                String imgBase64 = ImageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese(fileBaseUrl + imgPath));
+                String imgBase64 = ImageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese( imgPath));
 
 
                 JSONObject result = faceRecognitionUtil.searchFaces(imgBase64, groupId);
