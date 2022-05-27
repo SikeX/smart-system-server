@@ -40,23 +40,23 @@ public class SysDepart implements Serializable {
 	@Excel(name="机构/部门类型",width=15)
 	private String departType;
 	/**英文名*/
-	@Excel(name="英文名",width=15)
+//	@Excel(name="英文名",width=15)
 	private String departNameEn;
 	/**缩写*/
 	private String departNameAbbr;
 	/**排序*/
-	@Excel(name="排序",width=15)
+//	@Excel(name="排序",width=15)
 	private Integer departOrder;
 	/**描述*/
-	@Excel(name="描述",width=15)
+//	@Excel(name="描述",width=15)
 	private String description;
 	/**机构类别 1公司，2组织机构，2岗位*/
-	@Excel(name="机构类别",width=15,dicCode="org_category")
+//	@Excel(name="机构类别",width=15,dicCode="org_category")
 	private String orgCategory;
 	/**机构类型*/
 	private String orgType;
 	/**机构编码*/
-	@Excel(name="机构编码",width=15)
+//	@Excel(name="机构编码",width=15)
 	private String orgCode;
 	/**手机号*/
 	@Excel(name="手机号",width=15)

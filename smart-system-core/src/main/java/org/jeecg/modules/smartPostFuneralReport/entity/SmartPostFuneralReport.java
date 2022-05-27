@@ -73,7 +73,7 @@ public class SmartPostFuneralReport implements Serializable {
     @ApiModelProperty(value = "政治面貌")
     private String politics;
 	/**工作单位*/
-	@Excel(name = "工作单位", width = 15)
+	@Excel(name = "工作单位", width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
     @ApiModelProperty(value = "工作单位")
     @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
     private String departId;
