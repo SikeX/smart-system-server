@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.PermissionData;
@@ -919,14 +920,15 @@ public class SysUserController {
         List<String> role = sysBaseAPI.getRolesByUsername(username);
 
         List<SysUser> queryList = new ArrayList<SysUser>();
-
+//        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(sysUser, req.getParameterMap());
+        queryWrapper.eq("del_flag",0);
+        queryWrapper.eq("people_type","1");
         // 如果是普通用户，则只能看到自己创建的数据
-        if(role.contains("CommonUser")) {
-            QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("create_by",username);
+         if(role.contains("CCDIAdmin")){
             queryList = sysUserService.list(queryWrapper);
         }
-        else {
+        else if(role.contains("admin")&&!role.contains("CCDIAdmin")) {
             // 1. 规则，下面是 以**开始
             //String rule = "in";
             // 2. 查询字段
@@ -950,9 +952,10 @@ public class SysUserController {
 //            map.put("superQueryMatchType", params);
             //QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(sysUser, map);
             String departId = currentUser.getDepartId();
-            QueryWrapper<SysUser> sysUserQueryWrapper = new QueryWrapper<>();
-            sysUserQueryWrapper.eq("depart_id",departId);
-            queryList = sysUserService.list(sysUserQueryWrapper);
+//            QueryWrapper<SysUser> sysUserQueryWrapper = new QueryWrapper<>();
+//            sysUserQueryWrapper.eq("depart_id",departId);
+             queryWrapper.eq("depart_id",departId);
+            queryList = sysUserService.list(queryWrapper);
         }
 
 
@@ -1178,6 +1181,35 @@ public class SysUserController {
 		}
 		return sysUserService.resetPassword(username,oldpassword,password,confirmpassword);
 	}
+
+    @RequestMapping(value = "/updatePhone", method = RequestMethod.PUT)
+    public Result<?> updatPhone(@RequestBody JSONObject json) {
+        Result<JSONObject> result = new Result<JSONObject>();
+        String username = json.getString("username");
+        String phone = json.getString("phone");
+        LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
+        String captcha = json.getString("captcha");
+        Object code = redisUtil.get(phone);
+        if(!sysUser.getUsername().equals(username)){
+            return Result.error("只允许修改自己的手机号码！");
+        }
+        SysUser user = this.sysUserService.getOne(new LambdaQueryWrapper<SysUser>().eq(SysUser::getUsername, username));
+        if(user==null) {
+            return Result.error("用户不存在！");
+        }
+        if (!captcha.equals(code)) {
+            result.setMessage("验证码错误");
+            result.setSuccess(false);
+            return result;
+        }
+        // 验证成功后删除验证码
+        redisUtil.set(phone, captcha,600);
+        // 更新手机号码
+        user.setPhone(phone);
+        sysUserService.updateById(user);
+        return Result.ok("手机号码修改成功!");
+
+    }
 
     @RequestMapping(value = "/userRoleList", method = RequestMethod.GET)
     public Result<IPage<SysUser>> userRoleList(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
