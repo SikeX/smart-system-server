@@ -68,16 +68,21 @@ public class FaceRecognitionController {
 
                 FaceRecognitionUtil faceRecognitionUtil = new FaceRecognitionUtil();
 
-                String imgBase64 = ImageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese( imgPath));
+                String imgBase64 = ImageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese( fileBaseUrl + imgPath));
 
 
                 JSONObject result = faceRecognitionUtil.searchFaces(imgBase64, groupId);
 
                 JSONObject response = result.getJSONObject("result");
 
+                log.info("人脸搜索结果：" + result);
+
                 if (result.getIntValue("error_code") != 0) {
-                    log.info("1");
-                    return Result.error(result.getString("error_msg"));
+                    log.info("人脸搜索失败：" + result.getString("error_msg"));
+                    if(result.getString("error_code").equals("222207")){
+                        return Result.error("未匹配到任何人脸");
+                    }
+                    return Result.error("检测失败！");
                 }
                 JSONArray faces = response.getJSONArray("face_list");
 
