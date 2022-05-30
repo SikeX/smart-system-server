@@ -8,6 +8,7 @@ import com.amazonaws.services.s3.S3ClientOptions;
 import com.amazonaws.services.s3.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileItemStream;
+import org.jeecg.common.constant.SymbolConstant;
 import org.jeecg.common.util.CommonUtils;
 import org.jeecg.common.util.filter.FileTypeFilter;
 import org.jeecg.common.util.filter.StrAttackFilter;
@@ -34,9 +35,14 @@ public class OssBootUtil {
     private static String accessKeySecret;
     private static String bucketName;
     private static String staticDomain;
+    private static String internalEndPoint;
 
     public static void setEndPoint(String endPoint) {
         OssBootUtil.endPoint = endPoint;
+    }
+
+    public static void setInternalEndpoint(String internalEndpoint) {
+        OssBootUtil.internalEndPoint = internalEndpoint;
     }
 
     public static void setAccessKeyId(String accessKeyId) {
@@ -62,6 +68,8 @@ public class OssBootUtil {
     public static String getEndPoint() {
         return endPoint;
     }
+
+    public static String getInternalEndPoint() { return internalEndPoint;}
 
     public static String getAccessKeyId() {
         return accessKeyId;
@@ -94,8 +102,8 @@ public class OssBootUtil {
      * @return oss 中的相对文件路径
      */
     public static String upload(MultipartFile file, String fileDir,String customBucket) {
-        String FILE_URL = null;
-        initOSS(endPoint, accessKeyId, accessKeySecret);
+        String filePath = null;
+        initOSS(internalEndPoint, accessKeyId, accessKeySecret);
         StringBuilder fileUrl = new StringBuilder();
         String newBucket = bucketName;
         if(oConvertUtils.isNotEmpty(customBucket)){
@@ -126,11 +134,14 @@ public class OssBootUtil {
             //update-end-author:wangshuai date:20201012 for: 过滤上传文件夹名特殊字符，防止攻击
             fileUrl = fileUrl.append(fileDir + fileName);
 
-            if (oConvertUtils.isNotEmpty(staticDomain) && staticDomain.toLowerCase().startsWith("http")) {
-                FILE_URL = staticDomain + "/" + fileUrl;
-            } else {
-                FILE_URL = "https://" + newBucket + "." + endPoint + "/" + fileUrl;
-            }
+            filePath = fileUrl.toString();
+
+//            if (oConvertUtils.isNotEmpty(staticDomain) && staticDomain.toLowerCase().startsWith("http")) {
+//                filePath = staticDomain + SymbolConstant.SINGLE_SLASH + fileUrl;
+//            } else {
+////                FILE_URL = "https://zhjj.dlqzzst.com:543/files" + "/" + fileUrl;
+//                filePath = "https://" + newBucket + "." + endPoint + SymbolConstant.SINGLE_SLASH + fileUrl;
+//            }
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, fileUrl.toString(),file.getInputStream(),
                     new ObjectMetadata()).withCannedAcl(CannedAccessControlList.PublicRead);
             PutObjectResult result = ossClient.putObject(putObjectRequest);
@@ -144,7 +155,7 @@ public class OssBootUtil {
             e.printStackTrace();
             return null;
         }
-        return FILE_URL;
+        return filePath;
     }
 
     /**
@@ -363,10 +374,13 @@ public class OssBootUtil {
             if(oConvertUtils.isNotEmpty(customBucket)){
                 newBucket = customBucket;
             }
+//            String path ="https://zhjj.dlqzzst.com:543/" + newBucket + "." + endPoint + "/";
             String path ="https://" + newBucket + "." + endPoint + "/";
             objectName = objectName.replace(path,"");
         }
         log.info("------replacePrefix---替换后---objectName:{}",objectName);
         return objectName;
     }
+
+
 }

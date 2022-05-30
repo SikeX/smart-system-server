@@ -165,7 +165,7 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 	 */
 	SysUser queryByIdnumber(String idnumber);
 
-	@Update("UPDATE sys_user SET phone = #{arg1} where id = #{arg0}")
+	@Update("UPDATE sys_user SET phone = #{purePhoneNumber} where id = #{sysUserId}")
 	int updatePhoneById(String sysUserId, String purePhoneNumber);
 
 	/**

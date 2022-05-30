@@ -121,7 +121,7 @@ public class SmartPostFuneralReportController extends JeecgController<SmartPostF
 		// 如果是普通用户，则只能看到自己创建的数据
 		if(role.contains("CommonUser")) {
 			QueryWrapper<SmartPostFuneralReport> queryWrapper = new QueryWrapper<>();
-			queryWrapper.eq("create_by",username);
+			queryWrapper.eq("create_by",username).or().eq("people_id",sysUser.getId());
 			IPage<SmartPostFuneralReport> pageList = smartPostFuneralReportService.page(page, queryWrapper);
 			return Result.OK(pageList);
 		} else {
@@ -235,7 +235,16 @@ public class SmartPostFuneralReportController extends JeecgController<SmartPostF
 	@ApiOperation(value="丧事事后报备表-通过id删除", notes="丧事事后报备表-通过id删除")
 	@DeleteMapping(value = "/delete")
 	public Result<?> delete(@RequestParam(name="id",required=true) String id) {
-		smartPostFuneralReportService.removeById(id);
+		SmartFuneralReport preReport = smartFuneralReportService.getById(
+				id
+		);
+		preReport.setIfReport(0);
+		smartFuneralReportService.updateById(preReport);
+		SmartPostFuneralReport smartPostFuneralReport = smartPostFuneralReportService.getByPreId(id);
+		if(smartPostFuneralReport == null){
+			return Result.error("不存在事后报备信息");
+		}
+		smartPostFuneralReportService.removeById(smartPostFuneralReport.getId());
 		return Result.OK("删除成功!");
 	}
 	

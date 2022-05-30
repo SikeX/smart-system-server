@@ -143,7 +143,7 @@ public class SmartVillageLeadController extends JeecgController<SmartVillageLead
 
 		String imgPath = smartVillageLead.getPicture();
 
-		String imgBase64 = imageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese(fileBaseUrl + imgPath));
+		String imgBase64 = imageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese( imgPath));
 
 		try {
 
@@ -189,7 +189,7 @@ public class SmartVillageLeadController extends JeecgController<SmartVillageLead
 
 		String imgPath = smartVillageLead.getPicture();
 
-		String imgBase64 = imageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese(fileBaseUrl + imgPath));
+		String imgBase64 = imageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese( imgPath));
 
 		try {
 			JSONObject faceResponse = faceRecognitionUtil.updateFace(imgBase64, groupId, smartVillageLead.getId());

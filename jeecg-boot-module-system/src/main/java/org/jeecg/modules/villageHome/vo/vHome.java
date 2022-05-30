@@ -70,7 +70,6 @@ public class vHome implements Serializable {
     @ApiModelProperty(value = "户主姓")
     private String homeSurname;
 	/**户主*/
-	@Excel(name = "身份证号", width = 15)
     @ApiModelProperty(value = "户主")
     private String idnumber;
 	/**家庭地址*/

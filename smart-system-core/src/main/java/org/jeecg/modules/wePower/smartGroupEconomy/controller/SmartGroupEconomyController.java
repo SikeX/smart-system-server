@@ -222,7 +222,7 @@ public class SmartGroupEconomyController extends JeecgController<SmartGroupEcono
 
 		String imgPath = smartGroupEconomyPeople.getPic();
 
-		String imgBase64 = imageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese(fileBaseUrl + imgPath));
+		String imgBase64 = imageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese( imgPath));
 
 		try {
 
@@ -261,7 +261,7 @@ public class SmartGroupEconomyController extends JeecgController<SmartGroupEcono
 
 		String imgPath = smartGroupEconomyPeople.getPic();
 
-		String imgBase64 = imageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese(fileBaseUrl + imgPath));
+		String imgBase64 = imageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese( imgPath));
 
 		try {
 			JSONObject faceResponse = faceRecognitionUtil.updateFace(imgBase64, groupId,
