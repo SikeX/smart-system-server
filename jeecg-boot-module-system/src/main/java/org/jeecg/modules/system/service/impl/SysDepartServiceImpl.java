@@ -358,7 +358,7 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
                     this.updateById(naturalChildDept2);
                 }
             }
-            this.updateById(sysDepart);
+//            this.updateById(sysDepart);
         }
             //			更换业务上级的情况下
 			if (sysDepart.getParentId() == null) {
@@ -379,10 +379,11 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
                 String[] codeArray = (String[]) FillRuleUtil.executeRule(FillRuleConstant.DEPART,formData);
                 //update-end--Author:baihailong  Date:20191209 for：部门编码规则生成器做成公用配置
                 sysDepart.setOrgCode(codeArray[0]);
+//
                 String orgType = codeArray[1];
                 sysDepart.setOrgType(String.valueOf(orgType));
 				this.updateById(sysDepart);
-				//修改相关人员的orgCode
+				//修改相关人员的orgCodeSystem.out.println(sysDepart.getOrgCode());
 				LambdaQueryWrapper<SysUser> queryPeople = new LambdaQueryWrapper<SysUser>();
 				queryPeople.eq(SysUser::getDepartId,sysDepart.getId());
 				List<SysUser> userList = sysUserMapper.selectList(queryPeople);
@@ -446,6 +447,7 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 					nextParentDept.setOrgType(orgType);
 					String newOrgCode = YouBianCodeUtil.getSubYouBianCode(parentDept.getOrgCode(), null);
 					nextParentDept.setOrgCode(newOrgCode);
+//					System.out.println(newOrgCode);
 					this.updateById(nextParentDept);
 					//修改相关人员的orgCode
 					LambdaQueryWrapper<SysUser> queryPeople = new LambdaQueryWrapper<SysUser>();
@@ -464,6 +466,7 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 					nextParentDept.setOrgType(orgType);
 					String newOrgCode =  YouBianCodeUtil.getSubYouBianCode(parentDept.getOrgCode(), lastDepart.getOrgCode());
 					nextParentDept.setOrgCode(newOrgCode);
+//					System.out.println(newOrgCode);
 					this.updateById(nextParentDept);
 					//修改相关人员的orgCode
 					LambdaQueryWrapper<SysUser> queryPeople = new LambdaQueryWrapper<SysUser>();
