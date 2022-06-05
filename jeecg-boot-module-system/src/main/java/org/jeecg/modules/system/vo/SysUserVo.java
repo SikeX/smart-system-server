@@ -110,9 +110,14 @@ public class SysUserVo implements Serializable {
     /**
      * 部门code(当前选择登录部门)
      */
-    @Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
-    @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
+//    @Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
+//    @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
     private String orgCode;
+    //单位ID
+    @Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
+    @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
+    @ApiModelProperty(value = "单位")
+    private String departId;
     /**部门名称--将不需要序列化的属性前添加关键字transient，序列化对象的时候，这个属性就不会被序列化*/
   /*  @Excel(name = "单位", width = 15)*/
     private transient String orgCodeTxt;
@@ -183,7 +188,7 @@ public class SysUserVo implements Serializable {
     /**
      * 负责部门
      */
-    //@Excel(name="负责部门",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
+    @Excel(name="负责部门",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
     @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
     private String departIds;
 

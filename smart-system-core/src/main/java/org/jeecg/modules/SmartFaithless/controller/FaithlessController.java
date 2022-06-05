@@ -15,6 +15,7 @@ import org.jeecg.modules.SmartFaithless.entity.Faithless;
 import org.jeecg.modules.SmartFaithless.entity.FaithlessPeople;
 import org.jeecg.modules.SmartInnerPartyTalk.entity.SmartInnerPartyTalk;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.LinkedMultiValueMap;
@@ -39,12 +40,15 @@ public class FaithlessController {
     @Autowired
     private RestTemplate restTemplate;
 
-   /**
-    *
-    *
-    * @param
-    * @return
-    */
+    @Value("${aliyun.appcode}")
+    private String appcode;
+
+    /**
+     *
+     *
+     * @param
+     * @return
+     */
    @AutoLog(value = "失信被执行人查询")
    @ApiOperation(value="失信被执行人查询", notes="失信被执行人查询")
    @PostMapping(value = "/search")
@@ -54,7 +58,6 @@ public class FaithlessController {
        String host = "https://jumjokk.market.alicloudapi.com";
        String path = "/personal/disenforcement";
        String method = "POST";
-       String appcode = "2cf5fa98c25641e89f4a585b8ca5d83a";
        //Map<String, String> headers = new HashMap<String, String>();
        HttpHeaders headers = new HttpHeaders();
        //最后在header中的格式(中间是英文空格)为Authorization:APPCODE 83359fd73fe94948385f570e3c139105

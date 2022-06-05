@@ -112,7 +112,7 @@ public class SmartWindowUnitController<ISysDepartService> extends JeecgControlle
 //		sysBaseAPI.getParentDepartId()
 		// 1. 根据ID生成二维码，并存储到本地
 		//String content = "http://47.99.39.59:3000/SmartEvaluate/modules/SmartEvaluateForm?exeDept="+departName+"&windowsName="+smartWindowUnit.getName()+"&personName=大厅";//exeDept主管部门名称，windowsName窗口名称，personName具体被举报人名，可删除留空判断
-		BaseResponse response=new BaseResponse(StatusCode.Success);
+//		BaseResponse response=new BaseResponse(StatusCode.Success);
 		try {
 			final String fileName=LOCALDATEFORMAT.get().format(new Date());
 			//QRCodeUtil.createCodeToFile(content,new File(RootPath),fileName+FileFormat);
@@ -127,7 +127,7 @@ public class SmartWindowUnitController<ISysDepartService> extends JeecgControlle
 
 			String windowsId = smartWindowUnit.getId();
 			System.out.println("##################################");
-			String content = "https://zhjj.dlqzzst.com:543/SmartEvaluate/modules/SmartEvaluateForm?" +
+			String content = "https://www.dlqjjw.com/SmartEvaluate/modules/SmartEvaluateForm?" +
 												"exeDeptId="+pid+"&exeDept="+departName+
 												"&windowsId="+windowsId+"&windowsName="+smartWindowUnit.getName()+
 												"&personId="+""+"&personName=大厅";//exeDept主管部门名称，windowsName窗口名称，personName具体被举报人名，可删除留空判断
@@ -137,9 +137,8 @@ public class SmartWindowUnitController<ISysDepartService> extends JeecgControlle
 
 			return Result.OK("添加成功！");
 		}catch (Exception e){
-			response=new BaseResponse(StatusCode.Fail.getCode(),e.getMessage());
+			return Result.error(e.getMessage());
 		}
-		return response;
 	}
 	
 	/**

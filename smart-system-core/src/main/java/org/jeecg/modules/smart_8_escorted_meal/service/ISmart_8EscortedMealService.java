@@ -10,5 +10,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @Version: V1.0
  */
 public interface ISmart_8EscortedMealService extends IService<Smart_8EscortedMeal> {
-
+    String getMainIdById(String id);
 }

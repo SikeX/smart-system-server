@@ -222,7 +222,7 @@ public class SmartGroupEconomyController extends JeecgController<SmartGroupEcono
 
 		String imgPath = smartGroupEconomyPeople.getPic();
 
-		String imgBase64 = imageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese(fileBaseUrl + imgPath));
+		String imgBase64 = imageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese( fileBaseUrl + imgPath));
 
 		try {
 
@@ -238,6 +238,7 @@ public class SmartGroupEconomyController extends JeecgController<SmartGroupEcono
 				return Result.error(faceResponse.getString("error_msg"));
 			} else {
 				smartGroupEconomyPeople.setFaceToken(faceResponse.getJSONObject("result").getString("face_token"));
+				smartGroupEconomyPeopleService.updateById(smartGroupEconomyPeople);
 				return Result.OK("添加成功！");
 			}
 
@@ -261,7 +262,7 @@ public class SmartGroupEconomyController extends JeecgController<SmartGroupEcono
 
 		String imgPath = smartGroupEconomyPeople.getPic();
 
-		String imgBase64 = imageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese(fileBaseUrl + imgPath));
+		String imgBase64 = imageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese( fileBaseUrl + imgPath));
 
 		try {
 			JSONObject faceResponse = faceRecognitionUtil.updateFace(imgBase64, groupId,
