@@ -26,7 +26,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class SysUserVo implements Serializable {
+public class VillageUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -96,7 +96,7 @@ public class SysUserVo implements Serializable {
     /**
      * 干部人员类别
      */
-    @Excel(name = "人员类别", width = 15,dicCode="office_type")
+//    @Excel(name = "人员类别", width = 15,dicCode="office_type")
     @ApiModelProperty(value = "人员类别")
     @Dict(dicCode = "office_type")
     private String officeType;
@@ -106,18 +106,17 @@ public class SysUserVo implements Serializable {
     @TableField(value = "phone",updateStrategy = FieldStrategy.IGNORED)
     @Excel(name = "手机号码", width = 15)
     private String phone;
+    /**角色*/
+//    @Excel(name = "角色", width = 15,dictTable = "sys_role",dicText = "role_name",dicCode = "id")
+    @ApiModelProperty(value = "角色")
+    private String role;
 
     /**
      * 部门code(当前选择登录部门)
      */
 //    @Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
-//    @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
+    @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
     private String orgCode;
-    //单位ID
-    @Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
-    @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
-    @ApiModelProperty(value = "单位")
-    private String departId;
     /**部门名称--将不需要序列化的属性前添加关键字transient，序列化对象的时候，这个属性就不会被序列化*/
   /*  @Excel(name = "单位", width = 15)*/
     private transient String orgCodeTxt;
@@ -144,7 +143,7 @@ public class SysUserVo implements Serializable {
     /**
      * 职务，关联职务表
      */
-    @Excel(name = "职务", width = 15,dictTable ="sys_position",dicText = "name",dicCode = "code")
+//    @Excel(name = "职务", width = 15,dictTable ="sys_position",dicText = "name",dicCode = "code")
     @Dict(dictTable ="sys_position",dicText = "name",dicCode = "code")
     private String post;
 
@@ -182,20 +181,20 @@ public class SysUserVo implements Serializable {
     /**
      * 身份（1普通成员 2上级）
      */
-    @Excel(name="是否单位负责人（1否2是）",width = 15)
+//    @Excel(name="是否单位负责人（1否2是）",width = 15)
     private Integer userIdentity;
 
     /**
      * 负责部门
      */
-    @Excel(name="负责部门",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
+    //@Excel(name="负责部门",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
     @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
     private String departIds;
 
     /**
      * 职级
      */
-    @Excel(name = "职级", width = 15,dicCode="position_rank")
+//    @Excel(name = "职级", width = 15,dicCode="position_rank")
     @ApiModelProperty(value = "职级")
     @Dict(dicCode = "position_rank")
     private String positionRank;
@@ -241,10 +240,6 @@ public class SysUserVo implements Serializable {
 
     private List<String> roleId;
 
-    /**角色*/
-    //@Excel(name = "角色", width = 15)
-    @ApiModelProperty(value = "角色")
-    private String role;
 
 
     /**

@@ -7,6 +7,7 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import org.jeecg.common.util.oss.OssBootUtil;
 import org.mybatis.logging.Logger;
 import org.mybatis.logging.LoggerFactory;
 
@@ -49,6 +50,7 @@ public class QRCodeUtil {
             BufferedImage bufferedImage = getBufferedImage(content);
 
             File codeImgFile = new File(codeImgFileSaveDir, fileName);
+//            OssBootUtil.upload(codeImgFile, );
             ImageIO.write(bufferedImage, "png", codeImgFile);
 
         } catch (Exception e) {

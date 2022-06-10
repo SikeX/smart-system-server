@@ -14,4 +14,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface Smart_8EscortedMealMapper extends BaseMapper<Smart_8EscortedMeal> {
 
+    String getMainIdById(String id);
+
 }

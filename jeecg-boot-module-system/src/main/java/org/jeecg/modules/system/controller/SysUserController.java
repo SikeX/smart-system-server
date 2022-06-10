@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.PermissionData;
@@ -36,6 +37,7 @@ import org.jeecg.modules.system.service.*;
 import org.jeecg.modules.system.vo.SysDepartUsersVO;
 import org.jeecg.modules.system.vo.SysUserRoleVO;
 import org.jeecg.modules.system.vo.SysUserVo;
+import org.jeecg.modules.system.vo.VillageUser;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -907,8 +909,8 @@ public class SysUserController {
      * @param req
      * @param sysUser
      */
-    @RequestMapping(value = "/exportXls")
-    public ModelAndView exportXls(HttpServletRequest req,
+    @RequestMapping(value = "/exportXlsVillage")
+    public ModelAndView exportXlsVillage(HttpServletRequest req,
                                   HttpServletResponse response,SysUser sysUser)throws Exception {
         // 获取登录用户信息，可以用来查询单位部门信息
         LoginUser currentUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
@@ -921,12 +923,12 @@ public class SysUserController {
         List<SysUser> queryList = new ArrayList<SysUser>();
 
         // 如果是普通用户，则只能看到自己创建的数据
-        if(role.contains("CommonUser")) {
-            QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("create_by",username);
-            queryList = sysUserService.list(queryWrapper);
-        }
-        else {
+//        if(role.contains("CommonUser")) {
+//            QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
+//            queryWrapper.eq("create_by",username);
+//            queryList = sysUserService.list(queryWrapper);
+//        }
+//        else {
             // 1. 规则，下面是 以**开始
             //String rule = "in";
             // 2. 查询字段
@@ -949,10 +951,130 @@ public class SysUserController {
 //            params = new String[]{"and"};
 //            map.put("superQueryMatchType", params);
             //QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(sysUser, map);
-            String departId = currentUser.getDepartId();
+//            String departId = currentUser.getDepartId();
             QueryWrapper<SysUser> sysUserQueryWrapper = new QueryWrapper<>();
-            sysUserQueryWrapper.eq("depart_id",departId);
+            sysUserQueryWrapper.eq("people_type",2);
             queryList = sysUserService.list(sysUserQueryWrapper);
+//        }
+
+
+        // Step.1 组装查询条件查询数据
+
+        //Step.2 获取导出数据
+        // 过滤选中数据
+        String selections = req.getParameter("selections");
+        List<SysUser> sysUserList = new ArrayList<SysUser>();
+        if(oConvertUtils.isEmpty(selections)) {
+            sysUserList = queryList;
+        }else {
+            List<String> selectionList = Arrays.asList(selections.split(","));
+            sysUserList = queryList.stream().filter(item -> selectionList.contains(item.getId())).collect(Collectors.toList());
+        }
+
+        // Step.3 组装pageList
+        //List<SysUser> pageList = new ArrayList<SysUser>();
+        List<VillageUser> voPageList = new ArrayList<>();
+        for (SysUser main : sysUserList) {
+            //SysUser user = new SysUser();
+            VillageUser vo = new VillageUser();
+            //BeanUtils.copyProperties(main, user);
+            BeanUtils.copyProperties(main, vo);
+            //pageList.add(user);
+            voPageList.add(vo);
+        }
+
+        // Step.4 AutoPoi 导出Excel
+        ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
+        mv.addObject(NormalExcelConstants.FILE_NAME, "村民列表");
+        mv.addObject(NormalExcelConstants.CLASS, VillageUser.class);
+        mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("村民数据", "导出人:"+currentUser.getRealname(), "村民表"));
+        mv.addObject(NormalExcelConstants.DATA_LIST, voPageList);
+
+        // List深拷贝，否则返回前端会没数据
+        List<VillageUser> newPageList = ObjectUtil.cloneByStream(voPageList);
+
+        baseCommon_Service.addExportLog(mv.getModel(), "村民", req, response);
+
+        mv.addObject(NormalExcelConstants.DATA_LIST, newPageList);
+
+        return mv;
+       /* // Step.1 组装查询条件
+
+        //Step.2 AutoPoi 导出Excel
+        ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
+        //update-begin--Author:kangxiaolin  Date:20180825 for：[03]用户导出，如果选择数据则只导出相关数据--------------------
+        String selections = req.getParameter("selections");
+       if(!oConvertUtils.isEmpty(selections)){
+           queryWrapper.in("id",selections.split(","));
+       }
+        //update-end--Author:kangxiaolin  Date:20180825 for：[03]用户导出，如果选择数据则只导出相关数据----------------------
+        List<SysUser> pageList = sysUserService.list(queryWrapper);
+
+        //导出文件名称
+        mv.addObject(NormalExcelConstants.FILE_NAME, "用户列表");
+        mv.addObject(NormalExcelConstants.CLASS, SysUser.class);
+		LoginUser user = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+        ExportParams exportParams = new ExportParams("用户列表数据", "导出人:"+user.getRealname(), "导出信息");
+        exportParams.setImageBasePath(upLoadPath);
+        mv.addObject(NormalExcelConstants.PARAMS, exportParams);
+        mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
+        return mv;*/
+    }
+
+    /**
+     * 导出excel
+     *
+     * @param req
+     * @param sysUser
+     */
+    @RequestMapping(value = "/exportXls")
+    public ModelAndView exportXls(HttpServletRequest req,
+                                  HttpServletResponse response,SysUser sysUser)throws Exception {
+        // 获取登录用户信息，可以用来查询单位部门信息
+        LoginUser currentUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+        String username = currentUser.getUsername();
+
+        // 获取用户角色
+        List<String> role = sysBaseAPI.getRolesByUsername(username);
+
+        List<SysUser> queryList = new ArrayList<SysUser>();
+//        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(sysUser, req.getParameterMap());
+        queryWrapper.eq("del_flag",0);
+        queryWrapper.eq("people_type","1");
+        // 如果是普通用户，则只能看到自己创建的数据
+         if(role.contains("CCDIAdmin")){
+            queryList = sysUserService.list(queryWrapper);
+        }
+        else if(role.contains("admin")&&!role.contains("CCDIAdmin")) {
+            // 1. 规则，下面是 以**开始
+            //String rule = "in";
+            // 2. 查询字段
+            //String field = "departId";
+
+            // 获取子单位ID
+            //String childrenIdString = commonService.getChildrenIdStringByOrgCode(currentUser.getOrgCode());
+
+            // HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
+            // 获取请求参数中的superQueryParams
+            //List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
+
+            // 添加额外查询条件，用于权限控制
+//            paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+//                    + childrenIdString
+//                    + "%22,%22field%22:%22" + field + "%22%7D%5D");
+//            String[] params = new String[paramsList.size()];
+//            paramsList.toArray(params);
+//            map.put("superQueryParams", params);
+//            params = new String[]{"and"};
+//            map.put("superQueryMatchType", params);
+            //QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(sysUser, map);
+            String departId = currentUser.getDepartId();
+//            QueryWrapper<SysUser> sysUserQueryWrapper = new QueryWrapper<>();
+//            sysUserQueryWrapper.eq("depart_id",departId);
+             queryWrapper.eq("depart_id",departId);
+            queryList = sysUserService.list(queryWrapper);
         }
 
 
@@ -1018,7 +1140,6 @@ public class SysUserController {
         mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
         return mv;*/
     }
-
     /**
      * 通过excel导入数据
      *
@@ -1178,6 +1299,35 @@ public class SysUserController {
 		}
 		return sysUserService.resetPassword(username,oldpassword,password,confirmpassword);
 	}
+
+    @RequestMapping(value = "/updatePhone", method = RequestMethod.PUT)
+    public Result<?> updatPhone(@RequestBody JSONObject json) {
+        Result<JSONObject> result = new Result<JSONObject>();
+        String username = json.getString("username");
+        String phone = json.getString("phone");
+        LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
+        String captcha = json.getString("captcha");
+        Object code = redisUtil.get(phone);
+        if(!sysUser.getUsername().equals(username)){
+            return Result.error("只允许修改自己的手机号码！");
+        }
+        SysUser user = this.sysUserService.getOne(new LambdaQueryWrapper<SysUser>().eq(SysUser::getUsername, username));
+        if(user==null) {
+            return Result.error("用户不存在！");
+        }
+        if (!captcha.equals(code)) {
+            result.setMessage("验证码错误");
+            result.setSuccess(false);
+            return result;
+        }
+        // 验证成功后删除验证码
+        redisUtil.set(phone, captcha,600);
+        // 更新手机号码
+        user.setPhone(phone);
+        sysUserService.updateById(user);
+        return Result.ok("手机号码修改成功!");
+
+    }
 
     @RequestMapping(value = "/userRoleList", method = RequestMethod.GET)
     public Result<IPage<SysUser>> userRoleList(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,

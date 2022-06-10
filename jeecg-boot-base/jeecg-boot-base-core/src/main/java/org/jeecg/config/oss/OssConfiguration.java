@@ -21,6 +21,8 @@ public class OssConfiguration {
     private String bucketName;
     @Value("${jeecg.oss.staticDomain:}")
     private String staticDomain;
+    @Value("${jeecg.oss.internalEndpoint}")
+    private String internalEndpoint;
 
 
     @Bean
@@ -30,5 +32,6 @@ public class OssConfiguration {
         OssBootUtil.setAccessKeySecret(accessKeySecret);
         OssBootUtil.setBucketName(bucketName);
         OssBootUtil.setStaticDomain(staticDomain);
+        OssBootUtil.setInternalEndpoint(internalEndpoint);
     }
 }
