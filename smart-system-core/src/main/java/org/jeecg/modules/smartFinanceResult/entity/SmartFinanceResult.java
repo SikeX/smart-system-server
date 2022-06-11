@@ -55,11 +55,9 @@ public class SmartFinanceResult implements Serializable {
     @ApiModelProperty(value = "收支类型")
     private java.lang.String financeType;
 	/**收支时间*/
-	@Excel(name = "收支时间", width = 20, format = "yyyy-MM-dd HH:mm:ss")
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@Excel(name = "收支时间", width = 20)
     @ApiModelProperty(value = "收支时间")
-    private java.util.Date financeTime;
+    private java.lang.String financeTime;
 	/**创建时间*/
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
