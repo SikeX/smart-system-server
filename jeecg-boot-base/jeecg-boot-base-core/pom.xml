@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.jeecgframework.boot</groupId>
 		<artifactId>jeecg-boot-base</artifactId>
-		<version>3.1.0</version>
+		<version>3.2.0</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -119,7 +119,7 @@
 		<dependency>
 			<groupId>org.jeecgframework.boot</groupId>
 			<artifactId>hibernate-re</artifactId>
-			<version>3.1.0-beta</version>
+			<version>3.2.0-beta</version>
 		</dependency>
 
 		<!-- 数据库驱动 -->
@@ -131,26 +131,26 @@
 			<scope>runtime</scope>
 		</dependency>
 		<!--  sqlserver-->
-		<dependency>
-			<groupId>com.microsoft.sqlserver</groupId>
-			<artifactId>sqljdbc4</artifactId>
-			<version>${sqljdbc4.version}</version>
-			<scope>runtime</scope>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>com.microsoft.sqlserver</groupId>-->
+<!--			<artifactId>sqljdbc4</artifactId>-->
+<!--			<version>${sqljdbc4.version}</version>-->
+<!--			<scope>runtime</scope>-->
+<!--		</dependency>-->
 		<!-- oracle驱动 -->
-		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc6</artifactId>
-			<version>${ojdbc6.version}</version>
-			<scope>runtime</scope>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>com.oracle</groupId>-->
+<!--			<artifactId>ojdbc6</artifactId>-->
+<!--			<version>${ojdbc6.version}</version>-->
+<!--			<scope>runtime</scope>-->
+<!--		</dependency>-->
 		<!-- postgresql驱动 -->
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>${postgresql.version}</version>
-			<scope>runtime</scope>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.postgresql</groupId>-->
+<!--			<artifactId>postgresql</artifactId>-->
+<!--			<version>${postgresql.version}</version>-->
+<!--			<scope>runtime</scope>-->
+<!--		</dependency>-->
 
 		<!-- Quartz定时任务 -->
 		<dependency>
@@ -209,6 +209,10 @@
 					<groupId>commons-codec</groupId>
 					<artifactId>commons-codec</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>com.puppycrawl.tools</groupId>
+					<artifactId>checkstyle</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 
@@ -230,10 +234,21 @@
 			<version>${aliyun-java-sdk-dysmsapi.version}</version>
 		</dependency>
 		<!-- aliyun oss -->
+<!--        <dependency>-->
+<!--            <groupId>com.aliyun.oss</groupId>-->
+<!--            <artifactId>aliyun-sdk-oss</artifactId>-->
+<!--            <version>${aliyun.oss.version}</version>-->
+<!--        </dependency>-->
+        <!--Amazon S3 oss接口-->
 		<dependency>
-			<groupId>com.aliyun.oss</groupId>
-			<artifactId>aliyun-sdk-oss</artifactId>
-			<version>${aliyun.oss.version}</version>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-core</artifactId>
+            <version>1.11.24</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>1.11.24</version>
 		</dependency>
 		<!-- 第三方登录  -->
 		<dependency>
@@ -254,6 +269,16 @@
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+		</dependency>
+        <dependency>
+            <groupId>org.jeecgframework</groupId>
+            <artifactId>autopoi-web</artifactId>
+            <version>1.3.5</version>
+            <scope>compile</scope>
+        </dependency>
 	</dependencies>
 
 	<!--    <build>-->

@@ -10,12 +10,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.constant.CacheConstant;
 import org.jeecg.common.constant.CommonConstant;
-import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.system.vo.SysUserCacheInfo;
 import org.jeecg.common.util.PasswordUtil;
 import org.jeecg.common.util.UUIDGenerator;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.SmartFirstFormPeople.entity.FirstFormInfo;
 import org.jeecg.modules.app.entity.WXUser;
 import org.jeecg.modules.app.mapper.AppUserMapper;
 import org.jeecg.modules.app.mapper.WXUserMapper;
@@ -25,8 +25,10 @@ import org.jeecg.modules.system.mapper.*;
 import org.jeecg.modules.system.model.SysUserSysDepartModel;
 import org.jeecg.modules.system.service.ISysUserService;
 import org.jeecg.modules.system.vo.SysUserDepVo;
+import org.jeecg.modules.system.vo.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,8 +56,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	private SysUserRoleMapper sysUserRoleMapper;
 	@Autowired
 	private SysUserDepartMapper sysUserDepartMapper;
-	@Autowired
-	private ISysBaseAPI sysBaseAPI;
 	@Autowired
 	private SysDepartMapper sysDepartMapper;
 	@Autowired
@@ -141,7 +141,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	}
 
 	@Override
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	public void addUserWithRole(SysUser user, String roles) {
 		this.save(user);
 		if(oConvertUtils.isNotEmpty(roles)) {
@@ -155,7 +155,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
 	@Override
 	@CacheEvict(value= {CacheConstant.SYS_USERS_CACHE}, allEntries=true)
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	public void editUserWithRole(SysUser user, String roles) {
 		this.updateById(user);
 		//先删后加
@@ -211,24 +211,32 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 		return permissionSet;
 	}
 
+	/**
+	 * 升级SpringBoot2.6.6,不允许循环依赖
+	 * @author:qinfeng
+	 * @update: 2022-04-07
+	 * @param username
+	 * @return
+	 */
 	@Override
+	@Cacheable(cacheNames=CacheConstant.SYS_USERS_CACHE, key="#username")
 	public SysUserCacheInfo getCacheUser(String username) {
 		SysUserCacheInfo info = new SysUserCacheInfo();
 		info.setOneDepart(true);
-//		SysUser user = userMapper.getUserByName(username);
-//		info.setSysUserCode(user.getUsername());
-//		info.setSysUserName(user.getRealname());
-		
-
-		LoginUser user = sysBaseAPI.getUserByName(username);
-		if(user!=null) {
-			info.setSysUserCode(user.getUsername());
-			info.setSysUserName(user.getRealname());
-			info.setSysOrgCode(user.getOrgCode());
+		if(oConvertUtils.isEmpty(username)) {
+			return null;
 		}
-		
+
+		//查询用户信息
+		SysUser sysUser = userMapper.getUserByName(username);
+		if(sysUser!=null) {
+			info.setSysUserCode(sysUser.getUsername());
+			info.setSysUserName(sysUser.getRealname());
+			info.setSysOrgCode(sysUser.getOrgCode());
+		}
+
 		//多部门支持in查询
-		List<SysDepart> list = sysDepartMapper.queryUserDeparts(user.getId());
+		List<SysDepart> list = sysDepartMapper.queryUserDeparts(sysUser.getId());
 		List<String> sysMultiOrgCode = new ArrayList<String>();
 		if(list==null || list.size()==0) {
 			//当前用户无部门
@@ -242,7 +250,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 			}
 		}
 		info.setSysMultiOrgCode(sysMultiOrgCode);
-		
+
 		return info;
 	}
 
@@ -601,16 +609,26 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	@Override
 	public List<SysUser> queryByHomeCode(String homeCode) {
 		List<SysUser> userList = userMapper.getUserByHomeCode(homeCode);
-		for(int i=0;i<userList.size();i++)
-		{
-			SysUser user = userList.get(i);
-			Integer relation = userMapper.getRelationByHomeCode(homeCode,user.getIdnumber());
-			if(relation!=null && !relation.equals("")) {
-				user.setRelation(userMapper.getRelationByHomeCode(homeCode, user.getIdnumber()));
-				userList.set(i,user);
-			}
-		}
+//		for(int i=0;i<userList.size();i++)
+//		{
+//			SysUser user = userList.get(i);
+//			Integer relation = userMapper.getRelationByHomeCode(homeCode,user.getIdnumber());
+//			if(relation!=null && !relation.equals("")) {
+//				user.setRelation(userMapper.getRelationByHomeCode(homeCode, user.getIdnumber()));
+//				userList.set(i,user);
+//			}
+//		}
 		return userList;
+	}
+
+	@Override
+	public List<UserInfo> sendInformation() {
+		return userMapper.sendInformation();
+	}
+
+	@Override
+	public List<String> getLeadersByOrgCode(String departCode) {
+		return userMapper.getLeadersByOrgCode(departCode);
 	}
 
 }

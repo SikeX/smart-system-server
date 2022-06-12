@@ -1,5 +1,6 @@
 package org.jeecg.modules.SmartFirstFormPeople.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.io.IOException;
@@ -9,11 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.system.vo.SysDepartModel;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.SmartFirstFormPeople.entity.SmartFirstFormPeople;
 import org.jeecg.modules.SmartFirstFormPeople.service.ISmartFirstFormPeopleService;
@@ -26,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.smartEvaluateList.entity.MonthCount;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
 import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
@@ -122,6 +126,27 @@ public class SmartFirstFormPeopleController extends JeecgController<SmartFirstFo
 		}
 		return Result.OK(pageList);
 	}
+
+	 /**
+	  * 获取单位执行第一形态人员数目
+	  * @param departId 单位ID
+	  *
+	  * @return
+	  */
+	 @GetMapping(value = "/countByDepartId")
+	 public Result<JSONObject> countByDepartId(@RequestParam(name = "departId", required = true) String departId) {
+		 Result<JSONObject> result = new Result<JSONObject>();
+		 JSONObject obj = new JSONObject();
+
+		 QueryWrapper<SmartFirstFormPeople> queryWrapper = new QueryWrapper<>();
+		 queryWrapper.eq("interviewee_dept", departId).eq("del_flag", 0);
+		 long count = smartFirstFormPeopleService.count(queryWrapper);
+
+		 obj.put("count", count);
+		 result.setResult(obj);
+
+		 return result;
+	 }
 	
 	/**
 	 *   添加
@@ -334,5 +359,30 @@ public class SmartFirstFormPeopleController extends JeecgController<SmartFirstFo
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
         return super.importExcel(request, response, SmartFirstFormPeople.class);
     }
+
+	 @AutoLog(value = "按月统计")
+	 @ApiOperation(value="按月统计", notes="按月统计")
+	 @ResponseBody
+	 @GetMapping(value = "/statistics")
+	 public Result<List<MonthCount>> statistics(@RequestParam (value="year",required = false) String year,
+								 @RequestParam (value="departCode",required = false) String departCode) {
+		 try{
+			 if(year == null || year.isEmpty()){
+				 //获取当前年份
+				 SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+				 Date date = new Date();
+				 year =sdf.format(date);
+			 }else{
+				 year = year.substring(1,year.length()-1);
+			 }
+			 System.out.println(year+","+departCode);
+			 List<MonthCount> list = smartFirstFormPeopleService.statistics(year,departCode);
+			 System.out.println("list"+list);
+			 return Result.OK(list);
+		 }catch (Exception e){
+			 return Result.error("error");
+		 }
+
+	 }
 
 }

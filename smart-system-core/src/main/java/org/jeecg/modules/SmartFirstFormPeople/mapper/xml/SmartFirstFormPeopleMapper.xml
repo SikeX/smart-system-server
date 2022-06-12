@@ -1,5 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.SmartFirstFormPeople.mapper.SmartFirstFormPeopleMapper">
-
+    <select id="statistics" resultType="org.jeecg.modules.SmartFirstFormPeople.entity.MonthCount">
+        select month(create_time) as month,
+            count(*) as count
+        from smart_first_form_people p
+        where year(create_time)= #{year}
+        <if test="departCode != null and departCode != ''">
+        and p.interviewee_dept = #{departCode}
+        </if>
+        group by  year(create_time), month(create_time)
+    </select>
+    <select id="sendInformation" resultType="org.jeecg.modules.SmartFirstFormPeople.entity.FirstFormInfo">
+        select f.interviewee_dept as departCode, group_concat(distinct interviewee_name) as interviewees
+        from smart_first_form_people f
+        where f.del_flag = 0 and year(f.create_time ) = year(NOW())
+          and month(f.create_time) = MONTH(date_sub(NOW(),interval 1 month))
+        group by interviewee_dept
+    </select>
+    <select id="getLeadersByDepartId" resultType="String">
+        select username
+        from sys_user
+        where user_identity = 2
+          and depart_ids in
+        <foreach item="item" index="index" collection="departIds"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and del_flag = 0
+    </select>
 </mapper>

@@ -489,7 +489,7 @@ public class LoginController {
 		// update-begin--Author:sunjianlei Date:20210802 for：获取用户租户信息
 		String tenantIds = sysUser.getRelTenantIds();
 		if (oConvertUtils.isNotEmpty(tenantIds)) {
-			List<String> tenantIdList = Arrays.asList(tenantIds.split(","));
+			List<Integer> tenantIdList = new ArrayList<>();
 			// 该方法仅查询有效的租户，如果返回0个就说明所有的租户均无效。
 			List<SysTenant> tenantList = sysTenantService.queryEffectiveTenant(tenantIdList);
 			if (tenantList.size() == 0) {

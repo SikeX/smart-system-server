@@ -66,10 +66,25 @@ public class SmartAnswerAssContent implements Serializable {
     @Dict(dictTable = "smart_assessment_content", dicText = "name", dicCode = "id")
     @ApiModelProperty(value = "考核内容节点")
     private java.lang.String assContentId;
-	/**要点状态*/
+	/**
+     * 要点状态
+     *
+     * 0: 未签收
+     * 1: 已签收待上报
+     * 2: 已上报待评分
+     * 3: 已评分
+     * */
     @Excel(name = "要点状态", width = 15)
     @ApiModelProperty(value = "要点状态")
     private java.lang.Integer contentStatus;
+    /**要点上传附件数目*/
+    @Excel(name = "要点上传附件数目", width = 15)
+    @ApiModelProperty(value = "要点上传附件数目")
+    private java.lang.Integer uploadCount;
+    /**是否考核要点*/
+    @Excel(name = "是否考核要点", width = 15)
+    @ApiModelProperty(value = "是否考核要点")
+    private java.lang.Integer isKey;
 	/**最低得分*/
     @Excel(name = "最低得分", width = 15)
     @ApiModelProperty(value = "最低得分")

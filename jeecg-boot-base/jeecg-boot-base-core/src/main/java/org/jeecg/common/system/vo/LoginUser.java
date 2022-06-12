@@ -125,6 +125,10 @@ public class LoginUser {
 	 */
 	private Date lastVerifyTime;
 
+	private String idnumber;
+
+	private String homeRole;
+
 	@Override
 	public String toString() {
 		return "LoginUser{" +

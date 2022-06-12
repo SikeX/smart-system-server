@@ -70,8 +70,8 @@ public class SmartFirstFormPeople implements Serializable {
     @ApiModelProperty(value = "被谈话人ID")
     private java.lang.String intervieweeId;
 	/**被谈话人单位*/
-    @Excel(name="被谈话人单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
-    @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
+    @Excel(name="被谈话人单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
+    @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
     @ApiModelProperty(value = "被谈话人单位")
     private java.lang.String intervieweeDept;
 	/**被谈话人姓名*/
@@ -79,8 +79,9 @@ public class SmartFirstFormPeople implements Serializable {
     @ApiModelProperty(value = "被谈话人姓名")
     private java.lang.String intervieweeName;
 	/**被谈话人性别*/
-	@Excel(name = "被谈话人性别", width = 15)
+	@Excel(name = "被谈话人性别", width = 15,dicCode = "sex")
     @ApiModelProperty(value = "被谈话人性别")
+    @Dict(dicCode = "sex")
     private java.lang.String intervieweeSex;
 	/**被谈话人民族*/
 	@Excel(name = "被谈话人民族", width = 15,dicCode = "ethnicity")
@@ -132,8 +133,8 @@ public class SmartFirstFormPeople implements Serializable {
     @ApiModelProperty(value = "谈话人工号")
     private java.lang.String talkerId;
 	/**谈话人单位*/
-    @Excel(name="谈话人单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
-    @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
+    @Excel(name="谈话人单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
+    @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
     @ApiModelProperty(value = "谈话人单位")
     private java.lang.String talkerDept;
 	/**谈话人姓名*/
@@ -183,8 +184,9 @@ public class SmartFirstFormPeople implements Serializable {
     @ApiModelProperty(value = "组织措施")
     private java.lang.String measures;
 	/**采取组织措施决定机关*/
-	@Excel(name = "采取组织措施决定机关", width = 15)
+	@Excel(name = "采取组织措施决定机关", width = 15,dictTable = "sys_depart", dicText = "depart_name", dicCode = "id")
     @ApiModelProperty(value = "采取组织措施决定机关")
+    @Dict(dictTable = "sys_depart", dicText = "depart_name", dicCode = "id")
     private java.lang.String decisionOrgan;
 	/**附件*/
     @ApiModelProperty(value = "附件")

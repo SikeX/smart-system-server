@@ -1,7 +1,7 @@
 package org.jeecg.modules.interaction.utils;
 
-import com.aliyuncs.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.jeecg.modules.interaction.entity.SmartSensitiveWord;
 import org.jeecg.modules.interaction.service.ISmartSensitiveWordService;
 import org.springframework.beans.factory.annotation.Autowired;

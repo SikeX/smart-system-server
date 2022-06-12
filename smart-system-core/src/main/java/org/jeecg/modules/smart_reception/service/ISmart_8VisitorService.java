@@ -13,4 +13,6 @@ import java.util.List;
 public interface ISmart_8VisitorService extends IService<Smart_8Visitor> {
 
 	public List<Smart_8Visitor> selectByMainId(String mainId);
+
+	String getMainIdById(String id);
 }

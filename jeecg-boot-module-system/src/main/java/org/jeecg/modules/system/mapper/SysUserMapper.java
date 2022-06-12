@@ -6,10 +6,12 @@ import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
+import org.jeecg.modules.SmartFirstFormPeople.entity.FirstFormInfo;
 import org.jeecg.modules.system.entity.SysUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.jeecg.modules.system.model.SysUserSysDepartModel;
 import org.jeecg.modules.system.vo.SysUserDepVo;
+import org.jeecg.modules.system.vo.UserInfo;
 
 import java.util.List;
 
@@ -163,7 +165,7 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 	 */
 	SysUser queryByIdnumber(String idnumber);
 
-	@Update("UPDATE sys_user SET phone = #{arg1} where id = #{arg0}")
+	@Update("UPDATE sys_user SET phone = #{purePhoneNumber} where id = #{sysUserId}")
 	int updatePhoneById(String sysUserId, String purePhoneNumber);
 
 	/**
@@ -180,4 +182,8 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 	 * @return
 	 */
 	Integer getRelationByHomeCode(String homeCode,String idnumber);
+
+    List<UserInfo> sendInformation();
+
+	List<String> getLeadersByOrgCode(@Param("departCode") String departCode);
 }

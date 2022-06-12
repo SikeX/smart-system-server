@@ -166,8 +166,10 @@ public class JeecgController<T, S extends IService<T>> {
         for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
             MultipartFile file = entity.getValue();// 获取上传文件对象
             ImportParams params = new ImportParams();
-            params.setTitleRows(2);
-            params.setHeadRows(1);
+//            params.setTitleRows(2);
+//            params.setHeadRows(1);
+            params.setTitleRows(1);//表格标题，标题是表格的名称，一般是在第一行将所有单元格合并成一个单元格
+            params.setHeadRows(2);//表头，表头是表格的列标题（字段名），一般在第二行
             params.setNeedSave(true);
             try {
                 List<T> list = ExcelImportUtil.importExcel(file.getInputStream(), clazz, params);

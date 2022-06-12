@@ -32,7 +32,7 @@ public class PublicityServiceImpl extends ServiceImpl<PublicityMapper, Publicity
     public PublicityQuery getQuery(){
         PublicityQuery publicityQuery = new PublicityQuery();
         // 获取区域
-        List<PublicityCommon> locationQueryList = getLocationQuery("A13A04");
+        List<PublicityCommon> locationQueryList = getLocationQuery("A02");
         PublicityCommon location = new PublicityCommon();
         location.setValue("0");
         location.setLabel("不限");
@@ -59,7 +59,7 @@ public class PublicityServiceImpl extends ServiceImpl<PublicityMapper, Publicity
         typeList.add("惠民补贴");
         typeList.add("项目管理");
         typeList.add("资产资源");
-        typeList.add("农村集体经济组织");
+        typeList.add("财务公开");
 //        typeList.add("政策法规");
 //        typeList.add("举报投诉");
         List<PublicityCommon> typeQueryList = new ArrayList<>();
@@ -107,6 +107,9 @@ public class PublicityServiceImpl extends ServiceImpl<PublicityMapper, Publicity
         List<PublicityCommon> locationQueryList = new ArrayList<>();
         sysBaseAPI.getChildrenDepart(orgCode).forEach((item) -> {
             PublicityCommon location = new PublicityCommon();
+            if(!item.getDepartType().equals("乡镇")){
+                return;
+            }
             location.setLabel(item.getDepartName());
             location.setValue(item.getId());
             location.setChildren(getLocationQuery(item.getOrgCode()));

@@ -70,8 +70,8 @@ public class SmartPunishPeople implements Serializable {
     @ApiModelProperty(value = "单位")
     private java.lang.String departId;
 	/**单位*/
-    @Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
-    @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
+    @Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
+    @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
     @ApiModelProperty(value = "单位")
     private java.lang.String departCode;
 	/**职务*/
@@ -89,7 +89,7 @@ public class SmartPunishPeople implements Serializable {
     @ApiModelProperty(value = "手机号")
     private java.lang.String phone;
 	/**处分类型*/
-	@Excel(name = "处分类型", width = 15)
+	@Excel(name = "处分类型", width = 15,dicCode = "punish_type")
     @ApiModelProperty(value = "处分类型")
     @Dict(dicCode = "punish_type")
     private java.lang.String punishType;

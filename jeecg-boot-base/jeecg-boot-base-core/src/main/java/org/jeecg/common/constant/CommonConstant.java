@@ -237,6 +237,10 @@ public interface CommonConstant {
     public static final String SQL_INDEX_UNIQ_SYS_USER_WORK_NO = "uniq_sys_user_work_no";
     /** sys_user 表 phone 唯一键索引 */
     public static final String SQL_INDEX_UNIQ_SYS_USER_PHONE = "uniq_sys_user_phone";
+
+    /** sys_user 表 idnumber 唯一键索引 */
+    public static final String SQL_INDEX_UNIQ_SYS_IDNUMBER = "sys_user_idnumber_uindex";
+
     /** 达梦数据库升提示。违反表[SYS_USER]唯一性约束 */
     public static final String SQL_INDEX_UNIQ_SYS_USER = "唯一性约束";
 
@@ -340,5 +344,36 @@ public interface CommonConstant {
 
     /**ONLINE 报表权限用 从request中获取地址栏后的参数*/
     String ONL_REP_URL_PARAM_STR="onlRepUrlParamStr";
+
+    /**POST请求*/
+    String HTTP_POST = "POST";
+
+    /**PUT请求*/
+    String HTTP_PUT = "PUT";
+
+    /**PATCH请求*/
+    String HTTP_PATCH = "PATCH";
+
+    /**未知的*/
+    String UNKNOWN = "unknown";
+
+    /**字符串http*/
+    String STR_HTTP = "http";
+
+    /**String 类型的空值*/
+    String STRING_NULL = "null";
+
+    /**java.util.Date 包*/
+    String JAVA_UTIL_DATE = "java.util.Date";
+
+    /**.do*/
+    String SPOT_DO = ".do";
+
+
+    /**前端vue版本标识*/
+    String VERSION="X-Version";
+
+    /**前端vue版本*/
+    String VERSION_VUE3="vue3";
 
 }

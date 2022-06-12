@@ -1,5 +1,6 @@
 package org.jeecg.modules.tasks.smartVerifyTask.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
@@ -51,35 +52,43 @@ public class SmartVerifyImpl implements SmartVerify {
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
         String userId = sysUser.getId();
+        log.info("当前用户id：" + userId);
 
-        // 获取登录用户业务父部门id
-        String parentId = sysBaseAPI.getParentIdByUserId(userId);
         String departType = sysBaseAPI.getDepTypeByUserId(userId);
-
         String userDepartId = sysBaseAPI.getDepartIdsByOrgCode(sysUser.getOrgCode());
         smartVerifyTask.setFillPerson(sysUser.getRealname());
         smartVerifyTask.setFillDepart(userDepartId);
         smartVerifyTask.setTaskType(verifyType);
         smartVerifyTask.setFlowNo(id);
-        smartVerifyTask.setFlowStatus(2);
         smartVerifyTask.setDepartType(departType);
+
+        // 获取登录用户业务父部门id
+        String parentId = sysBaseAPI.getParentIdByUserId(userId);
+        if(StrUtil.isBlank(parentId)){
+            smartVerifyTask.setFlowStatus(1);
+            smartVerifyTaskMapper.insert(smartVerifyTask);
+            return;
+        }
+        smartVerifyTask.setFlowStatus(2);
+
         smartVerifyTaskMapper.insert(smartVerifyTask);
 
         String first = parentId;
         log.info(first);
 
-        if(first == null || first.equals("")){
+        if(StrUtil.isEmpty(first)){
             String[] userIdList = new String[1];
             userIdList[0] = userId;
             sysBaseAPI.sendWebSocketMsg(userIdList,"申请已通过");
             return;
         }
-        else if(first == "3708dc8170414dde8a069225e0724a65"){
-            first = sysBaseAPI.getBusDepartIdByUserId("3708dc8170414dde8a069225e0724a65");
+        // 如果是教育局则绕开
+        else if(first.equals("e389cf6bc9a54fd58f2e74f09d8f1b1f")){
+            first = sysBaseAPI.getParentDepIdByDepartId("e389cf6bc9a54fd58f2e74f09d8f1b1f");
         }
         String second = sysBaseAPI.getParentDepIdByDepartId(first);
 
-        if(second == null || first.equals("")){
+        if(StrUtil.isEmpty(second)){
             String[] userIdList = new String[1];
             userIdList[0] = userId;
             sysBaseAPI.sendWebSocketMsg(userIdList,"申请已通过");
