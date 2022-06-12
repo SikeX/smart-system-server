@@ -34,39 +34,39 @@ public class Smart_8EscortedMeal implements Serializable {
 	/**主键*/
 	@TableId(type = IdType.ASSIGN_ID)
     @ApiModelProperty(value = "主键")
-    private java.lang.String id;
+    private String id;
 	/**姓名*/
 	@Excel(name = "姓名", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
 	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @ApiModelProperty(value = "姓名")
-    private java.lang.String name;
+    private String name;
 	/**职务*/
 	@Excel(name = "职务", width = 15)
     @ApiModelProperty(value = "职务")
-    private java.lang.String jobTitle;
+    private String jobTitle;
 	/**单位*/
 	@Excel(name = "单位", width = 15, dictTable = "sys_depart", dicText = "depart_name", dicCode = "id")
 	@Dict(dictTable = "sys_depart", dicText = "depart_name", dicCode = "id")
     @ApiModelProperty(value = "单位")
-    private java.lang.String department;
+    private String department;
 	/**创建人*/
     @ApiModelProperty(value = "创建人")
-    private java.lang.String createBy;
+    private String createBy;
 	/**创建日期*/
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @ApiModelProperty(value = "创建日期")
-    private java.util.Date createTime;
+    private Date createTime;
 	/**更新人*/
     @ApiModelProperty(value = "更新人")
-    private java.lang.String updateBy;
+    private String updateBy;
 	/**更新日期*/
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @ApiModelProperty(value = "更新日期")
-    private java.util.Date updateTime;
+    private Date updateTime;
 	/**外键*/
 	@Excel(name = "外键", width = 15)
     @ApiModelProperty(value = "外键")
-    private java.lang.String mainId;
+    private String mainId;
 }
