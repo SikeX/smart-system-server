@@ -137,7 +137,8 @@ public class SmartVerifyDetailController extends JeecgController<SmartVerifyDeta
 	 public Result<?> queryByflowNo(@RequestParam(name="flowNo",required=true) String flowNo) {
 		QueryWrapper<SmartVerifyDetail> queryWrapper = new QueryWrapper<>();
 		queryWrapper.eq("flow_no",flowNo);
-		queryWrapper.eq("audit_status",3);
+		queryWrapper.and(i->i.eq("audit_status",3).or().eq("audit_status",4));
+
 
 		 List<SmartVerifyDetail> smartVerifyDetailList = smartVerifyDetailService.list(queryWrapper);
 //		 if(smartVerifyDetail==null) {

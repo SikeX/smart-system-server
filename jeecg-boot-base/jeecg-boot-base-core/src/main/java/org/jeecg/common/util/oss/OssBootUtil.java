@@ -164,7 +164,7 @@ public class OssBootUtil {
     * @Return: java.lang.String
     */
     public static String getOriginalUrl(String url) {
-        String originalDomain = "https://" + bucketName + "." + endPoint;
+        String originalDomain = "http://" + bucketName + "." + endPoint;
         if(oConvertUtils.isNotEmpty(staticDomain) && url.indexOf(staticDomain)!=-1){
             url = url.replace(staticDomain,originalDomain);
         }
@@ -205,7 +205,7 @@ public class OssBootUtil {
             if (oConvertUtils.isNotEmpty(staticDomain) && staticDomain.toLowerCase().startsWith("http")) {
                 FILE_URL = staticDomain + "/" + fileUrl;
             } else {
-                FILE_URL = "https://" + bucketName + "." + endPoint + "/" + fileUrl;
+                FILE_URL = "http://" + bucketName + "." + endPoint + "/" + fileUrl;
             }
             PutObjectResult result = ossClient.putObject(bucketName, fileUrl.toString(), file.openStream(), new ObjectMetadata());
             // 设置权限(公开读)
@@ -321,7 +321,7 @@ public class OssBootUtil {
         if (ossClient == null) {
             BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKeyId, accessKeySecret);
             ClientConfiguration clientConfiguration = new ClientConfiguration();
-            clientConfiguration.setProtocol(Protocol.HTTPS);
+            clientConfiguration.setProtocol(Protocol.HTTP);
             ossClient = new AmazonS3Client(awsCredentials, clientConfiguration);
             S3ClientOptions clientOptions =
                     S3ClientOptions.builder().setPathStyleAccess(true).setPayloadSigningEnabled(true).disableChunkedEncoding().build();
@@ -345,7 +345,7 @@ public class OssBootUtil {
         if (oConvertUtils.isNotEmpty(staticDomain) && staticDomain.toLowerCase().startsWith("http")) {
             FILE_URL = staticDomain + "/" + relativePath;
         } else {
-            FILE_URL = "https://" + bucketName + "." + endPoint + "/" + fileUrl;
+            FILE_URL = "http://" + bucketName + "." + endPoint + "/" + fileUrl;
         }
         PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, fileUrl.toString(),stream,
                 new ObjectMetadata()).withCannedAcl(CannedAccessControlList.PublicRead);
@@ -375,7 +375,7 @@ public class OssBootUtil {
                 newBucket = customBucket;
             }
 //            String path ="https://zhjj.dlqzzst.com:543/" + newBucket + "." + endPoint + "/";
-            String path ="https://" + newBucket + "." + endPoint + "/";
+            String path ="http://" + newBucket + "." + endPoint + "/";
             objectName = objectName.replace(path,"");
         }
         log.info("------replacePrefix---替换后---objectName:{}",objectName);
