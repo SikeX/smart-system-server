@@ -1,6 +1,7 @@
 package org.jeecg.modules.SmartPunishPeople.controller;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -15,7 +16,9 @@ import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.system.vo.SysDepartModel;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.SmartFirstFormPeople.entity.SmartFirstFormPeople;
 import org.jeecg.modules.SmartInnerPartyTalk.entity.SmartInnerPartyTalk;
 import org.jeecg.modules.SmartPunishPeople.entity.SmartPunishPeople;
 import org.jeecg.modules.SmartPunishPeople.entity.TypeCount;
@@ -94,7 +97,7 @@ public class SmartPunishPeopleController extends JeecgController<SmartPunishPeop
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) throws ParseException {
-		// 1. 规则，下面是 以**开始
+		/*// 1. 规则，下面是 以**开始
 		String rule = "in";
 		// 2. 查询字段
 		String field = "departId";
@@ -117,7 +120,9 @@ public class SmartPunishPeopleController extends JeecgController<SmartPunishPeop
 		map.put("superQueryParams", params);
 		params = new String[]{"and"};
 		map.put("superQueryMatchType", params);
-		QueryWrapper<SmartPunishPeople> queryWrapper = QueryGenerator.initQueryWrapper(smartPunishPeople, map);
+		QueryWrapper<SmartPunishPeople> queryWrapper = QueryGenerator.initQueryWrapper(smartPunishPeople, map);*/
+		QueryWrapper<SmartPunishPeople> queryWrapper = QueryGenerator.initQueryWrapper(smartPunishPeople, req.getParameterMap());
+
 		Page<SmartPunishPeople> page = new Page<SmartPunishPeople>(pageNo, pageSize);
 		IPage<SmartPunishPeople> pageList = smartPunishPeopleService.page(page, queryWrapper);
 		// 请同步修改edit函数中，将departId变为null，不然会更新成名称
@@ -129,6 +134,32 @@ public class SmartPunishPeopleController extends JeecgController<SmartPunishPeop
 			});
 		}
 		return Result.OK(pageList);
+	}
+
+	/**
+	 * 获取单位处分人员数目
+	 * @param departId 单位ID
+	 *
+	 * @return
+	 */
+	@GetMapping(value = "/countByDepartId")
+	public Result<JSONObject> countByDepartId(@RequestParam(name = "departId", required = true) String departId) {
+		Result<JSONObject> result = new Result<JSONObject>();
+		JSONObject obj = new JSONObject();
+
+		// 查询单位处分人员数目
+		QueryWrapper<SmartPunishPeople> queryWrapper = new QueryWrapper<>();
+		queryWrapper.eq("depart_code", departId).eq("del_flag", 0);
+		long count = smartPunishPeopleService.count(queryWrapper);
+
+		// 查询单位负责人是否被处分
+		Integer mainPeopleCount = smartPunishPeopleService.countMainPeopleByDepart(departId);
+
+		obj.put("count", count);
+		obj.put("mainPeopleCount", mainPeopleCount);
+		result.setResult(obj);
+
+		return result;
 	}
 	
 	/**
@@ -255,7 +286,7 @@ public class SmartPunishPeopleController extends JeecgController<SmartPunishPeop
 			queryWrapper.eq("create_by",username);
 			queryList = smartPunishPeopleService.list(queryWrapper);
 		} else {
-			// 1. 规则，下面是 以**开始
+			/*// 1. 规则，下面是 以**开始
 			String rule = "in";
 			// 2. 查询字段
 			String field = "departId";
@@ -275,8 +306,8 @@ public class SmartPunishPeopleController extends JeecgController<SmartPunishPeop
 			paramsList.toArray(params);
 			map.put("superQueryParams", params);
 			params = new String[]{"and"};
-			map.put("superQueryMatchType", params);
-			QueryWrapper<SmartPunishPeople> queryWrapper = QueryGenerator.initQueryWrapper(smartPunishPeople, map);
+			map.put("superQueryMatchType", params);*/
+			QueryWrapper<SmartPunishPeople> queryWrapper = QueryGenerator.initQueryWrapper(smartPunishPeople, req.getParameterMap());
 
 			queryList = smartPunishPeopleService.list(queryWrapper);
 		}
@@ -339,27 +370,26 @@ public class SmartPunishPeopleController extends JeecgController<SmartPunishPeop
 	//处分人员总数量
     @RequestMapping(value = "/punishPeopleCount",method = RequestMethod.GET)
 	public Result<?> punishPeopleCount(){
-    	Integer count = smartPunishPeopleService.punishPeopleCount();
+    	QueryWrapper<SmartPunishPeople> queryWrapper = new QueryWrapper<>();
+    	queryWrapper.eq("del_flag",0);
+    	Integer count = (smartPunishPeopleService.list(queryWrapper)).size();
 		return Result.OK(count);
 	}
 	//按处分类型统计
 	@RequestMapping(value = "/punishPeopleCountByType",method = RequestMethod.GET)
 	public Result<?> punishPeopleCountByType() {
 		List<TypeCount>  list = smartPunishPeopleService.punishPeopleCountByType();
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		System.out.println(list);
+//		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//		System.out.println(list);
 		return Result.OK(list);
 	}
 	//本月即将解除处分人员数量
 	@RequestMapping(value = "/punishPeopleCountByMonth",method = RequestMethod.GET)
 	public Result<?> punishPeopleCountByMonth() {
     	Date date = new Date();
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		String dateString = formatter.format(date);
-		String currentMonth = dateString.substring(0,7);
-		//System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		//System.out.println(currentMonth);
-		Integer count = smartPunishPeopleService.punishPeopleCountByMonth(currentMonth);
+		QueryWrapper<SmartPunishPeople> queryWrapper = new QueryWrapper<>();
+		queryWrapper.ge("remove_time",date);
+		Integer count = (smartPunishPeopleService.list(queryWrapper)).size();
 		return Result.OK(count);
 	}
 

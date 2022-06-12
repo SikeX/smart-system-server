@@ -13,6 +13,7 @@ import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.constant.CommonConstant;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.util.ImportExcelUtil;
 import org.jeecg.common.util.PasswordUtil;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.common.util.ParamsUtil;
@@ -22,6 +23,7 @@ import org.jeecg.modules.system.entity.SysUser;
 import org.jeecg.modules.system.service.ISysDepartService;
 import org.jeecg.modules.system.service.ISysUserService;
 import org.jeecg.modules.villageHome.entity.villageHome;
+import org.jeecg.modules.villageHome.mapper.villageHomeMapper;
 import org.jeecg.modules.villageHome.vo.vHome;
 import org.jeecg.modules.villageHome.entity.villageRelation;
 import org.jeecg.modules.villageHome.service.IvillageHomeService;
@@ -71,6 +73,8 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 	 @Autowired
 	 private ISysDepartService sysDepartService;
 
+	 @Autowired
+	 private villageHomeMapper homeMapper;
 
 	 /**
 	 * 分页列表查询
@@ -171,12 +175,14 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 						user.setHomeCode(homeCode);
 						user.setHomeRole(2);
 						sysUserService.updateById(user);
+						if(user.getRelation()!=null)
+						{
 						villageRelation relation = new villageRelation();
 						relation.setHomeRelation(user.getRelation());
 						relation.setIdnumber(user.getIdnumber());
 						relation.setHomeCode(homeCode);
 						relation.setHostIdnumber(host.getIdnumber());
-						villageRelationService.save(relation);
+						villageRelationService.save(relation);}
 					}
 			}
 		}
@@ -223,22 +229,24 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 		}
 		if(!bHostId.equals(lHostId))
 		{
-			SysUser lHost = sysUserService.queryByIdnumber(lHostId);
-			if(lHost.getHomeCode() != null && !lHost.getHomeCode().equals(""))
-			{
-				result.setSuccess(false);
-				result.setMessage("更换的户主已有户籍信息！");
-				return result;
-			}
-			if(lHost.getPhone()==null || lHost.getPhone().equals(""))
-			{
-				result.setSuccess(false);
-				result.setMessage("户主电话号不可为空！");
-				return result;
-			}
-
+//			SysUser lHost = sysUserService.queryByIdnumber(lHostId);
+//			if(lHost.getHomeCode() != null && !lHost.getHomeCode().equals(""))
+//			{
+//				result.setSuccess(false);
+//				result.setMessage("更换的户主已有户籍信息！");
+//				return result;
+//			}
+//			if(lHost.getPhone()==null || lHost.getPhone().equals(""))
+//			{
+//				result.setSuccess(false);
+//				result.setMessage("户主电话号不可为空！");
+//				return result;
+//			}
+			result.setSuccess(false);
+			result.setMessage("户主不可更改！");
+			return result;
 		}
-		//判断家庭成员是否已有户籍关系
+		//判断家庭成员是否已有户籍关系以及编辑关系更改的家庭成员
 		if(!lUserList.isEmpty())
 		{
 			//新增的成员
@@ -265,20 +273,65 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 					}
 				}
 			}
+			//删去的成员
+			for(SysUser buser:bUserList)
+			{
+				String bUserId = buser.getId();
+				for(SysUser luser: lUserList )
+				{
+					if(luser.getId()!=null || !luser.getId().equals("")){
+						String lUserId = luser.getId();
+						if(lUserId.equals(bUserId))
+						{   if(buser.getRelation() == null && luser.getRelation() == null)
+						     {
+								 break;
+							 }
+							 if(buser.getRelation() == null)
+							 {
+								 sysUserService.updateById(luser);
+								 villageRelation relation = new villageRelation();
+								 relation.setHostIdnumber(lHostId);
+								 relation.setIdnumber(luser.getIdnumber());
+								 relation.setHomeRelation(luser.getRelation());
+								 relation.setHomeCode(lHomeCode);
+								 villageRelationService.save(relation);
+								 break;
+							 }
+							if(luser.getRelation() == null)
+							{
+								sysUserService.updateById(luser);
+								break;
+							}
+							if(!buser.getRelation().equals(luser.getRelation()))
+							{
+								sysUserService.updateById(luser);
+								villageRelation relation = new villageRelation();
+								relation.setHostIdnumber(lHostId);
+								relation.setIdnumber(luser.getIdnumber());
+								relation.setHomeRelation(luser.getRelation());
+								relation.setHomeCode(lHomeCode);
+								villageRelationService.save(relation);
+								break;
+							}
+						}
+
+					}
+				}
+			}
 		}
         //保存编辑后的户主信息（假设户口本编号未更改，编辑后的户主保存原户口本编号信息）
-		 if(!bHostId.equals(lHostId))
-		 {
-		 	SysUser laterHost = sysUserService.queryByIdnumber(lHostId);
-		 	SysUser bHost = sysUserService.queryByIdnumber(bHostId);
-
-		 	bHost.setHomeCode("");
-		 	bHost.setHomeRole(0);
-		 	sysUserService.updateById(bHost);
-		 	laterHost.setHomeCode(bHomeCode);
-		 	laterHost.setHomeRole(1);
-		 	sysUserService.updateById(laterHost);
-		 }
+//		 if(!bHostId.equals(lHostId))
+//		 {
+//		 	SysUser laterHost = sysUserService.queryByIdnumber(lHostId);
+//		 	SysUser bHost = sysUserService.queryByIdnumber(bHostId);
+//
+//		 	bHost.setHomeCode("");
+//		 	bHost.setHomeRole(0);
+//		 	sysUserService.updateById(bHost);
+//		 	laterHost.setHomeCode(bHomeCode);
+//		 	laterHost.setHomeRole(1);
+//		 	sysUserService.updateById(laterHost);
+//		 }
         //保存编辑后的成员信息(假设户口本编号未更改，编辑后的成员字段中保存原户口本编号信息)
 		//新增的成员
 		for(SysUser luser:lUserList)
@@ -297,12 +350,14 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 					luser.setHomeCode(bHomeCode);
 					luser.setHomeRole(2);
 					sysUserService.updateById(luser);
+					if(luser.getRelation()!=null)
+					{
 					villageRelation relation = new villageRelation();
 					relation.setHostIdnumber(lHostId);
 					relation.setIdnumber(luser.getIdnumber());
 					relation.setHomeRelation(luser.getRelation());
 					relation.setHomeCode(bHomeCode);
-					villageRelationService.save(relation);
+					villageRelationService.save(relation);}
 				}
 			}
 		}
@@ -324,38 +379,41 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 			{
 				buser.setHomeCode("");
 				buser.setHomeRole(0);
+				if(buser.getRelation()!=null)
+				{buser.setRelation(-1);}
 				sysUserService.updateById(buser);
 			}
 		}
         //保存编辑后的户口信息,如果户口本编号变动，更新户主和家庭成员的home_code
-		if(!lHomeCode.equals(bHomeCode))
-		{
-			SysUser host = sysUserService.queryByIdnumber(lHostId);
-			host.setHomeCode(lHomeCode);
-			sysUserService.updateById(host);
-			for(SysUser user:lUserList)
-			{
-				if(user.getId()!=null && !user.getId().equals(""))
-				{user.setHomeCode(lHomeCode);
-				user.setHomeCode(lHomeCode);
-				sysUserService.updateById(user);}
-			}
-		}
-		//户主变动后，保存新户主和家庭成员的关系，否则只考虑更新了家庭关系的部分
-		if(!bHostId.equals(lHostId))
-		{
-			List<SysUser> userList = sysUserService.queryByHomeCode(bHomeCode);
-			for(int i=0;i<userList.size();i++)
-			{
-				SysUser user = userList.get(i);
-				villageRelation relation = new villageRelation();
-				relation.setHomeCode(bHomeCode);
-				relation.setHostIdnumber(lHostId);
-				relation.setIdnumber(user.getIdnumber());
-				relation.setIdnumber(user.getId());
-				villageRelationService.save(relation);
-			}
-		}
+//		if(!lHomeCode.equals(bHomeCode))
+//		{
+//			SysUser host = sysUserService.queryByIdnumber(lHostId);
+//			host.setHomeCode(lHomeCode);
+//			sysUserService.updateById(host);
+//			for(SysUser user:lUserList)
+//			{
+//				if(user.getId()!=null && !user.getId().equals(""))
+//				{user.setHomeCode(lHomeCode);
+//				user.setHomeCode(lHomeCode);
+//				sysUserService.updateById(user);}
+//			}
+//		}
+//		//户主变动后，保存新户主和家庭成员的关系，否则只考虑更新了家庭关系的部分
+//		if(!bHostId.equals(lHostId))
+//		{
+//			List<SysUser> userList = sysUserService.queryByHomeCode(bHomeCode);
+//			for(int i=0;i<userList.size();i++)
+//			{
+//				SysUser user = userList.get(i);
+//				villageRelation relation = new villageRelation();
+//				relation.setHomeCode(bHomeCode);
+//				relation.setHostIdnumber(lHostId);
+//				relation.setIdnumber(user.getIdnumber());
+//				relation.setIdnumber(user.getId());
+//				villageRelationService.save(relation);
+//			}
+
+
 		villageHome.setUserList(null);
 		villageHome.setRealname(null);
 		villageHome.setPhone(null);
@@ -384,6 +442,8 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 		{
 			user.setHomeCode("");
 			user.setHomeRole(0);
+			if(user.getRelation()!=null)
+			{user.setRelation(-1);}
 			sysUserService.updateById(user);
 		}
 		villageHomeService.removeById(id);
@@ -413,6 +473,8 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 			{
 				user.setHomeCode("");
 				user.setHomeRole(0);
+				if(user.getRelation()!=null){
+				user.setRelation(-1);}
 				sysUserService.updateById(user);
 			}
 		}
@@ -456,10 +518,12 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
     * @return
     */
     @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
-    public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
-//        return super.importExcelForVillageHome(request, response, villageHome.class);
+    public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
 			MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 			Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
+		// 错误信息
+		List<String> errorMessage = new ArrayList<>();
+		int errorLines = 0;
 			for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
 				MultipartFile file = entity.getValue();// 获取上传文件对象
 				ImportParams params = new ImportParams();
@@ -467,16 +531,6 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 				params.setHeadRows(1);
 				params.setNeedSave(true);
 				try {
-//                InputStream inputStream = file.getInputStream();
-//                Workbook wb = WorkbookFactory.create(inputStream);
-//                //获取某个sheet
-//                Sheet sheet = wb.getSheetAt(0);
-//                //获取某一行
-//                Row row = sheet.getRow(0);
-//                //获取行的某一列
-//                Cell cell0 = row.getCell(0);
-//                //获取单元格中的字符串
-//                RichTextString fileData = cell0.getRichStringCellValue();
 					//获取villageHome类
 					List<villageHome> list = ExcelImportUtil.importExcel(file.getInputStream(), villageHome.class, params);
 					//获取user类
@@ -491,19 +545,36 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 					List<Integer> tUse = listForUser.stream().map(e -> e.getHomeRole()).collect(Collectors.toList());
 					List<Integer> thUse = listForUser.stream().map(e -> e.getHomeRole()).collect(Collectors.toList());
 					List<Integer> fUse = listForUser.stream().map(e -> e.getHomeRole()).collect(Collectors.toList());
-					for(int i=0;i<list.size();i++)
+					for(int i=0,len=list.size();i<len;i++)
 					{
 						if(oUse.get(i) == 2)
 						{
 							list.remove(i);
 							oUse.remove(i);
 							i--;
+							len--;
 						}
 					}
 					for(int i=0;i<list.size();i++)
 					{
 						villageHome home = list.get(i);
-						home.setZhenId(sysDepartService.getZhenIdByName(home.getZhenId()));
+						if(homeMapper.getByHomeCode(home.getHomeCode())!=null)
+						{
+							return Result.error("导入失败:编号为"+home.getHomeCode()+"的户籍已存在");
+						}
+						if(sysUserService.queryByIdnumber(home.getIdnumber())!=null)
+						{
+							return Result.error("导入失败:身份证号为"+home.getIdnumber()+"的户主已存在");
+						}
+						if(home.getPhone()==""||home.getPhone()==null)
+						{
+							return Result.error("导入失败:身份证号为"+home.getIdnumber()+"的户主电话号为空，请补全信息");
+						}
+						if(sysUserService.getUserByPhone(home.getPhone())!=null)
+						{
+							return Result.error("导入失败:身份证号为"+home.getIdnumber()+"的户主的电话号系统中已存在");
+						}
+//						home.setZhenId(sysDepartService.getZhenIdByName(home.getZhenId()));
 						home.setDepartId(sysDepartService.getCunIdByNames(home.getZhenId(),home.getDepartId()));
 						list.set(i,home);
 					}
@@ -520,30 +591,26 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 							user.setRole("1463074308371800066");
 						}
 						else{
-							return Result.error("文件导入信息有误，用户角色不存在！");
+							errorLines++;
+							errorMessage.add("身份证号为 " + user.getIdnumber() + "的村民角色信息有误，请及时在村民管理页面编辑");
 						}
-						user.setZhenId(sysDepartService.getZhenIdByName(user.getZhenId()));
 						user.setDepartId(sysDepartService.getCunIdByNames(user.getZhenId(),user.getDepartId()));
 						listForUser.set(i,user);
 					}
 					List<SysUser> listForHost = new ArrayList<>(listForUser);
-					for(int i=0;i<listForHost.size();i++)
+					for(int i=0,len=listForHost.size();i<len;i++)
 					{
 						if(tUse.get(i) == 2)
 						{
 							listForHost.remove(i);
 							tUse.remove(i);
 							i--;
+							len--;
 						}
 					}
 					for(int i=0;i<listForHost.size();i++)
 					{
 						SysUser host = listForHost.get(i);
-//						host.setDelFlag(0);
-//						host.setPeopleType("2");
-//						host.setUsername(host.getPhone());
-//						host.setPassword("123456");
-//						listForHost.set(i,host);
 						host.setPeopleType("2");
 						String phone = host.getPhone();
 						if(phone == null)
@@ -569,32 +636,36 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 							host.setOrgCode(userOrgCode);
 						}
 						sysUserService.saveUser(host, host.getRole(), host.getDepartId());
-						listForHost.set(i,host);
 					}
-//					sysUserService.saveBatch(listForHost);
 					List<SysUser> listForMember = new ArrayList<>(listForUser);
-					for(int i=0;i<listForMember.size();i++)
+					for(int i=0,len=listForMember.size();i<len;i++)
 					{
 						if(thUse.get(i) == 1)
 						{
 							listForMember.remove(i);
 							thUse.remove(i);
 							i--;
+							len--;
 						}
 					}
 					for(int i=0;i<listForMember.size();i++)
 					{
 						SysUser member = listForMember.get(i);
-//						member.setDelFlag(0);
-//						member.setPeopleType("2");
-//						member.setUsername(member.getPhone());
-//						member.setPassword("123456");
-//						listForMember.set(i,member);
+						if(sysUserService.queryByIdnumber(member.getIdnumber())!=null)
+						{
+							errorLines++;
+							errorMessage.add("身份证号为 " + member.getIdnumber() + "的村民已存在，请及时通过户籍管理编辑该村民的户籍信息");
+						}else if(sysUserService.getUserByPhone(member.getPhone())!=null)
+						{
+							errorLines++;
+							errorMessage.add("身份证号为 " + member.getIdnumber() + "的村民手机号在系统中已存在，请及时通过村民管理页面添加或编辑该村民的相关信息，并在户籍管理页面添加该村民的户籍信息");
+						}
+						else{
 						member.setPeopleType("2");
 						String phone = member.getPhone();
 						if(phone == null)
 						{
-							return Result.error("文件导入失败,户主电话号不可为空！");
+
 						}else {
 							//设置初始账号：手机号
 							member.setUsername(phone);
@@ -613,17 +684,17 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 							String userOrgCode = depart.getOrgCode();
 							depart.setOrgCode(userOrgCode);
 						}
-						sysUserService.saveUser(member, member.getRole(), member.getDepartId());
-						listForMember.set(i,member);
+						sysUserService.saveUser(member, member.getRole(), member.getDepartId());}
 					}
-//					sysUserService.saveBatch(listForMember);
-					for(int i=0;i<listForRelation.size();i++)
+
+					for(int i=0,len=listForRelation.size();i<len;i++)
 					{
 						if(fUse.get(i) == 1)
 						{
 							listForRelation.remove(i);
 							fUse.remove(i);
 							i--;
+							len--;
 						}
 					}
 					for(int i=0;i<listForRelation.size();i++)
@@ -636,10 +707,10 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 					//1200条  saveBatch消耗时间3687毫秒 循环插入消耗时间5212毫秒
 					log.info("消耗时间" + (System.currentTimeMillis() - start) + "毫秒");
 					//update-end-author:taoyan date:20190528 for:批量插入数据
-					return Result.ok("文件导入成功！数据行数：" + list.size());
 				} catch (Exception e) {
+					errorLines++;
+					errorMessage.add("发生异常,可能是表格中数据重复或者存在空数据：" + e.getMessage());
 					log.error(e.getMessage(), e);
-					return Result.error("文件导入失败:" + e.getMessage());
 				} finally {
 					try {
 						file.getInputStream().close();
@@ -648,7 +719,7 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 					}
 				}
 			}
-			return Result.error("文件导入失败！");
+			return ImportExcelUtil.importReturnRes(errorLines,errorMessage);
 
     }
 

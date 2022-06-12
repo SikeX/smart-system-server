@@ -33,6 +33,7 @@ public class SmartSupervision implements Serializable {
     private java.lang.String id;
 	/**创建人*/
     @Excel(name = "创建人员用户名", width = 15)
+    @Dict(dictTable = "sys_user", dicCode = "username", dicText = "realname")
     @ApiModelProperty(value = "创建人")
     private java.lang.String createBy;
 	/**创建日期*/

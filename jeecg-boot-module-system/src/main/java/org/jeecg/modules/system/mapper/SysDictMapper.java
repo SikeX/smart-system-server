@@ -32,8 +32,14 @@ public interface SysDictMapper extends BaseMapper<SysDict> {
 	 */
 	@Deprecated
 	public Long duplicateCheckCountSql(DuplicateCheckVo duplicateCheckVo);
+
+	@Deprecated
+	public Long duplicateCheckCountSqlWithDelFlag(DuplicateCheckVo duplicateCheckVo);
 	@Deprecated
 	public Long duplicateCheckCountSqlNoDataId(DuplicateCheckVo duplicateCheckVo);
+
+	@Deprecated
+	public Long duplicateCheckCountSqlNoDataIdWithDelFlag(DuplicateCheckVo duplicateCheckVo);
 	
 	public List<DictModel> queryDictItemsByCode(@Param("code") String code);
 

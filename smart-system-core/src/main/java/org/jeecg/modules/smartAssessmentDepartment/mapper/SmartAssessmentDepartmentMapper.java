@@ -20,4 +20,12 @@ public interface SmartAssessmentDepartmentMapper extends BaseMapper<SmartAssessm
      * @return
      */
     List<DictModel> getDictItems();
+
+    /**
+     * 根据系统单位名称获取评分考核单位的ID
+     *
+     * @param departName 系统单位名称
+     * @return
+     */
+    String getAssessmentDepartmentIdByDepartName(@Param("departName") String departName);
 }

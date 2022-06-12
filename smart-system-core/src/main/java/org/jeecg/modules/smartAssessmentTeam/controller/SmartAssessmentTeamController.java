@@ -6,12 +6,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.modules.smartAssessmentMission.entity.SmartAssessmentDepart;
 import org.jeecg.modules.smartAssessmentTeam.entity.SmartAssessmentTeam;
 import org.jeecg.modules.smartAssessmentTeam.service.ISmartAssessmentTeamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,6 +143,44 @@ public class SmartAssessmentTeamController extends JeecgController<SmartAssessme
 	public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
 		this.smartAssessmentTeamService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.OK("批量删除成功!");
+	}
+
+	/**
+	 * 考核组负责单位重复值校验
+	 *
+	 * @return
+	 */
+	@GetMapping(value = "/duplicateCheck")
+	@ApiOperation("考核组负责单位重复值校验")
+	public Result<Object> doDuplicateCheckWithDelFlag(@RequestParam(name = "departIds", required = true) String departIds,
+													  @RequestParam(name = "dataId", required = false) String dataId,
+													  HttpServletRequest request) {
+		Long num = null;
+
+		log.info("----duplicate check------："+ departIds);
+		QueryWrapper<SmartAssessmentTeam> queryWrapper = new QueryWrapper<>();
+		String[] departIdList = departIds.split(",");
+		for (String departId : departIdList) {
+			queryWrapper.or().like("departs", departId);
+		}
+		queryWrapper.and(qw -> qw.eq("del_flag", "0"));
+		if (StringUtils.isNotBlank(dataId)) {
+			// [2].编辑页面校验
+			queryWrapper.and(qw -> qw.ne("id", dataId));
+			num = smartAssessmentTeamService.count(queryWrapper);
+		} else {
+			// [1].添加页面校验
+			num = smartAssessmentTeamService.count(queryWrapper);
+		}
+
+		if (num == null || num == 0) {
+			// 该值可用
+			return Result.ok("该值可用！");
+		} else {
+			// 该值不可用
+			log.info("该值不可用，系统中已存在！");
+			return Result.error("负责单位与别的考核组有重复！");
+		}
 	}
 	
 	/**

@@ -24,7 +24,7 @@ public class FuneralSendCaution {
     @Autowired
     private ISysBaseAPI sysBaseAPI;
 
-    @Scheduled(cron = "0 20 20 * * ?")
+    @Scheduled(cron = "0 10 20 * * ?")
 
     private void sendCaution() {//给管理员发送提醒
         //获取项目的状态（开始或关闭）

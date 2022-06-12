@@ -49,8 +49,9 @@ public class SmartInnerPartyTalkPage implements Serializable {
 	@ApiModelProperty(value = "所属部门")
     private java.lang.String sysOrgCode;
 	/**单位ID*/
-	@ApiModelProperty(value = "单位ID")
+	@ApiModelProperty(value = "单位")
 	@Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
+	@Dict(dicCode = "id",dictTable ="sys_depart",dicText = "depart_name")
     private java.lang.String departId;
 	/**会议时间*/
 	@Excel(name = "会议时间", width = 15, format = "yyyy-MM-dd HH:mm:ss")

@@ -1,17 +1,25 @@
 package org.jeecg.modules.wePower.smartVillageLead.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSONObject;
+import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.system.vo.VillageRelationModel;
 import org.jeecg.modules.utils.FaceRecognitionUtil;
 import org.jeecg.modules.utils.ImageUtils;
 import org.jeecg.modules.utils.UrlUtil;
+import org.jeecg.modules.wePower.smartEvadeRelation.entity.SmartEvadeRelation;
+import org.jeecg.modules.wePower.smartEvadeRelation.service.ISmartEvadeRelationService;
+import org.jeecg.modules.wePower.smartPublicityResource.entity.SmartPublicityResource;
 import org.jeecg.modules.wePower.smartVillageLead.entity.SmartVillageLead;
 import org.jeecg.modules.wePower.smartVillageLead.service.ISmartVillageLeadService;
 
@@ -44,6 +52,8 @@ public class SmartVillageLeadController extends JeecgController<SmartVillageLead
 	private ISmartVillageLeadService smartVillageLeadService;
 	@Autowired
 	private ISysBaseAPI sysBaseAPI;
+	@Autowired
+	private ISmartEvadeRelationService smartEvadeRelationService;
 
 	@Value("${jeecg.fileBaseUrl}")
 	private String fileBaseUrl;
@@ -71,6 +81,26 @@ public class SmartVillageLeadController extends JeecgController<SmartVillageLead
 		IPage<SmartVillageLead> pageList = smartVillageLeadService.page(page, queryWrapper);
 		return Result.OK(pageList);
 	}
+
+	 @AutoLog(value = "农村集体经济组织-分页列表查询")
+	 @ApiOperation(value="农村集体经济组织-分页列表查询", notes="农村集体经济组织-分页列表查询")
+	 @GetMapping(value = "/listAdmin")
+	 public Result<?> queryPageListAdmin(SmartVillageLead smartVillageLead,
+										 @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+										 @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+										 HttpServletRequest req) {
+
+		 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		 String orgCode = sysUser.getOrgCode();
+		 if ("".equals(orgCode)) {
+			 return Result.error("本用户没有操作权限！");
+		 }
+		 QueryWrapper<SmartVillageLead> queryWrapper = QueryGenerator.initQueryWrapper(smartVillageLead, req.getParameterMap());
+		 queryWrapper.eq("sys_org_code", orgCode);
+		 Page<SmartVillageLead> page = new Page<SmartVillageLead>(pageNo, pageSize);
+		 IPage<SmartVillageLead> pageList = smartVillageLeadService.page(page, queryWrapper);
+		 return Result.OK(pageList);
+	 }
 	
 	/**
 	 *   添加
@@ -83,12 +113,29 @@ public class SmartVillageLeadController extends JeecgController<SmartVillageLead
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody SmartVillageLead smartVillageLead) throws UnsupportedEncodingException {
 
-		String name = sysBaseAPI.translateDictFromTable("smart_village_home","home_surname", "idnumber",
-				 smartVillageLead.getPeople());
-
-		smartVillageLead.setName(name);
 
 		smartVillageLeadService.save(smartVillageLead);
+
+		LoginUser user = sysBaseAPI.getUserByIdNumber(smartVillageLead.getPeople());
+
+		if(user.getHomeRole().equals("1")){
+			SmartEvadeRelation relation = new SmartEvadeRelation();
+			relation.setHostName(smartVillageLead.getPeople());
+		} else if (user.getHomeRole().equals("2")){
+			List<VillageRelationModel> relationList = sysBaseAPI.getVillageRelation(smartVillageLead.getPeople(), "2");
+//			List<String> hostList = new ArrayList<>();
+//			relationList.forEach(relation -> {
+//				hostList.add(relation.get);
+//			});
+			smartEvadeRelationService.list().forEach(relation -> {
+				relationList.forEach(relationModel -> {
+					if(relation.getHostName().equals(relationModel.getHostIdnumber())){
+						relation.setRelation(relationModel.getHomeRelation().toString());
+						smartEvadeRelationService.updateById(relation);
+					}
+				});
+			});
+		}
 
 		ImageUtils imageUtils = new ImageUtils();
 
@@ -96,7 +143,7 @@ public class SmartVillageLeadController extends JeecgController<SmartVillageLead
 
 		String imgPath = smartVillageLead.getPicture();
 
-		String imgBase64 = imageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese(fileBaseUrl + imgPath));
+		String imgBase64 = imageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese( fileBaseUrl + imgPath));
 
 		try {
 
@@ -110,6 +157,8 @@ public class SmartVillageLeadController extends JeecgController<SmartVillageLead
 				smartVillageLeadService.removeById(smartVillageLead.getId());
 				return Result.error(faceResponse.getString("error_msg"));
 			} else {
+				smartVillageLead.setFaceToken(faceResponse.getJSONObject("result").getString("face_token"));
+				smartVillageLeadService.updateById(smartVillageLead);
 				return Result.OK("添加成功！");
 			}
 
@@ -140,14 +189,17 @@ public class SmartVillageLeadController extends JeecgController<SmartVillageLead
 
 		String imgPath = smartVillageLead.getPicture();
 
-		String imgBase64 = imageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese(fileBaseUrl + imgPath));
+		String imgBase64 = imageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese( fileBaseUrl + imgPath));
 
 		try {
 			JSONObject faceResponse = faceRecognitionUtil.updateFace(imgBase64, groupId, smartVillageLead.getId());
 
+			log.info(String.valueOf(faceResponse));
+
 			if(faceResponse.getIntValue("error_code") != 0) {
 				return Result.error(faceResponse.getString("error_msg"));
 			} else {
+				smartVillageLead.setFaceToken(faceResponse.getJSONObject("result").getString("face_token"));
 				smartVillageLeadService.updateById(smartVillageLead);
 				return Result.OK("编辑成功！");
 			}

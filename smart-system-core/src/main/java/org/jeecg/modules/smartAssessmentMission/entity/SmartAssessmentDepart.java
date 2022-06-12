@@ -52,12 +52,12 @@ public class SmartAssessmentDepart implements Serializable {
     @ApiModelProperty(value = "考核任务ID")
     private java.lang.String missionId;
 	/**被考核单位*/
-	@Excel(name = "被考核单位", width = 15)
+	@Excel(name = "被考核单位", width = 15, dicCode = "id",dicText = "depart_name",dictTable = "sys_depart")
     @Dict(dicCode = "id",dicText = "depart_name",dictTable = "sys_depart")
     @ApiModelProperty(value = "被考核单位")
     private java.lang.String assessmentDepart;
 	/**被考核单位登录账号*/
-	@Excel(name = "被考核单位登录账号", width = 15)
+	@Excel(name = "被考核单位登录账号", width = 15, dicCode = "id",dicText = "realname",dictTable = "sys_user")
     @Dict(dicCode = "id",dicText = "realname",dictTable = "sys_user")
     @ApiModelProperty(value = "被考核单位登录账号")
     private java.lang.String departUser;
@@ -80,7 +80,7 @@ public class SmartAssessmentDepart implements Serializable {
     @ApiModelProperty(value = "签收时间")
     private java.util.Date signTime;
 	/**签收人*/
-	@Excel(name = "签收人", width = 15)
+	@Excel(name = "签收人", width = 15, dicCode = "id",dicText = "realname",dictTable = "sys_user")
     @TableField(updateStrategy = FieldStrategy.IGNORED)
     @Dict(dicCode = "id",dicText = "realname",dictTable = "sys_user")
     @ApiModelProperty(value = "签收人")

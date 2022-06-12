@@ -122,7 +122,7 @@ public class SysUser implements Serializable {
     @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
     @ApiModelProperty(value = "所属村")
     private String departId;
-    @Excel(name = "所属镇", width = 15)
+    @Excel(name = "所属镇", width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
     @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
     @ApiModelProperty(value = "所属镇")
     private String zhenId;
@@ -270,6 +270,9 @@ public class SysUser implements Serializable {
     @Dict(dicCode = "home_role")
     private Integer homeRole;
 
+    @ApiModelProperty(value = "亲属关系")
+    @Excel(name = "亲属关系", width = 15,dicCode="home_relation")
+    @Dict(dicCode = "home_relation")
     private Integer relation;
 
 }

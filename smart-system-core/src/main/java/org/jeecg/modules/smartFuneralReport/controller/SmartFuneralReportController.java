@@ -105,7 +105,7 @@ public class SmartFuneralReportController extends JeecgController<SmartFuneralRe
 		// 如果是普通用户，则只能看到自己创建的数据
 		if(role.contains("CommonUser")) {
 			QueryWrapper<SmartFuneralReport> queryWrapper = new QueryWrapper<>();
-			queryWrapper.eq("create_by",username);
+			queryWrapper.eq("create_by",username).or().eq("people_id",sysUser.getId());
 			IPage<SmartFuneralReport> pageList = smartFuneralReportService.page(page, queryWrapper);
 			return Result.OK(pageList);
 		} else {

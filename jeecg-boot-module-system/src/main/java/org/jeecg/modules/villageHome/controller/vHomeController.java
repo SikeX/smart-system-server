@@ -74,6 +74,4 @@ public class vHomeController extends JeecgController<vHome, IvHomeService> {
        return super.exportXls(request, vHome, vHome.class, "乡镇户口表");
    }
 
-
-
 }

@@ -3,8 +3,12 @@ package org.jeecg.modules.wePower.smartPublicityBenifit.controller;
 import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.modules.wePower.smartGroupEconomy.entity.SmartGroupEconomy;
 import org.jeecg.modules.wePower.smartPublicityBenifit.entity.SmartPublicityBenifit;
 import org.jeecg.modules.wePower.smartPublicityBenifit.service.ISmartPublicityBenifitService;
 
@@ -57,7 +61,27 @@ public class SmartPublicityBenifitController extends JeecgController<SmartPublic
 		IPage<SmartPublicityBenifit> pageList = smartPublicityBenifitService.page(page, queryWrapper);
 		return Result.OK(pageList);
 	}
-	
+
+	 @AutoLog(value = "农村集体经济组织-分页列表查询")
+	 @ApiOperation(value="农村集体经济组织-分页列表查询", notes="农村集体经济组织-分页列表查询")
+	 @GetMapping(value = "/listAdmin")
+	 public Result<?> queryPageListAdmin(SmartPublicityBenifit smartPublicityBenifit,
+										 @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+										 @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+										 HttpServletRequest req) {
+
+		 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		 String orgCode = sysUser.getOrgCode();
+		 if ("".equals(orgCode)) {
+			 return Result.error("本用户没有操作权限！");
+		 }
+		 QueryWrapper<SmartPublicityBenifit> queryWrapper = QueryGenerator.initQueryWrapper(smartPublicityBenifit, req.getParameterMap());
+		 queryWrapper.eq("sys_org_code", orgCode);
+		 Page<SmartPublicityBenifit> page = new Page<SmartPublicityBenifit>(pageNo, pageSize);
+		 IPage<SmartPublicityBenifit> pageList = smartPublicityBenifitService.page(page, queryWrapper);
+		 return Result.OK(pageList);
+	 }
+
 	/**
 	 *   添加
 	 *

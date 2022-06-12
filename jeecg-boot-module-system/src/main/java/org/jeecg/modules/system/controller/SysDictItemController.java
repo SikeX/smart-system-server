@@ -45,7 +45,7 @@ public class SysDictItemController {
 
 	@Autowired
 	private ISysDictItemService sysDictItemService;
-	
+
 	/**
 	 * @功能：查询字典数据
 	 * @param sysDictItem
@@ -56,7 +56,7 @@ public class SysDictItemController {
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public Result<IPage<SysDictItem>> queryPageList(SysDictItem sysDictItem,@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
-									  @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,HttpServletRequest req) {
+													@RequestParam(name="pageSize", defaultValue="10") Integer pageSize,HttpServletRequest req) {
 		Result<IPage<SysDictItem>> result = new Result<IPage<SysDictItem>>();
 		QueryWrapper<SysDictItem> queryWrapper = QueryGenerator.initQueryWrapper(sysDictItem, req.getParameterMap());
 		queryWrapper.orderByAsc("sort_order");
@@ -66,7 +66,7 @@ public class SysDictItemController {
 		result.setResult(pageList);
 		return result;
 	}
-	
+
 	/**
 	 * @功能：新增
 	 * @return
@@ -86,14 +86,14 @@ public class SysDictItemController {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * @功能：编辑
 	 * @param sysDictItem
 	 * @return
 	 */
 	//@RequiresRoles({"admin"})
-	@RequestMapping(value = "/edit", method = RequestMethod.PUT)
+	@RequestMapping(value = "/edit",  method = { RequestMethod.PUT,RequestMethod.POST })
 	@CacheEvict(value={CacheConstant.SYS_DICT_CACHE, CacheConstant.SYS_ENABLE_DICT_CACHE}, allEntries=true)
 	public Result<SysDictItem> edit(@RequestBody SysDictItem sysDictItem) {
 		Result<SysDictItem> result = new Result<SysDictItem>();
@@ -110,7 +110,7 @@ public class SysDictItemController {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * @功能：删除字典数据
 	 * @param id
@@ -132,7 +132,7 @@ public class SysDictItemController {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * @功能：批量删除字典数据
 	 * @param ids
@@ -161,7 +161,7 @@ public class SysDictItemController {
 	@RequestMapping(value = "/dictItemCheck", method = RequestMethod.GET)
 	@ApiOperation("字典重复校验接口")
 	public Result<Object> doDictItemCheck(SysDictItem sysDictItem, HttpServletRequest request) {
-		int num = 0;
+		Long num = Long.valueOf(0);
 		LambdaQueryWrapper<SysDictItem> queryWrapper = new LambdaQueryWrapper<SysDictItem>();
 		queryWrapper.eq(SysDictItem::getItemValue,sysDictItem.getItemValue());
 		queryWrapper.eq(SysDictItem::getDictId,sysDictItem.getDictId());
@@ -179,5 +179,5 @@ public class SysDictItemController {
 			return Result.error("该值不可用，系统中已存在！");
 		}
 	}
-	
+
 }
