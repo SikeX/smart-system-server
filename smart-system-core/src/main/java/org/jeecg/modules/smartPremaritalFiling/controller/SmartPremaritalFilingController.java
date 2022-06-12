@@ -14,6 +14,8 @@ import org.jeecg.common.system.util.JwtUtil;
 import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.constant.VerifyConstant;
+import org.jeecg.modules.smartCreateAdvice.entity.SmartCreateAdvice;
 import org.jeecg.modules.smartPostMarriage.service.ISmartPostMarriageReportService;
 import org.jeecg.modules.smartExportWord.util.WordUtils;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
@@ -164,38 +166,107 @@ public class SmartPremaritalFilingController {
      * @param smartPremaritalFilingPage
      * @return
      */
-    @AutoLog(value = "8项规定婚前报备表-添加")
-    @ApiOperation(value = "8项规定婚前报备表-添加", notes = "8项规定婚前报备表-添加")
+    @AutoLog(value = "八项规定婚前报备表-提交审核")
+    @ApiOperation(value = "八项规定婚前报备表-提交审核", notes = "八项规定婚前报备表-提交审核")
     @PostMapping(value = "/add")
     public Result<?> add(@RequestBody SmartPremaritalFilingPage smartPremaritalFilingPage) {
-        //审核功能
-        smartVerify.addVerifyRecord(smartPremaritalFilingPage.getId(), verifyType);
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
         String orgCode = sysUser.getOrgCode();
         if ("".equals(orgCode)) {
             return Result.error("本用户没有操作权限！");
         }
-        String id = smartPremaritalFilingService.getDepartIdByOrgCode(orgCode);
-        smartPremaritalFilingPage.setDepartId(id);
+        String id = commonService.getDepartIdByOrgCode(orgCode);
+        if (id == null) {
+            return Result.error("没有找到部门！");
+        }
+
         SmartPremaritalFiling smartPremaritalFiling = new SmartPremaritalFiling();
         BeanUtils.copyProperties(smartPremaritalFilingPage, smartPremaritalFiling);
-//        smartPremaritalFilingService.saveMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
-//        smartVerify.addVerifyRecord(smartPremaritalFiling.getId(), verifyType);
 
+        smartPremaritalFilingService.saveMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
+        smartPremaritalFiling.setDepartId(id);
 
-        //审核状态
         Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
         if (isVerify) {
-            smartPremaritalFilingService.saveMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
-            String recordId = smartPremaritalFiling.getId();
-            smartVerify.addVerifyRecord(recordId, verifyType);
-            smartPremaritalFiling.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
-            smartPremaritalFilingService.updateById(smartPremaritalFiling);
-        } else { // 设置审核状态为免审
-            smartPremaritalFiling.setVerifyStatus("3"); // 直接添加，不走审核流程
-            smartPremaritalFilingService.saveMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
+            // 如果任务需要审核，则设置任务为待提交状态
+            smartPremaritalFiling.setVerifyStatus(VerifyConstant.VERIFY_STATUS_TOSUBMIT);
+        } else {
+            // 设置审核状态为免审
+            smartPremaritalFiling.setVerifyStatus(VerifyConstant.VERIFY_STATUS_FREE);
         }
+
+        smartPremaritalFilingService.updateById(smartPremaritalFiling);
+
+
         return Result.OK("添加成功！");
+    }
+
+//    /**
+//     * 添加
+//     *
+//     * @param smartPremaritalFilingPage
+//     * @return
+//     */
+//    @AutoLog(value = "8项规定婚前报备表-添加")
+//    @ApiOperation(value = "8项规定婚前报备表-添加", notes = "8项规定婚前报备表-添加")
+//    @PostMapping(value = "/add")
+//    public Result<?> add(@RequestBody SmartPremaritalFilingPage smartPremaritalFilingPage) {
+//        //审核功能
+//        smartVerify.addVerifyRecord(smartPremaritalFilingPage.getId(), verifyType);
+//        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+//        String orgCode = sysUser.getOrgCode();
+//        if ("".equals(orgCode)) {
+//            return Result.error("本用户没有操作权限！");
+//        }
+//        String id = smartPremaritalFilingService.getDepartIdByOrgCode(orgCode);
+//        smartPremaritalFilingPage.setDepartId(id);
+//        SmartPremaritalFiling smartPremaritalFiling = new SmartPremaritalFiling();
+//        BeanUtils.copyProperties(smartPremaritalFilingPage, smartPremaritalFiling);
+////        smartPremaritalFilingService.saveMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
+////        smartVerify.addVerifyRecord(smartPremaritalFiling.getId(), verifyType);
+//
+//
+//        //审核状态
+//        Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
+//        if (isVerify) {
+//            smartPremaritalFilingService.saveMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
+//            String recordId = smartPremaritalFiling.getId();
+//            smartVerify.addVerifyRecord(recordId, verifyType);
+//            smartPremaritalFiling.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+//            smartPremaritalFilingService.updateById(smartPremaritalFiling);
+//        } else { // 设置审核状态为免审
+//            smartPremaritalFiling.setVerifyStatus("3"); // 直接添加，不走审核流程
+//            smartPremaritalFilingService.saveMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
+//        }
+//        return Result.OK("添加成功！");
+//    }
+
+
+
+
+    @AutoLog(value = "八项规定婚前报备表-提交审核")
+    @ApiOperation(value = "八项规定婚前报备表-提交审核", notes = "八项规定婚前报备表-提交审核")
+    @PostMapping(value = "/submitVerify")
+    public Result<?> submitVerify(@RequestBody SmartPremaritalFiling smartPremaritalFiling) {
+        //审核功能
+        //smartVerify.addVerifyRecord(smartPremaritalFilingPage.getId(), verifyType);
+        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+        String orgCode = sysUser.getOrgCode();
+        if ("".equals(orgCode)) {
+            return Result.error("本用户没有操作权限！");
+        }
+        if(!smartVerifyTypeService.getIsVerifyStatusByType(verifyType)){
+            return Result.error("免审任务，无需提交审核！");
+        }
+
+        SmartPremaritalFiling smartPremaritalFilingEntity = smartPremaritalFilingService.getById(smartPremaritalFiling.getId());
+
+        String recordId = smartPremaritalFilingEntity.getId();
+        smartVerify.addVerifyRecord(recordId, verifyType);
+        smartPremaritalFilingEntity.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+        smartPremaritalFilingService.updateById(smartPremaritalFilingEntity);
+
+        return Result.OK("提交成功！");
     }
 
     /**
@@ -204,8 +275,8 @@ public class SmartPremaritalFilingController {
      * @param smartPremaritalFilingPage
      * @return
      */
-    @AutoLog(value = "8项规定婚前报备表-编辑")
-    @ApiOperation(value = "8项规定婚前报备表-编辑", notes = "8项规定婚前报备表-编辑")
+    @AutoLog(value = "八项规定婚前报备表-编辑")
+    @ApiOperation(value = "八项规定婚前报备表-编辑", notes = "项规定婚前报备表-编辑")
     @PutMapping(value = "/edit")
     public Result<?> edit(@RequestBody SmartPremaritalFilingPage smartPremaritalFilingPage) {
         SmartPremaritalFiling smartPremaritalFiling = new SmartPremaritalFiling();
@@ -214,11 +285,22 @@ public class SmartPremaritalFilingController {
         if (smartPremaritalFilingEntity == null) {
             return Result.error("未找到对应数据");
         }
-
-        smartPremaritalFiling.setDepartId(null);
-        smartPremaritalFiling.setCreateTime(null);
+        if(!(smartPremaritalFilingEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_TOSUBMIT) || smartPremaritalFilingEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_FREE))){
+            return Result.error("该任务已提交审核，不能修改！");
+        }
         smartPremaritalFilingService.updateMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
         return Result.OK("编辑成功!");
+//        SmartPremaritalFiling smartPremaritalFiling = new SmartPremaritalFiling();
+//        BeanUtils.copyProperties(smartPremaritalFilingPage, smartPremaritalFiling);
+//        SmartPremaritalFiling smartPremaritalFilingEntity = smartPremaritalFilingService.getById(smartPremaritalFiling.getId());
+//        if (smartPremaritalFilingEntity == null) {
+//            return Result.error("未找到对应数据");
+//        }
+//
+//        smartPremaritalFiling.setDepartId(null);
+//        smartPremaritalFiling.setCreateTime(null);
+//        smartPremaritalFilingService.updateMain(smartPremaritalFiling, smartPremaritalFilingPage.getSmartPremaritalFilingAppList());
+//        return Result.OK("编辑成功!");
     }
 
     /**

@@ -19,7 +19,7 @@ import java.io.UnsupportedEncodingException;
  * @Date:   2021-11-13
  * @Version: V1.0
  */
-@ApiModel(value="smart_premarital_filing_app对象", description="8项规定婚前报备表附表")
+@ApiModel(value="smart_premarital_filing_app对象", description="八项规定婚前报备表附表")
 @Data
 @TableName("smart_premarital_filing_app")
 public class SmartPremaritalFilingApp implements Serializable {
@@ -33,21 +33,21 @@ public class SmartPremaritalFilingApp implements Serializable {
     @ApiModelProperty(value = "主表id")
     private java.lang.String parentId;
 	/**附件说明*/
-	@Excel(name = "附件说明", width = 15)
+	//@Excel(name = "附件说明", width = 15)
     @ApiModelProperty(value = "附件说明")
     private java.lang.String appExplain;
 	/**附件文件路径*/
-	@Excel(name = "附件文件路径", width = 15)
+	//@Excel(name = "附件文件路径", width = 15)
     @ApiModelProperty(value = "附件文件路径")
     private java.lang.String appFilePath;
 	/**上传时间*/
-	@Excel(name = "上传时间", width = 15, format = "yyyy-MM-dd")
+	//@Excel(name = "上传时间", width = 15, format = "yyyy-MM-dd")
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @ApiModelProperty(value = "上传时间")
     private java.util.Date uploadTime;
 	/**下载次数*/
-	@Excel(name = "下载次数", width = 15)
+	//@Excel(name = "下载次数", width = 15)
     @ApiModelProperty(value = "下载次数")
     private java.lang.Integer downloadCount;
 	/**创建时间*/

@@ -1,8 +1,9 @@
 package org.jeecg.modules.smartPremaritalFiling.vo;
 
 import org.jeecg.modules.smartPremaritalFiling.entity.SmartPremaritalFiling;
-import org.jeecg.modules.smartPremaritalFiling.entity.SmartPremaritalFilingApp;
+//import org.jeecg.modules.smartPremaritalFiling.entity.SmartPremaritalFilingApp;
 import lombok.Data;
+import org.jeecg.modules.smartPremaritalFiling.entity.SmartPremaritalFilingApp;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.jeecgframework.poi.excel.annotation.ExcelEntity;
 import org.jeecgframework.poi.excel.annotation.ExcelCollection;
@@ -24,7 +25,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @Version: V1.0
  */
 @Data
-@ApiModel(value="smart_premarital_filingPage对象", description="8项规定婚前报备表")
+@ApiModel(value="smart_premarital_filingPage对象", description="八项规定婚前报备表")
 public class SmartPremaritalFilingPage implements Serializable {
 
 	/**主键*/
@@ -209,11 +210,11 @@ public class SmartPremaritalFilingPage implements Serializable {
 	@ApiModelProperty(value = "创建人")
 	private java.lang.String createBy;
 	/**附件*/
-	@Excel(name = "附件", width = 15)
+//	@Excel(name = "附件", width = 15)
 	@ApiModelProperty(value = "附件")
 	private java.lang.String files;
 
-	@ExcelCollection(name="8项规定婚前报备表附表")
+	//@ExcelCollection(name="8项规定婚前报备表附表")
 	@ApiModelProperty(value = "8项规定婚前报备表附表")
 	private List<SmartPremaritalFilingApp> smartPremaritalFilingAppList;
 
