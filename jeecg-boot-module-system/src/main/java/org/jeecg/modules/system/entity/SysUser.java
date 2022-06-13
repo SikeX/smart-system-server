@@ -43,13 +43,13 @@ public class SysUser implements Serializable {
     /**
      * 登录账号
      */
-    @Excel(name = "登录账号", width = 15)
+    //@Excel(name = "账号", width = 15)
     private String username;
 
     /**
      * 真实姓名
      */
-    @Excel(name = "真实姓名", width = 15)
+    @Excel(name = "姓名", width = 15)
     private String realname;
 
     /**
@@ -88,9 +88,22 @@ public class SysUser implements Serializable {
     /**
      * 电子邮件
      */
-    @Excel(name = "电子邮件", width = 15)
+//    @Excel(name = "电子邮件", width = 15)
     private String email;
+    /**
+     * 身份证号
+     */
+    @Excel(name = "身份证号", width = 15)
+    @ApiModelProperty(value = "身份证号")
+    private java.lang.String idnumber;
 
+    /**
+     * 干部人员类别
+     */
+    @Excel(name = "人员类别", width = 15,dicCode="office_type")
+    @ApiModelProperty(value = "人员类别")
+    @Dict(dicCode = "office_type")
+    private java.lang.String officeType;
     /**
      * 电话
      */
@@ -105,19 +118,23 @@ public class SysUser implements Serializable {
     @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
     private String orgCode;
     //当前登录人单位ID
-   /* @Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")*/
+    @Excel(name = "所属村", width = 15)
+    @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
+    @ApiModelProperty(value = "所属村")
     private String departId;
+    @Excel(name = "所属镇", width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
+    @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
+    @ApiModelProperty(value = "所属镇")
+    private String zhenId;
     /**部门名称--将不需要序列化的属性前添加关键字transient，序列化对象的时候，这个属性就不会被序列化*/
   /*  @Excel(name = "单位", width = 15)*/
     private transient String orgCodeTxt;
 
-
-
     /**
      * 状态(1：正常  2：冻结 ）
      */
-    @Excel(name = "状态", width = 15,dicCode="user_status")
-    @Dict(dicCode = "user_status")
+//    @Excel(name = "状态", width = 15,dicCode="user_status")
+//    @Dict(dicCode = "user_status")
     private Integer status;
 
     /**
@@ -130,7 +147,6 @@ public class SysUser implements Serializable {
     /**
      * 工号，唯一键
      */
-    @Excel(name = "工号", width = 15)
     private String workNo;
 
     /**
@@ -143,12 +159,13 @@ public class SysUser implements Serializable {
     /**
      * 座机号
      */
-    @Excel(name = "座机号", width = 15)
+
     private String telephone;
 
     /**
      * 创建人
      */
+
     private String createBy;
 
     /**
@@ -171,15 +188,15 @@ public class SysUser implements Serializable {
     private Integer activitiSync;
 
     /**
-     * 身份（0 普通成员 1 上级）
+     * 身份（1普通成员 2上级）
      */
-    @Excel(name="（1普通成员 2上级）",width = 15)
+    @Excel(name="是否单位负责人（1否2是）",width = 15)
     private Integer userIdentity;
 
     /**
      * 负责部门
      */
-    @Excel(name="负责部门",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
+    //@Excel(name="负责部门",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
     @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
     private String departIds;
 
@@ -232,15 +249,30 @@ public class SysUser implements Serializable {
 
     private List<String> roleId;
 
+    /**角色*/
+    @Excel(name = "角色", width = 15)
+    @ApiModelProperty(value = "角色")
     private String role;
+
+
     /**
      * 上次验证手机号码时间
      */
     private Date lastVerifyTime;
 
+    /**户籍编号*/
+    @Excel(name = "户籍编号", width = 15)
+    @ApiModelProperty(value = "户籍编号")
     private String homeCode;
 
-    @ApiModelProperty(value = "户籍关系")
+    @Excel(name = "是否是户主", width = 15,dicCode = "home_role")
+    @ApiModelProperty(value = "是否是户主")
     @Dict(dicCode = "home_role")
     private Integer homeRole;
+
+    @ApiModelProperty(value = "亲属关系")
+    @Excel(name = "亲属关系", width = 15,dicCode="home_relation")
+    @Dict(dicCode = "home_relation")
+    private Integer relation;
+
 }

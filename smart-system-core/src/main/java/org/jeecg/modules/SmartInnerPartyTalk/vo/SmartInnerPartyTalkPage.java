@@ -49,8 +49,9 @@ public class SmartInnerPartyTalkPage implements Serializable {
 	@ApiModelProperty(value = "所属部门")
     private java.lang.String sysOrgCode;
 	/**单位ID*/
-	@ApiModelProperty(value = "单位ID")
+	@ApiModelProperty(value = "单位")
 	@Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
+	@Dict(dicCode = "id",dictTable ="sys_depart",dicText = "depart_name")
     private java.lang.String departId;
 	/**会议时间*/
 	@Excel(name = "会议时间", width = 15, format = "yyyy-MM-dd HH:mm:ss")
@@ -117,11 +118,12 @@ public class SmartInnerPartyTalkPage implements Serializable {
 	@ApiModelProperty(value = "审核状态")
 	private java.lang.String verifyStatus;
 
+	private java.lang.String files;
 	@ExcelCollection(name="党内谈话参与人表")
 	@ApiModelProperty(value = "党内谈话参与人表")
 	private List<SmartInnerPartyPacpa> smartInnerPartyPacpaList;
-	@ExcelCollection(name="党内谈话附件表")
+/*	@ExcelCollection(name="党内谈话附件表")
 	@ApiModelProperty(value = "党内谈话附件表")
-	private List<SmartInnerPartyAnnex> smartInnerPartyAnnexList;
+	private List<SmartInnerPartyAnnex> smartInnerPartyAnnexList;*/
 
 }

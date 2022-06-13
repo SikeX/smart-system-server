@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.smartAnswerAssContent.mapper.SmartAnswerAssContentMapper">
+    <update id="updateFinalScore">
+        update smart_answer_ass_content
+        <set>
+            <if test='scoreType != null and scoreType == "lowest"'>
+                final_score=lowest_score,
+            </if>
+            <if test='scoreType != null and scoreType == "average"'>
+                final_score=average_score,
+            </if>
+            <if test='scoreType != null and scoreType == "highest"'>
+                final_score=highest_score,
+            </if>
+        </set>
+        where ass_content_id = #{assContentId}
+          and main_id in (
+            select id
+            from smart_answer_info
+            where mission_id = #{missionId}
+        )
+    </update>
+
+    <select id="listAllByAssContentIdAndMissionId"
+            resultType="org.jeecg.modules.smartAnswerAssContent.entity.SmartAnswerAssContent">
+        select saac.*
+        from smart_answer_info sai
+                 left join smart_answer_ass_content saac on sai.id = saac.main_id
+        where mission_id = #{missionId}
+          and ass_content_id = #{assContentId}
+    </select>
+</mapper>

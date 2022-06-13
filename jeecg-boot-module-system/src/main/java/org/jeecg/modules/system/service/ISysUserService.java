@@ -7,8 +7,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.vo.SysUserCacheInfo;
+import org.jeecg.modules.SmartFirstFormPeople.entity.FirstFormInfo;
 import org.jeecg.modules.system.entity.SysUser;
 import org.jeecg.modules.system.model.SysUserSysDepartModel;
+import org.jeecg.modules.system.vo.UserInfo;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
@@ -262,6 +264,13 @@ public interface ISysUserService extends IService<SysUser> {
 	SysUser queryById(String id);
 
 	/**
+	 * 根据id查询系统用户
+	 * @param idnumber
+	 * @return
+	 */
+	SysUser queryByIdnumber(String idnumber);
+
+	/**
 	 * 保存用户
 	 * @param user 用户
 	 * @param selectedRoles 选择的角色id，多个以逗号隔开
@@ -281,4 +290,8 @@ public interface ISysUserService extends IService<SysUser> {
 	 * @return
 	 */
 	List<SysUser> queryByHomeCode(String homeCode);
+
+    List<UserInfo> sendInformation();
+
+	List<String> getLeadersByOrgCode(String departCode);
 }

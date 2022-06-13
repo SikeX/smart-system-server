@@ -53,7 +53,7 @@ public class SmartDataSheetNew implements Serializable {
 	@Excel(name = "发布人", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "username")
 	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @ApiModelProperty(value = "发布人")
-    private java.lang.String publisher;
+    private java.lang.String createBy;
 	/**文件描述*/
 	@Excel(name = "文件描述", width = 15)
     @ApiModelProperty(value = "文件描述")
@@ -67,6 +67,12 @@ public class SmartDataSheetNew implements Serializable {
 	@Excel(name = "上传文件", width = 15)
     @ApiModelProperty(value = "上传文件")
     private java.lang.String file;
+    /**高拍仪上传附件*/
+    @Excel(name = "高拍仪上传", width = 15)
+    @ApiModelProperty(value = "高拍仪上传文件")
+    private java.lang.String files;
+
+
 	/**下载次数*/
 	@Excel(name = "下载次数", width = 15)
     @ApiModelProperty(value = "下载次数")

@@ -37,6 +37,7 @@ public class SmartPunishPeople implements Serializable {
     @ApiModelProperty(value = "主键")
     private java.lang.String id;
 	/**创建人*/
+    @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @ApiModelProperty(value = "创建人")
     private java.lang.String createBy;
 	/**创建日期*/
@@ -45,6 +46,7 @@ public class SmartPunishPeople implements Serializable {
     @ApiModelProperty(value = "创建日期")
     private java.util.Date createTime;
 	/**更新人*/
+    @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
     @ApiModelProperty(value = "更新人")
     private java.lang.String updateBy;
 	/**更新日期*/
@@ -68,8 +70,8 @@ public class SmartPunishPeople implements Serializable {
     @ApiModelProperty(value = "单位")
     private java.lang.String departId;
 	/**单位*/
-    @Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
-    @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "org_code")
+    @Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
+    @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
     @ApiModelProperty(value = "单位")
     private java.lang.String departCode;
 	/**职务*/
@@ -87,7 +89,7 @@ public class SmartPunishPeople implements Serializable {
     @ApiModelProperty(value = "手机号")
     private java.lang.String phone;
 	/**处分类型*/
-	@Excel(name = "处分类型", width = 15)
+	@Excel(name = "处分类型", width = 15,dicCode = "punish_type")
     @ApiModelProperty(value = "处分类型")
     @Dict(dicCode = "punish_type")
     private java.lang.String punishType;

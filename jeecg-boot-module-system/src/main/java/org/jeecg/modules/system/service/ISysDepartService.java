@@ -184,5 +184,15 @@ public interface ISysDepartService extends IService<SysDepart>{
      * @return
      */
     SysDepart queryDeptByDepartId(String deptId);
+    /**
+     *
+     * @return
+     */
+    String getZhenIdByName(String name);
+    /**
+     *
+     * @return
+     */
+    String getCunIdByNames(String zhen,String cun);
 
 }

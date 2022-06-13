@@ -1,10 +1,13 @@
 package org.jeecg.common.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.ListUtils;
+import org.jeecg.config.StaticConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONObject;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -13,11 +16,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
 
-import org.apache.commons.collections4.ListUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-
 /**
  * Created on 17/6/7.
  * 短信API产品的DEMO程序,工程中包含了一个SmsDemo类，直接通过
@@ -25,7 +23,7 @@ import org.springframework.stereotype.Component;
  * 工程依赖了2个jar包(存放在工程的libs目录下)
  * 1:aliyun-java-sdk-core.jar
  * 2:aliyun-java-sdk-dysmsapi.jar
- * <p>
+ *
  * 备注:Demo工程编码采用UTF-8
  * 国际短信发送请勿参照此DEMO
  */
@@ -33,13 +31,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DySmsHelper {
 
-//    private static ISmartSentMsgService smartSentMsgService;
-//    @Autowired
-//    public void setSmartSentMsgService(ISmartSentMsgService smartSentMsgService){
-//        DySmsHelper.smartSentMsgService = smartSentMsgService;
-//    }
-
-    private final static Logger logger = LoggerFactory.getLogger(DySmsHelper.class);
+	private final static Logger logger=LoggerFactory.getLogger(DySmsHelper.class);
 
     //产品名称:云通信短信API产品,开发者无需替换
     static final String product = "Dysmsapi";
@@ -47,8 +39,8 @@ public class DySmsHelper {
     static final String domain = "dysmsapi.aliyuncs.com";
 
     // TODO 此处需要替换成开发者自己的AK(在阿里云访问控制台寻找)
-    static String accessKeyId;
-    static String accessKeySecret;
+    static  String accessKeyId;
+    static  String accessKeySecret;
 
     public static void setAccessKeyId(String accessKeyId) {
         DySmsHelper.accessKeyId = accessKeyId;
@@ -126,14 +118,14 @@ public class DySmsHelper {
 //
 //    }
 
-    private static void validateParam(JSONObject templateParamJson, DySmsEnum dySmsEnum) {
-        String keys = dySmsEnum.getKeys();
-        String[] keyArr = keys.split(",");
-        for (String item : keyArr) {
-            if (!templateParamJson.containsKey(item)) {
-                throw new RuntimeException("模板缺少参数：" + item);
-            }
-        }
+    private static void validateParam(JSONObject templateParamJson,DySmsEnum dySmsEnum) {
+    	String keys = dySmsEnum.getKeys();
+    	String [] keyArr = keys.split(",");
+    	for(String item :keyArr) {
+    		if(!templateParamJson.containsKey(item)) {
+    			throw new RuntimeException("模板缺少参数："+item);
+    		}
+    	}
     }
 
 
@@ -265,9 +257,11 @@ public class DySmsHelper {
 
         map.put("msg", content);//短信内容
         map.put("phone", phones);//手机号
-        // map.put("report","true");//是否需要状态报告
-        // map.put("extend","123");//自定义扩展码
+        map.put("report","true");//是否需要状态报告
+        map.put("extend","123");//自定义扩展码
+
         JSONObject js = (JSONObject) JSONObject.toJSON(map);
+
         String reString = sendSmsByPost(sendUrl, js.toString());
         log.info("\n" + reString);
 
@@ -280,6 +274,8 @@ public class DySmsHelper {
         } else {
             return false;
         }
+
+        //return true;
     }
 
     private static List<String> getPhones(String phone) {

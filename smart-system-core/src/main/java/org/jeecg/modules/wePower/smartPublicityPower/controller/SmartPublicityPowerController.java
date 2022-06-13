@@ -3,8 +3,12 @@ package org.jeecg.modules.wePower.smartPublicityPower.controller;
 import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.modules.wePower.smartPublicityParty.entity.SmartPublicityParty;
 import org.jeecg.modules.wePower.smartPublicityPower.entity.SmartPublicityPower;
 import org.jeecg.modules.wePower.smartPublicityPower.service.ISmartPublicityPowerService;
 
@@ -56,6 +60,26 @@ public class SmartPublicityPowerController extends JeecgController<SmartPublicit
 		IPage<SmartPublicityPower> pageList = smartPublicityPowerService.page(page, queryWrapper);
 		return Result.OK(pageList);
 	}
+
+	 @AutoLog(value = "农村集体经济组织-分页列表查询")
+	 @ApiOperation(value="农村集体经济组织-分页列表查询", notes="农村集体经济组织-分页列表查询")
+	 @GetMapping(value = "/listAdmin")
+	 public Result<?> queryPageListAdmin(SmartPublicityPower smartPublicityPower,
+										 @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+										 @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+										 HttpServletRequest req) {
+
+		 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		 String orgCode = sysUser.getOrgCode();
+		 if ("".equals(orgCode)) {
+			 return Result.error("本用户没有操作权限！");
+		 }
+		 QueryWrapper<SmartPublicityPower> queryWrapper = QueryGenerator.initQueryWrapper(smartPublicityPower, req.getParameterMap());
+		 queryWrapper.eq("sys_org_code", orgCode);
+		 Page<SmartPublicityPower> page = new Page<SmartPublicityPower>(pageNo, pageSize);
+		 IPage<SmartPublicityPower> pageList = smartPublicityPowerService.page(page, queryWrapper);
+		 return Result.OK(pageList);
+	 }
 	
 	/**
 	 *   添加

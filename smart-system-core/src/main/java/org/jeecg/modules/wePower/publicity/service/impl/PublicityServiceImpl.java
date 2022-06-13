@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author sike
- * @description 针对表【smart_create_advice】的数据库操作Service实现
+ * @description 信息公示查询
  * @createDate 2021-12-24 17:17:53
  */
 @Slf4j
@@ -28,12 +28,11 @@ public class PublicityServiceImpl extends ServiceImpl<PublicityMapper, Publicity
     @Autowired
     private ISysBaseAPI sysBaseAPI;
 
-
     @Override
     public PublicityQuery getQuery(){
         PublicityQuery publicityQuery = new PublicityQuery();
         // 获取区域
-        List<PublicityCommon> locationQueryList = getLocationQuery("A13A04");
+        List<PublicityCommon> locationQueryList = getLocationQuery("A02");
         PublicityCommon location = new PublicityCommon();
         location.setValue("0");
         location.setLabel("不限");
@@ -60,6 +59,7 @@ public class PublicityServiceImpl extends ServiceImpl<PublicityMapper, Publicity
         typeList.add("惠民补贴");
         typeList.add("项目管理");
         typeList.add("资产资源");
+        typeList.add("财务公开");
 //        typeList.add("政策法规");
 //        typeList.add("举报投诉");
         List<PublicityCommon> typeQueryList = new ArrayList<>();
@@ -107,6 +107,9 @@ public class PublicityServiceImpl extends ServiceImpl<PublicityMapper, Publicity
         List<PublicityCommon> locationQueryList = new ArrayList<>();
         sysBaseAPI.getChildrenDepart(orgCode).forEach((item) -> {
             PublicityCommon location = new PublicityCommon();
+            if(!item.getDepartType().equals("乡镇")){
+                return;
+            }
             location.setLabel(item.getDepartName());
             location.setValue(item.getId());
             location.setChildren(getLocationQuery(item.getOrgCode()));

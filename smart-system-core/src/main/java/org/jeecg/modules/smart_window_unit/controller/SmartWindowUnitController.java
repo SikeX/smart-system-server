@@ -111,25 +111,34 @@ public class SmartWindowUnitController<ISysDepartService> extends JeecgControlle
 //		String windowUnitPid = smartWindowUnitService.getById(departName).getPid();
 //		sysBaseAPI.getParentDepartId()
 		// 1. 根据ID生成二维码，并存储到本地
-		String content = "http://47.99.39.59:3000/SmartEvaluate/modules/SmartEvaluateForm?exeDept="+departName+"&windowsName="+smartWindowUnit.getName()+"&personName=大厅";//exeDept主管部门名称，windowsName窗口名称，personName具体被举报人名，可删除留空判断
-		BaseResponse response=new BaseResponse(StatusCode.Success);
+		//String content = "http://47.99.39.59:3000/SmartEvaluate/modules/SmartEvaluateForm?exeDept="+departName+"&windowsName="+smartWindowUnit.getName()+"&personName=大厅";//exeDept主管部门名称，windowsName窗口名称，personName具体被举报人名，可删除留空判断
+//		BaseResponse response=new BaseResponse(StatusCode.Success);
 		try {
 			final String fileName=LOCALDATEFORMAT.get().format(new Date());
-			QRCodeUtil.createCodeToFile(content,new File(RootPath),fileName+FileFormat);
+			//QRCodeUtil.createCodeToFile(content,new File(RootPath),fileName+FileFormat);
 
 
 			log.info(fileName);
 			// 2. 将存储路径保存到 smartWindowsUnit
-			smartWindowUnit.setQrcode("windows/"+fileName+FileFormat);
+			//smartWindowUnit.setQrcode("windows/"+fileName+FileFormat);
 			smartWindowUnitService.save(smartWindowUnit);
 			// 3. 调用  edit() 更新数据
 			edit(smartWindowUnit);
 
+			String windowsId = smartWindowUnit.getId();
+			System.out.println("##################################");
+			String content = "https://www.dlqjjw.com/SmartEvaluate/modules/SmartEvaluateForm?" +
+												"exeDeptId="+pid+"&exeDept="+departName+
+												"&windowsId="+windowsId+"&windowsName="+smartWindowUnit.getName()+
+												"&personId="+""+"&personName=大厅";//exeDept主管部门名称，windowsName窗口名称，personName具体被举报人名，可删除留空判断
+			QRCodeUtil.createCodeToFile(content,new File(RootPath),fileName+FileFormat);
+			smartWindowUnit.setQrcode("windows/"+fileName+FileFormat);
+			smartWindowUnitService.updateById(smartWindowUnit);
+
 			return Result.OK("添加成功！");
 		}catch (Exception e){
-			response=new BaseResponse(StatusCode.Fail.getCode(),e.getMessage());
+			return Result.error(e.getMessage());
 		}
-		return response;
 	}
 	
 	/**

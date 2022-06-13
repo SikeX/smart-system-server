@@ -59,6 +59,9 @@ public interface ISysBaseAPI extends CommonAPI {
      */
     LoginUser getUserById(String id);
 
+    LoginUser getUserByIdNumber(String idNumber);
+
+
     /**
      * 7通过用户账号查询角色集合
      * @param username
@@ -89,7 +92,7 @@ public interface ISysBaseAPI extends CommonAPI {
      * 12查询所有分类字典
      * @return
      */
-    public List<SysCategoryModel> queryAllDSysCategory();
+    public List<SysCategoryModel> queryAllSysCategory();
 
 
     /**
@@ -313,6 +316,19 @@ public interface ISysBaseAPI extends CommonAPI {
     List<DictModel> getDictItems(String dictCode);
 
     /**
+     * 根据字典code查询表中字典项
+     * @author sike
+     * @Date 2022-03-05
+     *
+     * @param table
+     * @param text
+     * @param code
+     * @param key
+     * @return
+     */
+    String translateDictFromTable(String table, String text, String code, String key);
+
+    /**
      *  根据多个字典code查询多个字典项
      * @param dictCodeList
      * @return key = dictCode ； value=对应的字典项
@@ -372,5 +388,25 @@ public interface ISysBaseAPI extends CommonAPI {
      * @return
      */
     public List<SysDepartModel> getChildrenDepart(String orgCode);
+
+    /**
+     * 2022-02-26
+     * 通过干部人员类型发送通知
+     * @param peopleType
+     * @return
+     */
+    public List<JSONObject> getUserIdsByTypes(String peopleType);
+
+
+    /**
+     * 2022-03-31 @author sike
+     * 通过
+     *
+     * @param locationId
+     * @return
+     */
+    public VillageInfo getVillageInfoByDepartId(String locationId);
+
+    public List<VillageRelationModel> getVillageRelation(String idnumber, String label);
 
 }

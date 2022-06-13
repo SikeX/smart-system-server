@@ -1,8 +1,6 @@
 package org.jeecg.modules.smartPremaritalFiling.controller;
 
-import java.io.UnsupportedEncodingException;
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -10,18 +8,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cn.hutool.core.util.ObjectUtil;
+import org.jeecg.common.api.CommonAPI;
 import org.jeecg.common.system.api.ISysBaseAPI;
+import org.jeecg.common.system.util.JwtUtil;
 import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
-import org.jeecg.modules.smartCreateAdvice.entity.SmartCreateAdvice;
-import org.jeecg.modules.smartCreateAdvice.entity.SmartCreateAdviceAnnex;
-import org.jeecg.modules.smartCreateAdvice.vo.SmartCreateAdvicePage;
-import org.jeecg.modules.smartJob.entity.SmartJob;
-import org.jeecg.modules.smartJob.service.ISmartJobService;
-import org.jeecg.modules.smartJob.service.imp.SmartJobServiceImpl;
-import org.jeecg.modules.smartJob.util.LoopTask;
 import org.jeecg.modules.smartPostMarriage.service.ISmartPostMarriageReportService;
+import org.jeecg.modules.smartExportWord.util.WordUtils;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
 import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
@@ -49,7 +43,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.jeecg.common.aspect.annotation.AutoLog;
@@ -499,5 +492,46 @@ public class SmartPremaritalFilingController {
             }
             return Result.OK("文件导入失败！");
         }
+
+    @GetMapping(value = "/exportWord")
+    public void test01(@RequestParam(name = "ids", required = true) String ids, HttpServletResponse response, HttpServletRequest request) {
+//        ids = "1476047132190715905";
+
+        //获取需要的数据
+        List<String> idsList = Arrays.asList(ids.split(","));
+        List<SmartPremaritalFiling> smartPremaritalFilings = smartPremaritalFilingService.listByIds(idsList);
+
+        //存放数据map
+        List<Map<String, Object>> dataList = new ArrayList<>();
+        //存放文件名
+        List<String> fileNamesList = new ArrayList<>();
+        for (int i = 0; i < smartPremaritalFilings.size(); i++) {
+            //数据完善
+            if (smartPremaritalFilings.get(i).getPeopleSex() != null && smartPremaritalFilings.get(i).getPeopleSex().equals("2")) {
+                smartPremaritalFilings.get(i).setPeopleSex("女");
+            } else if (smartPremaritalFilings.get(i).getPeopleSex() != null && smartPremaritalFilings.get(i).getPeopleSex().equals("1")) {
+                smartPremaritalFilings.get(i).setPeopleSex("男");
+            }
+
+            //部门名称
+            List<String> departids = new ArrayList<>();
+            departids.add(smartPremaritalFilings.get(i).getDepartId());
+            Map<String, String> departNames = commonService.getDepNamesByIds(departids);
+            smartPremaritalFilings.get(i).setDepartId(departNames.get(smartPremaritalFilings.get(i).getDepartId()));
+
+            //设置数据
+            Map<String, Object> dataMap = new HashMap<>();
+            dataMap.put("obj", smartPremaritalFilings.get(i));
+            dataList.add(dataMap);
+
+            //文件名，注意于数据对应
+            String fileName = smartPremaritalFilings.get(i).getPeopleName();
+            fileNamesList.add(fileName);
+        }
+
+        //设置模板
+        String ftlTemplateName = "/templates/SmartPremaritalFiling.ftl";
+        WordUtils.preExportWordBatch(dataList, fileNamesList, ftlTemplateName, response, request);
+    }
 
     }

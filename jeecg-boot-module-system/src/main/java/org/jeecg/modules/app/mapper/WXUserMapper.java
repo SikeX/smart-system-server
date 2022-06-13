@@ -25,13 +25,13 @@ public interface WXUserMapper {
     @Select("SELECT * FROM tb_wx_user WHERE wx_session_key = #{sessionKey}")
     WXUser queryBySessionKey(String sessionKey);
 
-    @Update("UPDATE tb_wx_user SET phone = #{arg1} where id = #{arg0}")
+    @Update("UPDATE tb_wx_user SET phone = #{purePhoneNumber} where id = #{id}")
     int updatePhoneById(int id, String purePhoneNumber);
 
-    @Update("UPDATE tb_wx_user SET sys_user_id = #{arg1} where id = #{arg0}")
+    @Update("UPDATE tb_wx_user SET sys_user_id = #{sysUserId} where id = #{id}")
     int updateWxUserSysUserIdById(int id, String sysUserId);
 
-    @Update("UPDATE tb_wx_user SET sys_user_id = #{arg1}, mtime = #{arg2} " +
-            "where id = #{arg0}")
+    @Update("UPDATE tb_wx_user SET sys_user_id = #{sysUserId}, mtime = #{mtime} " +
+            "where id = #{id}")
     int updateSysUserIdById(int id, String sysUserId, int mtime);
 }

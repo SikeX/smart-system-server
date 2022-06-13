@@ -219,4 +219,6 @@ public class SmartPremaritalFiling implements Serializable {
     @Excel(name = "附件", width = 15)
     @ApiModelProperty(value = "附件")
     private java.lang.String files;
+
+    private java.lang.String isReport;
 }

@@ -23,7 +23,6 @@ import net.sf.jsqlparser.expression.LongValue;
  */
 @Configuration
 @MapperScan(value={"org.jeecg.modules.**.mapper*"})
-//"org.jeecg.common.util.smartSentMsg.mapper"
 public class MybatisPlusSaasConfig {
     /**
      * tenant_id 字段名
@@ -36,6 +35,11 @@ public class MybatisPlusSaasConfig {
 
     static {
         tenantTable.add("demo");
+
+//        //角色、菜单、部门
+//        tenantTable.add("sys_role");
+//        tenantTable.add("sys_permission");
+//        tenantTable.add("sys_depart");
     }
 
 

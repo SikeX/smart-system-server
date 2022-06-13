@@ -187,7 +187,7 @@ public class SysDepartController {
 	 * @param departId 根据departId查
 	 * @param orgCode  根据orgCode查，departId和orgCode必须有一个不为空
 	 */
-	@GetMapping("/queryAllParentId")
+	@GetMapping("/tqueryAllParenId")
 	public Result queryParentIds(
 			@RequestParam(name = "departId", required = false) String departId,
 			@RequestParam(name = "orgCode", required = false) String orgCode
@@ -250,7 +250,11 @@ public class SysDepartController {
 		SysDepart sysDepartEntity = sysDepartService.getById(sysDepart.getId());
 		if (sysDepartEntity == null) {
 			result.error500("未找到对应实体");
-		} else {
+		} else if(sysDepart.getBusinessParentId()!=null && sysDepartEntity.getId().equals(sysDepart.getBusinessParentId())){
+			result.error500("上级部门不可选择本部门");
+		} else if(sysDepart.getParentId()!=null && sysDepartEntity.getId().equals(sysDepart.getParentId())){
+			result.error500("上级业务部门不可选择本部门");
+		}else {
 			boolean ok = sysDepartService.updateDepartDataById(sysDepart, username);
 			// TODO 返回false说明什么？
 			if (ok) {

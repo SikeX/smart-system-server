@@ -24,13 +24,14 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @Data
 @ApiModel(value="smart_triple_importance_one_greatnessPage对象", description="三重一大表")
-public class SmartTripleImportanceOneGreatnessPage implements Serializable {
+public class SmartTripleImportanceOneGreatnessPage {
 
 	/**主键*/
 	@ApiModelProperty(value = "主键")
     private java.lang.String id;
 	/**单位*/
-	@Excel(name = "单位", width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
+	@Excel(name = "单位", width = 15)
+
 	@ApiModelProperty(value = "单位")
     private java.lang.String documentid;
 	/**名称*/
@@ -108,11 +109,15 @@ public class SmartTripleImportanceOneGreatnessPage implements Serializable {
 	@ApiModelProperty(value = "删除状态（0正常，1已删除）")
     private java.lang.Integer delFlag;
 
+	/**上传附件*/
+	@ApiModelProperty(value = "上传附件")
+	private java.lang.String files;
+
 	@ExcelCollection(name="三重一大参会人员表")
 	@ApiModelProperty(value = "三重一大参会人员表")
 	private List<SmartTripleImportanceOneGreatnessPacca> smartTripleImportanceOneGreatnessPaccaList;
-	@ExcelCollection(name="三重一大附件表")
+	/*@ExcelCollection(name="三重一大附件表")
 	@ApiModelProperty(value = "三重一大附件表")
-	private List<SmartTripleImportanceOneGreatnessDescription> smartTripleImportanceOneGreatnessDescriptionList;
+	private List<SmartTripleImportanceOneGreatnessDescription> smartTripleImportanceOneGreatnessDescriptionList;*/
 
 }

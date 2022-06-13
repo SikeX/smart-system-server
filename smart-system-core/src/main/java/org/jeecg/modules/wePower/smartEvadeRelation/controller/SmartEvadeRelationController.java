@@ -52,6 +52,7 @@ public class SmartEvadeRelationController extends JeecgController<SmartEvadeRela
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
 		QueryWrapper<SmartEvadeRelation> queryWrapper = QueryGenerator.initQueryWrapper(smartEvadeRelation, req.getParameterMap());
+		queryWrapper.isNotNull("name").isNotNull("host_name");
 		Page<SmartEvadeRelation> page = new Page<SmartEvadeRelation>(pageNo, pageSize);
 		IPage<SmartEvadeRelation> pageList = smartEvadeRelationService.page(page, queryWrapper);
 		return Result.OK(pageList);

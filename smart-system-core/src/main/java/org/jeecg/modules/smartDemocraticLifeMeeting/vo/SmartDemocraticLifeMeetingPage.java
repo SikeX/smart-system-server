@@ -1,10 +1,8 @@
 package org.jeecg.modules.smartDemocraticLifeMeeting.vo;
 
-import java.io.Serializable;
 import java.util.List;
 import org.jeecg.modules.smartDemocraticLifeMeeting.entity.SmartDemocraticLifeMeeting;
 import org.jeecg.modules.smartDemocraticLifeMeeting.entity.SmartDemocraticLifePeople;
-import org.jeecg.modules.smartDemocraticLifeMeeting.entity.SmartDemocraticLifeEnclosure;
 import lombok.Data;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.jeecgframework.poi.excel.annotation.ExcelEntity;
@@ -19,18 +17,18 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 民主生活会表
  * @Author: jeecg-boot
- * @Date:   2021-11-17
+ * @Date:   2022-02-26
  * @Version: V1.0
  */
 @Data
 @ApiModel(value="smart_democratic_life_meetingPage对象", description="民主生活会表")
-public class SmartDemocraticLifeMeetingPage implements Serializable {
+public class SmartDemocraticLifeMeetingPage {
 
 	/**主键*/
 	@ApiModelProperty(value = "主键")
     private java.lang.String id;
 	/**单位*/
-	@Excel(name="单位",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
+	@Excel(name = "单位", width = 15)
 	@ApiModelProperty(value = "单位")
     private java.lang.String departId;
 	/**会议名称*/
@@ -90,19 +88,24 @@ public class SmartDemocraticLifeMeetingPage implements Serializable {
 	@ApiModelProperty(value = "创建时间")
     private java.util.Date createTime;
 	/**删除状态（0，正常，1已删除）*/
-
+	@Excel(name = "删除状态（0，正常，1已删除）", width = 15)
 	@ApiModelProperty(value = "删除状态（0，正常，1已删除）")
     private java.lang.Integer delFlag;
 	/**审核状态*/
 	@Excel(name = "审核状态", width = 15)
 	@ApiModelProperty(value = "审核状态")
     private java.lang.String verifyStatus;
+	/**附件说明*/
+	@Excel(name = "附件说明", width = 15)
+	@ApiModelProperty(value = "附件说明")
+    private java.lang.String explanation;
+	/**附件文件*/
+	@Excel(name = "附件文件", width = 15)
+	@ApiModelProperty(value = "附件文件")
+    private java.lang.String path;
 
 	@ExcelCollection(name="民主生活参会人员表")
 	@ApiModelProperty(value = "民主生活参会人员表")
 	private List<SmartDemocraticLifePeople> smartDemocraticLifePeopleList;
-	@ExcelCollection(name="民主生活会附件表")
-	@ApiModelProperty(value = "民主生活会附件表")
-	private List<SmartDemocraticLifeEnclosure> smartDemocraticLifeEnclosureList;
 
 }

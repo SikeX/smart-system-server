@@ -34,12 +34,13 @@ public class SmartVillageLead implements Serializable {
     @ApiModelProperty(value = "主键")
     private java.lang.String id;
 	/**人员选择*/
-	@Excel(name = "人员选择", width = 15, dictTable = "smart_village_home", dicText = "home_surname", dicCode = "idnumber")
-	@Dict(dictTable = "smart_village_home", dicText = "home_surname", dicCode = "idnumber")
+	@Excel(name = "人员选择", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "idnumber")
+	@Dict(dictTable = "sys_user", dicText = "realname", dicCode = "idnumber")
     @ApiModelProperty(value = "人员选择")
     private java.lang.String people;
 	/**职务*/
 	@Excel(name = "职务", width = 15)
+    @Dict(dicCode = "lead_job")
     @ApiModelProperty(value = "职务")
     private java.lang.String job;
 	/**照片*/
@@ -81,5 +82,18 @@ public class SmartVillageLead implements Serializable {
 	/**文件*/
 	@Excel(name = "文件", width = 15)
     @ApiModelProperty(value = "文件")
-    private java.lang.String file;
+    private java.lang.String files;
+
+    /**姓名*/
+    @Excel(name = "姓名", width = 15)
+    @ApiModelProperty(value = "姓名")
+    private java.lang.String name;
+
+    private java.lang.String faceToken;
+
+    @Dict(dicCode = "lead_job")
+    @Excel(name = "人员类型", width = 15)
+    @ApiModelProperty(value = "人员类型")
+    private java.lang.String peopleType;
+
 }

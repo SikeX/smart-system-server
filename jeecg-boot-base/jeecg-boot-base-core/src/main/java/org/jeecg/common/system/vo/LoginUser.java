@@ -78,7 +78,7 @@ public class LoginUser {
 	 * 状态(1：正常 2：冻结 ）
 	 */
 	private Integer status;
-
+	
 	private Integer delFlag;
 	/**
      * 同步工作流引擎1同步0不同步
@@ -124,6 +124,10 @@ public class LoginUser {
 	 * 上次验证手机号码时间
 	 */
 	private Date lastVerifyTime;
+
+	private String idnumber;
+
+	private String homeRole;
 
 	@Override
 	public String toString() {
