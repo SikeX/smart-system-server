@@ -77,7 +77,13 @@ public interface CommonConstant {
     public static final String PREFIX_USER_TOKEN  = "prefix_user_token_";
     /** Token缓存时间：3600秒即一小时 */
     public static final int  TOKEN_EXPIRE_TIME  = 3600;
-    
+
+    /** 登录二维码 */
+    public static final String  LOGIN_QRCODE_PRE  = "QRCODELOGIN:";
+    public static final String  LOGIN_QRCODE  = "LQ:";
+    /** 登录二维码token */
+    public static final String  LOGIN_QRCODE_TOKEN  = "LQT:";
+
 
     /**
      *  0：一级菜单
@@ -91,11 +97,12 @@ public interface CommonConstant {
      *  2：按钮权限
      */
     public static final Integer MENU_TYPE_2  = 2;
-    
+
     /**通告对象类型（USER:指定用户，ALL:全体用户）*/
     public static final String MSG_TYPE_UESR  = "USER";
     public static final String MSG_TYPE_ALL  = "ALL";
-    
+    public static final String MSG_TYPE_DEPART = "DEPART";
+
     /**发布状态（0未发布，1已发布，2已撤销）*/
     public static final String NO_SEND  = "0";
     public static final String HAS_SEND  = "1";
@@ -134,7 +141,8 @@ public interface CommonConstant {
      */
     public static final String MSG_CATEGORY_1 = "1";
     public static final String MSG_CATEGORY_2 = "2";
-    
+    public static final String MSG_CATEGORY_3 = "3";
+
     /**
      * 是否配置菜单的数据权限 1是0否
      */
@@ -229,6 +237,13 @@ public interface CommonConstant {
     public static final String SQL_INDEX_UNIQ_SYS_USER_WORK_NO = "uniq_sys_user_work_no";
     /** sys_user 表 phone 唯一键索引 */
     public static final String SQL_INDEX_UNIQ_SYS_USER_PHONE = "uniq_sys_user_phone";
+
+    /** sys_user 表 idnumber 唯一键索引 */
+    public static final String SQL_INDEX_UNIQ_SYS_IDNUMBER = "sys_user_idnumber_uindex";
+
+    /** 达梦数据库升提示。违反表[SYS_USER]唯一性约束 */
+    public static final String SQL_INDEX_UNIQ_SYS_USER = "唯一性约束";
+
     /** sys_user 表 email 唯一键索引 */
     public static final String SQL_INDEX_UNIQ_SYS_USER_EMAIL = "uniq_sys_user_email";
     /** sys_quartz_job 表 job_class_name 唯一键索引 */
@@ -239,6 +254,8 @@ public interface CommonConstant {
     public static final String SQL_INDEX_UNIQ_SYS_ROLE_CODE = "uniq_sys_role_role_code";
     /** sys_depart 表 code 唯一键索引 */
     public static final String SQL_INDEX_UNIQ_DEPART_ORG_CODE = "uniq_depart_org_code";
+    /** sys_category 表 code 唯一键索引 */
+    public static final String SQL_INDEX_UNIQ_CATEGORY_CODE = "idx_sc_code";
     /**
      * 在线聊天 是否为默认分组
      */
@@ -292,6 +309,7 @@ public interface CommonConstant {
     public final static String X_ACCESS_TOKEN = "X-Access-Token";
     public final static String X_SIGN = "X-Sign";
     public final static String X_TIMESTAMP = "X-TIMESTAMP";
+    public final static String TOKEN_IS_INVALID_MSG = "Token失效，请重新登录!";
 
     /**
      * 多租户 请求头
@@ -323,5 +341,39 @@ public interface CommonConstant {
     String ANNOUNCEMENT_SEND_STATUS_1 = "1";
     /** 系统通告消息状态：2=已撤销 */
     String ANNOUNCEMENT_SEND_STATUS_2 = "2";
+
+    /**ONLINE 报表权限用 从request中获取地址栏后的参数*/
+    String ONL_REP_URL_PARAM_STR="onlRepUrlParamStr";
+
+    /**POST请求*/
+    String HTTP_POST = "POST";
+
+    /**PUT请求*/
+    String HTTP_PUT = "PUT";
+
+    /**PATCH请求*/
+    String HTTP_PATCH = "PATCH";
+
+    /**未知的*/
+    String UNKNOWN = "unknown";
+
+    /**字符串http*/
+    String STR_HTTP = "http";
+
+    /**String 类型的空值*/
+    String STRING_NULL = "null";
+
+    /**java.util.Date 包*/
+    String JAVA_UTIL_DATE = "java.util.Date";
+
+    /**.do*/
+    String SPOT_DO = ".do";
+
+
+    /**前端vue版本标识*/
+    String VERSION="X-Version";
+
+    /**前端vue版本*/
+    String VERSION_VUE3="vue3";
 
 }

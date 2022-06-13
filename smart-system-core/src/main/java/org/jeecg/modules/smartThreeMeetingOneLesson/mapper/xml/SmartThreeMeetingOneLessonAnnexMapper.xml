@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.smartThreeMeetingOneLesson.mapper.SmartThreeMeetingOneLessonAnnexMapper">
+
+	<delete id="deleteByMainId" parameterType="java.lang.String">
+		DELETE
+		FROM  smart_three_meeting_one_lesson_annex
+		WHERE
+			parent_table_id = #{mainId} 	</delete>
+
+	<select id="selectByMainId" parameterType="java.lang.String" resultType="org.jeecg.modules.smartThreeMeetingOneLesson.entity.SmartThreeMeetingOneLessonAnnex">
+		SELECT *
+		FROM  smart_three_meeting_one_lesson_annex
+		WHERE
+			parent_table_id = #{mainId} 	</select>
+</mapper>

@@ -57,6 +57,11 @@ public class SysAnnouncement implements Serializable {
     @Excel(name = "发布人", width = 15)
     private java.lang.String sender;
     /**
+     * 发布部门
+     */
+    @Excel(name = "发布部门", width = 15)
+    private java.lang.String senderDepart;
+    /**
      * 优先级（L低，M中，H高）
      */
     @Excel(name = "优先级", width = 15, dicCode = "priority")
@@ -64,7 +69,7 @@ public class SysAnnouncement implements Serializable {
     private java.lang.String priority;
     
     /**
-     * 消息类型1:通知公告2:系统消息
+     * 消息类型1:通知公告2:系统消息3:任务下发
      */
     @Excel(name = "消息类型", width = 15, dicCode = "msg_category")
     @Dict(dicCode = "msg_category")
@@ -147,4 +152,14 @@ public class SysAnnouncement implements Serializable {
      * 钉钉task_id，用于撤回消息
      */
     private java.lang.String dtTaskId;
+
+    private String departIds;
+
+    private String fileList;
+
+    private Integer sendCount;
+
+    private Integer readCount;
+
+    private String peopleType;
 }

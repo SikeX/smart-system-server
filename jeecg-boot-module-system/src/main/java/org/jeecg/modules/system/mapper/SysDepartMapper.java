@@ -3,8 +3,6 @@ package org.jeecg.modules.system.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Select;
 import org.jeecg.modules.system.entity.SysDepart;
-import org.jeecg.modules.system.model.SysDepartTreeModel;
-import org.jeecg.modules.system.model.TreeModel;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
@@ -73,4 +71,37 @@ public interface SysDepartMapper extends BaseMapper<SysDepart> {
 	 */
 	@Select("SELECT * FROM sys_depart where del_flag ='0' AND parent_id = #{parentId,jdbcType=VARCHAR}")
 	List<SysDepart> queryDeptByPid(@Param("parentId")String parentId);
+	/**
+	 * 根据id下级业务部门
+	 * @param deptId
+	 * @return
+	 */
+	@Select("SELECT * FROM sys_depart where del_flag ='0' AND work_parent_id = #{deptId,jdbcType=VARCHAR}")
+	List<SysDepart> queryWorkChildrenDeparts(@Param("deptId")String deptId);
+	/**
+	 * 根据部门id获取部门信息
+	 * @param deptId
+	 * @return
+	 */
+	@Select("SELECT * FROM sys_depart where del_flag ='0' AND id = #{deptId,jdbcType=VARCHAR}")
+	SysDepart queryDeptByDepartId(@Param("deptId")String deptId);
+	/**
+	 * 根据用户id获取用户所在部门
+	 * @param userId
+	 * @return
+	 */
+	SysDepart queryCurrentUserDepart(@Param("userId")String userId);
+
+	@Select("SELECT * FROM sys_depart d where del_flag = '0' and depart_name REGEXP '.*局'" )
+    List<SysDepart> getAllBusDepart();
+
+	@Select("SELECT * FROM sys_depart where del_flag = '0' and org_code REGEXP concat('^',#{orgCode}, '.{3}$') ")
+	List<SysDepart> getChildrenDepart(@Param("orgCode") String orgCode);
+
+	/**
+	 * 根据OrgCod查询所属公司信息
+	 * @param name
+	 * @return
+	 */
+	String getZhenIdByName(@Param("name")String name);
 }

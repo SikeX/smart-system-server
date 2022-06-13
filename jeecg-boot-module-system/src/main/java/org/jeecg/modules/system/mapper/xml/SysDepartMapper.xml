@@ -51,4 +51,20 @@
     <select id="queryCompByOrgCode" resultType="org.jeecg.modules.system.entity.SysDepart">
 		select * from sys_depart where del_flag = '0' and org_category='1' and org_code= #{orgCode,jdbcType=VARCHAR}
 	</select>
+
+    <!-- 根据user_id查询所在部门信息 -->
+    <select id="queryCurrentUserDepart" parameterType="String" resultType="org.jeecg.modules.system.entity.SysDepart">
+        SELECT *
+        FROM sys_depart
+        WHERE id IN (
+            SELECT dep_id
+            FROM sys_user_depart
+            WHERE user_id = #{userId,jdbcType=VARCHAR}
+        )
+    </select>
+
+    <!-- 根据OrgCod查询公司信息 -->
+    <select id="getZhenIdByName" resultType="String">
+        select id from sys_depart where del_flag = '0' and  depart_name= #{name}
+    </select>
 </mapper>

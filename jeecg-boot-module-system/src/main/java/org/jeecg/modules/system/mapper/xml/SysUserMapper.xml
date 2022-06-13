@@ -7,6 +7,16 @@
 		select * from  sys_user  where username = #{username} and del_flag = 0
 	</select>
 
+ 	<!-- 根据用户名查询用户的多种角色 -->
+	<select id="getRolesByName" resultType="String">
+		select role_id from sys_user_role
+		where user_id in (
+		select id from sys_user
+		where username = #{username} and del_flag = 0
+		)
+
+	</select>
+
 	<!-- 根据部门Id查询 -->
 	<select id="getUserByDepId" resultType="org.jeecg.modules.system.entity.SysUser">
 		select * from sys_user where del_flag = 0 and id in (select user_id from sys_user_depart where dep_id=#{departId})
@@ -161,5 +171,41 @@
 		<if test="username!=null and username!=''">
 			and username != #{username}
 		</if>
+	</select>
+
+	<!-- 根据id查询 -->
+	<select id="queryById" resultType="org.jeecg.modules.system.entity.SysUser">
+		select * from  sys_user  where id = #{id} and del_flag = 0
+	</select>
+
+	<!-- 根据id查询 -->
+	<select id="queryByIdnumber" resultType="org.jeecg.modules.system.entity.SysUser">
+		select * from  sys_user  where idnumber = #{idnumber} and del_flag = 0
+	</select>
+
+	<!-- 根据homeCode查询家庭成员 -->
+	<select id="getUserByHomeCode" resultType="org.jeecg.modules.system.entity.SysUser">
+		select * from  sys_user  where home_code = #{homeCode} and del_flag = 0 and home_role = 2
+	</select>
+
+	<!-- 根据homeCode查询家庭成员的家庭关系 -->
+	<select id="getRelationByHomeCode" resultType="Integer">
+		select home_relation from  smart_village_relation  where home_code = #{homeCode} and idnumber = #{idnumber}
+	</select>
+
+	<select id="sendInformation" resultType="org.jeecg.modules.system.vo.UserInfo">
+		select u.org_code as departCode,group_concat(realname) as names
+		from sys_user u
+		where u.del_flag = 0 and year(u.create_time) = year(NOW())
+		  and month(u.create_time) = MONTH(NOW())
+		   or month(u.create_time) = MONTH(date_sub(NOW(),interval 1 month))
+		   or month(u.create_time) = MONTH(date_sub(NOW(),interval 2 month))
+		group by org_code
+	</select>
+	<select id="getLeadersByOrgCode" resultType="String">
+		select username
+		from sys_user
+		where user_identity = 2
+		  and org_code = #{departCode}
 	</select>
 </mapper>

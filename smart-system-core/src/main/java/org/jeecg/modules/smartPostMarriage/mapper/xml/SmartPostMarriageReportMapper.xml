@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.smartPostMarriage.mapper.SmartPostMarriageReportMapper">
+
+    <select id="getDepartIdByOrgCode" resultType="java.lang.String">
+        select id
+        from sys_depart
+        where org_code = #{orgCode}
+    </select>
+    <select id="getChildrenIdByOrgCode" resultType="java.lang.String">
+        select id from sys_depart where org_code like #{orgCode}
+    </select>
+
+    <select id="getByPreId" resultType="org.jeecg.modules.smartPostMarriage.entity.SmartPostMarriageReport">
+        select *
+        from smart_post_marriage_report where pre_id like #{preId} and del_flag != "1"
+    </select>
+
+    <update id="editPreIsReport" parameterType="java.lang.String">
+        update smart_premarital_filing
+        set is_report = '1'
+        where id = #{preId}
+    </update>
+
+    <update id="setPreIsReport" parameterType="java.lang.String">
+        update smart_premarital_filing
+        set is_report = '0'
+        where id = #{preId}
+    </update>
+
+    <update id="setDelFlagByPreId" parameterType="java.lang.String">
+        update smart_post_marriage_report
+        set del_flag = '1'
+        where
+            pre_id = #{preId}
+    </update>
+
+</mapper>

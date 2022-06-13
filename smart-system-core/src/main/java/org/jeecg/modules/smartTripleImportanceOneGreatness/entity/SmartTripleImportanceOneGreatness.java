@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -17,7 +18,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 三重一大表
  * @Author: jeecg-boot
- * @Date:   2021-11-01
+ * @Date:   2021-11-13
  * @Version: V1.0
  */
 @ApiModel(value="smart_triple_importance_one_greatness对象", description="三重一大表")
@@ -30,10 +31,11 @@ public class SmartTripleImportanceOneGreatness implements Serializable {
 	@TableId(type = IdType.ASSIGN_ID)
     @ApiModelProperty(value = "主键")
     private java.lang.String id;
-	/**单位ID*/
-	@Excel(name = "单位ID", width = 15)
-    @ApiModelProperty(value = "单位ID")
-    private java.lang.String docementid;
+	/**单位*/
+	@Excel(name = "单位", width = 15)
+    @Dict(dictTable = "sys_depart",dicText = "depart_name",dicCode = "id")
+    @ApiModelProperty(value = "单位")
+    private java.lang.String documentid;
 	/**名称*/
 	@Excel(name = "名称", width = 15)
     @ApiModelProperty(value = "名称")
@@ -57,19 +59,28 @@ public class SmartTripleImportanceOneGreatness implements Serializable {
 	@Excel(name = "参会人数", width = 15)
     @ApiModelProperty(value = "参会人数")
     private java.lang.Integer meetingNumber;
-	/**参会人员*/
-	@Excel(name = "参会人员", width = 15)
-    @ApiModelProperty(value = "参会人员")
-    private java.lang.String meetingPeople;
-	/**主持人*/
-	@Excel(name = "主持人", width = 15)
+
+    /**主持人*/
+	/*@Excel(name = "主持人", width = 15)*/
+    @Dict(dictTable = "sys_user",dicText = "realname",dicCode = "id")
     @ApiModelProperty(value = "主持人")
     private java.lang.String meetingHoster;
-	/**记录人*/
-	@Excel(name = "记录人", width = 15)
+    /**主持人姓名*/
+    @Excel(name = "主持人姓名", width = 15)
+    @ApiModelProperty(value = "主持人姓名")
+    private java.lang.String meetingHosterName;
+
+    /**记录人*/
+	/*@Excel(name = "记录人", width = 15)*/
+    @Dict(dictTable = "sys_user",dicText = "realname",dicCode = "id")
     @ApiModelProperty(value = "记录人")
     private java.lang.String meetingRecorer;
-	/**会议内容摘要*/
+    /**记录人姓名*/
+    @Excel(name = "记录人姓名", width = 15)
+    @ApiModelProperty(value = "记录人姓名")
+    private java.lang.String meetingRecorerName;
+
+    /**会议内容摘要*/
 	@Excel(name = "会议内容摘要", width = 15)
     @ApiModelProperty(value = "会议内容摘要")
     private java.lang.String meetingAbstract;
@@ -78,13 +89,24 @@ public class SmartTripleImportanceOneGreatness implements Serializable {
     @ApiModelProperty(value = "备注")
     private java.lang.String meetingRemarks;
 	/**创建人*/
-	@Excel(name = "创建人", width = 15)
     @ApiModelProperty(value = "创建人")
-    private java.lang.String creatBy;
+    private java.lang.String createBy;
 	/**创建时间*/
-	@Excel(name = "创建时间", width = 15, format = "yyyy-MM-dd")
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "创建时间")
-    private java.util.Date creatTime;
+    private java.util.Date createTime;
+    //entity实体层
+    /**
+     * 删除状态（0，正常，1已删除）
+     */
+
+    @TableLogic
+    private Integer delFlag;
+
+    @ApiModelProperty(value="审核状态")
+    private java.lang.String verifyStatus;
+    /**上传附件*/
+    @ApiModelProperty(value = "上传附件")
+    private java.lang.String files;
 }

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.smart_reception.mapper.Smart_8DiningMapper">
+
+	<delete id="deleteByMainId" parameterType="java.lang.String">
+		DELETE 
+		FROM  smart_8_dining 
+		WHERE
+			 main_id = #{mainId} 
+	</delete>
+	
+	<select id="selectByMainId" parameterType="java.lang.String" resultType="org.jeecg.modules.smart_reception.entity.Smart_8Dining">
+		SELECT * 
+		FROM  smart_8_dining
+		WHERE
+			 main_id = #{mainId} 
+	</select>
+
+	<select id="sendInformation" resultType="org.jeecg.modules.smart_reception.entity.Smart_8Dining">
+		select * from Smart_8_ining
+		where (num &gt; 10 and ROUND(numr%num) &gt; 1/3 ) or (num &lt; 10 and numb &gt; 3)
+	</select>
+
+	<select id="getUser" resultType="org.jeecg.modules.smartReportingInformation.entity.SysRole">
+		select DISTINCT username from sys_user,sys_role,sys_user_role
+		where (sys_role.role_code="systemAdmin" OR sys_role.role_code="CCDIAdmin")
+		  and sys_user.id=sys_user_role.user_id
+		  and sys_role.id=sys_user_role.role_id
+	</select>
+
+	<select id="getDepartmentIdBymainId" resultType="java.lang.String">
+		select department_id
+		from smart_reception
+		where id = #{mainId}
+	</select>
+
+	<select id="getReceptionDepBymainId" resultType="java.lang.String">
+		select reception_department_id
+		from smart_reception
+		where id = #{mainId}
+	</select>
+
+	<select id="getDepartmentNameById" resultType="java.lang.String">
+		select depart_name
+		from sys_depart
+		where id = #{departmentId}
+	</select>
+
+	<select id="getUserNameById" resultType="java.lang.String">
+		select realname
+		from sys_user
+		where username = #{username}
+	</select>
+
+	<select id="getMainIdById" resultType="java.lang.String" >
+		select main_id
+		from smart_8_dining
+		WHERE
+			id = #{id}
+
+	</select>
+</mapper>

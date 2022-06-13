@@ -29,4 +29,25 @@ public interface SysUserDepartMapper extends BaseMapper<SysUserDepart>{
 	 * @return
 	 */
 	IPage<SysUser> queryDepartUserPageList(Page<SysUser> page, @Param("orgCode") String orgCode, @Param("username") String username, @Param("realname") String realname);
+
+	/**
+	 * 根据部门查询部门用户
+	 * @param page
+	 * @param orgCode
+	 * @param username
+	 * @param realname
+	 * @return
+	 */
+	IPage<SysUser> queryDepartVillagePageList(Page<SysUser> page, @Param("orgCode") String orgCode, @Param("username") String username, @Param("realname") String realname);
+
+	/**
+	 * 真正根据部门ID查询用户信息，不查询子部门用户
+	 * @param page
+	 * @param departId
+	 * @param username
+	 * @param realname
+	 * @return
+	 */
+	IPage<SysUser> queryRealDepartUserPageList(Page<SysUser> page, @Param("departId") String departId, @Param("username") String username, @Param("realname") String realname);
+
 }

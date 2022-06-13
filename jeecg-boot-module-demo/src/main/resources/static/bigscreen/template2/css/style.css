@@ -844,6 +844,7 @@ pre {
     color: white;
     font-size: 0.18rem;
     overflow: hidden;
+/*#wordCloud{width:900px;height:420px;position:absolute;left:3330px;top:1000px;display:inline-block;color:#E1E1E1;font-size:24px;}*/
 }
 
 .settings-box>p {
@@ -1503,6 +1504,9 @@ pre {
     display: none;
 }
 
+/*业务进展图*/
+#businessProgress{width:100%;height:20%;position:absolute;display:inline-block;color:#E1E1E1;font-size:24px;}
+
 @media screen and (max-height: 610px) {
     .right-top {
         height: 49%
@@ -1521,4 +1525,6 @@ pre {
         height: 1.9rem;
         overflow-y: auto;
     }
+
+
 }

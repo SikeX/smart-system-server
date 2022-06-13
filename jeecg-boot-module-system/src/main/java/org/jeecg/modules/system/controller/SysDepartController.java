@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.constant.CacheConstant;
 import org.jeecg.common.constant.CommonConstant;
@@ -98,7 +97,7 @@ public class SysDepartController {
 	 */
 	@RequestMapping(value = "/queryTreeList", method = RequestMethod.GET)
 	public Result<List<SysDepartTreeModel>> queryTreeList() {
-		Result<List<SysDepartTreeModel>> result = new Result<>();
+		Result<List<SysDepartTreeModel>> res = new Result<>();
 		try {
 			// 从内存中读取
 //			List<SysDepartTreeModel> list =FindsDepartsChildrenUtil.getSysDepartTreeList();
@@ -106,11 +105,61 @@ public class SysDepartController {
 //				list = sysDepartService.queryTreeList();
 //			}
 			List<SysDepartTreeModel> list = sysDepartService.queryTreeList();
+//			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//			System.out.println(list);
+			res.setResult(list);
+			res.setSuccess(true);
+		} catch (Exception e) {
+			log.error(e.getMessage(),e);
+		}
+//		System.out.println("业务结构"+res.getResult());
+		return res;
+	}
+
+	/**
+	 * 查询数据 查出所负责部门,并以业务层级树结构数据格式响应给前端
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "/queryFuzeTreeList", method = RequestMethod.GET)
+	public Result<List<SysDepartTreeModel>> queryFuzeTreeList() {
+		Result<List<SysDepartTreeModel>> res = new Result<>();
+		try {
+			// 从内存中读取
+//			List<SysDepartTreeModel> list =FindsDepartsChildrenUtil.getSysDepartTreeList();
+//			if (CollectionUtils.isEmpty(list)) {
+//				list = sysDepartService.queryTreeList();
+//			}
+			List<SysDepartTreeModel> list = sysDepartService.queryFuzeTreeList();
+			res.setResult(list);
+			res.setSuccess(true);
+		} catch (Exception e) {
+			log.error(e.getMessage(),e);
+		}
+		return res;
+	}
+
+	/**
+	 * 查询数据 查出所有部门,并以自然层级树结构数据格式响应给前端
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "/queryNaturalTreeList", method = RequestMethod.GET)
+	public Result<List<SysDepartTreeModel>> queryNaturalTreeList() {
+		Result<List<SysDepartTreeModel>> result = new Result<>();
+		try {
+			// 从内存中读取
+//			List<SysDepartTreeModel> list =FindsDepartsChildrenUtil.getSysDepartTreeList();
+//			if (CollectionUtils.isEmpty(list)) {
+//				list = sysDepartService.queryTreeList();
+//			}
+			List<SysDepartTreeModel> list = sysDepartService.queryNaturalTreeList();
 			result.setResult(list);
 			result.setSuccess(true);
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);
 		}
+		System.out.println("自然结构"+result.getResult());
 		return result;
 	}
 
@@ -138,7 +187,7 @@ public class SysDepartController {
 	 * @param departId 根据departId查
 	 * @param orgCode  根据orgCode查，departId和orgCode必须有一个不为空
 	 */
-	@GetMapping("/queryAllParentId")
+	@GetMapping("/tqueryAllParenId")
 	public Result queryParentIds(
 			@RequestParam(name = "departId", required = false) String departId,
 			@RequestParam(name = "orgCode", required = false) String orgCode
@@ -201,7 +250,11 @@ public class SysDepartController {
 		SysDepart sysDepartEntity = sysDepartService.getById(sysDepart.getId());
 		if (sysDepartEntity == null) {
 			result.error500("未找到对应实体");
-		} else {
+		} else if(sysDepart.getBusinessParentId()!=null && sysDepartEntity.getId().equals(sysDepart.getBusinessParentId())){
+			result.error500("上级部门不可选择本部门");
+		} else if(sysDepart.getParentId()!=null && sysDepartEntity.getId().equals(sysDepart.getParentId())){
+			result.error500("上级业务部门不可选择本部门");
+		}else {
 			boolean ok = sysDepartService.updateDepartDataById(sysDepart, username);
 			// TODO 返回false说明什么？
 			if (ok) {
@@ -298,6 +351,60 @@ public class SysDepartController {
 		}
 		return result;
 	}
+
+	/**
+	 * 查询数据 添加或编辑页面对该方法发起请求,以自然树结构形式加载所有部门的名称,方便用户的操作
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "/queryNaturalIdTree", method = RequestMethod.GET)
+	public Result<List<DepartIdModel>> queryNaturalIdTree() {
+		Result<List<DepartIdModel>> result = new Result<>();
+		try {
+			List<DepartIdModel> list = sysDepartService.queryNaturalDepartIdTreeList();
+			result.setResult(list);
+			result.setSuccess(true);
+		} catch (Exception e) {
+			log.error(e.getMessage(),e);
+		}
+		return result;
+	}
+
+	/**
+	 * 查询数据 添加或编辑页面对该方法发起请求,以业务树结构形式加载管辖范围内部门的名称,方便用户的操作
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "/queryFuzeIdTree", method = RequestMethod.GET)
+	public Result<List<DepartIdModel>> queryFuzeIdTree() {
+		Result<List<DepartIdModel>> result = new Result<>();
+		try {
+			List<DepartIdModel> list = sysDepartService.queryFuzeIdTreeList();
+			result.setResult(list);
+			result.setSuccess(true);
+		} catch (Exception e) {
+			log.error(e.getMessage(),e);
+		}
+		return result;
+	}
+
+	/**
+	 * 查询数据 添加或编辑页面对该方法发起请求,以业务树结构形式加载管辖范围内部门的名称,方便用户的操作
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "/queryVillageIdTree", method = RequestMethod.GET)
+	public Result<List<DepartIdModel>> queryVillageIdTree() {
+		Result<List<DepartIdModel>> result = new Result<>();
+		try {
+			List<DepartIdModel> list = sysDepartService.queryVillageIdTreeList();
+			result.setResult(list);
+			result.setSuccess(true);
+		} catch (Exception e) {
+			log.error(e.getMessage(),e);
+		}
+		return result;
+	}
 	 
 	/**
 	 * <p>
@@ -336,6 +443,7 @@ public class SysDepartController {
     public ModelAndView exportXls(SysDepart sysDepart,HttpServletRequest request) {
         // Step.1 组装查询条件
         QueryWrapper<SysDepart> queryWrapper = QueryGenerator.initQueryWrapper(sysDepart, request.getParameterMap());
+		queryWrapper.eq("del_flag", CommonConstant.DEL_FLAG_0.toString());
         //Step.2 AutoPoi 导出Excel
         ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
         List<SysDepart> pageList = sysDepartService.list(queryWrapper);

@@ -31,27 +31,32 @@ public class SysDepart implements Serializable {
 	private String id;
 	/**父机构ID*/
 	private String parentId;
+	/**自然父机构ID*/
+	private String businessParentId;
 	/**机构/部门名称*/
 	@Excel(name="机构/部门名称",width=15)
 	private String departName;
+	/**机构/部门类型*/
+	@Excel(name="机构/部门类型",width=15)
+	private String departType;
 	/**英文名*/
-	@Excel(name="英文名",width=15)
+//	@Excel(name="英文名",width=15)
 	private String departNameEn;
 	/**缩写*/
 	private String departNameAbbr;
 	/**排序*/
-	@Excel(name="排序",width=15)
+//	@Excel(name="排序",width=15)
 	private Integer departOrder;
 	/**描述*/
-	@Excel(name="描述",width=15)
+//	@Excel(name="描述",width=15)
 	private String description;
 	/**机构类别 1公司，2组织机构，2岗位*/
-	@Excel(name="机构类别",width=15,dicCode="org_category")
+//	@Excel(name="机构类别",width=15,dicCode="org_category")
 	private String orgCategory;
 	/**机构类型*/
 	private String orgType;
 	/**机构编码*/
-	@Excel(name="机构编码",width=15)
+//	@Excel(name="机构编码",width=15)
 	private String orgCode;
 	/**手机号*/
 	@Excel(name="手机号",width=15)
@@ -103,12 +108,14 @@ public class SysDepart implements Serializable {
         SysDepart depart = (SysDepart) o;
         return Objects.equals(id, depart.id) &&
                 Objects.equals(parentId, depart.parentId) &&
+				Objects.equals(businessParentId, depart.businessParentId) &&
                 Objects.equals(departName, depart.departName) &&
                 Objects.equals(departNameEn, depart.departNameEn) &&
                 Objects.equals(departNameAbbr, depart.departNameAbbr) &&
                 Objects.equals(departOrder, depart.departOrder) &&
                 Objects.equals(description, depart.description) &&
                 Objects.equals(orgCategory, depart.orgCategory) &&
+				Objects.equals(departType, depart.departType) &&
                 Objects.equals(orgType, depart.orgType) &&
                 Objects.equals(orgCode, depart.orgCode) &&
                 Objects.equals(mobile, depart.mobile) &&
@@ -129,7 +136,7 @@ public class SysDepart implements Serializable {
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), id, parentId, departName, 
+        return Objects.hash(super.hashCode(), id, parentId,businessParentId,departName,
         		departNameEn, departNameAbbr, departOrder, description,orgCategory, 
         		orgType, orgCode, mobile, fax, address, memo, status, 
         		delFlag, createBy, createTime, updateBy, updateTime);

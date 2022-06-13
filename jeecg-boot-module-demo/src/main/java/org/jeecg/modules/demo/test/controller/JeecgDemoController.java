@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.HashMap;
 
 /**
  * @Description: 单表示例
@@ -282,4 +283,5 @@ public class JeecgDemoController extends JeecgController<JeecgDemo, IJeecgDemoSe
         return Result.OK(pageList);
     }
     /*----------------------------------------外部获取权限示例------------------------------------*/
+
 }

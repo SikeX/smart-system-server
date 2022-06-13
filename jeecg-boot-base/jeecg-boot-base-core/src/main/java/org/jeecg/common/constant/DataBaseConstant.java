@@ -1,15 +1,34 @@
 package org.jeecg.common.constant;
 /**
  * 数据库上下文常量
+ * @author: jeecg-boot
  */
 public interface DataBaseConstant {
 	//*********数据库类型****************************************
+
+	/**MYSQL数据库*/
 	public static final String DB_TYPE_MYSQL = "MYSQL";
+
+	/** ORACLE*/
 	public static final String DB_TYPE_ORACLE = "ORACLE";
-	public static final String DB_TYPE_DM = "DM";//达梦数据库
+
+	/**达梦数据库*/
+	public static final String DB_TYPE_DM = "DM";
+
+	/**postgreSQL达梦数据库*/
 	public static final String DB_TYPE_POSTGRESQL = "POSTGRESQL";
+
+	/**sqlserver数据库*/
 	public static final String DB_TYPE_SQLSERVER = "SQLSERVER";
+
+	/**mariadb 数据库*/
 	public static final String DB_TYPE_MARIADB = "MARIADB";
+
+	/**DB2 数据库*/
+	public static final String DB_TYPE_DB2 = "DB2";
+
+	/**HSQL 数据库*/
+	public static final String DB_TYPE_HSQL = "HSQL";
 
 //	// 数据库类型，对应 database_type 字典
 //	public static final String DB_TYPE_MYSQL_NUM = "1";
@@ -44,7 +63,7 @@ public interface DataBaseConstant {
 	 * 数据-系统用户编码（对应登录用户账号）
 	 */
 	public static final String SYS_USER_CODE_TABLE = "sys_user_code";
-	
+
 	/**
 	 * 登录用户真实姓名
 	 */
@@ -74,8 +93,8 @@ public interface DataBaseConstant {
 	 */
 	public static final String SYS_BASE_PATH = "sys_base_path";
 	//*********系统上下文变量****************************************
-	
-	
+
+
 	//*********系统建表标准字段****************************************
 	/**
 	 * 创建者登录名称
@@ -109,7 +128,7 @@ public interface DataBaseConstant {
 	 * 更新日期时间
 	 */
 	public static final String UPDATE_TIME_TABLE = "update_time";
-	
+
 	/**
 	 * 业务流程状态
 	 */
@@ -129,4 +148,9 @@ public interface DataBaseConstant {
 	 * 租户ID 数据库字段名
 	 */
 	String TENANT_ID_TABLE = "tenant_id";
+
+	/**
+	 * sql语句 where
+	 */
+	String SQL_WHERE = "where";
 }

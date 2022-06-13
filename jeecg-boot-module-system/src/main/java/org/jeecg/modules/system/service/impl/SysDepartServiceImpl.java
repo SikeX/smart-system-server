@@ -19,11 +19,13 @@ import org.jeecg.modules.system.model.DepartIdModel;
 import org.jeecg.modules.system.model.SysDepartTreeModel;
 import org.jeecg.modules.system.service.ISysDepartService;
 import org.jeecg.modules.system.util.FindsDepartsChildrenUtil;
+import org.jeecg.modules.system.util.FindsNaturalDepartsChildrenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -77,7 +79,7 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 	/**
 	 * queryTreeList 对应 queryTreeList 查询所有的部门数据,以树结构形式响应给前端
 	 */
-	@Cacheable(value = CacheConstant.SYS_DEPARTS_CACHE)
+//	@Cacheable(value = CacheConstant.SYS_DEPARTS_CACHE)
 	@Override
 	public List<SysDepartTreeModel> queryTreeList() {
 		LambdaQueryWrapper<SysDepart> query = new LambdaQueryWrapper<SysDepart>();
@@ -86,10 +88,43 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 		List<SysDepart> list = this.list(query);
 		// 调用wrapTreeDataToTreeList方法生成树状数据
 		List<SysDepartTreeModel> listResult = FindsDepartsChildrenUtil.wrapTreeDataToTreeList(list);
+//		log.debug("service层业务树"+listResult);
 		return listResult;
 	}
 
-	@Cacheable(value = CacheConstant.SYS_DEPART_IDS_CACHE)
+	/**
+	 * queryTreeList 对应 queryTreeList 查询所有的部门数据,以自然层级树结构形式响应给前端
+	 */
+//	@Cacheable(value = CacheConstant.SYS_DEPARTS_CACHE)
+	@Override
+	public List<SysDepartTreeModel> queryNaturalTreeList() {
+		LambdaQueryWrapper<SysDepart> query = new LambdaQueryWrapper<SysDepart>();
+		query.eq(SysDepart::getDelFlag, CommonConstant.DEL_FLAG_0.toString());
+		query.orderByAsc(SysDepart::getDepartOrder);
+		List<SysDepart> list = this.list(query);
+		// 调用wrapTreeDataToTreeList方法生成树状数据
+		List<SysDepartTreeModel> listResult = FindsNaturalDepartsChildrenUtil.wrapNaturalTreeDataToTreeList(list);
+//		System.out.println("service层自然树"+listResult);
+		return listResult;
+	}
+
+	/**
+	 * queryTreeList 对应 queryTreeList 查询所负责的部门数据,以业务层级树结构形式响应给前端
+	 */
+//	@Cacheable(value = CacheConstant.SYS_DEPARTS_CACHE)
+	@Override
+	public List<SysDepartTreeModel> queryFuzeTreeList() {
+		LambdaQueryWrapper<SysDepart> query = new LambdaQueryWrapper<SysDepart>();
+		query.eq(SysDepart::getDelFlag, CommonConstant.DEL_FLAG_0.toString());
+		query.orderByAsc(SysDepart::getDepartOrder);
+		List<SysDepart> list = this.list(query);
+		// 调用wrapTreeDataToTreeList方法生成树状数据
+		List<SysDepartTreeModel> listResult = FindsDepartsChildrenUtil.wrapTreeDataToFuzeList(list);
+//		System.out.println("service层自然树"+listResult);
+		return listResult;
+	}
+
+//	@Cacheable(value = CacheConstant.SYS_DEPART_IDS_CACHE)
 	@Override
 	public List<DepartIdModel> queryDepartIdTreeList() {
 		LambdaQueryWrapper<SysDepart> query = new LambdaQueryWrapper<SysDepart>();
@@ -98,6 +133,41 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 		List<SysDepart> list = this.list(query);
 		// 调用wrapTreeDataToTreeList方法生成树状数据
 		List<DepartIdModel> listResult = FindsDepartsChildrenUtil.wrapTreeDataToDepartIdTreeList(list);
+		return listResult;
+	}
+
+//	根据当前用户所在部门获取其管辖范围内的部门单位
+	@Override
+	public List<DepartIdModel> queryFuzeIdTreeList() {
+		LambdaQueryWrapper<SysDepart> query = new LambdaQueryWrapper<SysDepart>();
+		query.eq(SysDepart::getDelFlag, CommonConstant.DEL_FLAG_0.toString());
+		query.orderByAsc(SysDepart::getDepartOrder);
+		List<SysDepart> list = this.list(query);
+		// 调用wrapTreeDataToTreeList方法生成树状数据
+		List<DepartIdModel> listResult = FindsDepartsChildrenUtil.wrapTreeDataToDepartIdFuzeTreeList(list);
+		return listResult;
+	}
+
+	@Override
+	public List<DepartIdModel> queryVillageIdTreeList() {
+		LambdaQueryWrapper<SysDepart> query = new LambdaQueryWrapper<SysDepart>();
+		query.eq(SysDepart::getDelFlag, CommonConstant.DEL_FLAG_0.toString());
+		query.orderByAsc(SysDepart::getDepartOrder);
+		List<SysDepart> list = this.list(query);
+		// 调用wrapTreeDataToTreeList方法生成树状数据
+		List<DepartIdModel> listResult = FindsDepartsChildrenUtil.wrapTreeDataToDepartIdVillageTreeList(list);
+		return listResult;
+	}
+
+//	@Cacheable(value = CacheConstant.SYS_DEPART_IDS_CACHE)
+	@Override
+	public List<DepartIdModel> queryNaturalDepartIdTreeList() {
+		LambdaQueryWrapper<SysDepart> query = new LambdaQueryWrapper<SysDepart>();
+		query.eq(SysDepart::getDelFlag, CommonConstant.DEL_FLAG_0.toString());
+		query.orderByAsc(SysDepart::getDepartOrder);
+		List<SysDepart> list = this.list(query);
+		// 调用wrapTreeDataToTreeList方法生成树状数据
+		List<DepartIdModel> listResult = FindsNaturalDepartsChildrenUtil.wrapNaturalTreeDataToDepartIdTreeList(list);
 		return listResult;
 	}
 
@@ -113,6 +183,18 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 			}
 			String s = UUID.randomUUID().toString().replace("-", "");
 			sysDepart.setId(s);
+			if (sysDepart != null ) {
+				String businessParentId = sysDepart.getBusinessParentId();
+				if (businessParentId != null) {
+					SysDepart naturalDept = this.queryDeptByDepartId(businessParentId);
+					if (naturalDept.getDepartType() != null) {
+						sysDepart.setDepartType(naturalDept.getDepartType());
+					}
+					if ("部门类型".equals(naturalDept.getDepartName()) && sysDepart.getDepartName() != null) {
+						sysDepart.setDepartType(sysDepart.getDepartName());
+					}
+				}
+			}
 			// 先判断该对象有无父级ID,有则意味着不是最高级,否则意味着是最高级
 			// 获取父级ID
 			String parentId = sysDepart.getParentId();
@@ -123,6 +205,9 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 			//update-end--Author:baihailong  Date:20191209 for：部门编码规则生成器做成公用配置
 			sysDepart.setOrgCode(codeArray[0]);
 			String orgType = codeArray[1];
+//			sysDepart.setOldDepartName(sysDepart.getDepartName());
+//			sysDepart.setOldParentId(sysDepart.getParentId());
+//			sysDepart.setOldBusinessParentId(sysDepart.getBusinessParentId());
 			sysDepart.setOrgType(String.valueOf(orgType));
 			sysDepart.setCreateTime(new Date());
 			sysDepart.setDelFlag(CommonConstant.DEL_FLAG_0.toString());
@@ -217,14 +302,186 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 	@Transactional
 	public Boolean updateDepartDataById(SysDepart sysDepart, String username) {
 		if (sysDepart != null && username != null) {
+			SysDepart deptForOld = this.queryDeptByDepartId(sysDepart.getId());
+//			sysDepart.setOldDepartName(deptForOld.getDepartName());
+//			if (sysDepart.getOldParentId() == null) {
+//				sysDepart.setOldParentId("");
+//			}
+//			else{
+//				sysDepart.setOldParentId(deptForOld.getParentId());
+//			}
+//			sysDepart.setOldBusinessParentId(deptForOld.getBusinessParentId());
 			sysDepart.setUpdateTime(new Date());
 			sysDepart.setUpdateBy(username);
+            SysDepart naturalDept = this.queryDeptByDepartId(sysDepart.getBusinessParentId());
+            //			部门名称改变且该部门的自然上级是部门类型的情况下
+        if (!deptForOld.getDepartName().equals(sysDepart.getDepartName()))
+        {
+            if("部门类型".equals(naturalDept.getDepartName()))
+            {
+                String newType = sysDepart.getDepartName();
+                List<String> idList = new ArrayList<>();
+                this.checkNaturalChildrenExists(sysDepart.getId(), idList);
+                sysDepart.setDepartType(newType);
+                for(String departId : idList){
+                    SysDepart naturalChildDept = this.queryDeptByDepartId(departId);
+                    naturalChildDept.setDepartType(newType);
+                    this.updateById(naturalChildDept);
+                }
+            }
+        }
+            //			更换自然上级的情况下
+        if(!sysDepart.getBusinessParentId().equals(deptForOld.getBusinessParentId()))
+        {
+            //			如果自然上级是部门类型，且部门名称没有改变
+            if ("部门类型".equals(naturalDept.getDepartName())) {
+               if(deptForOld.getDepartName().equals(sysDepart.getDepartName()))
+                { String newType2 = sysDepart.getDepartName();
+                List<String> idList2 = new ArrayList<>();
+                this.checkNaturalChildrenExists(sysDepart.getId(), idList2);
+                sysDepart.setDepartType(newType2);
+                for (String departId2 : idList2) {
+                    SysDepart naturalChildDept2 = this.queryDeptByDepartId(departId2);
+                    naturalChildDept2.setDepartType(newType2);
+                    this.updateById(naturalChildDept2);
+                }
+            }
+            }
+            else{
+                String newType2 = naturalDept.getDepartType();
+                List<String> idList2 = new ArrayList<>();
+                this.checkNaturalChildrenExists(sysDepart.getId(), idList2);
+                sysDepart.setDepartType(newType2);
+                for (String departId2 : idList2) {
+                    SysDepart naturalChildDept2 = this.queryDeptByDepartId(departId2);
+                    naturalChildDept2.setDepartType(newType2);
+                    this.updateById(naturalChildDept2);
+                }
+            }
+//            this.updateById(sysDepart);
+        }
+            //			更换业务上级的情况下
+			if (sysDepart.getParentId() == null) {
+				sysDepart.setParentId("");
+			}
+			if (deptForOld.getParentId() == null) {
+				deptForOld.setParentId("");
+			}
+            if(!sysDepart.getParentId().equals(deptForOld.getParentId()))
+            {
+
+                // 先判断该对象有无父级ID,有则意味着不是最高级,否则意味着是最高级
+                // 获取父级ID
+                String parentId = sysDepart.getParentId();
+                //update-begin--Author:baihailong  Date:20191209 for：部门编码规则生成器做成公用配置
+                JSONObject formData = new JSONObject();
+                formData.put("parentId",parentId);
+                String[] codeArray = (String[]) FillRuleUtil.executeRule(FillRuleConstant.DEPART,formData);
+                //update-end--Author:baihailong  Date:20191209 for：部门编码规则生成器做成公用配置
+                sysDepart.setOrgCode(codeArray[0]);
+//
+                String orgType = codeArray[1];
+                sysDepart.setOrgType(String.valueOf(orgType));
+				this.updateById(sysDepart);
+				//修改相关人员的orgCodeSystem.out.println(sysDepart.getOrgCode());
+				LambdaQueryWrapper<SysUser> queryPeople = new LambdaQueryWrapper<SysUser>();
+				queryPeople.eq(SysUser::getDepartId,sysDepart.getId());
+				List<SysUser> userList = sysUserMapper.selectList(queryPeople);
+				for(SysUser user : userList)
+				{
+					user.setOrgCode(sysDepart.getOrgCode());
+					sysUserMapper.updateById(user);
+				}
+				List<SysDepart> parentList = new ArrayList<>();
+				parentList.add(sysDepart);
+				this.childReCode(parentList);
+//				List<String> idList3 = new ArrayList<>();
+//				this.checkChildrenExists(sysDepart.getId(), idList3);
+//				for (String departId3 : idList3) {
+////                        	System.out.println("更新业务机构的子节点机构编码");
+//                            SysDepart  childDept = this.queryDeptByDepartId(departId3);
+//                            // 先判断该对象有无父级ID,有则意味着不是最高级,否则意味着是最高级
+//                            // 获取父级ID
+//                            String childParentId = childDept.getParentId();
+////                          System.out.println(childParentId);
+////					        System.out.println(this.queryDeptByDepartId(childDept.getParentId()));
+//                            //update-begin--Author:baihailong  Date:20191209 for：部门编码规则生成器做成公用配置
+//                            JSONObject formData2 = new JSONObject();
+//                            formData2.put("parentId",childParentId);
+//                            System.out.println(formData2.get("parentId"));
+//                            String[] codeArray2 = (String[]) FillRuleUtil.executeRule(FillRuleConstant.DEPART,formData2);
+//                            //update-end--Author:baihailong  Date:20191209 for：部门编码规则生成器做成公用配置
+//                            childDept.setOrgCode(codeArray2[0]);
+//							System.out.println(codeArray2[0]);
+//                            String orgType2 = codeArray2[1];
+//                            childDept.setOrgType(String.valueOf(orgType2));
+//                            this.updateById(childDept);
+//				}
+            }
+//            sysDepart.setOldDepartName(sysDepart.getDepartName());
+//            sysDepart.setOldParentId(sysDepart.getParentId());
+//            sysDepart.setOldBusinessParentId(sysDepart.getBusinessParentId());
 			this.updateById(sysDepart);
 			return true;
 		} else {
 			return false;
 		}
 
+	}
+
+	/**
+	 * edit 方法调用
+	 * @param parentList
+	 */
+	private void childReCode(List<SysDepart> parentList) {
+		for(SysDepart parentDept : parentList)
+		{
+			LambdaQueryWrapper<SysDepart> query = new LambdaQueryWrapper<SysDepart>();
+			query.eq(SysDepart::getParentId,parentDept.getId());
+			List<SysDepart> nextParentList = this.list(query);
+			int i = 0;
+			SysDepart lastDepart = null;
+			for(SysDepart nextParentDept : nextParentList) {
+				if (i == 0) {
+					String orgType = String.valueOf(Integer.valueOf(parentDept.getOrgType()) + 1);
+					nextParentDept.setOrgType(orgType);
+					String newOrgCode = YouBianCodeUtil.getSubYouBianCode(parentDept.getOrgCode(), null);
+					nextParentDept.setOrgCode(newOrgCode);
+//					System.out.println(newOrgCode);
+					this.updateById(nextParentDept);
+					//修改相关人员的orgCode
+					LambdaQueryWrapper<SysUser> queryPeople = new LambdaQueryWrapper<SysUser>();
+					queryPeople.eq(SysUser::getDepartId,nextParentDept.getId());
+					List<SysUser> userList = sysUserMapper.selectList(queryPeople);
+					for(SysUser user : userList)
+					{
+						user.setOrgCode(newOrgCode);
+						sysUserMapper.updateById(user);
+					}
+					lastDepart = nextParentDept;
+					i = 1;
+				}
+				else{
+					String orgType = lastDepart.getOrgType();
+					nextParentDept.setOrgType(orgType);
+					String newOrgCode =  YouBianCodeUtil.getSubYouBianCode(parentDept.getOrgCode(), lastDepart.getOrgCode());
+					nextParentDept.setOrgCode(newOrgCode);
+//					System.out.println(newOrgCode);
+					this.updateById(nextParentDept);
+					//修改相关人员的orgCode
+					LambdaQueryWrapper<SysUser> queryPeople = new LambdaQueryWrapper<SysUser>();
+					queryPeople.eq(SysUser::getDepartId,nextParentDept.getId());
+					List<SysUser> userList = sysUserMapper.selectList(queryPeople);
+					for(SysUser user : userList)
+					{
+						user.setOrgCode(newOrgCode);
+						sysUserMapper.updateById(user);
+					}
+					lastDepart = nextParentDept;
+				}
+			}
+			this.childReCode(nextParentList);
+		}
 	}
 	
 	@Override
@@ -233,7 +490,7 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 		List<String> idList = new ArrayList<String>();
 		for(String id: ids) {
 			idList.add(id);
-			this.checkChildrenExists(id, idList);
+			this.checkNaturalChildrenExists(id, idList);
 		}
 		this.removeByIds(idList);
 		//根据部门id获取部门角色id
@@ -292,6 +549,7 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 			}
 			query.eq(SysDepart::getDelFlag, CommonConstant.DEL_FLAG_0.toString());
 		}
+		query.eq(SysDepart::getDelFlag, CommonConstant.DEL_FLAG_0.toString());
 		query.like(SysDepart::getDepartName, keyWord);
 		//update-begin--Author:huangzhilin  Date:20140417 for：[bugfree号]组织机构搜索回显优化--------------------
 		SysDepartTreeModel model = new SysDepartTreeModel();
@@ -316,10 +574,10 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 	public boolean delete(String id) {
 		List<String> idList = new ArrayList<>();
 		idList.add(id);
-		this.checkChildrenExists(id, idList);
+		this.checkNaturalChildrenExists(id, idList);
 		//清空部门树内存
 		//FindsDepartsChildrenUtil.clearDepartIdModel();
-		boolean ok = this.removeByIds(idList);
+		boolean ok = this.resetByIds(idList);
 		//根据部门id获取部门角色id
 		List<String> roleIdList = new ArrayList<>();
 		LambdaQueryWrapper<SysDepartRole> query = new LambdaQueryWrapper<>();
@@ -342,7 +600,20 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 		}
 		return ok;
 	}
-	
+
+    /**
+     * delete 方法调用
+     * @param idList
+     */
+    private boolean resetByIds(List<String> idList) {
+        for(String deptId : idList){
+            SysDepart sysDepart = this.queryDeptByDepartId(deptId);
+            sysDepart.setDelFlag("1");
+            this.updateById(sysDepart);
+        }
+        return true;
+    }
+
 	/**
 	 * delete 方法调用
 	 * @param id
@@ -354,8 +625,27 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 		List<SysDepart> departList = this.list(query);
 		if(departList != null && departList.size() > 0) {
 			for(SysDepart depart : departList) {
+				if(depart.getDelFlag().equals("0")){
 				idList.add(depart.getId());
-				this.checkChildrenExists(depart.getId(), idList);
+				this.checkChildrenExists(depart.getId(), idList);}
+			}
+		}
+	}
+
+	/**
+	 * delete 方法调用
+	 * @param id
+	 * @param idList
+	 */
+	private void checkNaturalChildrenExists(String id, List<String> idList) {
+		LambdaQueryWrapper<SysDepart> query = new LambdaQueryWrapper<SysDepart>();
+		query.eq(SysDepart::getBusinessParentId,id);
+		List<SysDepart> departList = this.list(query);
+		if(departList != null && departList.size() > 0) {
+			for(SysDepart depart : departList) {
+				if(depart.getDelFlag().equals("0"))
+				{idList.add(depart.getId());
+				this.checkNaturalChildrenExists(depart.getId(), idList);}
 			}
 		}
 	}
@@ -549,6 +839,33 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 		return this.baseMapper.queryDeptByPid(pid);
 	}
 	/**
+	 * 获取业务下级部门
+	 * @param deptId
+	 * @return
+	 */
+	@Override
+	public List<SysDepart> queryWorkChildrenDeparts(String deptId){
+		return this.baseMapper.queryWorkChildrenDeparts(deptId);
+	}
+	/**
+	 * 根据部门id获取部门信息
+	 * @param deptId
+	 * @return
+	 */
+	@Override
+	public SysDepart queryDeptByDepartId(String deptId){
+		return this.baseMapper.queryDeptByDepartId(deptId);
+	};
+	/**
+	 * 根据用户id获取用户所在部门
+	 * @param userId
+	 * @return
+	 */
+	@Override
+	public SysDepart queryCurrentUserDepart(String userId){
+		return this.baseMapper.queryCurrentUserDepart(userId);
+	};
+	/**
      * 根据关键字筛选部门信息
      * @param keyWord
      * @return
@@ -563,4 +880,36 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
             }
         }
     }
+	/**
+	 * 根据镇名得到镇ID
+	 * @param name
+	 * @return
+	 */
+	@Override
+	public String getZhenIdByName(String name){
+		return this.baseMapper.getZhenIdByName(name);
+	};
+	/**
+	 * 根据镇名得到镇ID
+	 * @param zhen
+	 * @param cun
+	 * @return
+	 */
+	@Override
+	public String getCunIdByNames(String zhen,String cun){
+		String cunId = null;
+		if(cun.equals("前进村"))
+		{
+			if(zhen.equals("新农镇"))
+			{
+				cunId = "e0ce48ecb1734d77b843d28017b95f39";
+			}else
+			{
+				cunId = "a41f094b9d8e4875b2f60ef2993e8fa0";
+			}
+		} else {
+			cunId = this.baseMapper.getZhenIdByName(cun);
+		}
+		return cunId;
+	};
 }

@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jeecg-boot-parent</artifactId>
         <groupId>org.jeecgframework.boot</groupId>
-        <version>2.4.6</version>
+        <version>3.2.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -16,6 +16,12 @@
             <groupId>org.jeecgframework.boot</groupId>
             <artifactId>jeecg-boot-base-core</artifactId>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.github.yulichang</groupId>-->
+<!--            <artifactId>mybatis-plus-join</artifactId>-->
+<!--            <version>1.2.4/version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
         <!--引入微服务启动依赖 starter
       <dependency>
           <groupId>org.jeecgframework.boot</groupId>

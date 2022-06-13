@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.smartEvaluateList.mapper.SmartChartMapper">
+    <resultMap id="PeopleAvg" type="org.jeecg.modules.smartEvaluateList.entity.peopleAvg">
+        <id property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="exeDept" column="exe_dept" jdbcType="VARCHAR"/>
+        <result property="windowsName" column="windows_name" jdbcType="VARCHAR"/>
+        <result property="personName" column="person_name" jdbcType="VARCHAR"/>
+        <result property="evaluateResult" column="evaluate_result" jdbcType="VARCHAR"></result>
+    </resultMap>
+    <!--按月统计评价数量-->
+    <select id="countByMonth" resultType="org.jeecg.modules.smartEvaluateList.entity.MonthCount">
+    select month(evaluate_time) as month,
+    count(*) as count
+    from smart_evaluate_window
+    where year(evaluate_time)= #{year}
+    group by  year(evaluate_time), month(evaluate_time)
+    </select>
+    <!--按月统计八项规定任务数量-->
+    <select id="countEight" resultType="org.jeecg.modules.smartEvaluateList.entity.MonthCountEight">
+        select month(create_time) as month,
+            (select count(*) from smart_verify_task where year(create_time)= #{year} and month(create_time) = month and (task_type = '监督检查' or task_type = '财务收支' or task_type = '婚前报备'  or task_type = '婚后报备' or task_type = '丧事报备' or task_type = '丧事事后报备' or task_type = '公务接待'))as count,
+            (select count(*) from smart_verify_task where year(create_time)= #{year} and month(create_time) = month and flow_status = 0 and (task_type = '监督检查' or task_type = '财务收支' or task_type = '婚前报备'  or task_type = '婚后报备' or task_type = '丧事报备' or task_type = '丧事事后报备' or task_type = '公务接待'))as countNot
+        from smart_verify_task
+        where year(create_time)= #{year}
+        group by  year(create_time), month(create_time)
+    </select>
+    <!--按评分统计-->
+    <select id="countByGrade" resultType="org.jeecg.modules.smartEvaluateList.entity.TypeCount">
+        select i.item_text as keyName,count(*) as value
+        from smart_evaluate_window as e,sys_dict as d,sys_dict_item as i
+        where e.evaluate_result = i.item_value and d.dict_code = 'evaluate_grade' and i.dict_id = d.id
+        and year(evaluate_time)= #{year}
+        group by e.evaluate_result,i.item_text
+    </select>
+    <!--按任务数统计-->
+    <select id="countByType" resultType="org.jeecg.modules.smartEvaluateList.entity.TypeCount">
+        select task_type as keyName,count(*) as value
+        from smart_verify_task
+        where year(create_time)= #{year} and (task_type = '监督检查' or task_type = '财务收支' or task_type = '婚前报备'  or task_type = '婚后报备' or task_type = '丧事报备' or task_type = '公务接待')
+        group by task_type
+    </select>
+    <!--人员平均分-->
+    <select id="avgByPeople" resultMap="PeopleAvg">
+        select avg(e.evaluate_result) as avgGrade,e.person_name,e.windows_name,e.exe_dept
+        from smart_evaluate_window as e
+        <where>
+            <if test="windowsName != null and windowsName != ''">
+                 e.windows_name like #{windowsName}
+            </if>
+        </where>
+        group by e.exe_dept,e.windows_name,e.person_name
+        order by avgGrade desc
+    </select>
+    <select id="windowsByGrade" resultMap="PeopleAvg">
+        select avg(e.evaluate_result) as avgGrade, e.windows_name,e.exe_dept
+        from smart_evaluate_window as e
+        <where>
+            <if test="windowsName != null and windowsName != ''">
+                e.windows_name like #{windowsName}
+            </if>
+        </where>
+        group by e.exe_dept,e.windows_name
+        order by avgGrade desc
+    </select>
+    <!--窗口评价次数排行榜-->
+    <select id="windowsRankByCount" resultType="org.jeecg.modules.smartEvaluateList.entity.TypeCount">
+        select windows_name as keyName,count(*) as value
+        from smart_evaluate_window
+        where year(evaluate_time)= #{year}
+        group by windows_name
+        order by value desc
+    </select>
+    <!--窗口满意度排行榜-->
+    <select id="windowsRankByGrade" resultType="org.jeecg.modules.smartEvaluateList.entity.TypeCount">
+        select windows_name as keyName,avg(evaluate_result) as value
+        from smart_evaluate_window
+        where year(evaluate_time)= #{year}
+        group by windows_name
+        order by value desc
+    </select>
+</mapper>

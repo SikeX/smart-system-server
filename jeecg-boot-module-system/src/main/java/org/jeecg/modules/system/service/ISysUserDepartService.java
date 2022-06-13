@@ -49,5 +49,20 @@ public interface ISysUserDepartService extends IService<SysUserDepart> {
 	 * @return
 	 */
 	IPage<SysUser> queryDepartUserPageList(String departId, String username, String realname, int pageSize, int pageNo);
+	//只展示本单位及下级单位人员
+	IPage<SysUser> newqueryDepartUserPageList(String departId, String username, String realname, int pageSize, int pageNo);
+	//只展示村民
+	IPage<SysUser> queryDepartVillagePageList(String departId, String username, String realname, int pageSize, int pageNo);
 
+	/**
+	 * 政治生态文明系统使用，真正只查询本单位的用户，不查寻子单位
+	 *
+	 * @param departId 单位ID，必须
+	 * @param username
+	 * @param realname
+	 * @param pageSize
+	 * @param pageNo
+	 * @return
+	 */
+	IPage<SysUser> queryRealDepartUserPageList(String departId, String username, String realname, int pageSize, int pageNo);
 }
