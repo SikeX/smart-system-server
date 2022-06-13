@@ -118,7 +118,7 @@ public class SysTenantController {
             // 过滤掉已被引用的租户
             List<String> idList = new ArrayList<>();
             for (String id : ls) {
-                Long userCount = sysTenantService.countUserLinkTenant(id);
+                int userCount = sysTenantService.countUserLinkTenant(id);
                 if (userCount == 0) {
                     idList.add(id);
                 }

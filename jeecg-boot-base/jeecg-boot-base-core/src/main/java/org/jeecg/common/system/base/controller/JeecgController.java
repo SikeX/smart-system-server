@@ -37,9 +37,8 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class JeecgController<T, S extends IService<T>> {
-    //issues/2933 JeecgController注入service时改用protected修饰，能避免重复引用service
     @Autowired
-    protected S service;
+    S service;
 
     @Value("${jeecg.path.upload}")
     private String upLoadPath;
@@ -166,10 +165,8 @@ public class JeecgController<T, S extends IService<T>> {
         for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
             MultipartFile file = entity.getValue();// 获取上传文件对象
             ImportParams params = new ImportParams();
-//            params.setTitleRows(2);
-//            params.setHeadRows(1);
-            params.setTitleRows(1);//表格标题，标题是表格的名称，一般是在第一行将所有单元格合并成一个单元格
-            params.setHeadRows(2);//表头，表头是表格的列标题（字段名），一般在第二行
+            params.setTitleRows(2);
+            params.setHeadRows(1);
             params.setNeedSave(true);
             try {
                 List<T> list = ExcelImportUtil.importExcel(file.getInputStream(), clazz, params);
@@ -182,15 +179,8 @@ public class JeecgController<T, S extends IService<T>> {
                 //update-end-author:taoyan date:20190528 for:批量插入数据
                 return Result.ok("文件导入成功！数据行数：" + list.size());
             } catch (Exception e) {
-                //update-begin-author:taoyan date:20211124 for: 导入数据重复增加提示
-                String msg = e.getMessage();
-                log.error(msg, e);
-                if(msg!=null && msg.indexOf("Duplicate entry")>=0){
-                    return Result.error("文件导入失败:有重复数据！");
-                }else{
-                    return Result.error("文件导入失败:" + e.getMessage());
-                }
-                //update-end-author:taoyan date:20211124 for: 导入数据重复增加提示
+                log.error(e.getMessage(), e);
+                return Result.error("文件导入失败:" + e.getMessage());
             } finally {
                 try {
                     file.getInputStream().close();

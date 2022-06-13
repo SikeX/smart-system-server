@@ -38,25 +38,7 @@ public class ImportExcelUtil {
         }
     }
 
-    public static Result<?> importReturnRes(int errorCount,List<String> errorMessage) throws IOException {
-        if (errorCount == 0) {
-            return Result.ok( "数据全部导入成功！");
-        } else {
-            JSONObject result = new JSONObject(5);
-            result.put("msg", "错误数量：" + errorCount);
-            String fileUrl = PmsUtil.saveErrorTxtByList(errorMessage, "userImportExcelErrorLog");
-            int lastIndex = fileUrl.lastIndexOf(File.separator);
-            String fileName = fileUrl.substring(lastIndex + 1);
-            result.put("fileUrl", "/sys/common/static/" + fileUrl);
-            result.put("fileName", fileName);
-            Result res = Result.ok(result);
-            res.setCode(201);
-            res.setMessage("文件导入成功，但有错误。");
-            return res;
-        }
-    }
-
-    public static List<String> importDateSave(List<?> list, Class serviceClass, List<String> errorMessage, String errorFlag)  {
+    public static List<String> importDateSave(List<Object> list, Class serviceClass,List<String> errorMessage,String errorFlag)  {
         IService bean =(IService) SpringContextUtils.getBean(serviceClass);
         for (int i = 0; i < list.size(); i++) {
             try {

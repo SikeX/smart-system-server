@@ -1,7 +1,6 @@
 package org.jeecg.modules.system.controller;
 
 
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -13,37 +12,29 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.PermissionData;
 import org.jeecg.common.constant.CommonConstant;
 import org.jeecg.common.system.api.ISysBaseAPI;
+import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.util.JwtUtil;
 import org.jeecg.common.system.vo.LoginUser;
-import org.jeecg.common.util.ImportExcelUtil;
-import org.jeecg.common.util.PasswordUtil;
-import org.jeecg.common.util.RedisUtil;
-import org.jeecg.common.util.oConvertUtils;
-import org.jeecg.modules.base.service.BaseCommonService;
-import org.jeecg.modules.common.service.CommonService;
-import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.common.util.*;
 import org.jeecg.modules.system.entity.*;
-import org.jeecg.modules.system.mapper.SysDepartMapper;
 import org.jeecg.modules.system.model.DepartIdModel;
 import org.jeecg.modules.system.model.SysUserSysDepartModel;
 import org.jeecg.modules.system.service.*;
 import org.jeecg.modules.system.vo.SysDepartUsersVO;
 import org.jeecg.modules.system.vo.SysUserRoleVO;
-import org.jeecg.modules.system.vo.SysUserVo;
-import org.jeecg.modules.system.vo.VillageUser;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.ImportParams;
 import org.jeecgframework.poi.excel.view.JeecgEntityExcelView;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -96,18 +87,12 @@ public class SysUserController {
 
 	@Autowired
 	private RedisUtil redisUtil;
-    @Autowired
-    private CommonService commonService;
-    @Autowired
-    private BaseCommonService baseCommon_Service;
 
     @Value("${jeecg.path.upload}")
     private String upLoadPath;
 
     @Resource
     private BaseCommonService baseCommonService;
-    @Autowired
-    private SysDepartMapper sysDepartMapper;
 
     /**
      * 获取用户列表数据
@@ -121,56 +106,8 @@ public class SysUserController {
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public Result<IPage<SysUser>> queryPageList(SysUser user,@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 									  @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,HttpServletRequest req) {
-//        HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
-        // 获取登录用户信息，可以用来查询单位部门信息
-        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-        // 获取用户角色
-        String userName = sysUser.getUsername();
-        List<String> role = sysBaseAPI.getRolesByUsername(userName);
-        QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(user, req.getParameterMap());
-        //纪委管理员、系统管理员可以看到全区人员
-        if(role.contains("CCDIAdmin") || role.contains("systemAdmin")){
-        }
-        //单位管理员-设置部门，只能看到本部门人员
-        else if(role.contains("admin")){
-//            String ordCode = sysUser.getOrgCode();
-//            String departId = commonService.getDepartIdByOrgCode(ordCode);
-            //获取负责单位ID
-            String departId = sysUserService.getById(sysUser.getId()).getDepartIds();
-            List<String> list = Arrays.asList(departId.split(","));
-            if(list.size()==1){
-                queryWrapper.like("depart_id",departId);
-            }else if(list.size()>1){
-                queryWrapper.like("depart_id",list.get(0));
-                for(int i =1;i < list.size();i++){
-                    queryWrapper.or().like("depart_id",list.get(i));
-                }
-            }
-           /* // 1. 规则，下面是 以**开始
-            String rule = "in";
-            // 2. 查询字段
-            String field = "departId";
-            //当前登录人单位ID
-            String departId = sysUser.getDepartId();
-            // 获取子单位ID
-            //String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
-            // 获取请求参数中的superQueryParams
-            List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
-            // 添加额外查询条件，用于权限控制
-            *//*paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
-                    + childrenIdString
-                    + "%22,%22field%22:%22" + field + "%22%7D%5D");*//*
-            paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
-                    + departId
-                    + "%22,%22field%22:%22" + field + "%22%7D%5D");
-            String[] params = new String[paramsList.size()];
-            paramsList.toArray(params);
-            map.put("superQueryParams", params);
-            params = new String[]{"and"};
-            map.put("superQueryMatchType", params);*/
-        }
-
-        Result<IPage<SysUser>> result = new Result<IPage<SysUser>>();
+		Result<IPage<SysUser>> result = new Result<IPage<SysUser>>();
+		QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(user, req.getParameterMap());
     	//TODO 外部模拟登陆临时账号，列表不显示
         queryWrapper.ne("username","_reserve_user_external");
 		Page<SysUser> page = new Page<SysUser>(pageNo, pageSize);
@@ -180,7 +117,7 @@ public class SysUserController {
         //step.1 先拿到全部的 useids
         //step.2 通过 useids，一次性查询用户的所属部门名字
         List<String> userIds = pageList.getRecords().stream().map(SysUser::getId).collect(Collectors.toList());
-        if(userIds.size()>0){
+        if(userIds!=null && userIds.size()>0){
             Map<String,String>  useDepNames = sysUserService.getDepNamesByUserIds(userIds);
             pageList.getRecords().forEach(item->{
                 item.setOrgCodeTxt(useDepNames.get(item.getId()));
@@ -189,148 +126,27 @@ public class SysUserController {
 		result.setSuccess(true);
 		result.setResult(pageList);
 		log.info(pageList.toString());
-        // 请同步修改edit函数中，将departId变为null，不然会更新成名称
-        List<String> departIds = pageList.getRecords().stream().map(SysUser::getDepartId).collect(Collectors.toList());
-        if (departIds != null && departIds.size() > 0) {
-            Map<String, String> useDepNames = commonService.getDepNamesByIds(departIds);
-            pageList.getRecords().forEach(item -> {
-                item.setDepartId(useDepNames.get(item.getDepartId()));
-            });
-        }
 		return result;
 	}
-
-    /**
-     * 获取用户列表数据
-     * @param user
-     * @param pageNo
-     * @param pageSize
-     * @param req
-     * @return
-     */
-    @PermissionData(pageComponent = "system/peopleList")
-    @RequestMapping(value = "/peopleList", method = RequestMethod.GET)
-    public Result<IPage<SysUser>> queryPeopleList(SysUser user,@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
-                                                @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,HttpServletRequest req) {
-//        // 1. 规则，下面是 以**开始
-//        String rule = "in";
-//        // 2. 查询字段
-//        String field = "departId";
-//        // 获取登录用户信息，可以用来查询单位部门信息
-//        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-//        // 获取子单位ID
-//        String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
-        HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
-        // 获取请求参数中的superQueryParams
-//        List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
-//        // 添加额外查询条件，用于权限控制
-//        paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
-//                + childrenIdString
-//                + "%22,%22field%22:%22" + field + "%22%7D%5D");
-//
-//        String[] params = new String[paramsList.size()];
-//        paramsList.toArray(params);
-//        map.put("superQueryParams", params);
-//        params = new String[]{"and"};
-//        map.put("superQueryMatchType", params);
-
-        Result<IPage<SysUser>> result = new Result<IPage<SysUser>>();
-        QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(user,map);
-        //TODO 外部模拟登陆临时账号，列表不显示
-        queryWrapper.ne("username","_reserve_user_external");
-        Page<SysUser> page = new Page<SysUser>(pageNo, pageSize);
-        IPage<SysUser> pageList = sysUserService.page(page, queryWrapper);
-
-        //批量查询用户的所属部门
-        //step.1 先拿到全部的 useids
-        //step.2 通过 useids，一次性查询用户的所属部门名字
-        List<String> userIds = pageList.getRecords().stream().map(SysUser::getId).collect(Collectors.toList());
-        if(userIds!=null && userIds.size()>0){
-            Map<String,String>  useDepNames = sysUserService.getDepNamesByUserIds(userIds);
-            pageList.getRecords().forEach(item->{
-                item.setOrgCodeTxt(useDepNames.get(item.getId()));
-            });
-        }
-        result.setSuccess(true);
-        result.setResult(pageList);
-        log.info(pageList.toString());
-        // 请同步修改edit函数中，将departId变为null，不然会更新成名称
-//        List<String> departIds = pageList.getRecords().stream().map(SysUser::getDepartId).collect(Collectors.toList());
-//        if (departIds != null && departIds.size() > 0) {
-//            Map<String, String> useDepNames = commonService.getDepNamesByIds(departIds);
-//            pageList.getRecords().forEach(item -> {
-//                item.setDepartId(useDepNames.get(item.getDepartId()));
-//            });
-//        }
-        return result;
-    }
-
 
     //@RequiresRoles({"admin"})
     //@RequiresPermissions("user:add")
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public Result<SysUser> add(@RequestBody JSONObject jsonObject) {
 		Result<SysUser> result = new Result<SysUser>();
-        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-        String orgCode = sysUser.getOrgCode();
-        System.out.println("sysUser:"+sysUser);
-        // 获取用户角色
-        String userName = sysUser.getUsername();
-        List<String> role = sysBaseAPI.getRolesByUsername(userName);
-        if ("".equals(orgCode)) {
-            return result.error500("本用户没有操作权限！");
-        }
-        String id = commonService.getDepartIdByOrgCode(orgCode);
-        if (id == null) {
-            return result.error500("没有找到部门！");
-        }
-        //纪委管理员可以选择角色和单位，单位管理员默认为单位非管理员，只能添加本部门人员
-        String selectedRoles = "";
-        String selectedDeparts="";
-        if(role.contains("CCDIAdmin") || role.contains("systemAdmin")){
-            selectedRoles = jsonObject.getString("selectedroles");
-            selectedDeparts = jsonObject.getString("selecteddeparts");
-
-            String departId = selectedDeparts.split(",",-1)[0];
-            String orgCodes = sysDepartService.getById(departId).getOrgCode();
-            jsonObject.put("orgCode",orgCodes);
-        }
-		else if(role.contains("admin")){
-            selectedRoles = "1465163864583323650";
-            //单位管理员-设置部门，只能添加本部门人员
-            selectedDeparts = sysUser.getDepartIds();
-
-            jsonObject.put("orgCode",sysDepartService.getById(selectedDeparts).getOrgCode());
-        }
-
+		String selectedRoles = jsonObject.getString("selectedroles");
+		String selectedDeparts = jsonObject.getString("selecteddeparts");
 		try {
 			SysUser user = JSON.parseObject(jsonObject.toJSONString(), SysUser.class);
-			//更新user表中的departId
-			user.setDepartId(selectedDeparts);
-			//设置人员类别,党员干部
-            user.setPeopleType("1");
-			//设置sys_code
 			user.setCreateTime(new Date());//设置创建时间
-            String phone = user.getPhone();
-            String username = user.getUsername();
-            //设置初始账号：手机号
-            if(username == null || username.isEmpty()){
-                user.setUsername(phone);
-            }
-            //设置初始密码
-            String password = user.getPassword();
-            if(password == null || password.isEmpty()){
-                user.setPassword("123456");
-            }
 			String salt = oConvertUtils.randomGen(8);
 			user.setSalt(salt);
 			String passwordEncode = PasswordUtil.encrypt(user.getUsername(), user.getPassword(), salt);
 			user.setPassword(passwordEncode);
 			user.setStatus(1);
 			user.setDelFlag(CommonConstant.DEL_FLAG_0);
-            System.out.println("addUser:"+user);
-			// 保存用户走一个service 保证事务，更新user表和关联表
-            sysUserService.saveUser(user, selectedRoles, selectedDeparts);
+			// 保存用户走一个service 保证事务
+			sysUserService.saveUser(user, selectedRoles, selectedDeparts);
 			result.success("添加成功！");
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -344,7 +160,6 @@ public class SysUserController {
 	@RequestMapping(value = "/edit", method = RequestMethod.PUT)
 	public Result<SysUser> edit(@RequestBody JSONObject jsonObject) {
 		Result<SysUser> result = new Result<SysUser>();
-
 		try {
 			SysUser sysUser = sysUserService.getById(jsonObject.getString("id"));
 			baseCommonService.addLog("编辑用户，id： " +jsonObject.getString("id") ,CommonConstant.LOG_TYPE_2, 2);
@@ -352,17 +167,11 @@ public class SysUserController {
 				result.error500("未找到对应实体");
 			}else {
 				SysUser user = JSON.parseObject(jsonObject.toJSONString(), SysUser.class);
-                user.setDepartId(null);
-                //user.setCreateTime(null);
 				user.setUpdateTime(new Date());
 				//String passwordEncode = PasswordUtil.encrypt(user.getUsername(), user.getPassword(), sysUser.getSalt());
 				user.setPassword(sysUser.getPassword());
 				String roles = jsonObject.getString("selectedroles");
                 String departs = jsonObject.getString("selecteddeparts");
-                //更改部门不为空，说明为纪委管理员，同步更新user表中departId
-                if(departs != null && !departs.isEmpty()){
-                    user.setDepartId(departs);
-                }
                 // 修改用户走一个service 保证事务
 				sysUserService.editUser(user, roles, departs);
 				result.success("修改成功!");
@@ -374,46 +183,6 @@ public class SysUserController {
 		return result;
 	}
 
-    //@RequiresRoles({"admin"})
-    //@RequiresPermissions("user:edit")
-    @RequestMapping(value = "/editPeople", method = RequestMethod.PUT)
-    public Result<SysUser> editPeople(@RequestBody JSONObject jsonObject) {
-        Result<SysUser> result = new Result<SysUser>();
-
-        try {
-            SysUser sysUser = sysUserService.getById(jsonObject.getString("id"));
-            baseCommonService.addLog("编辑用户，id： " +jsonObject.getString("id") ,CommonConstant.LOG_TYPE_2, 2);
-            if(sysUser==null) {
-                result.error500("未找到对应实体");
-            }else {
-                SysUser user = JSON.parseObject(jsonObject.toJSONString(), SysUser.class);
-                user.setDepartId(null);
-                //user.setCreateTime(null);
-                user.setUpdateTime(new Date());
-                //String passwordEncode = PasswordUtil.encrypt(user.getUsername(), user.getPassword(), sysUser.getSalt());
-                user.setPassword(sysUser.getPassword());
-                String roles = jsonObject.getString("selectedroles");
-                String departs = jsonObject.getString("selecteddeparts");
-                //更改部门不为空，说明为纪委管理员，同步更新user表中departId
-                if(departs != null && !departs.isEmpty()){
-                    user.setDepartId(departs);
-                    SysDepart depart =  sysDepartService.queryDeptByDepartId(user.getDepartId());
-                    String userOrgCode = depart.getOrgCode();
-                    user.setOrgCode(userOrgCode);
-                }else
-                {
-                    user.setOrgCode("");
-                }
-                // 修改用户走一个service 保证事务
-                sysUserService.editUser(user, roles, departs);
-                result.success("修改成功!");
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            result.error500("操作失败");
-        }
-        return result;
-    }
 	/**
 	 * 删除用户
 	 */
@@ -425,220 +194,7 @@ public class SysUserController {
 		return Result.ok("删除用户成功");
 	}
 
-    @PermissionData(pageComponent = "system/villagePeopleList")
-    @RequestMapping(value = "/villageList", method = RequestMethod.GET)
-    public Result<IPage<SysUser>> queryVillageList(SysUser user,@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
-                                                   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,HttpServletRequest req) {
-
-        Result<IPage<SysUser>> result = new Result<IPage<SysUser>>();
-        // 获取登录用户信息，可以用来查询单位部门信息
-        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-        // 获取用户角色
-        String userName = sysUser.getUsername();
-        List<String> role = sysBaseAPI.getRolesByUsername(userName);
-        HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
-        if(role.contains("CCDIAdmin")){
-
-        }else {
-            // 1. 规则，下面是 以**开始
-            String rule = "in";
-            // 2. 查询字段
-            String field = "departId";
-            String childrenIdString = null;
-            if (sysUser.getDepartId() != null && !"".equals(sysUser.getDepartId())) {
-                String userOrgCode = sysDepartService.getById(sysUser.getDepartId()).getOrgCode();
-                // 获取子单位ID
-                childrenIdString = commonService.getChildrenIdStringByOrgCode(userOrgCode);
-            } else {
-                return result.error500("无法获取当前用户所在单位信息！");
-            }
-
-            // 获取请求参数中的superQueryParams
-            List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
-
-            // 添加额外查询条件，用于权限控制
-            paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
-                    + childrenIdString
-                    + "%22,%22field%22:%22" + field + "%22%7D%5D");
-            String[] params = new String[paramsList.size()];
-            paramsList.toArray(params);
-            map.put("superQueryParams", params);
-            params = new String[]{"and"};
-            map.put("superQueryMatchType", params);
-        }
-            QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(user, map);
-            //TODO 外部模拟登陆临时账号，列表不显示
-//            queryWrapper.ne("username", "_reserve_user_external");
-            Page<SysUser> page = new Page<SysUser>(pageNo, pageSize);
-            IPage<SysUser> pageList = sysUserService.page(page, queryWrapper);
-
-        //批量查询用户的所属部门
-        //step.1 先拿到全部的 useids
-        //step.2 通过 useids，一次性查询用户的所属部门名字
-        List<String> userIds = pageList.getRecords().stream().map(SysUser::getId).collect(Collectors.toList());
-        if(userIds!=null && userIds.size()>0){
-            Map<String,String>  useDepNames = sysUserService.getDepNamesByUserIds(userIds);
-            pageList.getRecords().forEach(item->{
-                item.setOrgCodeTxt(useDepNames.get(item.getId()));
-            });
-        }
-        result.setSuccess(true);
-        result.setResult(pageList);
-        log.info(pageList.toString());
-        // 请同步修改edit函数中，将departId变为null，不然会更新成名称
-        List<String> departIds = pageList.getRecords().stream().map(SysUser::getDepartId).collect(Collectors.toList());
-        if (departIds != null && departIds.size() > 0) {
-            Map<String, String> useDepNames = commonService.getDepNamesByIds(departIds);
-            pageList.getRecords().forEach(item -> {
-                item.setDepartId(useDepNames.get(item.getDepartId()));
-            });
-        }
-
-        return result;
-    }
-
-    @RequestMapping(value = "/addVillage", method = RequestMethod.POST)
-    public Result<SysUser> addVillage(@RequestBody JSONObject jsonObject) {
-        Result<SysUser> result = new Result<SysUser>();
-        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-        String orgCode = sysUser.getOrgCode();
-        if ("".equals(orgCode)) {
-            return result.error500("本用户没有操作权限！");
-        }
-        String selectedRoles = jsonObject.getString("selectedroles");
-        String selectedDeparts = jsonObject.getString("selecteddeparts");
-        try {
-            SysUser user = JSON.parseObject(jsonObject.toJSONString(), SysUser.class);
-            user.setPeopleType("2");
-            String phone = user.getPhone();
-            if(phone == null)
-            {
-            }else {
-                //设置初始账号：手机号
-                user.setUsername(phone);
-                //设置初始密码
-                user.setPassword("123456");
-                String salt = oConvertUtils.randomGen(8);
-                user.setSalt(salt);
-                String passwordEncode = PasswordUtil.encrypt(user.getUsername(), user.getPassword(), salt);
-                user.setPassword(passwordEncode);
-            }
-            user.setCreateTime(new Date());//设置创建时间
-            user.setStatus(1);
-            user.setDelFlag(CommonConstant.DEL_FLAG_0);
-            user.setDepartId(selectedDeparts);
-            SysDepart depart =  sysDepartService.queryDeptByDepartId(user.getDepartId());
-            String userOrgCode = depart.getOrgCode();
-            user.setOrgCode(userOrgCode);
-            user.setRole(selectedRoles);
-            sysUserService.saveUser(user, selectedRoles, selectedDeparts);
-            result.success("添加成功！");
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            result.error500("操作失败");
-        }
-        return result;
-    }
-
-    @RequestMapping(value = "/addPeople", method = RequestMethod.POST)
-    public Result<SysUser> addPeople(@RequestBody JSONObject jsonObject) {
-	    Result<SysUser> result = new Result<SysUser>();
-        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-        String orgCode = sysUser.getOrgCode();
-        if ("".equals(orgCode)) {
-            return result.error500("本用户没有操作权限！");
-        }
-
-        String selectedRoles = jsonObject.getString("selectedroles");
-        String selectedDeparts = jsonObject.getString("selecteddeparts");
-        try {
-            SysUser user = JSON.parseObject(jsonObject.toJSONString(), SysUser.class);
-            user.setPeopleType("1");
-            user.setCreateTime(new Date());//设置创建时间
-            String phone = user.getPhone();
-            String username = user.getUsername();
-            //设置初始账号：手机号
-            if(username == null){
-                user.setUsername(phone);
-            }
-            //设置初始密码
-            String password = user.getPassword();
-            if(password == null){
-                user.setPassword("123456");
-            }
-            String salt = oConvertUtils.randomGen(8);
-            user.setSalt(salt);
-            String passwordEncode = PasswordUtil.encrypt(user.getUsername(), user.getPassword(), salt);
-            user.setPassword(passwordEncode);
-            user.setStatus(1);
-            user.setDelFlag(CommonConstant.DEL_FLAG_0);
-            user.setDepartId(selectedDeparts);
-            SysDepart depart =  sysDepartService.queryDeptByDepartId(user.getDepartId());
-            String userOrgCode = depart.getOrgCode();
-            user.setOrgCode(userOrgCode);
-            sysUserService.saveUser(user, selectedRoles, selectedDeparts);
-            result.success("添加成功！");
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            result.error500("操作失败");
-        }
-        return result;
-    }
-
-    @RequestMapping(value = "/editVillage", method = RequestMethod.PUT)
-    public Result<SysUser> editVillage(@RequestBody JSONObject jsonObject) {
-        Result<SysUser> result = new Result<SysUser>();
-
-        try {
-            SysUser sysUser = sysUserService.getById(jsonObject.getString("id"));
-            baseCommonService.addLog("编辑用户，id： " +jsonObject.getString("id") ,CommonConstant.LOG_TYPE_2, 2);
-            if(sysUser==null) {
-                result.error500("未找到对应实体");
-            }else {
-                SysUser user = JSON.parseObject(jsonObject.toJSONString(), SysUser.class);
-                user.setDepartId(jsonObject.getString("selecteddeparts"));
-                //user.setCreateTime(null);
-                user.setUpdateTime(new Date());
-                //String passwordEncode = PasswordUtil.encrypt(user.getUsername(), user.getPassword(), sysUser.getSalt());
-                String phone = user.getPhone();
-               String oldPhone = sysUser.getPhone();
-                if(oldPhone!=null && !oldPhone.equals("") && phone.equals(sysUser.getPhone())){
-                    user.setPassword(sysUser.getPassword());
-                }
-                else if(phone==null || phone.equals(""))
-                {
-                    user.setPassword(null);
-                    user.setUsername(null);
-                }
-                else{
-                    //更新账号：手机号
-                    user.setUsername(phone);
-                    //重置密码
-                    user.setPassword("123456");
-                    String salt = oConvertUtils.randomGen(8);
-                    user.setSalt(salt);
-                    String passwordEncode = PasswordUtil.encrypt(user.getUsername(), user.getPassword(), salt);
-                    user.setPassword(passwordEncode);
-                }
-                SysDepart depart =  sysDepartService.queryDeptByDepartId(user.getDepartId());
-                String userOrgCode = depart.getOrgCode();
-                user.setOrgCode(userOrgCode);
-                user.setRole(jsonObject.getString("selectedroles"));
-                String roles = jsonObject.getString("selectedroles");
-                String departs = jsonObject.getString("selecteddeparts");
-                // 修改用户走一个service 保证事务
-                sysUserService.editUser(user, roles, departs);
-                result.success("修改成功!");
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            result.error500("操作失败");
-        }
-        return result;
-    }
-
-
-    /**
+	/**
 	 * 批量删除用户
 	 */
 	//@RequiresRoles({"admin"})
@@ -839,291 +395,31 @@ public class SysUserController {
      * @param username
      * @return
      */
-    @RequestMapping(value = "/newQueryUserComponentData", method = RequestMethod.GET)
-    public Result<IPage<SysUser>> newQueryUserComponentData(
-            @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
-            @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
-            @RequestParam(name = "departId", required = false) String departId,
-            @RequestParam(name="realname",required=false) String realname,
-            @RequestParam(name="username",required=false) String username )
-    {
-
-            IPage<SysUser> pageList = sysUserDepartService.newqueryDepartUserPageList(departId, username, realname, pageSize, pageNo);
-
-            //IPage<SysUser> pageList = sysUserDepartService.queryDepartUserPageList(departId, username, realname, pageSize, pageNo);
-
-        return Result.OK(pageList);
-
-    }
     @RequestMapping(value = "/queryUserComponentData", method = RequestMethod.GET)
     public Result<IPage<SysUser>> queryUserComponentData(
             @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
             @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
             @RequestParam(name = "departId", required = false) String departId,
             @RequestParam(name="realname",required=false) String realname,
-            @RequestParam(name="username",required=false) String username )
-    {
-
-        //IPage<SysUser> pageList = sysUserDepartService.newqueryDepartUserPageList(departId, username, realname, pageSize, pageNo);
-
+            @RequestParam(name="username",required=false) String username) {
         IPage<SysUser> pageList = sysUserDepartService.queryDepartUserPageList(departId, username, realname, pageSize, pageNo);
-
-        return Result.OK(pageList);
-
-    }
-
-    @RequestMapping(value = "/queryVillageComponentData", method = RequestMethod.GET)
-    public Result<IPage<SysUser>> queryVillageComponentData(
-            @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
-            @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
-            @RequestParam(name = "departId", required = false) String departId,
-            @RequestParam(name="realname",required=false) String realname,
-            @RequestParam(name="username",required=false) String username )
-    {
-
-        //IPage<SysUser> pageList = sysUserDepartService.newqueryDepartUserPageList(departId, username, realname, pageSize, pageNo);
-
-        IPage<SysUser> pageList = sysUserDepartService.queryDepartVillagePageList(departId, username, realname, pageSize, pageNo);
-
-        return Result.OK(pageList);
-
-    }
-
-    @RequestMapping(value = "/queryUserByDeptIdComponentData", method = RequestMethod.GET)
-    public Result<IPage<SysUser>> queryUserByDeptIdComponentData(
-            @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
-            @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
-            @RequestParam(name = "departId") String departId,
-            @RequestParam(name="realname",required=false) String realname,
-            @RequestParam(name="username",required=false) String username ) {
-        if(oConvertUtils.isEmpty(departId)){
-            return Result.error("请输入要查询的部门ID");
-        }
-        IPage<SysUser> pageList = sysUserDepartService.queryRealDepartUserPageList(departId, username, realname, pageSize, pageNo);
         return Result.OK(pageList);
     }
 
     /**
      * 导出excel
      *
-     * @param req
-     * @param sysUser
-     */
-    @RequestMapping(value = "/exportXlsVillage")
-    public ModelAndView exportXlsVillage(HttpServletRequest req,
-                                  HttpServletResponse response,SysUser sysUser)throws Exception {
-        // 获取登录用户信息，可以用来查询单位部门信息
-        LoginUser currentUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-
-        String username = currentUser.getUsername();
-
-        // 获取用户角色
-        List<String> role = sysBaseAPI.getRolesByUsername(username);
-
-        List<SysUser> queryList = new ArrayList<SysUser>();
-
-        // 如果是普通用户，则只能看到自己创建的数据
-//        if(role.contains("CommonUser")) {
-//            QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
-//            queryWrapper.eq("create_by",username);
-//            queryList = sysUserService.list(queryWrapper);
-//        }
-//        else {
-            // 1. 规则，下面是 以**开始
-            //String rule = "in";
-            // 2. 查询字段
-            //String field = "departId";
-
-            // 获取子单位ID
-            //String childrenIdString = commonService.getChildrenIdStringByOrgCode(currentUser.getOrgCode());
-
-           // HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
-            // 获取请求参数中的superQueryParams
-            //List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
-
-            // 添加额外查询条件，用于权限控制
-//            paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
-//                    + childrenIdString
-//                    + "%22,%22field%22:%22" + field + "%22%7D%5D");
-//            String[] params = new String[paramsList.size()];
-//            paramsList.toArray(params);
-//            map.put("superQueryParams", params);
-//            params = new String[]{"and"};
-//            map.put("superQueryMatchType", params);
-            //QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(sysUser, map);
-//            String departId = currentUser.getDepartId();
-            QueryWrapper<SysUser> sysUserQueryWrapper = new QueryWrapper<>();
-            sysUserQueryWrapper.eq("people_type",2);
-            queryList = sysUserService.list(sysUserQueryWrapper);
-//        }
-
-
-        // Step.1 组装查询条件查询数据
-
-        //Step.2 获取导出数据
-        // 过滤选中数据
-        String selections = req.getParameter("selections");
-        List<SysUser> sysUserList = new ArrayList<SysUser>();
-        if(oConvertUtils.isEmpty(selections)) {
-            sysUserList = queryList;
-        }else {
-            List<String> selectionList = Arrays.asList(selections.split(","));
-            sysUserList = queryList.stream().filter(item -> selectionList.contains(item.getId())).collect(Collectors.toList());
-        }
-
-        // Step.3 组装pageList
-        //List<SysUser> pageList = new ArrayList<SysUser>();
-        List<VillageUser> voPageList = new ArrayList<>();
-        for (SysUser main : sysUserList) {
-            //SysUser user = new SysUser();
-            VillageUser vo = new VillageUser();
-            //BeanUtils.copyProperties(main, user);
-            BeanUtils.copyProperties(main, vo);
-            //pageList.add(user);
-            voPageList.add(vo);
-        }
-
-        // Step.4 AutoPoi 导出Excel
-        ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
-        mv.addObject(NormalExcelConstants.FILE_NAME, "村民列表");
-        mv.addObject(NormalExcelConstants.CLASS, VillageUser.class);
-        mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("村民数据", "导出人:"+currentUser.getRealname(), "村民表"));
-        mv.addObject(NormalExcelConstants.DATA_LIST, voPageList);
-
-        // List深拷贝，否则返回前端会没数据
-        List<VillageUser> newPageList = ObjectUtil.cloneByStream(voPageList);
-
-        baseCommon_Service.addExportLog(mv.getModel(), "村民", req, response);
-
-        mv.addObject(NormalExcelConstants.DATA_LIST, newPageList);
-
-        return mv;
-       /* // Step.1 组装查询条件
-
-        //Step.2 AutoPoi 导出Excel
-        ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
-        //update-begin--Author:kangxiaolin  Date:20180825 for：[03]用户导出，如果选择数据则只导出相关数据--------------------
-        String selections = req.getParameter("selections");
-       if(!oConvertUtils.isEmpty(selections)){
-           queryWrapper.in("id",selections.split(","));
-       }
-        //update-end--Author:kangxiaolin  Date:20180825 for：[03]用户导出，如果选择数据则只导出相关数据----------------------
-        List<SysUser> pageList = sysUserService.list(queryWrapper);
-
-        //导出文件名称
-        mv.addObject(NormalExcelConstants.FILE_NAME, "用户列表");
-        mv.addObject(NormalExcelConstants.CLASS, SysUser.class);
-		LoginUser user = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-        ExportParams exportParams = new ExportParams("用户列表数据", "导出人:"+user.getRealname(), "导出信息");
-        exportParams.setImageBasePath(upLoadPath);
-        mv.addObject(NormalExcelConstants.PARAMS, exportParams);
-        mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
-        return mv;*/
-    }
-
-    /**
-     * 导出excel
-     *
-     * @param req
+     * @param request
      * @param sysUser
      */
     @RequestMapping(value = "/exportXls")
-    public ModelAndView exportXls(HttpServletRequest req,
-                                  HttpServletResponse response,SysUser sysUser)throws Exception {
-        // 获取登录用户信息，可以用来查询单位部门信息
-        LoginUser currentUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-
-        String username = currentUser.getUsername();
-
-        // 获取用户角色
-        List<String> role = sysBaseAPI.getRolesByUsername(username);
-
-        List<SysUser> queryList = new ArrayList<SysUser>();
-//        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
-        QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(sysUser, req.getParameterMap());
-        queryWrapper.eq("del_flag",0);
-        queryWrapper.eq("people_type","1");
-        // 如果是普通用户，则只能看到自己创建的数据
-         if(role.contains("CCDIAdmin")){
-            queryList = sysUserService.list(queryWrapper);
-        }
-        else if(role.contains("admin")&&!role.contains("CCDIAdmin")) {
-            // 1. 规则，下面是 以**开始
-            //String rule = "in";
-            // 2. 查询字段
-            //String field = "departId";
-
-            // 获取子单位ID
-            //String childrenIdString = commonService.getChildrenIdStringByOrgCode(currentUser.getOrgCode());
-
-            // HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
-            // 获取请求参数中的superQueryParams
-            //List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
-
-            // 添加额外查询条件，用于权限控制
-//            paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
-//                    + childrenIdString
-//                    + "%22,%22field%22:%22" + field + "%22%7D%5D");
-//            String[] params = new String[paramsList.size()];
-//            paramsList.toArray(params);
-//            map.put("superQueryParams", params);
-//            params = new String[]{"and"};
-//            map.put("superQueryMatchType", params);
-            //QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(sysUser, map);
-            String departId = currentUser.getDepartId();
-//            QueryWrapper<SysUser> sysUserQueryWrapper = new QueryWrapper<>();
-//            sysUserQueryWrapper.eq("depart_id",departId);
-             queryWrapper.eq("depart_id",departId);
-            queryList = sysUserService.list(queryWrapper);
-        }
-
-
-        // Step.1 组装查询条件查询数据
-
-        //Step.2 获取导出数据
-        // 过滤选中数据
-        String selections = req.getParameter("selections");
-        List<SysUser> sysUserList = new ArrayList<SysUser>();
-        if(oConvertUtils.isEmpty(selections)) {
-            sysUserList = queryList;
-        }else {
-            List<String> selectionList = Arrays.asList(selections.split(","));
-            sysUserList = queryList.stream().filter(item -> selectionList.contains(item.getId())).collect(Collectors.toList());
-        }
-
-        // Step.3 组装pageList
-        //List<SysUser> pageList = new ArrayList<SysUser>();
-        List<SysUserVo> voPageList = new ArrayList<>();
-        for (SysUser main : sysUserList) {
-            //SysUser user = new SysUser();
-            SysUserVo vo = new SysUserVo();
-            //BeanUtils.copyProperties(main, user);
-            BeanUtils.copyProperties(main, vo);
-            //pageList.add(user);
-            voPageList.add(vo);
-        }
-
-        // Step.4 AutoPoi 导出Excel
-        ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
-        mv.addObject(NormalExcelConstants.FILE_NAME, "人员列表");
-        mv.addObject(NormalExcelConstants.CLASS, SysUserVo.class);
-        mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("人员数据", "导出人:"+currentUser.getRealname(), "人员表"));
-        mv.addObject(NormalExcelConstants.DATA_LIST, voPageList);
-
-        // List深拷贝，否则返回前端会没数据
-        List<SysUserVo> newPageList = ObjectUtil.cloneByStream(voPageList);
-
-        baseCommon_Service.addExportLog(mv.getModel(), "人员", req, response);
-
-        mv.addObject(NormalExcelConstants.DATA_LIST, newPageList);
-
-        return mv;
-       /* // Step.1 组装查询条件
-
+    public ModelAndView exportXls(SysUser sysUser,HttpServletRequest request) {
+        // Step.1 组装查询条件
+        QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(sysUser, request.getParameterMap());
         //Step.2 AutoPoi 导出Excel
         ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
         //update-begin--Author:kangxiaolin  Date:20180825 for：[03]用户导出，如果选择数据则只导出相关数据--------------------
-        String selections = req.getParameter("selections");
+        String selections = request.getParameter("selections");
        if(!oConvertUtils.isEmpty(selections)){
            queryWrapper.in("id",selections.split(","));
        }
@@ -1138,8 +434,9 @@ public class SysUserController {
         exportParams.setImageBasePath(upLoadPath);
         mv.addObject(NormalExcelConstants.PARAMS, exportParams);
         mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
-        return mv;*/
+        return mv;
     }
+
     /**
      * 通过excel导入数据
      *
@@ -1159,21 +456,13 @@ public class SysUserController {
         for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
             MultipartFile file = entity.getValue();// 获取上传文件对象
             ImportParams params = new ImportParams();
-            params.setTitleRows(1);//表格标题，标题是表格的名称，一般是在第一行将所有单元格合并成一个单元格
-            params.setHeadRows(2);//表头，表头是表格的列标题（字段名），一般在第二行
+            params.setTitleRows(2);
+            params.setHeadRows(1);
             params.setNeedSave(true);
             try {
                 List<SysUser> listSysUsers = ExcelImportUtil.importExcel(file.getInputStream(), SysUser.class, params);
                 for (int i = 0; i < listSysUsers.size(); i++) {
                     SysUser sysUserExcel = listSysUsers.get(i);
-                    //用户状态
-                    sysUserExcel.setStatus(1);
-                    //设置初始账号
-                    if (StringUtils.isBlank(sysUserExcel.getUsername())) {
-                        //账号默认为手机号
-                        sysUserExcel.setUsername(sysUserExcel.getPhone());
-                    }
-                    //设置默认密码
                     if (StringUtils.isBlank(sysUserExcel.getPassword())) {
                         // 密码默认为 “123456”
                         sysUserExcel.setPassword("123456");
@@ -1183,70 +472,38 @@ public class SysUserController {
                     sysUserExcel.setSalt(salt);
                     String passwordEncode = PasswordUtil.encrypt(sysUserExcel.getUsername(), sysUserExcel.getPassword(), salt);
                     sysUserExcel.setPassword(passwordEncode);
-                    //部门ID,设置所属单位及负责单位
-
-                    String orgCode = sysUserExcel.getOrgCode();
-//                    List<String> orgCodeList = Arrays.asList(orgCode.split(","));
-//                    List<String> deptIdList = new ArrayList<>();
-//                    for (int index = 0; index<orgCodeList.size();index++){
-//                        deptIdList.add(commonService.getDepartIdByOrgCode(orgCodeList.get(index)));
-//                    }
-//                    String deptId = String.join(",", deptIdList);
-                    String deptId = commonService.getDepartIdByOrgCode(orgCode);
-                    sysUserExcel.setDepartId(deptId);
-                    if(sysUserExcel.getUserIdentity() == 2){
-                        sysUserExcel.setDepartIds(deptId);
-                    }
-                    Integer yn = sysUserExcel.getUserIdentity();
-                    //初始化用户角色为单位非管理员
-                    String role = "1465163864583323650";
-                    //System.out.println("ynynynynyn"+yn);
-                    if(yn == 2){
-                        role = "f6817f48af4fb3af11b9e8bf182f618b";
-                    }
-                    sysUserExcel.setPeopleType("1");
-                    sysUserExcel.setCreateTime(new Date());
-                    sysUserExcel.setDelFlag(CommonConstant.DEL_FLAG_0);
-                    System.out.println("sysUserExcel"+sysUserExcel);
                     try {
-                        sysUserService.saveUser(sysUserExcel,role,deptId);
-                        //sysUserService.save(sysUserExcel);
+                        sysUserService.save(sysUserExcel);
                         successLines++;
                     } catch (Exception e) {
                         errorLines++;
                         String message = e.getMessage().toLowerCase();
                         int lineNumber = i + 1;
                         // 通过索引名判断出错信息
-//                        if (message.contains(CommonConstant.SQL_INDEX_UNIQ_SYS_USER_USERNAME)) {
-//                            errorMessage.add("第 " + lineNumber + " 行：用户名已经存在，忽略导入。");
-//                        } else if (message.contains(CommonConstant.SQL_INDEX_UNIQ_SYS_USER_WORK_NO)) {
-//                            errorMessage.add("第 " + lineNumber + " 行：工号已经存在，忽略导入。");
-//                        } else if (message.contains(CommonConstant.SQL_INDEX_UNIQ_SYS_USER_PHONE)) {
-//                            errorMessage.add("第 " + lineNumber + " 行：手机号已经存在，忽略导入。");
-//                        } else if (message.contains(CommonConstant.SQL_INDEX_UNIQ_SYS_USER_EMAIL)) {
-//                            errorMessage.add("第 " + lineNumber + " 行：电子邮件已经存在，忽略导入。");
-//                        }
-                        if (message.contains(CommonConstant.SQL_INDEX_UNIQ_SYS_USER_PHONE)) {
+                        if (message.contains(CommonConstant.SQL_INDEX_UNIQ_SYS_USER_USERNAME)) {
+                            errorMessage.add("第 " + lineNumber + " 行：用户名已经存在，忽略导入。");
+                        } else if (message.contains(CommonConstant.SQL_INDEX_UNIQ_SYS_USER_WORK_NO)) {
+                            errorMessage.add("第 " + lineNumber + " 行：工号已经存在，忽略导入。");
+                        } else if (message.contains(CommonConstant.SQL_INDEX_UNIQ_SYS_USER_PHONE)) {
                             errorMessage.add("第 " + lineNumber + " 行：手机号已经存在，忽略导入。");
-                        } else if(message.contains(CommonConstant.SQL_INDEX_UNIQ_SYS_IDNUMBER)){
-                            errorMessage.add("第 " + lineNumber + " 行：身份证号已经存在，忽略导入。");
-                        }
-                        else {
+                        } else if (message.contains(CommonConstant.SQL_INDEX_UNIQ_SYS_USER_EMAIL)) {
+                            errorMessage.add("第 " + lineNumber + " 行：电子邮件已经存在，忽略导入。");
+                        } else {
                             errorMessage.add("第 " + lineNumber + " 行：未知错误，忽略导入");
                             log.error(e.getMessage(), e);
                         }
                     }
                     // 批量将部门和用户信息建立关联关系
-//                    String departIds = sysUserExcel.getDepartIds();
-//                    if (StringUtils.isNotBlank(departIds)) {
-//                        String userId = sysUserExcel.getId();
-//                        String[] departIdArray = departIds.split(",");
-//                        List<SysUserDepart> userDepartList = new ArrayList<>(departIdArray.length);
-//                        for (String departId : departIdArray) {
-//                            userDepartList.add(new SysUserDepart(userId, departId));
-//                        }
-//                        sysUserDepartService.saveBatch(userDepartList);
-//                    }
+                    String departIds = sysUserExcel.getDepartIds();
+                    if (StringUtils.isNotBlank(departIds)) {
+                        String userId = sysUserExcel.getId();
+                        String[] departIdArray = departIds.split(",");
+                        List<SysUserDepart> userDepartList = new ArrayList<>(departIdArray.length);
+                        for (String departId : departIdArray) {
+                            userDepartList.add(new SysUserDepart(userId, departId));
+                        }
+                        sysUserDepartService.saveBatch(userDepartList);
+                    }
 
                 }
             } catch (Exception e) {
@@ -1299,35 +556,6 @@ public class SysUserController {
 		}
 		return sysUserService.resetPassword(username,oldpassword,password,confirmpassword);
 	}
-
-    @RequestMapping(value = "/updatePhone", method = RequestMethod.PUT)
-    public Result<?> updatPhone(@RequestBody JSONObject json) {
-        Result<JSONObject> result = new Result<JSONObject>();
-        String username = json.getString("username");
-        String phone = json.getString("phone");
-        LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
-        String captcha = json.getString("captcha");
-        Object code = redisUtil.get(phone);
-        if(!sysUser.getUsername().equals(username)){
-            return Result.error("只允许修改自己的手机号码！");
-        }
-        SysUser user = this.sysUserService.getOne(new LambdaQueryWrapper<SysUser>().eq(SysUser::getUsername, username));
-        if(user==null) {
-            return Result.error("用户不存在！");
-        }
-        if (!captcha.equals(code)) {
-            result.setMessage("验证码错误");
-            result.setSuccess(false);
-            return result;
-        }
-        // 验证成功后删除验证码
-        redisUtil.set(phone, captcha,600);
-        // 更新手机号码
-        user.setPhone(phone);
-        sysUserService.updateById(user);
-        return Result.ok("手机号码修改成功!");
-
-    }
 
     @RequestMapping(value = "/userRoleList", method = RequestMethod.GET)
     public Result<IPage<SysUser>> userRoleList(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
@@ -2149,33 +1377,5 @@ public class SysUserController {
         }
         return ls;
     }
-
-
-    /**
-     *  查询当前用户所在部门ID，所在部门名称，上级业务部门，下级业务部门
-     * @return
-     */
-    @RequestMapping(value = "/getCurrentUserDeptWorkMessage", method = RequestMethod.GET)
-    public Result<Map<String,Object>> getCurrentUserDeptWorkMessage() {
-        Result<Map<String,Object>> result = new Result<Map<String,Object>>();
-        try {
-            LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
-            SysDepart currentUserDepart = this.sysDepartService.queryCurrentUserDepart(sysUser.getId());
-            SysDepart currentUserParentDepart = this.sysDepartService.queryDeptByDepartId(currentUserDepart.getBusinessParentId());
-            List<SysDepart> currentUserChildrenDeparts = this.sysDepartService.queryWorkChildrenDeparts(currentUserDepart.getId());
-            Map<String,Object> map = new HashMap<String,Object>();
-            map.put("currentUser", sysUser);
-            map.put("currentUserDepart", currentUserDepart);
-            map.put("currentUserParentDepart", currentUserParentDepart);
-            map.put("currentUserChildrenDeparts", currentUserChildrenDeparts);
-            result.setSuccess(true);
-            result.setResult(map);
-        }catch(Exception e) {
-            log.error(e.getMessage(), e);
-            result.error500("查询失败！");
-        }
-        return result;
-    }
-
 
 }

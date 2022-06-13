@@ -19,5 +19,4 @@ public interface SysAnnouncementMapper extends BaseMapper<SysAnnouncement> {
 	
 	List<SysAnnouncement> querySysCementListByUserId(Page<SysAnnouncement> page, @Param("userId")String userId,@Param("msgCategory")String msgCategory);
 
-    int queryUnreadMessageNumBySysUserId(@Param("sysUserId")String sysUserId);
 }

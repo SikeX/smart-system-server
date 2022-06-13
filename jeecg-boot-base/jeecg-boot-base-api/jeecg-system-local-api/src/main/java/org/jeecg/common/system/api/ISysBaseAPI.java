@@ -25,8 +25,6 @@ public interface ISysBaseAPI extends CommonAPI {
      */
     void sendSysAnnouncement(MessageDTO message);
 
-    void sendSysAnnouncementById(MessageDTO message);
-
     /**
      * 2发送消息 附带业务参数
      * @param message 使用构造器赋值参数
@@ -59,9 +57,6 @@ public interface ISysBaseAPI extends CommonAPI {
      */
     LoginUser getUserById(String id);
 
-    LoginUser getUserByIdNumber(String idNumber);
-
-
     /**
      * 7通过用户账号查询角色集合
      * @param username
@@ -92,7 +87,7 @@ public interface ISysBaseAPI extends CommonAPI {
      * 12查询所有分类字典
      * @return
      */
-    public List<SysCategoryModel> queryAllSysCategory();
+    public List<SysCategoryModel> queryAllDSysCategory();
 
 
     /**
@@ -316,19 +311,6 @@ public interface ISysBaseAPI extends CommonAPI {
     List<DictModel> getDictItems(String dictCode);
 
     /**
-     * 根据字典code查询表中字典项
-     * @author sike
-     * @Date 2022-03-05
-     *
-     * @param table
-     * @param text
-     * @param code
-     * @param key
-     * @return
-     */
-    String translateDictFromTable(String table, String text, String code, String key);
-
-    /**
      *  根据多个字典code查询多个字典项
      * @param dictCodeList
      * @return key = dictCode ； value=对应的字典项
@@ -344,69 +326,5 @@ public interface ISysBaseAPI extends CommonAPI {
      * @return
      */
     List<DictModel> loadDictItemByKeyword(String dictCode, String keyword, Integer pageSize);
-
-    // 根据userid查询业务结构父id
-    String getBusDepartIdByUserId(String id);
-
-    // 根据用户id查询用户单位类型
-    String getDepTypeByUserId(String userId);
-
-    // 根据部门id返回业务部门父id
-    String getBusParentDepIdByDepartId(String departId);
-
-    String getParentIdByUserId(String id);
-
-    String getParentDepIdByDepartId(String departId);
-
-    String getDepartIdByUserId(String userId);
-
-    public List<String> getSubDepIdsByDepId(String userId);
-
-    public List<String> getDepAdminByDepId(String depId);
-
-    /**
-     * 2021-12-12 @Author CabbSir
-     * 根据roleId 查询所有管理员id list
-     * @param roleId
-     * @return
-     */
-    List<String> getSysUserListByRole(String roleId);
-
-    /**
-     * 2021-12-24
-     * 获取所有业务部门（除开乡镇）
-     * @TODO 暂时
-     * @return
-     */
-    public List<SysDepartModel> getAllBusDepart();
-
-
-    /**
-     * 2021-12-25
-     * 通过orgcode获取子部门列表
-     * @param orgCode
-     * @return
-     */
-    public List<SysDepartModel> getChildrenDepart(String orgCode);
-
-    /**
-     * 2022-02-26
-     * 通过干部人员类型发送通知
-     * @param peopleType
-     * @return
-     */
-    public List<JSONObject> getUserIdsByTypes(String peopleType);
-
-
-    /**
-     * 2022-03-31 @author sike
-     * 通过
-     *
-     * @param locationId
-     * @return
-     */
-    public VillageInfo getVillageInfoByDepartId(String locationId);
-
-    public List<VillageRelationModel> getVillageRelation(String idnumber, String label);
 
 }

@@ -116,45 +116,4 @@ public class LoginUser {
 	/**设备id uniapp推送用*/
 	private String clientId;
 
-	private String departId;
-
-	private java.lang.String peopleType;
-
-	/**
-	 * 上次验证手机号码时间
-	 */
-	private Date lastVerifyTime;
-
-	private String idnumber;
-
-	private String homeRole;
-
-	@Override
-	public String toString() {
-		return "LoginUser{" +
-				"id='" + id + '\'' +
-				", username='" + username + '\'' +
-				", realname='" + realname + '\'' +
-				", password='" + password + '\'' +
-				", orgCode='" + orgCode + '\'' +
-				", avatar='" + avatar + '\'' +
-				", birthday=" + birthday +
-				", sex=" + sex +
-				", email='" + email + '\'' +
-				", phone='" + phone + '\'' +
-				", status=" + status +
-				", delFlag=" + delFlag +
-				", activitiSync=" + activitiSync +
-				", createTime=" + createTime +
-				", userIdentity=" + userIdentity +
-				", departIds='" + departIds + '\'' +
-				", post='" + post + '\'' +
-				", telephone='" + telephone + '\'' +
-				", relTenantIds='" + relTenantIds + '\'' +
-				", clientId='" + clientId + '\'' +
-				", departId='" + departId + '\'' +
-				", peopleType='" + peopleType + '\'' +
-				", lastVerifyTime='" + lastVerifyTime + '\'' +
-				'}';
-	}
 }

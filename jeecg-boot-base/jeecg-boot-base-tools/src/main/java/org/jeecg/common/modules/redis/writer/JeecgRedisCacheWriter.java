@@ -11,8 +11,6 @@ import java.util.function.Function;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.PessimisticLockingFailureException;
-import org.springframework.data.redis.cache.CacheStatistics;
-import org.springframework.data.redis.cache.CacheStatisticsCollector;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -23,9 +21,6 @@ import org.springframework.util.Assert;
 
 /**
  * 该类参照 DefaultRedisCacheWriter 重写了 remove 方法实现通配符*删除
- *
- * @author: scott
- * @date: 2020/01/01 16:18
  */
 @Slf4j
 public class JeecgRedisCacheWriter implements RedisCacheWriter {
@@ -44,7 +39,6 @@ public class JeecgRedisCacheWriter implements RedisCacheWriter {
         this.sleepTime = sleepTime;
     }
 
-    @Override
     public void put(String name, byte[] key, byte[] value, @Nullable Duration ttl) {
         Assert.notNull(name, "Name must not be null!");
         Assert.notNull(key, "Key must not be null!");
@@ -60,7 +54,6 @@ public class JeecgRedisCacheWriter implements RedisCacheWriter {
         });
     }
 
-    @Override
     public byte[] get(String name, byte[] key) {
         Assert.notNull(name, "Name must not be null!");
         Assert.notNull(key, "Key must not be null!");
@@ -69,7 +62,6 @@ public class JeecgRedisCacheWriter implements RedisCacheWriter {
         });
     }
 
-    @Override
     public byte[] putIfAbsent(String name, byte[] key, byte[] value, @Nullable Duration ttl) {
         Assert.notNull(name, "Name must not be null!");
         Assert.notNull(key, "Key must not be null!");
@@ -105,14 +97,12 @@ public class JeecgRedisCacheWriter implements RedisCacheWriter {
         });
     }
 
-    @Override
     public void remove(String name, byte[] key) {
         Assert.notNull(name, "Name must not be null!");
         Assert.notNull(key, "Key must not be null!");
         String keyString = new String(key);
         log.info("redis remove key:" + keyString);
-        String keyIsAll = "*";
-        if(keyString!=null && keyString.endsWith(keyIsAll)){
+        if(keyString!=null && keyString.endsWith("*")){
             execute(name, connection -> {
                 // 获取某个前缀所拥有的所有的键，某个前缀开头，后面肯定是*
                 Set<byte[]> keys = connection.keys(key);
@@ -129,7 +119,6 @@ public class JeecgRedisCacheWriter implements RedisCacheWriter {
         }
     }
 
-    @Override
     public void clean(String name, byte[] pattern) {
         Assert.notNull(name, "Name must not be null!");
         Assert.notNull(pattern, "Pattern must not be null!");
@@ -229,22 +218,4 @@ public class JeecgRedisCacheWriter implements RedisCacheWriter {
     private static byte[] createCacheLockKey(String name) {
         return (name + "~lock").getBytes(StandardCharsets.UTF_8);
     }
-
-    //update-begin-author:zyf date:20220216 for:升级springboot版本到2.4.0+以后需要实现的方法*
-    private final CacheStatisticsCollector statistics = CacheStatisticsCollector.create();
-    @Override
-    public CacheStatistics getCacheStatistics(String cacheName) {
-        return statistics.getCacheStatistics(cacheName);
-    }
-
-    @Override
-    public void clearStatistics(String name) {
-
-    }
-
-    @Override
-    public RedisCacheWriter withStatisticsCollector(CacheStatisticsCollector cacheStatisticsCollector) {
-        return null;
-    }
-    //update-begin-author:zyf date:20220216 for:升级springboot版本到2.4.0+以后需要实现的方法*
 }

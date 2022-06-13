@@ -7,10 +7,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.vo.SysUserCacheInfo;
-import org.jeecg.modules.SmartFirstFormPeople.entity.FirstFormInfo;
 import org.jeecg.modules.system.entity.SysUser;
 import org.jeecg.modules.system.model.SysUserSysDepartModel;
-import org.jeecg.modules.system.vo.UserInfo;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
@@ -62,8 +60,6 @@ public interface ISysUserService extends IService<SysUser> {
 	public boolean deleteBatchUsers(String userIds);
 	
 	public SysUser getUserByName(String username);
-
-	public List<String> getRolesByName(String username);
 	
 	/**
 	 * 添加用户和用户角色关系
@@ -256,42 +252,4 @@ public interface ISysUserService extends IService<SysUser> {
 	/** userId转为username */
 	List<String> userIdToUsername(Collection<String> userIdList);
 
-	/**
-	 * 根据id查询系统用户
-	 * @param id
-	 * @return
-	 */
-	SysUser queryById(String id);
-
-	/**
-	 * 根据id查询系统用户
-	 * @param idnumber
-	 * @return
-	 */
-	SysUser queryByIdnumber(String idnumber);
-
-	/**
-	 * 保存用户
-	 * @param user 用户
-	 * @param selectedRoles 选择的角色id，多个以逗号隔开
-	 */
-	void saveUserFromClient(SysUser user, String selectedRoles, int id, int userType);
-
-	/**
-	 * 根据手机号码查询用户
-	 * @param purePhoneNumber
-	 * @return
-	 */
-    SysUser queryByPhone(String purePhoneNumber);
-
-	/**
-	 * 根据户口号查询用户
-	 * @param homeCode
-	 * @return
-	 */
-	List<SysUser> queryByHomeCode(String homeCode);
-
-    List<UserInfo> sendInformation();
-
-	List<String> getLeadersByOrgCode(String departCode);
 }

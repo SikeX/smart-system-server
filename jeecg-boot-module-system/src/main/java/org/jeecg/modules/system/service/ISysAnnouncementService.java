@@ -4,7 +4,6 @@ import org.jeecg.modules.system.entity.SysAnnouncement;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.jeecg.modules.system.vo.SmsMsgVo;
 
 /**
  * @Description: 系统通告表
@@ -22,6 +21,5 @@ public interface ISysAnnouncementService extends IService<SysAnnouncement> {
 
 	public Page<SysAnnouncement> querySysCementPageByUserId(Page<SysAnnouncement> page,String userId,String msgCategory);
 
-	public void sendSmsMsg(SmsMsgVo smsMsgVo);
 
 }

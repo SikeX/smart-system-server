@@ -1,4 +1,4 @@
-//package org.jeecg.modules.demo.cloud.org.jeecg.modules.smart_video_player.controller;
+//package org.jeecg.modules.demo.cloud.controller;
 //
 //import io.swagger.annotations.Api;
 //import io.swagger.annotations.ApiOperation;

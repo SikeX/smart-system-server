@@ -1,10 +1,8 @@
 package org.jeecg.modules.smartTripleImportanceOneGreatness.vo;
 
-import java.io.Serializable;
 import java.util.List;
 import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatness;
-import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatnessPacca;
-import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatnessDescription;
+import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatnessDecription;
 import lombok.Data;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.jeecgframework.poi.excel.annotation.ExcelEntity;
@@ -19,7 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Description: 三重一大表
  * @Author: jeecg-boot
- * @Date:   2021-11-13
+ * @Date:   2021-11-01
  * @Version: V1.0
  */
 @Data
@@ -29,11 +27,10 @@ public class SmartTripleImportanceOneGreatnessPage {
 	/**主键*/
 	@ApiModelProperty(value = "主键")
     private java.lang.String id;
-	/**单位*/
-	@Excel(name = "单位", width = 15)
-
-	@ApiModelProperty(value = "单位")
-    private java.lang.String documentid;
+	/**单位ID*/
+	@Excel(name = "单位ID", width = 15)
+	@ApiModelProperty(value = "单位ID")
+    private java.lang.String docementid;
 	/**名称*/
 	@Excel(name = "名称", width = 15)
 	@ApiModelProperty(value = "名称")
@@ -57,37 +54,18 @@ public class SmartTripleImportanceOneGreatnessPage {
 	@Excel(name = "参会人数", width = 15)
 	@ApiModelProperty(value = "参会人数")
     private java.lang.Integer meetingNumber;
-/*
-	*//**参会人员*//*
-	@Excel(name = "参会人员", width = 15,dictTable = "sys_user",dicText = "realname",dicCode = "id")
-	@Dict(dictTable = "sys_user",dicText = "realname",dicCode = "id")
+	/**参会人员*/
+	@Excel(name = "参会人员", width = 15)
 	@ApiModelProperty(value = "参会人员")
     private java.lang.String meetingPeople;
-	*//**参会人员姓名*//*
-	@Excel(name = "参会人员姓名", width = 15)
-	@ApiModelProperty(value = "参会人员姓名")
-	private java.lang.String meetingPeopleName;*/
-
 	/**主持人*/
-	@Excel(name = "主持人", width = 15,dictTable = "sys_user",dicText = "realname",dicCode = "id")
-	@Dict(dictTable = "sys_user",dicText = "realname",dicCode = "id")
+	@Excel(name = "主持人", width = 15)
 	@ApiModelProperty(value = "主持人")
     private java.lang.String meetingHoster;
-	/**主持人姓名*/
-	@Excel(name = "主持人姓名", width = 15)
-	@ApiModelProperty(value = "主持人姓名")
-	private java.lang.String meetingHosterName;
-
 	/**记录人*/
-	@Excel(name = "记录人", width = 15,dictTable = "sys_user",dicText = "realname",dicCode = "id")
-	@Dict(dictTable = "sys_user",dicText = "realname",dicCode = "id")
+	@Excel(name = "记录人", width = 15)
 	@ApiModelProperty(value = "记录人")
     private java.lang.String meetingRecorer;
-	/**记录人姓名*/
-	@Excel(name = "记录人姓名", width = 15)
-	@ApiModelProperty(value = "记录人姓名")
-	private java.lang.String meetingRecorerName;
-
 	/**会议内容摘要*/
 	@Excel(name = "会议内容摘要", width = 15)
 	@ApiModelProperty(value = "会议内容摘要")
@@ -97,27 +75,18 @@ public class SmartTripleImportanceOneGreatnessPage {
 	@ApiModelProperty(value = "备注")
     private java.lang.String meetingRemarks;
 	/**创建人*/
+	@Excel(name = "创建人", width = 15)
 	@ApiModelProperty(value = "创建人")
-    private java.lang.String createBy;
+    private java.lang.String creatBy;
 	/**创建时间*/
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@Excel(name = "创建时间", width = 15, format = "yyyy-MM-dd")
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
 	@ApiModelProperty(value = "创建时间")
-    private java.util.Date createTime;
-	/**删除状态（0正常，1已删除）*/
+    private java.util.Date creatTime;
 
-	@ApiModelProperty(value = "删除状态（0正常，1已删除）")
-    private java.lang.Integer delFlag;
-
-	/**上传附件*/
-	@ApiModelProperty(value = "上传附件")
-	private java.lang.String files;
-
-	@ExcelCollection(name="三重一大参会人员表")
-	@ApiModelProperty(value = "三重一大参会人员表")
-	private List<SmartTripleImportanceOneGreatnessPacca> smartTripleImportanceOneGreatnessPaccaList;
-	/*@ExcelCollection(name="三重一大附件表")
+	@ExcelCollection(name="三重一大附件表")
 	@ApiModelProperty(value = "三重一大附件表")
-	private List<SmartTripleImportanceOneGreatnessDescription> smartTripleImportanceOneGreatnessDescriptionList;*/
+	private List<SmartTripleImportanceOneGreatnessDecription> smartTripleImportanceOneGreatnessDecriptionList;
 
 }

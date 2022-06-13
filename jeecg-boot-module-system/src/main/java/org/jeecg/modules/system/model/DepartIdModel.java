@@ -1,10 +1,10 @@
 package org.jeecg.modules.system.model;
 
-import org.jeecg.modules.system.entity.SysDepart;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jeecg.modules.system.entity.SysDepart;
 
 /**
  * <p>
@@ -15,7 +15,7 @@ import java.util.List;
  * @Since 2019-01-22 
  *
  */
-public class  DepartIdModel implements Serializable {
+public class DepartIdModel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
