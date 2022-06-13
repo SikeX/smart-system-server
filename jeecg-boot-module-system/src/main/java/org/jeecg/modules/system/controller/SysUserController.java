@@ -22,10 +22,7 @@ import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.util.JwtUtil;
 import org.jeecg.common.system.vo.LoginUser;
-import org.jeecg.common.util.ImportExcelUtil;
-import org.jeecg.common.util.PasswordUtil;
-import org.jeecg.common.util.RedisUtil;
-import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.common.util.*;
 import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
@@ -1335,8 +1332,20 @@ public class SysUserController {
         Result<IPage<SysUser>> result = new Result<IPage<SysUser>>();
         Page<SysUser> page = new Page<SysUser>(pageNo, pageSize);
         String roleId = req.getParameter("roleId");
+        if (oConvertUtils.isEmpty(roleId)) {
+            result.setCode(500);
+            result.setSuccess(false);
+            result.setMessage("请先选择角色! ");
+            return result;
+        }
         String username = req.getParameter("username");
-        IPage<SysUser> pageList = sysUserService.getUserByRoleId(page,roleId,username);
+        List<String> departIdList = new ArrayList<>();
+        String departIds = req.getParameter("departIds");
+        SqlInjectionUtil.filterContent(new String[]{roleId, username, departIds});
+        if (oConvertUtils.isNotEmpty(departIds)) {
+            departIdList = Arrays.asList(departIds.split(","));
+        }
+        IPage<SysUser> pageList = sysUserService.getUserByRoleId(page,roleId,username, departIdList);
         result.setSuccess(true);
         result.setResult(pageList);
         return result;
