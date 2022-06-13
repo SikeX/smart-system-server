@@ -54,6 +54,12 @@
 		<if test="username!=null and username!=''">
 			and username = #{username}
 		</if>
+		<if test="departIds!=null  and departIds.size()>0">
+			and depart_id in
+			<foreach collection="departIds" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+		</if>
 	</select>
 	
 	<!--  修改用户部门code -->

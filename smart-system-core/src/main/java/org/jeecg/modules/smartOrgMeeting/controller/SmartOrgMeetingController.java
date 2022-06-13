@@ -17,6 +17,7 @@ import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.constant.VerifyConstant;
 import org.jeecg.modules.smartOrgMeeting.entity.SmartOrgMeeting;
 import org.jeecg.modules.smartOrgMeeting.entity.SmartOrgMeetingPacpa;
 import org.jeecg.modules.smartOrgMeeting.service.ISmartOrgMeetingPacpaService;
@@ -151,21 +152,52 @@ public class SmartOrgMeetingController {
         if (id == null) {
             return Result.error("没有找到部门！");
         }
+        // 设置上传人信息
         smartOrgMeeting.setDepartId(id);
         smartOrgMeeting.setCreatorId(sysUser.getId());
 
+        // 设置审核状态
         Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
         if (isVerify) {
-            smartOrgMeetingService.saveMain(smartOrgMeeting, smartOrgMeetingPage.getSmartOrgMeetingPacpaList());
-            String recordId = smartOrgMeeting.getId();
-            log.info("recordId is " + recordId);
-            smartVerify.addVerifyRecord(recordId, verifyType);
-            smartOrgMeeting.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
-            smartOrgMeetingService.updateById(smartOrgMeeting);
+            smartOrgMeeting.setVerifyStatus(VerifyConstant.VERIFY_STATUS_TOSUBMIT);
         } else {
-            smartOrgMeeting.setVerifyStatus("3");
-            smartOrgMeetingService.saveMain(smartOrgMeeting, smartOrgMeetingPage.getSmartOrgMeetingPacpaList());
+            smartOrgMeeting.setVerifyStatus(VerifyConstant.VERIFY_STATUS_FREE);
         }
+
+        // 保存到数据库中
+        smartOrgMeetingService.saveMain(smartOrgMeeting, smartOrgMeetingPage.getSmartOrgMeetingPacpaList());
+
+        return Result.OK("添加成功！");
+    }
+
+    /**
+     * 提交审核
+     *
+     * @param smartOrgMeeting
+     * @return
+     */
+    @AutoLog(value = "组织生活会-提交审核")
+    @ApiOperation(value = "组织生活会-提交审核", notes = "组织生活会-提交审核")
+    @PostMapping(value = "/submitVerify")
+    public Result<?> submitVerify(@RequestBody SmartOrgMeeting smartOrgMeeting) {
+        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+        String orgCode = sysUser.getOrgCode();
+        if ("".equals(orgCode)) {
+            return Result.error("本用户没有操作权限！");
+        }
+        String id = commonService.getDepartIdByOrgCode(orgCode);
+        if (id == null) {
+            return Result.error("没有找到部门！");
+        }
+
+        SmartOrgMeeting orgMeeting = smartOrgMeetingService.getById(smartOrgMeeting.getId());
+        orgMeeting.setDepartId(id);
+        orgMeeting.setCreatorId(sysUser.getId());
+
+        String recordId = orgMeeting.getId();
+        smartVerify.addVerifyRecord(recordId, verifyType);
+        orgMeeting.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+        smartOrgMeetingService.updateById(orgMeeting);
         return Result.OK("添加成功！");
     }
 
@@ -184,6 +216,10 @@ public class SmartOrgMeetingController {
         SmartOrgMeeting smartOrgMeetingEntity = smartOrgMeetingService.getById(smartOrgMeeting.getId());
         if (smartOrgMeetingEntity == null) {
             return Result.error("未找到对应数据");
+        }
+
+        if (!(smartOrgMeetingEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_TOSUBMIT) || smartOrgMeetingEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_FREE))) {
+            return Result.error("该任务已提交审核，不能修改！");
         }
         smartOrgMeeting.setDepartId(null);
         smartOrgMeeting.setCreateTime(null);
