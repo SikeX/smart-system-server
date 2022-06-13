@@ -5,13 +5,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Update;
-import org.jeecg.modules.SmartFirstFormPeople.entity.FirstFormInfo;
 import org.jeecg.modules.system.entity.SysUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.jeecg.modules.system.model.SysUserSysDepartModel;
 import org.jeecg.modules.system.vo.SysUserDepVo;
-import org.jeecg.modules.system.vo.UserInfo;
 
 import java.util.List;
 
@@ -30,13 +27,6 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 	 * @return
 	 */
 	public SysUser getUserByName(@Param("username") String username);
-
-	/**
-	 * 通过用户账号查询用户角色
-	 * @param username
-	 * @return
-	 */
-	public List<String> getRolesByName(@Param("username") String username);
 
 	/**
 	 *  根据部门Id查询用户信息
@@ -72,7 +62,7 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 	/**
 	 * 根据用户名设置部门ID
 	 * @param username
-	 * @param orgCode
+	 * @param departId
 	 */
 	void updateUserDepart(@Param("username") String username,@Param("orgCode") String orgCode);
 	
@@ -150,40 +140,4 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 	 * @return
 	 */
 	List<SysUser> queryByDepIds(@Param("departIds")List<String> departIds,@Param("username") String username);
-
-	/**
-	 * 根据id获取用户信息
-	 * @param id
-	 * @return
-	 */
-    SysUser queryById(String id);
-
-	/**
-	 * 根据id获取用户信息
-	 * @param idnumber
-	 * @return
-	 */
-	SysUser queryByIdnumber(String idnumber);
-
-	@Update("UPDATE sys_user SET phone = #{purePhoneNumber} where id = #{sysUserId}")
-	int updatePhoneById(String sysUserId, String purePhoneNumber);
-
-	/**
-	 * 根据homeCode获取用户信息
-	 * @param homeCode
-	 * @return
-	 */
-	List<SysUser> getUserByHomeCode(String homeCode);
-
-	/**
-	 * 根据homeCode获取用户的家庭关系
-	 * @param homeCode
-	 * @param idnumber
-	 * @return
-	 */
-	Integer getRelationByHomeCode(String homeCode,String idnumber);
-
-    List<UserInfo> sendInformation();
-
-	List<String> getLeadersByOrgCode(@Param("departCode") String departCode);
 }

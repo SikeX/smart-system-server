@@ -19,7 +19,6 @@ import java.util.Map;
 
 /**
  * 第三方App对接
- * @author: jeecg-boot
  */
 @Slf4j
 @RestController("thirdAppController")
@@ -39,7 +38,7 @@ public class ThirdAppController {
      */
     @GetMapping("/getEnabledType")
     public Result getEnabledType() {
-        Map<String, Boolean> enabledMap = new HashMap(5);
+        Map<String, Boolean> enabledMap = new HashMap<>();
         enabledMap.put("wechatEnterprise", thirdAppConfig.isWechatEnterpriseEnabled());
         enabledMap.put("dingtalk", thirdAppConfig.isDingtalkEnabled());
         return Result.OK(enabledMap);
@@ -92,12 +91,8 @@ public class ThirdAppController {
     @GetMapping("/sync/wechatEnterprise/depart/toApp")
     public Result syncWechatEnterpriseDepartToApp(@RequestParam(value = "ids", required = false) String ids) {
         if (thirdAppConfig.isWechatEnterpriseEnabled()) {
-            SyncInfoVo syncInfo = wechatEnterpriseService.syncLocalDepartmentToThirdApp(ids);
-            if (syncInfo.getFailInfo().size() == 0) {
-                return Result.OK("同步成功", null);
-            } else {
-                return Result.error("同步失败", syncInfo);
-            }
+            boolean flag = wechatEnterpriseService.syncLocalDepartmentToThirdApp(ids);
+            return flag ? Result.OK("同步成功", null) : Result.error("同步失败");
         }
         return Result.error("企业微信同步功能已禁用");
     }
@@ -130,12 +125,8 @@ public class ThirdAppController {
     @GetMapping("/sync/dingtalk/depart/toApp")
     public Result syncDingtalkDepartToApp(@RequestParam(value = "ids", required = false) String ids) {
         if (thirdAppConfig.isDingtalkEnabled()) {
-            SyncInfoVo syncInfo = dingtalkService.syncLocalDepartmentToThirdApp(ids);
-            if (syncInfo.getFailInfo().size() == 0) {
-                return Result.OK("同步成功", null);
-            } else {
-                return Result.error("同步失败", syncInfo);
-            }
+            boolean flag = dingtalkService.syncLocalDepartmentToThirdApp(ids);
+            return flag ? Result.OK("同步成功", null) : Result.error("同步失败");
         }
         return Result.error("钉钉同步功能已禁用");
     }

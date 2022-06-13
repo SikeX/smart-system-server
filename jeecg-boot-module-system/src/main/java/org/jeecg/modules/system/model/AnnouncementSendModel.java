@@ -2,8 +2,6 @@ package org.jeecg.modules.system.model;
 
 import java.io.Serializable;
 
-import org.jeecg.common.aspect.annotation.Dict;
-import org.jeecgframework.poi.excel.annotation.Excel;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -49,7 +47,7 @@ public class AnnouncementSendModel implements Serializable {
 	/**大小*/
 	private java.lang.Integer pageSize;
     /**
-     * 消息类型1:通知公告2:系统消息:任务下发
+     * 消息类型1:通知公告2:系统消息
      */
     private java.lang.String msgCategory;
 	/**
@@ -78,37 +76,5 @@ public class AnnouncementSendModel implements Serializable {
 	 * 摘要
 	 */
 	private java.lang.String msgAbstract;
-
-	private String fileList;
-
-	@Excel(name = "发送人数", width = 15)
-	private Integer sendCount;
-
-	@Excel(name = "已读人数", width = 15)
-	private Integer readCount;
-
-	@Excel(name = "发送部门", width = 15)
-	private String senderDepart;
-
-	private String username;
-
-	@Dict(dictTable = "sys_depart", dicText = "depart_name", dicCode = "org_code")
-	@Excel(name = "所属部门", width = 15)
-	private String orgCode;
-
-	private Integer isDelay;
-
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
-	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	private java.util.Date createTime;
-
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
-	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	private java.util.Date readTime;
-
-	private java.lang.String submitFile;
-
-	private java.lang.String submitRemark;
-
 
 }

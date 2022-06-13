@@ -16,7 +16,7 @@ import java.io.UnsupportedEncodingException;
 /**
  * @Description: 8项规定婚前报备表附表
  * @Author: jeecg-boot
- * @Date:   2021-11-13
+ * @Date:   2021-11-02
  * @Version: V1.0
  */
 @ApiModel(value="smart_premarital_filing_app对象", description="8项规定婚前报备表附表")
@@ -32,6 +32,10 @@ public class SmartPremaritalFilingApp implements Serializable {
 	/**主表id*/
     @ApiModelProperty(value = "主表id")
     private java.lang.String parentId;
+	/**序号*/
+	@Excel(name = "序号", width = 15)
+    @ApiModelProperty(value = "序号")
+    private java.lang.String serialNumber;
 	/**附件说明*/
 	@Excel(name = "附件说明", width = 15)
     @ApiModelProperty(value = "附件说明")
@@ -41,18 +45,11 @@ public class SmartPremaritalFilingApp implements Serializable {
     @ApiModelProperty(value = "附件文件路径")
     private java.lang.String appFilePath;
 	/**上传时间*/
-	@Excel(name = "上传时间", width = 15, format = "yyyy-MM-dd")
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+	@Excel(name = "上传时间", width = 15)
     @ApiModelProperty(value = "上传时间")
-    private java.util.Date uploadTime;
+    private java.lang.String uploadTime;
 	/**下载次数*/
 	@Excel(name = "下载次数", width = 15)
     @ApiModelProperty(value = "下载次数")
-    private java.lang.Integer downloadCount;
-	/**创建时间*/
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
-    @ApiModelProperty(value = "创建时间")
-    private java.util.Date createTime;
+    private java.lang.String downloadNum;
 }

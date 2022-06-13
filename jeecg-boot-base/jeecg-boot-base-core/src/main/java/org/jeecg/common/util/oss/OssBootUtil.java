@@ -1,14 +1,13 @@
 package org.jeecg.common.util.oss;
 
-import com.amazonaws.ClientConfiguration;
-import com.amazonaws.Protocol;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.S3ClientOptions;
-import com.amazonaws.services.s3.model.*;
+import com.aliyun.oss.ClientConfiguration;
+import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.common.auth.DefaultCredentialProvider;
+import com.aliyun.oss.model.CannedAccessControlList;
+import com.aliyun.oss.model.OSSObject;
+import com.aliyun.oss.model.PutObjectResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileItemStream;
-import org.jeecg.common.constant.SymbolConstant;
 import org.jeecg.common.util.CommonUtils;
 import org.jeecg.common.util.filter.FileTypeFilter;
 import org.jeecg.common.util.filter.StrAttackFilter;
@@ -24,7 +23,7 @@ import java.util.Date;
 import java.util.UUID;
 
 /**
- * @Description: 联通云 oss 上传工具类(高依赖版)
+ * @Description: 阿里云 oss 上传工具类(高依赖版)
  * @Date: 2019/5/10
  */
 @Slf4j
@@ -35,14 +34,9 @@ public class OssBootUtil {
     private static String accessKeySecret;
     private static String bucketName;
     private static String staticDomain;
-    private static String internalEndPoint;
 
     public static void setEndPoint(String endPoint) {
         OssBootUtil.endPoint = endPoint;
-    }
-
-    public static void setInternalEndpoint(String internalEndpoint) {
-        OssBootUtil.internalEndPoint = internalEndpoint;
     }
 
     public static void setAccessKeyId(String accessKeyId) {
@@ -69,8 +63,6 @@ public class OssBootUtil {
         return endPoint;
     }
 
-    public static String getInternalEndPoint() { return internalEndPoint;}
-
     public static String getAccessKeyId() {
         return accessKeyId;
     }
@@ -83,14 +75,14 @@ public class OssBootUtil {
         return bucketName;
     }
 
-    public static AmazonS3Client getOssClient() {
+    public static OSSClient getOssClient() {
         return ossClient;
     }
 
     /**
      * oss 工具客户端
      */
-    private static AmazonS3Client ossClient = null;
+    private static OSSClient ossClient = null;
 
     /**
      * 上传文件至阿里云 OSS
@@ -102,8 +94,8 @@ public class OssBootUtil {
      * @return oss 中的相对文件路径
      */
     public static String upload(MultipartFile file, String fileDir,String customBucket) {
-        String filePath = null;
-        initOSS(internalEndPoint, accessKeyId, accessKeySecret);
+        String FILE_URL = null;
+        initOSS(endPoint, accessKeyId, accessKeySecret);
         StringBuilder fileUrl = new StringBuilder();
         String newBucket = bucketName;
         if(oConvertUtils.isNotEmpty(customBucket)){
@@ -116,7 +108,7 @@ public class OssBootUtil {
             }
             // 获取文件名
             String orgName = file.getOriginalFilename();
-            if("".equals(orgName)){
+            if("" == orgName){
               orgName=file.getName();
             }
             //update-begin-author:liusq date:20210809 for: 过滤上传文件类型
@@ -134,17 +126,14 @@ public class OssBootUtil {
             //update-end-author:wangshuai date:20201012 for: 过滤上传文件夹名特殊字符，防止攻击
             fileUrl = fileUrl.append(fileDir + fileName);
 
-            filePath = fileUrl.toString();
-
-//            if (oConvertUtils.isNotEmpty(staticDomain) && staticDomain.toLowerCase().startsWith("http")) {
-//                filePath = staticDomain + SymbolConstant.SINGLE_SLASH + fileUrl;
-//            } else {
-////                FILE_URL = "https://zhjj.dlqzzst.com:543/files" + "/" + fileUrl;
-//                filePath = "https://" + newBucket + "." + endPoint + SymbolConstant.SINGLE_SLASH + fileUrl;
-//            }
-            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, fileUrl.toString(),file.getInputStream(),
-                    new ObjectMetadata()).withCannedAcl(CannedAccessControlList.PublicRead);
-            PutObjectResult result = ossClient.putObject(putObjectRequest);
+            if (oConvertUtils.isNotEmpty(staticDomain) && staticDomain.toLowerCase().startsWith("http")) {
+                FILE_URL = staticDomain + "/" + fileUrl;
+            } else {
+                FILE_URL = "https://" + newBucket + "." + endPoint + "/" + fileUrl;
+            }
+            PutObjectResult result = ossClient.putObject(newBucket, fileUrl.toString(), file.getInputStream());
+            // 设置权限(公开读)
+//            ossClient.setBucketAcl(newBucket, CannedAccessControlList.PublicRead);
             if (result != null) {
                 log.info("------OSS文件上传成功------" + fileUrl);
             }
@@ -155,7 +144,7 @@ public class OssBootUtil {
             e.printStackTrace();
             return null;
         }
-        return filePath;
+        return FILE_URL;
     }
 
     /**
@@ -164,8 +153,8 @@ public class OssBootUtil {
     * @Return: java.lang.String
     */
     public static String getOriginalUrl(String url) {
-        String originalDomain = "http://" + bucketName + "." + endPoint;
-        if(oConvertUtils.isNotEmpty(staticDomain) && url.indexOf(staticDomain)!=-1){
+        String originalDomain = "https://" + bucketName + "." + endPoint;
+        if(url.indexOf(staticDomain)!=-1){
             url = url.replace(staticDomain,originalDomain);
         }
         return url;
@@ -205,9 +194,9 @@ public class OssBootUtil {
             if (oConvertUtils.isNotEmpty(staticDomain) && staticDomain.toLowerCase().startsWith("http")) {
                 FILE_URL = staticDomain + "/" + fileUrl;
             } else {
-                FILE_URL = "http://" + bucketName + "." + endPoint + "/" + fileUrl;
+                FILE_URL = "https://" + bucketName + "." + endPoint + "/" + fileUrl;
             }
-            PutObjectResult result = ossClient.putObject(bucketName, fileUrl.toString(), file.openStream(), new ObjectMetadata());
+            PutObjectResult result = ossClient.putObject(bucketName, fileUrl.toString(), file.openStream());
             // 设置权限(公开读)
             ossClient.setBucketAcl(bucketName, CannedAccessControlList.PublicRead);
             if (result != null) {
@@ -269,10 +258,7 @@ public class OssBootUtil {
                 newBucket = bucket;
             }
             initOSS(endPoint, accessKeyId, accessKeySecret);
-            //update-begin---author:liusq  Date:20220120  for：替换objectName前缀，防止key不一致导致获取不到文件----
-            objectName = OssBootUtil.replacePrefix(objectName,bucket);
-            //update-end---author:liusq  Date:20220120  for：替换objectName前缀，防止key不一致导致获取不到文件----
-            S3Object ossObject = ossClient.getObject(newBucket,objectName);
+            OSSObject ossObject = ossClient.getObject(newBucket,objectName);
             inputStream = new BufferedInputStream(ossObject.getObjectContent());
         }catch (Exception e){
             log.info("文件获取失败" + e.getMessage());
@@ -280,14 +266,14 @@ public class OssBootUtil {
         return inputStream;
     }
 
-    ///**
-    // * 获取文件流
-    // * @param objectName
-    // * @return
-    // */
-    //public static InputStream getOssFile(String objectName){
-    //    return getOssFile(objectName,null);
-    //}
+    /**
+     * 获取文件流
+     * @param objectName
+     * @return
+     */
+    public static InputStream getOssFile(String objectName){
+        return getOssFile(objectName,null);
+    }
 
     /**
      * 获取文件外链
@@ -299,9 +285,6 @@ public class OssBootUtil {
     public static String getObjectURL(String bucketName, String objectName, Date expires) {
         initOSS(endPoint, accessKeyId, accessKeySecret);
         try{
-            //update-begin---author:liusq  Date:20220120  for：替换objectName前缀，防止key不一致导致获取不到文件----
-            objectName = OssBootUtil.replacePrefix(objectName,bucketName);
-            //update-end---author:liusq  Date:20220120  for：替换objectName前缀，防止key不一致导致获取不到文件----
             if(ossClient.doesObjectExist(bucketName,objectName)){
                 URL url = ossClient.generatePresignedUrl(bucketName,objectName,expires);
                 return URLDecoder.decode(url.toString(),"UTF-8");
@@ -317,16 +300,11 @@ public class OssBootUtil {
      *
      * @return
      */
-    private static AmazonS3Client initOSS(String endpoint, String accessKeyId, String accessKeySecret) {
+    private static OSSClient initOSS(String endpoint, String accessKeyId, String accessKeySecret) {
         if (ossClient == null) {
-            BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKeyId, accessKeySecret);
-            ClientConfiguration clientConfiguration = new ClientConfiguration();
-            clientConfiguration.setProtocol(Protocol.HTTP);
-            ossClient = new AmazonS3Client(awsCredentials, clientConfiguration);
-            S3ClientOptions clientOptions =
-                    S3ClientOptions.builder().setPathStyleAccess(true).setPayloadSigningEnabled(true).disableChunkedEncoding().build();
-            ossClient.setS3ClientOptions(clientOptions);
-            ossClient.setEndpoint(endpoint);
+            ossClient = new OSSClient(endpoint,
+                    new DefaultCredentialProvider(accessKeyId, accessKeySecret),
+                    new ClientConfiguration());
         }
         return ossClient;
     }
@@ -345,41 +323,15 @@ public class OssBootUtil {
         if (oConvertUtils.isNotEmpty(staticDomain) && staticDomain.toLowerCase().startsWith("http")) {
             FILE_URL = staticDomain + "/" + relativePath;
         } else {
-            FILE_URL = "http://" + bucketName + "." + endPoint + "/" + fileUrl;
+            FILE_URL = "https://" + bucketName + "." + endPoint + "/" + fileUrl;
         }
-        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, fileUrl.toString(),stream,
-                new ObjectMetadata()).withCannedAcl(CannedAccessControlList.PublicRead);
-        PutObjectResult result = ossClient.putObject(putObjectRequest);
+        PutObjectResult result = ossClient.putObject(bucketName, fileUrl.toString(),stream);
         // 设置权限(公开读)
+        ossClient.setBucketAcl(bucketName, CannedAccessControlList.PublicRead);
         if (result != null) {
             log.info("------OSS文件上传成功------" + fileUrl);
         }
         return FILE_URL;
-    }
-
-    /**
-     * 替换前缀，防止key不一致导致获取不到文件
-     * @param objectName 文件上传路径 key
-     * @param customBucket 自定义桶
-     * @date 2022-01-20
-     * @author lsq
-     * @return
-     */
-    private static String replacePrefix(String objectName,String customBucket){
-        log.info("------replacePrefix---替换前---objectName:{}",objectName);
-        if(oConvertUtils.isNotEmpty(staticDomain)){
-            objectName= objectName.replace(staticDomain+"/","");
-        }else{
-            String newBucket = bucketName;
-            if(oConvertUtils.isNotEmpty(customBucket)){
-                newBucket = customBucket;
-            }
-//            String path ="https://zhjj.dlqzzst.com:543/" + newBucket + "." + endPoint + "/";
-            String path ="http://" + newBucket + "." + endPoint + "/";
-            objectName = objectName.replace(path,"");
-        }
-        log.info("------replacePrefix---替换后---objectName:{}",objectName);
-        return objectName;
     }
 
 

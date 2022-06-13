@@ -1,20 +1,24 @@
 package org.jeecg.common.constant.enums;
 
-import org.jeecg.common.util.oConvertUtils;
-
 import java.util.List;
 
 /**
  * 首页自定义
  * 通过角色编码与首页组件路径配置
- * 枚举的顺序有权限高低权重作用（也就是配置多个角色，在前面的角色首页，会优先生效）
  */
 public enum RoleIndexConfigEnum {
-
-    ADMIN("admin", "dashboard/Analysis"),
-    //TEST("test",  "dashboard/IndexChart"),
-    HR("hr", "dashboard/IndexBdc");
-    //DM("dm", "dashboard/IndexTask"),
+    /**
+     * 管理员
+     */
+    ADMIN("admin1", "dashboard/Analysis2"),
+    /**
+     * 测试
+     */
+    TEST("test",  "dashboard/Analysis"),
+    /**
+     * hr
+     */
+    HR("hr", "dashboard/Analysis1");
 
     /**
      * 角色编码
@@ -40,7 +44,7 @@ public enum RoleIndexConfigEnum {
      * @param roleCode 角色编码
      * @return
      */
-    private static RoleIndexConfigEnum getEnumByCode(String roleCode) {
+    public static RoleIndexConfigEnum getEnumByCode(String roleCode) {
         for (RoleIndexConfigEnum e : RoleIndexConfigEnum.values()) {
             if (e.roleCode.equals(roleCode)) {
                 return e;
@@ -53,7 +57,7 @@ public enum RoleIndexConfigEnum {
      * @param roleCode 角色编码
      * @return
      */
-    private static String getIndexByCode(String roleCode) {
+    public static String getIndexByCode(String roleCode) {
         for (RoleIndexConfigEnum e : RoleIndexConfigEnum.values()) {
             if (e.roleCode.equals(roleCode)) {
                 return e.componentUrl;
@@ -63,10 +67,11 @@ public enum RoleIndexConfigEnum {
     }
 
     public static String getIndexByRoles(List<String> roles) {
-        String[] rolesArray = roles.toArray(new String[roles.size()]);
-        for (RoleIndexConfigEnum e : RoleIndexConfigEnum.values()) {
-            if (oConvertUtils.isIn(e.roleCode,rolesArray)){
-                return e.componentUrl;
+        for (String role : roles) {
+            for (RoleIndexConfigEnum e : RoleIndexConfigEnum.values()) {
+                if (e.roleCode.equals(role)) {
+                    return e.componentUrl;
+                }
             }
         }
         return null;

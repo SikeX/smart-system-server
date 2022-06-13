@@ -35,11 +35,6 @@ public class MybatisPlusSaasConfig {
 
     static {
         tenantTable.add("demo");
-
-//        //角色、菜单、部门
-//        tenantTable.add("sys_role");
-//        tenantTable.add("sys_permission");
-//        tenantTable.add("sys_depart");
     }
 
 
