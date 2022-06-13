@@ -168,10 +168,13 @@ public class SmartTripleImportanceOneGreatnessController {
 			 return Result.error("免审任务，无需提交审核！");
 		 }
 
-		 String recordId = smartTripleImportanceOneGreatness.getId();
+		 SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatnessEntity =
+				 smartTripleImportanceOneGreatnessService.getById(smartTripleImportanceOneGreatness.getId());
+
+		 String recordId = smartTripleImportanceOneGreatnessEntity.getId();
 		 smartVerify.addVerifyRecord(recordId, verifyType);
-		 smartTripleImportanceOneGreatness.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
-		 smartTripleImportanceOneGreatnessService.updateById(smartTripleImportanceOneGreatness);
+		 smartTripleImportanceOneGreatnessEntity.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+		 smartTripleImportanceOneGreatnessService.updateById(smartTripleImportanceOneGreatnessEntity);
 
 		 return Result.OK("提交成功！");
 	 }
@@ -242,8 +245,8 @@ public class SmartTripleImportanceOneGreatnessController {
 		if(smartTripleImportanceOneGreatnessEntity==null) {
 			return Result.error("未找到对应数据");
 		}
-		if(!smartTripleImportanceOneGreatnessEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_TOSUBMIT)
-				|| !smartTripleImportanceOneGreatnessEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_FREE))
+		if(!(smartTripleImportanceOneGreatnessEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_TOSUBMIT)
+				|| smartTripleImportanceOneGreatnessEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_FREE)))
 
 	    smartTripleImportanceOneGreatnessService.updateMain(smartTripleImportanceOneGreatness,
 				smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessPaccaList());
