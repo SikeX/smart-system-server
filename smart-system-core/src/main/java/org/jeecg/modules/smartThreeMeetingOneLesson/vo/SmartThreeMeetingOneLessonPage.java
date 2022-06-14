@@ -94,6 +94,10 @@ public class SmartThreeMeetingOneLessonPage implements Serializable {
 	@ApiModelProperty(value = "删除标志")
 	private java.lang.Integer delFlag;
 
+	/**上传附件*/
+	@ApiModelProperty(value = "上传附件")
+	private java.lang.String files;
+
 	@ExcelCollection(name="三会一课参会人员表")
 	@ApiModelProperty(value = "三会一课参会人员表")
 	private List<SmartThreeMeetingOneLessonParticipants> smartThreeMeetingOneLessonParticipantsList;

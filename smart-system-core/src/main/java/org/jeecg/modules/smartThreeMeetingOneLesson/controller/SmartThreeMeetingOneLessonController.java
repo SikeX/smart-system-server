@@ -14,6 +14,7 @@ import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.constant.VerifyConstant;
 import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatness;
 import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatnessDescription;
 import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatnessPacca;
@@ -176,31 +177,76 @@ public class SmartThreeMeetingOneLessonController {
 		if (id == null) {
 			return Result.error("没有找到部门！");
 		}
+
+//		SmartThreeMeetingOneLesson smartThreeMeetingOneLesson = new SmartThreeMeetingOneLesson();
+//		BeanUtils.copyProperties(smartThreeMeetingOneLessonPage, smartThreeMeetingOneLesson);
+
 		smartThreeMeetingOneLesson.setDepartmentId(id);
-//		smartThreeMeetingOneLessonService.saveMain(smartThreeMeetingOneLesson, smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonParticipantsList(),smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonAnnexList());
+		smartThreeMeetingOneLessonService.saveMain(smartThreeMeetingOneLesson, smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonParticipantsList(),smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonAnnexList());
 
 		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
 		if(isVerify){
-			smartThreeMeetingOneLessonService.saveMain(
-					smartThreeMeetingOneLesson,
-					smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonParticipantsList(),
-					smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonAnnexList());
-			String recordId = smartThreeMeetingOneLesson.getId();
-			smartVerify.addVerifyRecord(recordId,verifyType);
-			smartThreeMeetingOneLesson.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
-			smartThreeMeetingOneLessonService.updateById(smartThreeMeetingOneLesson); }
+			smartThreeMeetingOneLesson.setVerifyStatus(VerifyConstant.VERIFY_STATUS_TOSUBMIT);
+		}
 		else {
 			// 设置审核状态为免审
-			smartThreeMeetingOneLesson.setVerifyStatus("3");
-			// 直接添加，不走审核流程
-			smartThreeMeetingOneLessonService.saveMain(
-					smartThreeMeetingOneLesson,
-					smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonParticipantsList(),
-					smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonAnnexList());
+			smartThreeMeetingOneLesson.setVerifyStatus(VerifyConstant.VERIFY_STATUS_FREE);
 		}
+		smartThreeMeetingOneLessonService.updateById(smartThreeMeetingOneLesson);
+
+		//		if(isVerify){
+////			smartThreeMeetingOneLessonService.saveMain(
+////					smartThreeMeetingOneLesson,
+////					smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonParticipantsList(),
+////					smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonAnnexList());
+////			String recordId = smartThreeMeetingOneLesson.getId();
+////			smartVerify.addVerifyRecord(recordId,verifyType);
+////			smartThreeMeetingOneLesson.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+////			smartThreeMeetingOneLessonService.updateById(smartThreeMeetingOneLesson); }
+//		else {
+//			// 设置审核状态为免审
+////			smartThreeMeetingOneLesson.setVerifyStatus("3");
+////			// 直接添加，不走审核流程
+////			smartThreeMeetingOneLessonService.saveMain(
+////					smartThreeMeetingOneLesson,
+////					smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonParticipantsList(),
+////					smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonAnnexList());
+//		}
 
 		return Result.OK("添加成功！");
 	}
+
+	/**
+	 *   三会一课提交审核
+	 *
+	 * @param smartThreeMeetingOneLesson
+	 * @return
+	 */
+	@AutoLog(value = "三会一课-提交审核")
+	@ApiOperation(value="三会一课-提交审核", notes="三会一课-提交审核")
+	@PostMapping(value = "/submitVerify")
+	public Result<?> submitVerify(@RequestBody SmartThreeMeetingOneLesson smartThreeMeetingOneLesson) {
+
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		String orgCode = sysUser.getOrgCode();
+		if ("".equals(orgCode)) {
+			return Result.error("本用户没有操作权限！");
+		}
+
+		if(!smartVerifyTypeService.getIsVerifyStatusByType(verifyType)){
+			return Result.error("免审任务，无需提交审核！");
+		}
+
+		SmartThreeMeetingOneLesson smartThreeMeetingOneLessonEntity = smartThreeMeetingOneLessonService.getById(smartThreeMeetingOneLesson.getId());
+
+		String recordId = smartThreeMeetingOneLessonEntity.getId();
+		smartVerify.addVerifyRecord(recordId,verifyType);
+		smartThreeMeetingOneLessonEntity.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+		smartThreeMeetingOneLessonService.updateById(smartThreeMeetingOneLessonEntity);
+
+		return Result.OK("提交成功！");
+	}
+
 
 	/**
 	 *  编辑
@@ -218,8 +264,11 @@ public class SmartThreeMeetingOneLessonController {
 		if(smartThreeMeetingOneLessonEntity==null) {
 			return Result.error("未找到对应数据");
 		}
-		smartThreeMeetingOneLesson.setDepartmentId(null);
-		smartThreeMeetingOneLesson.setCreateTime(null);
+		if(!(smartThreeMeetingOneLessonEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_TOSUBMIT) || smartThreeMeetingOneLessonEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_FREE))){
+			return Result.error("该任务已提交审核，不能修改！");
+		}
+//		smartThreeMeetingOneLesson.setDepartmentId(null);
+//		smartThreeMeetingOneLesson.setCreateTime(null);
 		smartThreeMeetingOneLessonService.updateMain(smartThreeMeetingOneLesson, smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonParticipantsList(),smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonAnnexList());
 		return Result.OK("编辑成功!");
 	}
