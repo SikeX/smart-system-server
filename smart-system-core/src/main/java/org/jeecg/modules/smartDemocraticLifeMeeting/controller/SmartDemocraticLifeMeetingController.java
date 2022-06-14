@@ -17,6 +17,7 @@ import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.constant.VerifyConstant;
 import org.jeecg.modules.smartDemocraticLifeMeeting.entity.SmartDemocraticLifeMeeting;
 import org.jeecg.modules.smartDemocraticLifeMeeting.entity.SmartDemocraticLifePeople;
 import org.jeecg.modules.smartDemocraticLifeMeeting.service.ISmartDemocraticLifeMeetingService;
@@ -128,6 +129,7 @@ public class SmartDemocraticLifeMeetingController {
 		return Result.OK(pageList);
 	}
 
+
 	/**
 	 * 添加
 	 *
@@ -150,22 +152,59 @@ public class SmartDemocraticLifeMeetingController {
 			return Result.error("没有找到部门！");
 		}
 		smartDemocraticLifeMeeting.setDepartId(id);
-        smartDemocraticLifeMeeting.setCreatorId(sysUser.getId());
+		smartDemocraticLifeMeeting.setCreatorId(sysUser.getId());
 
-        Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
-        if (isVerify) {
-            smartDemocraticLifeMeetingService.saveMain(smartDemocraticLifeMeeting, smartDemocraticLifeMeetingPage.getSmartDemocraticLifePeopleList());
-            String recordId = smartDemocraticLifeMeeting.getId();
-            log.info("recordId is " + recordId);
-            smartVerify.addVerifyRecord(recordId, verifyType);
-            smartDemocraticLifeMeeting.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
-            smartDemocraticLifeMeetingService.updateById(smartDemocraticLifeMeeting);
-        } else {
-            smartDemocraticLifeMeeting.setVerifyStatus("3");
-            smartDemocraticLifeMeetingService.saveMain(smartDemocraticLifeMeeting, smartDemocraticLifeMeetingPage.getSmartDemocraticLifePeopleList());
-        }
+		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
+		if (isVerify) {
+			// 如果任务需要审核，则设置任务为待提交状态
+			smartDemocraticLifeMeeting.setVerifyStatus(VerifyConstant.VERIFY_STATUS_TOSUBMIT);
+		} else {
+			// 设置审核状态为免审
+			smartDemocraticLifeMeeting.setVerifyStatus(VerifyConstant.VERIFY_STATUS_FREE);
+		}
+		smartDemocraticLifeMeetingService.saveMain(smartDemocraticLifeMeeting, smartDemocraticLifeMeetingPage.getSmartDemocraticLifePeopleList());
 		return Result.OK("添加成功！");
 	}
+
+
+	/**
+	 * 提交审核
+	 *
+	 * @param smartDemocraticLifeMeeting
+	 * @return
+	 */
+	@AutoLog(value = "民主生活会表-提交审核")
+	@ApiOperation(value = "民主生活会表-提交审核", notes = "民主生活会表-提交审核")
+	@PostMapping(value = "/submitVerify")
+	public Result<?> submitVerify(@RequestBody SmartDemocraticLifeMeeting smartDemocraticLifeMeeting) {
+
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		String orgCode = sysUser.getOrgCode();
+		if ("".equals(orgCode)) {
+			return Result.error("本用户没有操作权限！");
+		}
+		String id = commonService.getDepartIdByOrgCode(orgCode);
+		if (id == null) {
+			return Result.error("没有找到部门！");
+		}
+
+		if(!smartVerifyTypeService.getIsVerifyStatusByType(verifyType)){
+			return Result.error("免审任务，无需提交审核！");
+		}
+
+		SmartDemocraticLifeMeeting democraticLifeMeeting = smartDemocraticLifeMeetingService.getById(smartDemocraticLifeMeeting.getId());
+
+		democraticLifeMeeting.setDepartId(id);
+		democraticLifeMeeting.setCreatorId(sysUser.getId());
+
+		String recordId = democraticLifeMeeting.getId();
+		smartVerify.addVerifyRecord(recordId, verifyType);
+		democraticLifeMeeting.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+		smartDemocraticLifeMeetingService.updateById(democraticLifeMeeting);
+
+		return Result.OK("提交成功！");
+	}
+
 
 	/**
 	 * 编辑
@@ -183,6 +222,11 @@ public class SmartDemocraticLifeMeetingController {
 		if (smartDemocraticLifeMeetingEntity == null) {
 			return Result.error("未找到对应数据");
 		}
+
+		if(!(smartDemocraticLifeMeetingEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_TOSUBMIT) || smartDemocraticLifeMeetingEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_FREE))){
+			return Result.error("该任务已提交审核，不能修改！");
+		}
+
 		smartDemocraticLifeMeeting.setDepartId(null);
 		smartDemocraticLifeMeeting.setCreateTime(null);
 		smartDemocraticLifeMeetingService.updateMain(smartDemocraticLifeMeeting, smartDemocraticLifeMeetingPage.getSmartDemocraticLifePeopleList());

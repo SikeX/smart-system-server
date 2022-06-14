@@ -181,10 +181,13 @@ public class SmartPostMarriageReportController {
             return Result.error("免审任务，无需提交审核！");
         }
 
-        String recordId = smartPostMarriageReport.getId();
+        SmartPostMarriageReport smartPostMarriageReportEntity =
+                smartPostMarriageReportService.getById(smartPostMarriageReport.getId());
+
+        String recordId = smartPostMarriageReportEntity.getId();
         smartVerify.addVerifyRecord(recordId, verifyType);
-        smartPostMarriageReport.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
-        smartPostMarriageReportService.updateById(smartPostMarriageReport);
+        smartPostMarriageReportEntity.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+        smartPostMarriageReportService.updateById(smartPostMarriageReportEntity);
 
         return Result.OK("提交成功！");
 
@@ -237,7 +240,7 @@ public class SmartPostMarriageReportController {
         if (smartPostMarriageReportEntity == null) {
             return Result.error("未找到对应数据");
         }
-        if(smartPostMarriageReportEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_TOSUBMIT) || !smartPostMarriageReportEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_FREE)) {
+        if(!(smartPostMarriageReportEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_TOSUBMIT) || smartPostMarriageReportEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_FREE))) {
             return Result.error("该任务已提交审核，不能修改！");
         }
         smartPostMarriageReport.setWorkDepartment(null);

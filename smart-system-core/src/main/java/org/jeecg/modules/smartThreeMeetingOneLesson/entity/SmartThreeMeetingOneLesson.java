@@ -97,5 +97,8 @@ public class SmartThreeMeetingOneLesson implements Serializable {
     /**审核状态*/
     @ApiModelProperty(value = "审核状态")
     private java.lang.String verifyStatus;
+    /**上传附件*/
+    @ApiModelProperty(value = "上传附件")
+    private java.lang.String files;
 
 }
