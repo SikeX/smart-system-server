@@ -17,6 +17,7 @@ import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.constant.VerifyConstant;
 import org.jeecg.modules.smartFinanceResult.entity.SmartFinanceAnnex;
 import org.jeecg.modules.smartFinanceResult.entity.SmartFinanceResult;
 import org.jeecg.modules.smartFinanceResult.service.ISmartFinanceAnnexService;
@@ -157,15 +158,52 @@ public class SmartFinanceResultController {
 
         Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
         if (isVerify) {
-            smartFinanceResultService.saveMain(smartFinanceResult, smartFinanceResultPage.getSmartFinanceAnnexList());
-            String recordId = smartFinanceResult.getId();
-            smartVerify.addVerifyRecord(recordId, verifyType);
-            smartFinanceResult.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
-            smartFinanceResultService.updateById(smartFinanceResult);
+            // 待提交状态
+            smartFinanceResult.setVerifyStatus(VerifyConstant.VERIFY_STATUS_TOSUBMIT);
         } else {
-            smartFinanceResult.setVerifyStatus("3");
-            smartFinanceResultService.saveMain(smartFinanceResult, smartFinanceResultPage.getSmartFinanceAnnexList());
+            // 免审状态
+            smartFinanceResult.setVerifyStatus(VerifyConstant.VERIFY_STATUS_FREE);
         }
+
+        smartFinanceResultService.saveMain(smartFinanceResult, smartFinanceResultPage.getSmartFinanceAnnexList());
+
+        return Result.OK("添加成功！");
+    }
+
+    /**
+     * 提交审核
+     *
+     * @param smartFinanceResult
+     * @return
+     */
+    @AutoLog(value = "8项规定财物收支表-提交审核")
+    @ApiOperation(value = "8项规定财物收支表-提交审核", notes = "8项规定财物收支表-提交审核")
+    @PostMapping(value = "/submitVerify")
+    public Result<?> submitVerify (@RequestBody SmartFinanceResult smartFinanceResult) {
+        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+        String orgCode = sysUser.getOrgCode();
+        if ("".equals(orgCode)) {
+            return Result.error("本用户没有操作权限！");
+        }
+        String id = commonService.getDepartIdByOrgCode(orgCode);
+        if (id == null) {
+            return Result.error("没有找到部门！");
+        }
+
+        if(!smartVerifyTypeService.getIsVerifyStatusByType(verifyType)){
+            return Result.error("免审任务，无需提交审核！");
+        }
+
+        SmartFinanceResult financeResult = smartFinanceResultService.getById(smartFinanceResult.getId());
+
+        financeResult.setDepartId(id);
+        financeResult.setCreatorId(sysUser.getId());
+        financeResult.setCreator(sysUser.getRealname());
+
+        String recordId = financeResult.getId();
+        smartVerify.addVerifyRecord(recordId, verifyType);
+        financeResult.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+        smartFinanceResultService.updateById(financeResult);
         return Result.OK("添加成功！");
     }
 
@@ -185,6 +223,10 @@ public class SmartFinanceResultController {
         if (smartFinanceResultEntity == null) {
             return Result.error("未找到对应数据");
         }
+        if (!(smartFinanceResultEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_TOSUBMIT) || smartFinanceResultEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_FREE))) {
+            return Result.error("该任务已提交审核，不能修改！");
+        }
+
         smartFinanceResult.setDepartId(null);
         smartFinanceResult.setCreateTime(null);
         smartFinanceResultService.updateMain(smartFinanceResult, smartFinanceResultPage.getSmartFinanceAnnexList());

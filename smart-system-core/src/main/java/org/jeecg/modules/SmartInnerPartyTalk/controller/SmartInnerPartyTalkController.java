@@ -23,6 +23,7 @@ import org.jeecg.modules.SmartInnerPartyTalk.vo.SmartInnerPartyTalkPage;
 import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.constant.VerifyConstant;
 import org.jeecg.modules.smartCreateAdvice.entity.SmartCreateAdvice;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
 import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
@@ -165,24 +166,46 @@ public class SmartInnerPartyTalkController {
 		}
 		smartInnerPartyTalk.setDepartId(id);
 		//smartInnerPartyTalkService.saveMain(smartInnerPartyTalk, smartInnerPartyTalkPage.getSmartInnerPartyPacpaList(),smartInnerPartyTalkPage.getSmartInnerPartyAnnexList());
-		//To Do
+
+		smartInnerPartyTalkService.saveMain(smartInnerPartyTalk, smartInnerPartyTalkPage.getSmartInnerPartyPacpaList());
+
 		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
-		if(isVerify){
-			//smartInnerPartyTalkService.saveMain(smartInnerPartyTalk, smartInnerPartyTalkPage.getSmartInnerPartyPacpaList(),smartInnerPartyTalkPage.getSmartInnerPartyAnnexList());
-			smartInnerPartyTalkService.saveMain(smartInnerPartyTalk, smartInnerPartyTalkPage.getSmartInnerPartyPacpaList());
-			String recordId = smartInnerPartyTalk.getId();
-			smartVerify.addVerifyRecord(recordId,verifyType);
-			smartInnerPartyTalk.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
-			smartInnerPartyTalkService.updateById(smartInnerPartyTalk);
+		if (isVerify) {
+			// 如果任务需要审核，则设置任务为待提交状态
+			smartInnerPartyTalk.setVerifyStatus(VerifyConstant.VERIFY_STATUS_TOSUBMIT);
 		} else {
 			// 设置审核状态为免审
-			smartInnerPartyTalk.setVerifyStatus("3");
-			// 直接添加，不走审核流程
-			//smartInnerPartyTalkService.saveMain(smartInnerPartyTalk, smartInnerPartyTalkPage.getSmartInnerPartyPacpaList(),smartInnerPartyTalkPage.getSmartInnerPartyAnnexList());
-			smartInnerPartyTalkService.saveMain(smartInnerPartyTalk, smartInnerPartyTalkPage.getSmartInnerPartyPacpaList());
+			smartInnerPartyTalk.setVerifyStatus(VerifyConstant.VERIFY_STATUS_FREE);
 		}
+		smartInnerPartyTalkService.updateById(smartInnerPartyTalk);
+
 		return Result.OK("添加成功！");
 	}
+
+	 @AutoLog(value = "党内谈话表-提交审核")
+	 @ApiOperation(value="党内谈话表-提交审核", notes="党内谈话表-提交审核")
+	 @PostMapping(value = "/submitVerify")
+	 public Result<?> submitVerify(@RequestBody SmartInnerPartyTalk smartInnerPartyTalk) {
+		 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+		 String orgCode = sysUser.getOrgCode();
+		 if ("".equals(orgCode)) {
+			 return Result.error("本用户没有操作权限！");
+		 }
+
+		 if(!smartVerifyTypeService.getIsVerifyStatusByType(verifyType)){
+			 return Result.error("免审任务，无需提交审核！");
+		 }
+
+		 SmartInnerPartyTalk smartInnerPartyTalkEntity = smartInnerPartyTalkService.getById(smartInnerPartyTalk.getId());
+
+		 String recordId = smartInnerPartyTalkEntity.getId();
+		 smartVerify.addVerifyRecord(recordId, verifyType);
+		 smartInnerPartyTalkEntity.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+		 smartInnerPartyTalkService.updateById(smartInnerPartyTalkEntity);
+
+		 return Result.OK("提交成功！");
+	 }
 	
 	/**
 	 *  编辑
@@ -202,8 +225,9 @@ public class SmartInnerPartyTalkController {
 		}
 		smartInnerPartyTalk.setDepartId(null);
 		smartInnerPartyTalk.setCreateTime(null);
-		System.out.println("##########################");
-		System.out.println(smartInnerPartyTalkPage.getSmartInnerPartyPacpaList());
+		if(!(smartInnerPartyTalkEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_TOSUBMIT) || smartInnerPartyTalkEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_FREE))){
+			return Result.error("该任务已提交审核，不能修改！");
+		}
 		//smartInnerPartyTalkService.updateMain(smartInnerPartyTalk, smartInnerPartyTalkPage.getSmartInnerPartyPacpaList(),smartInnerPartyTalkPage.getSmartInnerPartyAnnexList());
 		smartInnerPartyTalkService.updateMain(smartInnerPartyTalk, smartInnerPartyTalkPage.getSmartInnerPartyPacpaList());
 		return Result.OK("编辑成功!");

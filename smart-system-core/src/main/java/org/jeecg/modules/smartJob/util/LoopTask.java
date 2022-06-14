@@ -5,9 +5,11 @@ import io.netty.channel.DefaultEventLoopGroup;
 import io.netty.channel.EventLoopGroup;
 import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.criterion.LikeExpression;
 import org.jeecg.common.api.dto.message.MessageDTO;
 import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.modules.SmartPunishPeople.entity.SmartPunishPeople;
+import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.smartJob.entity.SmartJob;
 import org.jeecg.modules.smartJob.service.ISmartJobService;
 import org.jeecg.modules.smartJob.service.imp.SmartJobServiceImpl;
@@ -143,6 +145,21 @@ public class LoopTask {
                         smartJobService.updatePreIsReport(s.getId());
 
                         //通知管理员
+                        //根据部门id获取部门负责人
+                        List<String> departManagers = sysBaseAPI.getDeptHeadByDepId(s.getDepartId());
+                        String userName = s.getPeopleName();
+
+                        for (String manager : departManagers) {
+                            //发送站内信
+                            MessageDTO messageDTO=new MessageDTO();
+                            messageDTO.setTitle("婚后报备提醒");
+                            messageDTO.setContent("您好，" + userName + "的婚后报备已超过十五日未提交");
+                            messageDTO.setFromUser("admin");
+                            messageDTO.setToUser(manager);
+                            messageDTO.setCategory("1");
+                            sysBaseAPI.sendSysAnnouncement(messageDTO);
+                        }
+
                     }else{
                         //未超过
                         //判断今日是否提醒
@@ -282,15 +299,22 @@ public class LoopTask {
 
         }else if(sendType.equals(SYS)){
             //发送系统消息
-//            for(SmartPunishPeople s : list){
-//                MessageDTO messageDTO=new MessageDTO();
-//                messageDTO.setTitle("其他");
-//                messageDTO.setContent(content);
-//                messageDTO.setFromUser(from);
-//                messageDTO.setToUser(s.getUsername());
-//                messageDTO.setCategory("1");
-//                sysBaseAPI.sendSysAnnouncement(messageDTO);
-//            }
+            List<String> idList = new LinkedList<>();
+            for(SmartPunishPeople s : list) {
+                idList.add(s.getPunishId());
+            }
+
+            List<SysUser> peopleList = smartJobService.getUsers(idList);
+
+            for(SysUser s : peopleList){
+                MessageDTO messageDTO=new MessageDTO();
+                messageDTO.setTitle(tittle);
+                messageDTO.setContent(content);
+                messageDTO.setFromUser(sendFrom);
+                messageDTO.setToUser(s.getUsername());
+                messageDTO.setCategory("1");
+                sysBaseAPI.sendSysAnnouncement(messageDTO);
+            }
         }else{
             return;
         }

@@ -12,9 +12,11 @@ import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.constant.VerifyConstant;
 import org.jeecg.modules.smartExportWord.util.WordUtils;
 import org.jeecg.modules.smartJob.entity.SysUser;
 import org.jeecg.modules.smartJob.service.ISmartJobService;
+import org.jeecg.modules.smartPostMarriage.util.RedisGetVal;
 import org.jeecg.modules.smartPremaritalFiling.entity.SmartPremaritalFiling;
 import org.jeecg.modules.smartPremaritalFiling.service.ISmartPremaritalFilingService;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
@@ -84,7 +86,8 @@ public class SmartPostMarriageReportController {
     @Autowired
     private ISysBaseAPI sysBaseAPI;
 
-
+    @Autowired
+    private RedisGetVal redisGetVal;
 
     /**
      * 分页列表查询
@@ -160,58 +163,62 @@ public class SmartPostMarriageReportController {
     /**
      * 添加
      *
-     * @param smartPostMarriageReportPage
+     * @param smartPostMarriageReport
      * @return
      */
-    @AutoLog(value = "8项规定婚后报备表-添加")
-    @ApiOperation(value = "8项规定婚后报备表-添加", notes = "8项规定婚后报备表-添加")
-    @PostMapping(value = "/add")
-    public Result<?> add(@RequestBody SmartPostMarriageReportPage smartPostMarriageReportPage) {
-
-        //根据婚前报备id判断有没有婚后填报
-        SmartPostMarriageReport smartPostMarriageReport1 = smartPostMarriageReportService.getByPreId(
-                smartPostMarriageReportPage.getPreId()
-        );
-        if (null != smartPostMarriageReport1) {
-            return Result.error("请勿重复报备！");
-        }
-
-        //审核功能
-        smartVerify.addVerifyRecord(smartPostMarriageReportPage.getId(), verifyType);
-
+    @AutoLog(value = "8项规定婚后报备表-提交审核")
+    @ApiOperation(value = "8项规定婚后报备表-提交审核", notes = "8项规定婚后报备表-提交审核")
+    @PostMapping(value = "/submitVerify")
+    public Result<?> submitVerify(@RequestBody SmartPostMarriageReport smartPostMarriageReport) {
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
         String orgCode = sysUser.getOrgCode();
         if ("".equals(orgCode)) {
             return Result.error("本用户没有操作权限！");
         }
-        System.out.println(orgCode + "此用户的orgcode");
-        String id = smartPostMarriageReportService.getDepartIdByOrgCode(orgCode);
-        smartPostMarriageReportPage.setWorkDepartment(id);
-        System.out.println(id + "id等于");
 
-        SmartPostMarriageReport smartPostMarriageReport = new SmartPostMarriageReport();
-        BeanUtils.copyProperties(smartPostMarriageReportPage, smartPostMarriageReport);
-
-        //审核判断
-        Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
-        if (isVerify) {
-            smartPostMarriageReportService.saveMain(smartPostMarriageReport, smartPostMarriageReportPage.getSmartPostMarriageReportFileList());
-            String recordId = smartPostMarriageReport.getId();
-            smartVerify.addVerifyRecord(recordId, verifyType);
-            smartPostMarriageReport.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
-            smartPostMarriageReportService.updateById(smartPostMarriageReport);
-        } else {
-            // 设置审核状态为免审
-            smartPostMarriageReport.setVerifyStatus("3");
-            // 直接添加，不走审核流程
-            smartPostMarriageReportService.saveMain(smartPostMarriageReport, smartPostMarriageReportPage.getSmartPostMarriageReportFileList());
+        if(!smartVerifyTypeService.getIsVerifyStatusByType(verifyType)){
+            return Result.error("免审任务，无需提交审核！");
         }
 
-        //更改婚前报备isReport为"1"
-        smartPostMarriageReportService.editPreIsReport(smartPostMarriageReportPage.getPreId());
+        String recordId = smartPostMarriageReport.getId();
+        smartVerify.addVerifyRecord(recordId, verifyType);
+        smartPostMarriageReport.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+        smartPostMarriageReportService.updateById(smartPostMarriageReport);
 
-        return Result.OK("添加成功！");
+        return Result.OK("提交成功！");
+
+//        //审核功能
+//        smartVerify.addVerifyRecord(smartPostMarriageReportPage.getId(), verifyType);
+//
+//
+//        System.out.println(orgCode + "此用户的orgcode");
+//        String id = smartPostMarriageReportService.getDepartIdByOrgCode(orgCode);
+//        smartPostMarriageReportPage.setWorkDepartment(id);
+//        System.out.println(id + "id等于");
+//
+//        SmartPostMarriageReport smartPostMarriageReport = new SmartPostMarriageReport();
+//        BeanUtils.copyProperties(smartPostMarriageReportPage, smartPostMarriageReport);
+//
+//        //审核判断
+//        Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
+//        if (isVerify) {
+//            smartPostMarriageReportService.saveMain(smartPostMarriageReport, smartPostMarriageReportPage.getSmartPostMarriageReportFileList());
+//            String recordId = smartPostMarriageReport.getId();
+//            smartVerify.addVerifyRecord(recordId, verifyType);
+//            smartPostMarriageReport.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+//            smartPostMarriageReportService.updateById(smartPostMarriageReport);
+//        } else {
+//            // 设置审核状态为免审
+//            smartPostMarriageReport.setVerifyStatus("3");
+//            // 直接添加，不走审核流程
+//            smartPostMarriageReportService.saveMain(smartPostMarriageReport, smartPostMarriageReportPage.getSmartPostMarriageReportFileList());
+//        }
+//
+//        //更改婚前报备isReport为"1"
+//        smartPostMarriageReportService.editPreIsReport(smartPostMarriageReportPage.getPreId());
+//
+//        return Result.OK("添加成功！");
     }
 
     /**
@@ -229,6 +236,9 @@ public class SmartPostMarriageReportController {
         SmartPostMarriageReport smartPostMarriageReportEntity = smartPostMarriageReportService.getById(smartPostMarriageReport.getId());
         if (smartPostMarriageReportEntity == null) {
             return Result.error("未找到对应数据");
+        }
+        if(smartPostMarriageReportEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_TOSUBMIT) || !smartPostMarriageReportEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_FREE)) {
+            return Result.error("该任务已提交审核，不能修改！");
         }
         smartPostMarriageReport.setWorkDepartment(null);
         smartPostMarriageReport.setCreateTime(null);
@@ -518,11 +528,20 @@ public class SmartPostMarriageReportController {
         List<String> fileNamesList = new ArrayList<>();
         for (int i = 0; i < smartPostMarriageReports.size(); i++) {
             //数据完善
-            if (smartPostMarriageReports.get(i).getSex() != null && smartPostMarriageReports.get(i).getSex().equals("2")) {
-                smartPostMarriageReports.get(i).setSex("女");
-            } else if (smartPostMarriageReports.get(i).getSex() != null && smartPostMarriageReports.get(i).getSex().equals("1")) {
-                smartPostMarriageReports.get(i).setSex("男");
-            }
+            //性别
+            String sex = redisGetVal.getValue("sex", smartPostMarriageReports.get(i).getSex());
+            //政治面貌
+            String politicsStatus = redisGetVal.getValue("political_status", smartPostMarriageReports.get(i).getPoliticsStatus());
+            //职务
+            //String job = redisGetVal.getValue("sys_position", smartPostMarriageReports.get(i).getJob());
+            String job = null;
+            //职级
+            String jobLevel = redisGetVal.getValue("position_rank", smartPostMarriageReports.get(i).getJobLevel());
+
+            smartPostMarriageReports.get(i).setSex(sex);
+            smartPostMarriageReports.get(i).setPoliticsStatus(politicsStatus);
+            smartPostMarriageReports.get(i).setJob(job);
+            smartPostMarriageReports.get(i).setJobLevel(jobLevel);
 
             //部门名称
             List<String> departids = new ArrayList<>();
@@ -570,4 +589,79 @@ public class SmartPostMarriageReportController {
         return Result.OK(ret);
     }
 
+    /**
+     * 添加
+     *
+     * @param smartPostMarriageReportPage
+     * @return
+     */
+    @AutoLog(value = "8项规定婚后报备表-添加")
+    @ApiOperation(value = "8项规定婚后报备表-添加", notes = "8项规定婚后报备表-添加")
+    @PostMapping(value = "/add")
+    public Result<?> add(@RequestBody SmartPostMarriageReportPage smartPostMarriageReportPage) {
+        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+        String orgCode = sysUser.getOrgCode();
+        if ("".equals(orgCode)) {
+            return Result.error("本用户没有操作权限！");
+        }
+
+        String departId = commonService.getDepartIdByOrgCode(orgCode);
+        if (departId == null) {
+            return Result.error("没有找到部门！");
+        }
+
+        //根据婚前报备id判断有没有婚后填报
+        SmartPostMarriageReport smartPostMarriageReport1 = smartPostMarriageReportService.getByPreId(
+                smartPostMarriageReportPage.getPreId()
+        );
+        if (null != smartPostMarriageReport1) {
+            return Result.error("请勿重复报备！");
+        }
+
+        //审核功能
+        SmartPostMarriageReport smartPostMarriageReport = new SmartPostMarriageReport();
+        BeanUtils.copyProperties(smartPostMarriageReportPage, smartPostMarriageReport);
+        smartPostMarriageReportService.saveMain(smartPostMarriageReport, smartPostMarriageReportPage.getSmartPostMarriageReportFileList());
+        smartPostMarriageReport.setWorkDepartment(departId);
+        Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
+        if (isVerify) {
+            // 如果任务需要审核，则设置任务为待提交状态
+            smartPostMarriageReport.setVerifyStatus(VerifyConstant.VERIFY_STATUS_TOSUBMIT);
+        } else {
+            // 设置审核状态为免审
+            smartPostMarriageReport.setVerifyStatus(VerifyConstant.VERIFY_STATUS_FREE);
+        }
+
+        smartPostMarriageReportService.updateById(smartPostMarriageReport);
+
+
+//        //审核功能
+//        smartVerify.addVerifyRecord(smartPostMarriageReportPage.getId(), verifyType);
+//
+//        smartPostMarriageReportPage.setWorkDepartment(departId);
+//
+//        SmartPostMarriageReport smartPostMarriageReport = new SmartPostMarriageReport();
+//        BeanUtils.copyProperties(smartPostMarriageReportPage, smartPostMarriageReport);
+
+        //审核判断
+//        Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
+//        if (isVerify) {
+//            smartPostMarriageReportService.saveMain(smartPostMarriageReport, smartPostMarriageReportPage.getSmartPostMarriageReportFileList());
+//            String recordId = smartPostMarriageReport.getId();
+//            smartVerify.addVerifyRecord(recordId, verifyType);
+//            smartPostMarriageReport.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+//            smartPostMarriageReportService.updateById(smartPostMarriageReport);
+//        } else {
+//            // 设置审核状态为免审
+//            smartPostMarriageReport.setVerifyStatus("3");
+//            // 直接添加，不走审核流程
+//            smartPostMarriageReportService.saveMain(smartPostMarriageReport, smartPostMarriageReportPage.getSmartPostMarriageReportFileList());
+//        }
+
+        //更改婚前报备isReport为"1"
+        smartPostMarriageReportService.editPreIsReport(smartPostMarriageReportPage.getPreId());
+
+        return Result.OK("添加成功！");
+    }
 }
