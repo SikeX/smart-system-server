@@ -18,6 +18,8 @@ import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.constant.VerifyConstant;
+import org.jeecg.modules.smartCreateAdvice.entity.SmartCreateAdvice;
 import org.jeecg.modules.smartEvaluateMeeting.entity.SmartEvaluateMeeting;
 import org.jeecg.modules.smartFuneralReport.entity.SmartFuneralReport;
 import org.jeecg.modules.smartFuneralReport.service.ISmartFuneralReportService;
@@ -162,6 +164,35 @@ public class SmartPostFuneralReportController extends JeecgController<SmartPostF
 		return Result.OK(pageList);
 	}
 	}
+
+	 /**
+	  *   添加
+	  *
+	  * @param smartPostFuneralReport
+	  * @return
+	  */
+	 @AutoLog(value = "丧事事后报备表-提交审核")
+	 @ApiOperation(value="丧事事后报备表-提交审核", notes="丧事事后报备表-提交审核")
+	 @PostMapping(value = "/submitVerify")
+	 public Result<?> submitVerify(@RequestBody SmartPostFuneralReport smartPostFuneralReport) {
+		 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		 String orgCode = sysUser.getOrgCode();
+		 // 获取用户角色
+		 if ("".equals(orgCode)) {
+			 return Result.error("用户没有操作权限！");
+		 }
+		 if(!smartVerifyTypeService.getIsVerifyStatusByType(verifyType)){
+			 return Result.error("免审任务，无需提交审核！");
+		 }
+
+		 SmartPostFuneralReport smartPostFuneralReportEntity = smartPostFuneralReportService.getById(smartPostFuneralReport.getId());
+
+		 String recordId = smartPostFuneralReportEntity.getId();
+		 smartVerify.addVerifyRecord(recordId, verifyType);
+		 smartPostFuneralReportEntity.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+		 smartPostFuneralReportService.updateById(smartPostFuneralReportEntity);
+		 return Result.OK("提交成功！");
+	 }
 	
 	/**
 	 *   添加
@@ -181,7 +212,7 @@ public class SmartPostFuneralReportController extends JeecgController<SmartPostF
 		}
 		String id = commonService.getDepartIdByOrgCode(orgCode);
 		if (id == null) {
-			return Result.error("未找到您所属部门，请检查部门是否存在！");
+			return Result.error("没有找到部门！");
 		}
 		SmartFuneralReport preReport = smartFuneralReportService.getById(
 				smartPostFuneralReport.getPreId()
@@ -191,20 +222,17 @@ public class SmartPostFuneralReportController extends JeecgController<SmartPostF
 //		}
 		smartPostFuneralReport.setDepartId(id);
 		smartPostFuneralReport.setReportTime(new Date());
+		smartPostFuneralReportService.save(smartPostFuneralReport);
+
 		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
-		if(isVerify){
-			smartPostFuneralReportService.save(smartPostFuneralReport);
-			String recordId = smartPostFuneralReport.getId();
-			log.info("recordId is"+recordId);
-			smartVerify.addVerifyRecord(recordId,verifyType);
-			smartPostFuneralReport.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
-			smartPostFuneralReportService.updateById(smartPostFuneralReport);
+		if (isVerify) {
+			// 如果任务需要审核，则设置任务为待提交状态
+			smartPostFuneralReport.setVerifyStatus(VerifyConstant.VERIFY_STATUS_TOSUBMIT);
 		} else {
 			// 设置审核状态为免审
-			smartPostFuneralReport.setVerifyStatus("3");
-			// 直接添加，不走审核流程
-			smartPostFuneralReportService.save(smartPostFuneralReport);
+			smartPostFuneralReport.setVerifyStatus(VerifyConstant.VERIFY_STATUS_FREE);
 		}
+		smartPostFuneralReportService.updateById(smartPostFuneralReport);
 		//更改前报备isReport为"1"
 		preReport.setIfReport(1);
 		smartFuneralReportService.updateById(preReport);
@@ -221,6 +249,14 @@ public class SmartPostFuneralReportController extends JeecgController<SmartPostF
 	@ApiOperation(value="丧事事后报备表-编辑", notes="丧事事后报备表-编辑")
 	@PutMapping(value = "/edit")
 	public Result<?> edit(@RequestBody SmartPostFuneralReport smartPostFuneralReport) {
+		SmartPostFuneralReport smartPostFuneralReportEntity = smartPostFuneralReportService.getById(smartPostFuneralReport.getId());
+		if (smartPostFuneralReportEntity == null) {
+			return Result.error("未找到对应数据");
+		}
+		if(!(smartPostFuneralReportEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_TOSUBMIT) || smartPostFuneralReportEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_FREE))){
+			return Result.error("该任务已提交审核，不能修改！");
+		}
+
 		smartPostFuneralReportService.updateById(smartPostFuneralReport);
 		return Result.OK("编辑成功!");
 	}
