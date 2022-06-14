@@ -269,7 +269,7 @@ public class SmartThreeMeetingOneLessonController {
 		}
 //		smartThreeMeetingOneLesson.setDepartmentId(null);
 //		smartThreeMeetingOneLesson.setCreateTime(null);
-		smartThreeMeetingOneLessonService.updateMain(smartThreeMeetingOneLesson, smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonParticipantsList(),smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonAnnexList());
+		smartThreeMeetingOneLessonService.updateMain(smartThreeMeetingOneLessonEntity, smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonParticipantsList(),smartThreeMeetingOneLessonPage.getSmartThreeMeetingOneLessonAnnexList());
 		return Result.OK("编辑成功!");
 	}
 

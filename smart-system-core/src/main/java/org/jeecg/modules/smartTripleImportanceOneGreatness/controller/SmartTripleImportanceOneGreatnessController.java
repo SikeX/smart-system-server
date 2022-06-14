@@ -246,7 +246,9 @@ public class SmartTripleImportanceOneGreatnessController {
 			return Result.error("未找到对应数据");
 		}
 		if(!(smartTripleImportanceOneGreatnessEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_TOSUBMIT)
-				|| smartTripleImportanceOneGreatnessEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_FREE)))
+				|| !smartTripleImportanceOneGreatnessEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_FREE))){
+			return Result.error("该任务已提交审核，不能修改！");
+		}
 
 	    smartTripleImportanceOneGreatnessService.updateMain(smartTripleImportanceOneGreatness,
 				smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessPaccaList());
