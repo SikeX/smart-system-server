@@ -203,10 +203,12 @@ public class SmartCreateAdviceController {
             return Result.error("免审任务，无需提交审核！");
         }
 
-        String recordId = smartCreateAdvice.getId();
+        SmartCreateAdvice smartCreateAdviceEntity = smartCreateAdviceService.getById(smartCreateAdvice.getId());
+
+        String recordId = smartCreateAdviceEntity.getId();
         smartVerify.addVerifyRecord(recordId, verifyType);
-        smartCreateAdvice.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
-        smartCreateAdviceService.updateById(smartCreateAdvice);
+        smartCreateAdviceEntity.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+        smartCreateAdviceService.updateById(smartCreateAdviceEntity);
 
         return Result.OK("提交成功！");
     }
@@ -225,7 +227,8 @@ public class SmartCreateAdviceController {
         if (smartCreateAdviceEntity == null) {
             return Result.error("未找到对应数据");
         }
-        if(!smartCreateAdviceEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_TOSUBMIT) || !smartCreateAdviceEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_FREE)){
+        log.info("审核状态：" + smartCreateAdviceEntity.getVerifyStatus());
+        if(!(smartCreateAdviceEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_TOSUBMIT) || smartCreateAdviceEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_FREE))){
             return Result.error("该任务已提交审核，不能修改！");
         }
 
