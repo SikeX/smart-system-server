@@ -7,9 +7,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.common.api.vo.Result;
+import org.jeecg.modules.common.service.CommonService;
+import org.jeecg.modules.constant.VerifyConstant;
 import org.jeecg.modules.smart_8_escorted_meal.controller.Smart_8EscortedMealController;
 import org.jeecg.modules.smart_8_escorted_meal.entity.Smart_8EscortedMeal;
 import org.jeecg.modules.smart_8_escorted_meal.service.ISmart_8EscortedMealService;
+import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
+import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.*;
@@ -74,11 +78,20 @@ public class SmartReceptionController extends JeecgController<SmartReception, IS
 
 	@Autowired
 	private ISmart_8EscortedMealService smart_8EscortedMealService;
+	@Autowired
+	private CommonService commonService;
+
+	@Autowired
+	private ISmartVerifyTypeService smartVerifyTypeService;
+
+	@Autowired
+	private SmartVerify smartVerify;
+
+	public String verifyType = "公务接待";
 
 
 
-
-	/*---------------------------------主表处理-begin-------------------------------------*/
+	 /*---------------------------------主表处理-begin-------------------------------------*/
 
 	/**
 	 * 分页列表查询
@@ -111,16 +124,57 @@ public class SmartReceptionController extends JeecgController<SmartReception, IS
     @PostMapping(value = "/add")
     public Result<?> add(@RequestBody SmartReception smartReception) {
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
 		String orgCode = sysUser.getOrgCode();
 		if ("".equals(orgCode)) {
 			return Result.error("本用户没有操作权限！");
 		}
-		String id = smartReceptionService.getDepartIdByOrgCode(orgCode);
+		String id = commonService.getDepartIdByOrgCode(orgCode);
+		if (id == null) {
+			return Result.error("没有找到部门！");
+		}
 		smartReception.setDepartmentId(id);
+		smartReceptionService.save(smartReception);
 
-        smartReceptionService.save(smartReception);
-        return Result.OK("添加成功！");
+		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
+		if (isVerify) {
+			// 如果任务需要审核，则设置任务为待提交状态
+			smartReception.setVerifyStatus(VerifyConstant.VERIFY_STATUS_TOSUBMIT);
+		} else {
+			// 设置审核状态为免审
+			smartReception.setVerifyStatus(VerifyConstant.VERIFY_STATUS_FREE);
+		}
+
+		smartReceptionService.updateById(smartReception);
+
+
+		return Result.OK("添加成功！");
     }
+
+	 @AutoLog(value = "公务接待-提交审核")
+	 @ApiOperation(value = "公务接待-提交审核", notes = "公务接待-提交审核")
+	 @PostMapping(value = "/submitVerify")
+	 public Result<?> submitVerify(@RequestBody SmartReception smartReception) {
+		 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+		 String orgCode = sysUser.getOrgCode();
+		 if ("".equals(orgCode)) {
+			 return Result.error("本用户没有操作权限！");
+		 }
+
+		 if(!smartVerifyTypeService.getIsVerifyStatusByType(verifyType)){
+			 return Result.error("免审任务，无需提交审核！");
+		 }
+
+		 SmartReception smartReceptionEntity = smartReceptionService.getById(smartReception.getId());
+
+		 String recordId = smartReceptionEntity.getId();
+		 smartVerify.addVerifyRecord(recordId, verifyType);
+		 smartReceptionEntity.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+		 smartReceptionService.updateById(smartReceptionEntity);
+
+		 return Result.OK("提交成功！");
+	 }
 
     /**
      *  编辑
@@ -131,8 +185,16 @@ public class SmartReceptionController extends JeecgController<SmartReception, IS
     @ApiOperation(value="公务接待2.0-编辑", notes="公务接待2.0-编辑")
     @PutMapping(value = "/edit")
     public Result<?> edit(@RequestBody SmartReception smartReception) {
-        smartReceptionService.updateById(smartReception);
-        return Result.OK("编辑成功!");
+		SmartReception smartReceptionEntity = smartReceptionService.getById(smartReception.getId());
+		if (smartReceptionEntity == null) {
+			return Result.error("未找到对应数据");
+		}
+		if(!(smartReceptionEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_TOSUBMIT) || smartReceptionEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_FREE))){
+			return Result.error("该任务已提交审核，不能修改！");
+		}
+
+		smartReceptionService.updateById(smartReception);
+		return Result.OK("编辑成功!");
     }
 
     /**

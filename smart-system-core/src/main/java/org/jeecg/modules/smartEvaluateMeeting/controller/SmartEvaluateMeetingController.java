@@ -204,9 +204,10 @@ public class SmartEvaluateMeetingController {
 		 SmartEvaluateMeeting smartEvaluateMeeting = new SmartEvaluateMeeting();
 		 BeanUtils.copyProperties(smartEvaluateMeetingPage, smartEvaluateMeeting);
 
+		 smartEvaluateMeeting.setDepartId(id);
+
 		 smartEvaluateMeetingService.saveMain(smartEvaluateMeeting, smartEvaluateMeetingPage.getSmartEvaluateMeetingPacpaList(),smartEvaluateMeetingPage.getSmartEvaluateMeetingAnnexList());
 
-		 smartEvaluateMeeting.setDepartId(id);
 
 		 Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
 		 if (isVerify) {
