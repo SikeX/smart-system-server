@@ -39,6 +39,7 @@ public class SmartReceptionServiceImpl extends ServiceImpl<SmartReceptionMapper,
 	@Autowired
 	private Smart_8ListMapper smart_8ListMapper;
 
+
 	@Override
 	public String getDepartIdByOrgCode(String orgCode) {
 		return smartReceptionMapper.getDepartIdByOrgCode(orgCode);
@@ -71,5 +72,5 @@ public class SmartReceptionServiceImpl extends ServiceImpl<SmartReceptionMapper,
 		}
 	}
 
-	
+
 }

@@ -23,7 +23,7 @@ public interface ISmartReceptionService extends IService<SmartReception> {
 	 * 删除一对多
 	 */
 	public void delMain (String id);
-	
+
 	/**
 	 * 批量删除一对多
 	 */
@@ -43,6 +43,7 @@ public interface ISmartReceptionService extends IService<SmartReception> {
 	 * @return 子部门ID列表
 	 */
 	List<String> getChildrenIdByOrgCode(String orgCode);
+
 
 
 

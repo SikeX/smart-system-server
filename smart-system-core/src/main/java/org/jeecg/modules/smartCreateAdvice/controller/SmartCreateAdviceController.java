@@ -199,6 +199,7 @@ public class SmartCreateAdviceController {
             return Result.error("本用户没有操作权限！");
         }
 
+
         if(!smartVerifyTypeService.getIsVerifyStatusByType(verifyType)){
             return Result.error("免审任务，无需提交审核！");
         }

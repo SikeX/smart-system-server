@@ -97,4 +97,7 @@ public class SmartReception implements Serializable {
     @Excel(name = "删除状态", width = 15)
     @ApiModelProperty(value = "删除状态")
     private java.lang.Integer delFlag;
+    @Excel(name = "审核状态", width = 15)
+    @ApiModelProperty(value = "审核状态")
+    private java.lang.String verifyStatus;
 }
