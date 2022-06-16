@@ -2,13 +2,20 @@ package org.jeecg.modules.smart_window_unit.controller;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.*;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import cn.hutool.core.util.ObjectUtil;
+import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.modules.base.service.BaseCommonService;
+import org.jeecg.modules.common.service.CommonService;
+import org.jeecg.modules.common.util.ParamsUtil;
 import org.jeecg.modules.smart_window_people.entity.SmartWindowPeople;
 import org.jeecg.modules.smart_window_people.service.ISmartWindowPeopleService;
 import org.jeecg.modules.smart_window_unit.api.response.BaseResponse;
@@ -24,6 +31,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.modules.smart_window_unit.service.ISmartWindowUnitService;
+import org.jeecgframework.poi.excel.def.NormalExcelConstants;
+import org.jeecgframework.poi.excel.entity.ExportParams;
+import org.jeecgframework.poi.excel.view.JeecgEntityExcelView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +43,8 @@ import org.springframework.web.servlet.ModelAndView;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.jeecg.common.aspect.annotation.AutoLog;
-
-
+import org.jeecg.common.util.oConvertUtils;
+import org.springframework.beans.BeanUtils;
 
 class BaseController {
 
@@ -57,8 +67,14 @@ class BaseController {
 public class SmartWindowUnitController<ISysDepartService> extends JeecgController<SmartWindowUnit, ISmartWindowUnitService> {
 	@Autowired
 	private ISmartWindowUnitService smartWindowUnitService;
+	@Autowired
 	private ISmartWindowPeopleService smartWindowPersonService;
+	@Autowired
 	private ISysBaseAPI sysBaseAPI;
+	@Autowired
+	private BaseCommonService baseCommonService;
+	@Autowired
+	CommonService commonService;
 
 
 	/**
@@ -208,8 +224,90 @@ public class SmartWindowUnitController<ISysDepartService> extends JeecgControlle
     * @param smartWindowUnit
     */
     @RequestMapping(value = "/exportXls")
-    public ModelAndView exportXls(HttpServletRequest request, SmartWindowUnit smartWindowUnit) {
-        return super.exportXls(request, smartWindowUnit, SmartWindowUnit.class, "窗口单位");
+    public ModelAndView exportXls(HttpServletRequest request,HttpServletResponse response, SmartWindowUnit smartWindowUnit) throws Exception {
+
+		// 获取登录用户信息，可以用来查询单位部门信息
+		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		String username = sysUser.getUsername();
+
+// 获取用户角色
+		List<String> role = sysBaseAPI.getRolesByUsername(username);
+		List<SmartWindowUnit> queryList = new ArrayList<SmartWindowUnit>();
+
+// 如果是普通用户，则只能看到自己创建的数据
+		if(role.contains("CommonUser")) {
+			QueryWrapper<SmartWindowUnit> queryWrapper = new QueryWrapper<>();
+			queryWrapper.eq("create_by",username);
+			queryList = smartWindowUnitService.list(queryWrapper);
+		} else {
+			// 1. 规则，下面是 以**开始
+			String rule = "in";
+			// 2. 查询字段
+			String field = "departId";
+
+			// 获取子单位ID
+			String childrenIdString = commonService.getChildrenIdStringByOrgCode(sysUser.getOrgCode());
+
+			HashMap<String, String[]> map = new HashMap<>(request.getParameterMap());
+			// 获取请求参数中的superQueryParams
+			List<String> paramsList = ParamsUtil.getSuperQueryParams(request.getParameterMap());
+
+			// 添加额外查询条件，用于权限控制
+			paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
+					+ childrenIdString
+					+ "%22,%22field%22:%22" + field + "%22%7D%5D");
+			String[] params = new String[paramsList.size()];
+			paramsList.toArray(params);
+			map.put("superQueryParams", params);
+			params = new String[]{"and"};
+			map.put("superQueryMatchType", params);
+			QueryWrapper<SmartWindowUnit> queryWrapper = QueryGenerator.initQueryWrapper(smartWindowUnit, map);
+
+			queryList = smartWindowUnitService.list(queryWrapper);
+		}
+
+
+		// Step.1 组装查询条件查询数据
+
+		//Step.2 获取导出数据
+		// 过滤选中数据
+		String selections = request.getParameter("selections");
+		List<SmartWindowUnit> smartWindowUnitList = new ArrayList<SmartWindowUnit>();
+		if(oConvertUtils.isEmpty(selections)) {
+			smartWindowUnitList = queryList;
+		}else {
+			List<String> selectionList = Arrays.asList(selections.split(","));
+			smartWindowUnitList = queryList.stream().filter(item -> selectionList.contains(item.getId())).collect(Collectors.toList());
+		}
+
+		// Step.3 组装pageList
+		List<SmartWindowUnit> pageList = new ArrayList<SmartWindowUnit>();
+		for (SmartWindowUnit main : smartWindowUnitList) {
+			SmartWindowUnit vo = new SmartWindowUnit();
+			BeanUtils.copyProperties(main, vo);
+//			List<SmartCreateAdviceAnnex> smartCreateAdviceAnnexList = smartCreateAdviceAnnexService.selectByMainId(main.getId());
+//			vo.setSmartCreateAdviceAnnexList(smartCreateAdviceAnnexList);
+			pageList.add(vo);
+		}
+
+		// Step.4 AutoPoi 导出Excel
+		ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
+		mv.addObject(NormalExcelConstants.FILE_NAME, "制发建议表列表");
+		mv.addObject(NormalExcelConstants.CLASS, SmartWindowUnit.class);
+		mv.addObject(NormalExcelConstants.PARAMS, new ExportParams("制发建议表数据", "导出人:"+sysUser.getRealname(), "制发建议表"));
+		mv.addObject(NormalExcelConstants.DATA_LIST, pageList);
+
+		// List深拷贝，否则返回前端会没数据
+		List<SmartWindowUnit> newPageList = ObjectUtil.cloneByStream(pageList);
+
+		baseCommonService.addExportLog(mv.getModel(), "制发建议", request , response);
+
+		mv.addObject(NormalExcelConstants.DATA_LIST, newPageList);
+
+		return mv;
+
+
+//        return super.exportXls(request, smartWindowUnit, SmartWindowUnit.class, "窗口单位");
     }
 
     /**
