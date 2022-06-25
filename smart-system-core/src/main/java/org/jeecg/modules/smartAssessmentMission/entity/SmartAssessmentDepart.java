@@ -61,6 +61,10 @@ public class SmartAssessmentDepart implements Serializable {
     @Dict(dicCode = "id",dicText = "realname",dictTable = "sys_user")
     @ApiModelProperty(value = "被考核单位登录账号")
     private java.lang.String departUser;
+    /**是否查看评分详情*/
+    @Dict(dicCode = "yn")
+    @ApiModelProperty(value = "是否查看评分详情")
+    private java.lang.String isShowScore;
 	/**截止时间*/
 	@Excel(name = "截止时间", width = 20, format = "yyyy-MM-dd HH:mm:ss")
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")

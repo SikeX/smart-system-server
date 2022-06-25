@@ -96,4 +96,8 @@ public class SmartAnswerInfo implements Serializable {
 	@Excel(name = "排名", width = 15)
     @ApiModelProperty(value = "排名")
     private java.lang.Integer ranking;
+    /**是否查看评分详情*/
+    @Dict(dicCode = "yn")
+    @ApiModelProperty(value = "是否查看评分详情")
+    private java.lang.String isShowScore;
 }

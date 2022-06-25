@@ -612,23 +612,27 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 		smartAnswerAssScoreService.save(smartAnswerAssScore);
 
 		SmartAnswerAssContent answerAssContent = smartAnswerAssContentService.getById(smartAnswerAssScore.getMainId());
-		// 最终得分增量
-		double increment;
 
-		// 如果大于最高分则更新最高分
-		if (smartAnswerAssScore.getScore() > answerAssContent.getHighestScore()) {
-			answerAssContent.setHighestScore(smartAnswerAssScore.getScore());
-		}
-		// 如果小于最低分或最低分为0则更新最低分
-		if (smartAnswerAssScore.getScore() < answerAssContent.getLowestScore() || answerAssContent.getLowestScore() == 0) {
-			answerAssContent.setLowestScore(smartAnswerAssScore.getScore());
-		}
-		// 平均分应该是所有人评分的平均分，但好像只有两个评分
-		answerAssContent.setAverageScore((answerAssContent.getHighestScore() + answerAssContent.getLowestScore())/ 2);
-		// 默认取平均得分为最终得分,先计算最终得分增量
-		increment = answerAssContent.getAverageScore() - answerAssContent.getFinalScore();
-		// 然后设置最终得分未平均得分
-		answerAssContent.setFinalScore(answerAssContent.getAverageScore());
+		QueryWrapper<SmartAnswerAssScore> scoreQueryWrapper = new QueryWrapper<>();
+		scoreQueryWrapper.select("max(score) as score").eq("main_id", smartAnswerAssScore.getMainId());
+		SmartAnswerAssScore maxScore = smartAnswerAssScoreService.getOne(scoreQueryWrapper);
+
+		scoreQueryWrapper.clear();
+		scoreQueryWrapper.select("min(score) as score").eq("main_id", smartAnswerAssScore.getMainId());
+		SmartAnswerAssScore minScore = smartAnswerAssScoreService.getOne(scoreQueryWrapper);
+
+		scoreQueryWrapper.clear();
+		scoreQueryWrapper.select("avg(score) as score").eq("main_id", smartAnswerAssScore.getMainId());
+		SmartAnswerAssScore avgScore = smartAnswerAssScoreService.getOne(scoreQueryWrapper);
+
+		// 最终得分增量
+		double increment = avgScore.getScore() - answerAssContent.getFinalScore();
+
+		answerAssContent.setHighestScore(maxScore.getScore());
+		answerAssContent.setLowestScore(minScore.getScore());
+		answerAssContent.setAverageScore(avgScore.getScore());
+		answerAssContent.setFinalScore(avgScore.getScore());
+
 		// 更新考核内容节点分数
 		smartAnswerAssContentService.updateById(answerAssContent);
 
@@ -693,7 +697,7 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 		answerAssContent.setHighestScore(maxScore.getScore());
 		answerAssContent.setLowestScore(minScore.getScore());
 		answerAssContent.setAverageScore(avgScore.getScore());
-		answerAssContent.setFinalScore(maxScore.getScore());
+		answerAssContent.setFinalScore(avgScore.getScore());
 		// 更新考核内容节点分数
 		smartAnswerAssContentService.updateById(answerAssContent);
 
