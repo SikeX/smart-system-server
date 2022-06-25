@@ -134,18 +134,20 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
     @GetMapping(value = "/listInCharge")
     public Result<?> queryChargePageList(SmartAnswerInfo smartAnswerInfo,
                                          @RequestParam(name = "type", defaultValue = "depart") String type,
-                                         @RequestParam(name = "contentId", defaultValue = "depart") String contentId,
+                                         @RequestParam(name = "roleId") String roleId,
+                                         @RequestParam(name = "contentId") String contentId,
                                          @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                                          @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                          HttpServletRequest req) {
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
-        if (oConvertUtils.isEmpty(smartAnswerInfo.getDepart())) {
+        if (oConvertUtils.isEmpty(roleId)) {
             return Result.error("没有权限！");
         }
         if ("depart".equals(type)) {
+            // 检查评分单位和评分人是否匹配
             QueryWrapper<SmartAssessmentDepartment> departmentQueryWrapper = new QueryWrapper<>();
-            departmentQueryWrapper.eq("depart_user", sysUser.getId()).eq("responsible_depart", smartAnswerInfo.getDepart());
+            departmentQueryWrapper.eq("depart_id", sysUser.getDepartId()).eq("id", roleId);
             SmartAssessmentDepartment one = smartAssessmentDepartmentService.getOne(departmentQueryWrapper);
             if (oConvertUtils.isEmpty(one)) {
                 return Result.error("权限不正确！");
@@ -157,12 +159,16 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
             if (oConvertUtils.isEmpty(content)) {
                 return Result.error("不负责该考核要点评分！");
             }
+
+            // 只查看所负责的单位
+            smartAnswerInfo.setDepart(one.getResponsibleDepart());
         } else {
+            // 检查考核组和评分人是否匹配
             QueryWrapper<SmartAssessmentTeam> teamQueryWrapper = new QueryWrapper<>();
             teamQueryWrapper.and(QueryWrapper -> QueryWrapper.eq("team_leader", sysUser.getId())
                     .or().like("deputy_team_Leader", sysUser.getId())
                     .or().like("members", sysUser.getId()));
-            teamQueryWrapper.eq("departs", smartAnswerInfo.getDepart());
+            teamQueryWrapper.eq("id", roleId);
             SmartAssessmentTeam one = smartAssessmentTeamService.getOne(teamQueryWrapper);
             if (oConvertUtils.isEmpty(one)) {
                 return Result.error("权限不正确！");
@@ -175,6 +181,9 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
             if (oConvertUtils.isEmpty(content)) {
                 return Result.error("不负责该考核要点评分！");
             }
+
+            // 只查看所负责的单位
+            smartAnswerInfo.setDepart(one.getDeparts());
         }
 
         String content = smartAnswerInfo.getMarkedContent();
@@ -194,7 +203,7 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
         IPage<SmartAnswerInfo> pageList = smartAnswerInfoService.page(page, queryWrapper);
         pageList.getRecords().forEach(item -> {
             String markedContent = item.getMarkedContent();
-            int index = StringUtils.indexOf(markedContent, contentId);
+            int index = StringUtils.indexOf(markedContent, contentId + "_" + roleId);
             if (index == -1) {
                 item.setMarkedContent("未评分");
             } else {

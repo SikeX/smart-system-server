@@ -640,13 +640,15 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 		if (increment != 0) {
 			// 先更新上级最终得分
 			updateSuperiorScore(answerAssContent, increment);
+
+			// 更新总分和已经评分的要点
 			SmartAnswerInfo smartAnswerInfo = smartAnswerInfoService.getById(answerAssContent.getMainId());
 			smartAnswerInfo.setTotalPoints(smartAnswerInfo.getTotalPoints() + increment);
 			String markedContent = smartAnswerInfo.getMarkedContent();
 			if (oConvertUtils.isEmpty(markedContent)) {
-				smartAnswerInfo.setMarkedContent(answerAssContent.getAssContentId());
+				smartAnswerInfo.setMarkedContent(answerAssContent.getAssContentId() + "_" + smartAnswerAssScore.getRoleId());
 			} else {
-				smartAnswerInfo.setMarkedContent(markedContent + "," + answerAssContent.getAssContentId());
+				smartAnswerInfo.setMarkedContent(markedContent + "," + answerAssContent.getAssContentId() + "_" + smartAnswerAssScore.getRoleId());
 			}
 			smartAnswerInfoService.updateById(smartAnswerInfo);
 		}
