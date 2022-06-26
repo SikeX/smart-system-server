@@ -15,6 +15,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.common.system.vo.DictModel;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.system.vo.SysDepartModel;
 import org.jeecg.common.util.oConvertUtils;
@@ -184,6 +185,33 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
             log.error(e.getMessage(), e);
             return Result.error("批量查询子节点失败：" + e.getMessage());
         }
+    }
+
+    /**
+     * 查询字典值
+     *
+     * @param req
+     * @return
+     */
+    @AutoLog(value = "负责评分的考核单位-查询字典值")
+    @ApiOperation(value="负责评分的考核单位-查询字典值", notes="负责评分的考核单位-查询字典值")
+    @GetMapping(value = "/dict")
+    public Result<?> queryDicList(@RequestParam("level") String level,
+                                  @RequestParam("missionId") String missionId,
+                                  HttpServletRequest req) {
+        QueryWrapper<SmartAssessmentContent> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id", "name");
+        queryWrapper.eq("is_key", "0");
+        queryWrapper.eq("mission_id", missionId);
+        if ("1".equals(level)) {
+            queryWrapper.eq("pid", "0");
+        } else if ("2".equals(level)) {
+            queryWrapper.ne("pid", "0");
+        } else {
+            return Result.error("查询字典值失败：查询级别错误");
+        }
+        List<SmartAssessmentContent> list = smartAssessmentContentService.list(queryWrapper);
+        return Result.OK(list);
     }
 
     /**

@@ -1,6 +1,7 @@
 package org.jeecg.modules.smartAssessmentMission.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Joiner;
@@ -236,6 +237,9 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
         QueryWrapper<SmartAssessmentContent> contentQueryWrapper = new QueryWrapper<>();
         contentQueryWrapper.select("distinct mission_id").like("ass_team", scoreRoleId);
         List<SmartAssessmentContent> contentList = smartAssessmentContentService.list(contentQueryWrapper);
+        if (contentList.size() == 0) {
+            return Result.error("没有找到符合条件的考核任务!");
+        }
         List<String> missionIdList = new ArrayList<>();
         contentList.forEach(smartAssessmentContent -> missionIdList.add(smartAssessmentContent.getMissionId()));
 
@@ -323,7 +327,23 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @ApiOperation(value = "考核任务表-编辑", notes = "考核任务表-编辑")
     @PutMapping(value = "/edit")
     public Result<?> edit(@RequestBody SmartAssessmentMission smartAssessmentMission) {
-        smartAssessmentMissionService.updateById(smartAssessmentMission);
+        SmartAssessmentMission mission = smartAssessmentMissionService.getById(smartAssessmentMission.getId());
+        if (mission.getAssessmentTime().equals(smartAssessmentMission.getAssessmentTime())) {
+            smartAssessmentMissionService.updateById(smartAssessmentMission);
+        } else {
+            smartAssessmentMissionService.updateById(smartAssessmentMission);
+            // 考核时间变更，修改所有被考核单位的时间
+            UpdateWrapper<SmartAssessmentDepart> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.set("deadline", smartAssessmentMission.getAssessmentTime());
+            updateWrapper.eq("mission_id", smartAssessmentMission.getId());
+            smartAssessmentDepartService.update(updateWrapper);
+
+            // 考核时间变更，修改考核信息表中的考核时间
+            UpdateWrapper<SmartAnswerInfo> infoUpdateWrapper = new UpdateWrapper<>();
+            infoUpdateWrapper.set("end_time", smartAssessmentMission.getAssessmentTime());
+            infoUpdateWrapper.eq("mission_id", smartAssessmentMission.getId());
+            smartAnswerInfoService.update(infoUpdateWrapper);
+        }
         return Result.OK("编辑成功!");
     }
 
@@ -338,9 +358,9 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @DeleteMapping(value = "/delete")
     public Result<?> delete(@RequestParam(name = "id", required = true) String id) {
         // 删除考核任务下的考核内容
-        QueryWrapper<SmartAnswerAssContent> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<SmartAssessmentContent> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("mission_id", id);
-        smartAnswerAssContentService.remove(queryWrapper);
+        smartAssessmentContentService.remove(queryWrapper);
         smartAssessmentMissionService.delMain(id);
         return Result.OK("删除成功!");
     }
@@ -554,6 +574,32 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
         smartAssessmentMissionService.updateById(smartAssessmentMission);
 
         return Result.OK("发布成功");
+    }
+
+    /**
+     * 生成排名
+     *
+     * @param smartAssessmentMission
+     * @return
+     */
+    @AutoLog(value = "考核任务表-生成排名")
+    @ApiOperation(value = "考核任务表-生成排名", notes = "考核任务表-生成排名")
+    @PutMapping(value = "/generateRank")
+    public Result<?> generateRank(@RequestBody SmartAssessmentMission smartAssessmentMission) {
+        if (oConvertUtils.isEmpty(smartAssessmentMission.getId())) {
+            return Result.error("数据错误!");
+        }
+
+        QueryWrapper<SmartAnswerInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("mission_status", "未签收").eq("mission_id", smartAssessmentMission.getId());
+        long count = smartAnswerInfoService.count(queryWrapper);
+        if (count != 0) {
+            return Result.error("存在未签收的单位!");
+        }
+        // 生成排名
+        generateRank(smartAssessmentMission.getId());
+
+        return Result.OK("生成成功!");
     }
 
     private void generateRank(String missionId) {

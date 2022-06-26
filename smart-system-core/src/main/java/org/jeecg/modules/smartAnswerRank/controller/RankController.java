@@ -123,7 +123,7 @@ public class RankController extends JeecgController<SmartAnswerInfo, ISmartAnswe
 
         List<SmartAnswerInfo> answerInfoList = smartAnswerInfoService.list(answerInfoQueryWrapper);
 
-        if(roleList.contains("systemAdmin")) {
+        if(roleList.contains("CCDIAdmin")) {
 
             answerInfoList.forEach(info -> {
                 Rank rank = new Rank();
@@ -242,7 +242,7 @@ public class RankController extends JeecgController<SmartAnswerInfo, ISmartAnswe
                                    @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
                                    HttpServletRequest req) {
         QueryWrapper<SmartAssessmentMission> queryWrapper = QueryGenerator.initQueryWrapper(smartAssessmentMission, req.getParameterMap());
-        queryWrapper.eq("mission_status","已发布");
+        queryWrapper.eq("mission_status","发布评分结果");
         Page<SmartAssessmentMission> page = new Page<SmartAssessmentMission>(pageNo, pageSize);
         IPage<SmartAssessmentMission> pageList = smartAssessmentMissionService.page(page, queryWrapper);
         return Result.OK(pageList);
@@ -364,7 +364,7 @@ public class RankController extends JeecgController<SmartAnswerInfo, ISmartAnswe
 
         List<SmartAnswerInfo> answerInfoList = smartAnswerInfoService.list(answerInfoQueryWrapper);
 
-        if(roleList.contains("systemAdmin")) {
+        if(roleList.contains("CCDIAdmin")) {
 
             answerInfoList.forEach(info -> {
                 Rank rank = new Rank();

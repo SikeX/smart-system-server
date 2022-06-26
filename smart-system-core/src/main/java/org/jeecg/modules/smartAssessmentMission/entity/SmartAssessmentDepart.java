@@ -57,7 +57,6 @@ public class SmartAssessmentDepart implements Serializable {
     @ApiModelProperty(value = "被考核单位")
     private java.lang.String assessmentDepart;
 	/**被考核单位登录账号*/
-	@Excel(name = "被考核单位登录账号", width = 15, dicCode = "id",dicText = "realname",dictTable = "sys_user")
     @Dict(dicCode = "id",dicText = "realname",dictTable = "sys_user")
     @ApiModelProperty(value = "被考核单位登录账号")
     private java.lang.String departUser;
