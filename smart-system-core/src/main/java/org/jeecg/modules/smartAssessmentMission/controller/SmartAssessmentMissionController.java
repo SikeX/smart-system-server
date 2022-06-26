@@ -1,6 +1,7 @@
 package org.jeecg.modules.smartAssessmentMission.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Joiner;
@@ -323,7 +324,17 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @ApiOperation(value = "考核任务表-编辑", notes = "考核任务表-编辑")
     @PutMapping(value = "/edit")
     public Result<?> edit(@RequestBody SmartAssessmentMission smartAssessmentMission) {
-        smartAssessmentMissionService.updateById(smartAssessmentMission);
+        SmartAssessmentMission mission = smartAssessmentMissionService.getById(smartAssessmentMission.getId());
+        if (mission.getAssessmentTime().equals(smartAssessmentMission.getAssessmentTime())) {
+            smartAssessmentMissionService.updateById(smartAssessmentMission);
+        } else {
+            // 考核时间变更，修改所有被考核单位的时间
+            UpdateWrapper<SmartAssessmentDepart> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.set("deadline", smartAssessmentMission.getAssessmentTime());
+            updateWrapper.eq("mission_id", smartAssessmentMission.getId());
+            smartAssessmentDepartService.update(updateWrapper);
+            smartAssessmentMissionService.updateById(smartAssessmentMission);
+        }
         return Result.OK("编辑成功!");
     }
 
