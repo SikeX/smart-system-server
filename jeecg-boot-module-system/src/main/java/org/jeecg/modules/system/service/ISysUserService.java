@@ -294,4 +294,6 @@ public interface ISysUserService extends IService<SysUser> {
     List<UserInfo> sendInformation();
 
 	List<String> getLeadersByOrgCode(String departCode);
+
+
 }

@@ -17,6 +17,6 @@
     </select>
     <select id="getRealnameById" resultType="String">
         select realname from sys_user
-        where id = #{userId} and del_flag = 0
+        where id = #{userId} and del_flag  0
     </select>
 </mapper>

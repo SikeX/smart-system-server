@@ -91,7 +91,9 @@ public class SmartReceptionController extends JeecgController<SmartReception, IS
 
 
 
-	 /*---------------------------------主表处理-begin-------------------------------------*/
+
+
+	/*---------------------------------主表处理-begin-------------------------------------*/
 
 	/**
 	 * 分页列表查询
@@ -285,9 +287,6 @@ public class SmartReceptionController extends JeecgController<SmartReception, IS
 	 * @param smart_8Visitor
 	 * @return
 	 */
-
-
-
 	@AutoLog(value = "来访人员信息表-添加")
 	@ApiOperation(value="来访人员信息表-添加", notes="来访人员信息表-添加")
 	@PostMapping(value = "/addSmart_8Visitor")
@@ -303,9 +302,6 @@ public class SmartReceptionController extends JeecgController<SmartReception, IS
 		return Result.OK("添加成功！");
 	}
 
-
-
-
     /**
 	 * 编辑
 	 * @param smart_8Visitor
@@ -315,7 +311,6 @@ public class SmartReceptionController extends JeecgController<SmartReception, IS
 	@ApiOperation(value="来访人员信息表-编辑", notes="来访人员信息表-编辑")
 	@PutMapping(value = "/editSmart_8Visitor")
 	public Result<?> editSmart_8Visitor(@RequestBody Smart_8Visitor smart_8Visitor) {
-
 		smart_8VisitorService.updateById(smart_8Visitor);
 		return Result.OK("编辑成功!");
 	}
@@ -593,9 +588,9 @@ public class SmartReceptionController extends JeecgController<SmartReception, IS
 	@PostMapping(value = "/addSmart_8Dining")
 	public Result<?> addSmart_8Dining(@RequestBody Smart_8Dining smart_8Dining) {
 		smart_8DiningService.save(smart_8Dining);
-//		Smart_8EscortedMeal smart_8EscortedMeal = new Smart_8EscortedMeal();
-//		smart_8EscortedMeal.setMainId(smart_8Dining.getId());
-//		smart_8EscortedMealService.save(smart_8EscortedMeal);
+		Smart_8EscortedMeal smart_8EscortedMeal = new Smart_8EscortedMeal();
+		smart_8EscortedMeal.setMainId(smart_8Dining.getId());
+		smart_8EscortedMealService.save(smart_8EscortedMeal);
 
 		return Result.OK("添加成功！");
 	}

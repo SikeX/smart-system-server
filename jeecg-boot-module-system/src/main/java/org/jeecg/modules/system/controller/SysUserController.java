@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.SecurityUtils;
+import org.jeecg.common.api.dto.message.MessageDTO;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.PermissionData;
 import org.jeecg.common.constant.CommonConstant;
@@ -26,6 +27,11 @@ import org.jeecg.common.util.*;
 import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.smartReportingInformation.entity.SysRole;
+import org.jeecg.modules.smart_window_people.entity.SmartWindowPeople;
+import org.jeecg.modules.smart_window_people.service.ISmartWindowPeopleService;
+import org.jeecg.modules.smart_window_unit.entity.SmartWindowUnit;
+import org.jeecg.modules.smart_window_unit.service.ISmartWindowUnitService;
 import org.jeecg.modules.system.entity.*;
 import org.jeecg.modules.system.mapper.SysDepartMapper;
 import org.jeecg.modules.system.model.DepartIdModel;
@@ -51,6 +57,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Null;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -97,6 +104,12 @@ public class SysUserController {
     private CommonService commonService;
     @Autowired
     private BaseCommonService baseCommon_Service;
+
+    @Autowired
+    private ISmartWindowPeopleService smartWindowPeopleService;
+
+    @Autowired
+    private ISmartWindowUnitService smartWindowUnitService;
 
     @Value("${jeecg.path.upload}")
     private String upLoadPath;
@@ -336,6 +349,7 @@ public class SysUserController {
 		return result;
 	}
 
+
     //@RequiresRoles({"admin"})
     //@RequiresPermissions("user:edit")
 	@RequestMapping(value = "/edit", method = RequestMethod.PUT)
@@ -368,6 +382,62 @@ public class SysUserController {
 			log.error(e.getMessage(), e);
 			result.error500("操作失败");
 		}
+        SentInfCauseU(jsonObject.getString("id"));
+        SentInfCauseP(jsonObject.getString("id"));
+//        QueryWrapper<SmartWindowUnit> queryWrapper = new QueryWrapper<>();
+//        queryWrapper.eq("principal",jsonObject.getString("id"));
+//        List<SmartWindowUnit> unit = smartWindowUnitService.list(queryWrapper);
+//
+//        for(SmartWindowUnit U : unit){
+//            if(U.getId() == null){
+//                break;
+//            }
+//            else {
+//                List<SysRole> role=smartWindowUnitService.getUser();
+//                for(SysRole r:role) {
+//                    try {
+//                        MessageDTO messageDTO = new MessageDTO();
+//                        messageDTO.setTitle("窗口单位负责人职务变动通知");
+//                        messageDTO.setContent("您管理的窗口单位:"+U.getPName() + "中,单位负责人：" + U.getPrincipalName() +"存在职务变动，请注意管理该人员对应窗口信息");
+//                        messageDTO.setFromUser("admin");
+//                        messageDTO.setToUser(r.getUsername());
+//                        messageDTO.setCategory("1");
+//
+//                        sysBaseAPI.sendSysAnnouncement(messageDTO);
+//
+//                    } catch (NullPointerException e) {
+//                    }
+//                }
+//            }
+//        }
+
+//        QueryWrapper<SmartWindowPeople> queryWrapper2 = new QueryWrapper<>();
+//        queryWrapper2.eq("person_id",jsonObject.getString("id"));
+//        List<SmartWindowPeople> person = smartWindowPeopleService.list(queryWrapper2);
+//        for(SmartWindowPeople P : person){
+//            if(P.getId() == null){
+//                break;
+//            }
+//            else {
+//                List<SysRole> role2 = smartWindowPeopleService.getUser();
+//                for(SysRole r2 : role2) {
+//                    String departmentId = P.getDepartmentId();
+//                    String windowName = smartWindowPeopleService.getDepartmentNameByDepartmentId(departmentId);
+//                    try {
+//                        MessageDTO messageDTO = new MessageDTO();
+//                        messageDTO.setTitle("窗口单位人员变动通知");
+//                        messageDTO.setContent("您管理的窗口单位:"+windowName + "中：" + P.getPersonName() +"存在信息变化，请注意！");
+//                        messageDTO.setFromUser("admin");
+//                        messageDTO.setToUser(r2.getUsername());
+//                        messageDTO.setCategory("1");
+//
+//                        sysBaseAPI.sendSysAnnouncement(messageDTO);
+//
+//                    } catch (NullPointerException e) {
+//                    }
+//                }
+//            }
+//        }
 		return result;
 	}
 
@@ -409,6 +479,8 @@ public class SysUserController {
             log.error(e.getMessage(), e);
             result.error500("操作失败");
         }
+        SentInfCauseU(jsonObject.getString("id"));
+        SentInfCauseP(jsonObject.getString("id"));
         return result;
     }
 	/**
@@ -419,6 +491,8 @@ public class SysUserController {
 	public Result<?> delete(@RequestParam(name="id",required=true) String id) {
 		baseCommonService.addLog("删除用户，id： " +id ,CommonConstant.LOG_TYPE_2, 3);
 		this.sysUserService.deleteUser(id);
+        SentInfCauseU(id);
+        SentInfCauseP(id);
 		return Result.ok("删除用户成功");
 	}
 
@@ -643,7 +717,15 @@ public class SysUserController {
 	public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
 		baseCommonService.addLog("批量删除用户， ids： " +ids ,CommonConstant.LOG_TYPE_2, 3);
 		this.sysUserService.deleteBatchUsers(ids);
+
+        List<String> list = Arrays.asList(ids.split(","));
+        for(String L : list){
+            SentInfCauseU(L);
+            SentInfCauseP(L);
+        }
 		return Result.ok("批量删除用户成功");
+
+
 	}
 
 	/**
@@ -669,6 +751,8 @@ public class SysUserController {
 			log.error(e.getMessage(), e);
 			result.error500("操作失败"+e.getMessage());
 		}
+        SentInfCauseU(jsonObject.getString("id"));
+        SentInfCauseP(jsonObject.getString("id"));
 		result.success("操作成功!");
 		return result;
 
@@ -2210,5 +2294,62 @@ public class SysUserController {
         return result;
     }
 
+    void SentInfCauseU(String id){
+        QueryWrapper<SmartWindowUnit> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("principal",id);
+        List<SmartWindowUnit> unit = smartWindowUnitService.list(queryWrapper);
+
+        for(SmartWindowUnit U : unit){
+            if(U.getId() == null){
+                break;
+            }
+            else {
+                List<SysRole> role=smartWindowUnitService.getUser();
+                for(SysRole r:role) {
+                    try {
+                        MessageDTO messageDTO = new MessageDTO();
+                        messageDTO.setTitle("窗口单位负责人职务变动通知");
+                        messageDTO.setContent("您管理的窗口单位:"+U.getPName() + "中,单位负责人：" + U.getPrincipalName() +"存在职务变动，请注意管理该人员对应窗口信息");
+                        messageDTO.setFromUser("admin");
+                        messageDTO.setToUser(r.getUsername());
+                        messageDTO.setCategory("1");
+
+                        sysBaseAPI.sendSysAnnouncement(messageDTO);
+
+                    } catch (NullPointerException e) {
+                    }
+                }
+            }
+        }
+    }
+    void SentInfCauseP(String id){
+        QueryWrapper<SmartWindowPeople> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("person_id",id);
+        List<SmartWindowPeople> person = smartWindowPeopleService.list(queryWrapper);
+        for(SmartWindowPeople P : person){
+            if(P.getId() == null){
+                break;
+            }
+            else {
+                List<SysRole> role2 = smartWindowPeopleService.getUser();
+                for(SysRole r2 : role2) {
+                    String departmentId = P.getDepartmentId();
+                    String windowName = smartWindowPeopleService.getDepartmentNameByDepartmentId(departmentId);
+                    try {
+                        MessageDTO messageDTO = new MessageDTO();
+                        messageDTO.setTitle("窗口单位人员变动通知");
+                        messageDTO.setContent("您管理的窗口单位:"+windowName + "中：" + P.getPersonName() +"存在信息变化，请注意！");
+                        messageDTO.setFromUser("admin");
+                        messageDTO.setToUser(r2.getUsername());
+                        messageDTO.setCategory("1");
+
+                        sysBaseAPI.sendSysAnnouncement(messageDTO);
+
+                    } catch (NullPointerException e) {
+                    }
+                }
+            }
+        }
+    }
 
 }

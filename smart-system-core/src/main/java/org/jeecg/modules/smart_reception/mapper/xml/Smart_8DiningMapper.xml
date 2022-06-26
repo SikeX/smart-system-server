@@ -17,7 +17,7 @@
 	</select>
 
 	<select id="sendInformation" resultType="org.jeecg.modules.smart_reception.entity.Smart_8Dining">
-		select * from Smart_8_ining
+		select * from Smart_8_dining
 		where (num &gt; 10 and ROUND(numr%num) &gt; 1/3 ) or (num &lt; 10 and numb &gt; 3)
 	</select>
 

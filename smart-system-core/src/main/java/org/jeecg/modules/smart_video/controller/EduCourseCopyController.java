@@ -5,9 +5,7 @@ import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.system.vo.LoginUser;
-import org.jeecg.modules.smart_8regulations_for_reception.entity.Smart_8regulationsForReception;
-import org.jeecg.modules.smart_8regulations_for_reception.service.ISmart_8regulationsForReceptionService;
-import org.jeecg.modules.smart_8regulations_for_reception.vo.Smart_8regulationsForReceptionPage;
+
 import org.jeecg.modules.smart_data_sheet_new.entity.SmartDataSheetNew;
 import org.jeecg.modules.smart_video.commonutils.R;
 import org.jeecg.modules.smart_video.entity.*;

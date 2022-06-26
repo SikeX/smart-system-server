@@ -1,7 +1,10 @@
 package org.jeecg.modules.smart_window_people.service;
 
+import org.jeecg.modules.smartReportingInformation.entity.SysRole;
 import org.jeecg.modules.smart_window_people.entity.SmartWindowPeople;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * @Description: 窗口人员管理
@@ -15,4 +18,5 @@ public interface ISmartWindowPeopleService extends IService<SmartWindowPeople> {
     String getDepartmentNameByDepartmentId(String id);
     String getDepartNameById(String id);
 
+    List<SysRole> getUser();
 }

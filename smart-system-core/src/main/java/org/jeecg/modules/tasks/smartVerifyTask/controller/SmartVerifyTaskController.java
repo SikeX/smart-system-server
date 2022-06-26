@@ -34,8 +34,8 @@ import org.jeecg.modules.smartSupervision.entity.SmartSupervision;
 import org.jeecg.modules.smartSupervision.service.ISmartSupervisionService;
 import org.jeecg.modules.smartTripleImportanceOneGreatness.entity.SmartTripleImportanceOneGreatness;
 import org.jeecg.modules.smartTripleImportanceOneGreatness.service.ISmartTripleImportanceOneGreatnessService;
-import org.jeecg.modules.smart_8regulations_for_reception.entity.Smart_8regulationsForReception;
-import org.jeecg.modules.smart_8regulations_for_reception.service.ISmart_8regulationsForReceptionService;
+import org.jeecg.modules.smart_reception.entity.SmartReception;
+import org.jeecg.modules.smart_reception.service.ISmartReceptionService;
 import org.jeecg.modules.tasks.smartVerifyDetail.entity.SmartVerifyDetail;
 import org.jeecg.modules.tasks.smartVerifyDetail.service.ISmartVerifyDetailService;
 import org.jeecg.modules.tasks.smartVerifyTask.entity.SmartVerifyTask;
@@ -108,7 +108,8 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 	private ISmartSupervisionService smartSupervisionService;
 
 	@Autowired
-	private ISmart_8regulationsForReceptionService smart_8regulationsForReceptionService;
+	private ISmartReceptionService smartReceptionService;
+
 
 	@Autowired
 	private org.jeecg.modules.smartFinanceResult.service.ISmartFinanceResultService smartFinanceResultService;
@@ -553,8 +554,8 @@ public class SmartVerifyTaskController extends JeecgController<SmartVerifyTask, 
 				smartSupervisionService.updateById(smartSupervision);
 				break;
 			case "公务接待":
-				Smart_8regulationsForReception smart_8regulationsForReception = new Smart_8regulationsForReception();
-				smart_8regulationsForReception.setId(flowNo);
+				SmartReception smartReception = new SmartReception();
+				smartReception.setId(flowNo);
 				// TO DO 曹萌这个居然还没改
 				break;
 			case "财务收支":

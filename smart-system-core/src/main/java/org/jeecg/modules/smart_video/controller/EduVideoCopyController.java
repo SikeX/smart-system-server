@@ -54,6 +54,7 @@ public class EduVideoCopyController {
         EduVideoCopy eduVideo  = eduVideoCopyService.getById(videoId);
         return R.ok().data("video", eduVideo);
     }
+
     //删除小节,删除小节里面对应的阿里云视频和阿里云文件
     @DeleteMapping("{id}")
     public R deleteVideo(@PathVariable String id){
@@ -61,31 +62,30 @@ public class EduVideoCopyController {
         EduVideoCopy eduVideo = eduVideoCopyService.getById(id);
         String videoSourceId = eduVideo.getVideoSourceId();
         String wordOneUrl=eduVideo.getWordOneUrl();
-        //判断是否有有视频id
-        if(!StringUtils.isEmpty(videoSourceId)){
-            //根据视频id，远程实现视频删除
-            R result = vodClient.removeAlyVideo(videoSourceId);
-            if(result.getCode()==20001){
-                throw new GuliException(20001,"删除视频失败，请检查是否启动Vod服务，熔断器....");
-            }
-        }
-        //判断是否有有文件url
-        if(!StringUtils.isEmpty(wordOneUrl)){
-            //如果有url要进行编码！！！
-            try {
-                wordOneUrl = URLEncoder.encode( wordOneUrl, "UTF-8" );
-                wordOneUrl = URLEncoder.encode( wordOneUrl, "UTF-8" );
-                //System.out.println(wordOneUrl);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-               throw new GuliException(20001,"删除课程小节，删除文件url时出错，请检查eduvideocopycontroller中删除小节方法");
-            }
-            //根据文件url，远程实现文件删除
-            R resultt = ossClient.removeAlyWj(wordOneUrl);
-            if(resultt.getCode()==20001){
-                throw new GuliException(20001,"删除文件失败，请检查是否启动Oss服务，熔断器....");
-            }
-        }
+//        //判断是否有有视频id
+//        if(!StringUtils.isEmpty(videoSourceId)){
+//            //根据视频id，远程实现视频删除
+//            R result = vodClient.removeAlyVideo(videoSourceId);
+////            if(result.getCode()==20001){
+////                throw new GuliException(20001,"删除视频失败，请检查是否启动Vod服务，熔断器....");
+////            }
+//        }
+//        //判断是否有有文件url
+//        if(!StringUtils.isEmpty(wordOneUrl)){
+//            //如果有url要进行编码！！！
+//            try {
+//                wordOneUrl = URLEncoder.encode( wordOneUrl, "UTF-8" );
+//                wordOneUrl = URLEncoder.encode( wordOneUrl, "UTF-8" );
+//                //System.out.println(wordOneUrl);
+//            } catch (UnsupportedEncodingException e) {
+//                e.printStackTrace();
+//               throw new GuliException(20001,"删除课程小节，删除文件url时出错，请检查eduvideocopycontroller中删除小节方法");
+//            }
+////            R resultt = ossClient.removeAlyWj(wordOneUrl);
+////            if(resultt.getCode()==20001){
+////                throw new GuliException(20001,"删除文件失败，请检查是否启动Oss服务，熔断器....");
+////            }
+//        }
 
         //删除小节
         eduVideoCopyService.removeById(id);
