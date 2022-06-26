@@ -328,12 +328,18 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
         if (mission.getAssessmentTime().equals(smartAssessmentMission.getAssessmentTime())) {
             smartAssessmentMissionService.updateById(smartAssessmentMission);
         } else {
+            smartAssessmentMissionService.updateById(smartAssessmentMission);
             // 考核时间变更，修改所有被考核单位的时间
             UpdateWrapper<SmartAssessmentDepart> updateWrapper = new UpdateWrapper<>();
             updateWrapper.set("deadline", smartAssessmentMission.getAssessmentTime());
             updateWrapper.eq("mission_id", smartAssessmentMission.getId());
             smartAssessmentDepartService.update(updateWrapper);
-            smartAssessmentMissionService.updateById(smartAssessmentMission);
+
+            // 考核时间变更，修改考核信息表中的考核时间
+            UpdateWrapper<SmartAnswerInfo> infoUpdateWrapper = new UpdateWrapper<>();
+            infoUpdateWrapper.set("end_time", smartAssessmentMission.getAssessmentTime());
+            infoUpdateWrapper.eq("mission_id", smartAssessmentMission.getId());
+            smartAnswerInfoService.update(infoUpdateWrapper);
         }
         return Result.OK("编辑成功!");
     }
