@@ -985,6 +985,30 @@ public class SysUserController {
     }
 
     /**
+     * 获取单位党员数量
+     * @param departId
+     * @return
+     */
+    @RequestMapping(value = "/countByPoliticalStatus", method = RequestMethod.GET)
+    public Result<JSONObject> queryPageListByPoliticalStatus(@RequestParam(name = "departId", required = true) String departId) {
+        Result<JSONObject> result = new Result<JSONObject>();
+        JSONObject obj = new JSONObject();
+
+
+        // 获取登录用户信息，可以用来查询单位部门信息
+        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("depart_id", departId).eq("political_status", 1).eq("del_flag", 0);
+        long count = sysUserService.count(queryWrapper);
+
+        obj.put("count", count);
+        result.setResult(obj);
+
+        return result;
+    }
+
+    /**
      * 导出excel
      *
      * @param req

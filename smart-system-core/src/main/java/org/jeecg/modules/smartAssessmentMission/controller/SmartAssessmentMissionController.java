@@ -40,6 +40,7 @@ import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.ImportParams;
 import org.jeecgframework.poi.excel.view.JeecgEntityExcelView;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -233,7 +234,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
                                        HttpServletRequest req) {
         // 查询考核组参与的考核任务ID
         QueryWrapper<SmartAssessmentContent> contentQueryWrapper = new QueryWrapper<>();
-        contentQueryWrapper.select("distinct mission_id").eq("ass_team", scoreRoleId);
+        contentQueryWrapper.select("distinct mission_id").like("ass_team", scoreRoleId);
         List<SmartAssessmentContent> contentList = smartAssessmentContentService.list(contentQueryWrapper);
         List<String> missionIdList = new ArrayList<>();
         contentList.forEach(smartAssessmentContent -> missionIdList.add(smartAssessmentContent.getMissionId()));
@@ -265,7 +266,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
 
         // 查询考核单位参与的考核任务ID
         QueryWrapper<SmartAssessmentContent> contentQueryWrapper = new QueryWrapper<>();
-        contentQueryWrapper.select("distinct mission_id").eq("ass_depart", scoreRoleId);
+        contentQueryWrapper.select("distinct mission_id").like("ass_depart", scoreRoleId);
         List<SmartAssessmentContent> contentList = smartAssessmentContentService.list(contentQueryWrapper);
         List<String> missionIdList = new ArrayList<>();
         contentList.forEach(smartAssessmentContent -> missionIdList.add(smartAssessmentContent.getMissionId()));
@@ -464,7 +465,8 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
 
         log.info("----duplicate check------："+ departId);
         QueryWrapper<SmartAssessmentDepart> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("mission_id", missionId).eq("assessment_depart", departId);
+        List<String> departIds = Arrays.asList(departId.split(","));
+        queryWrapper.eq("mission_id", missionId).in("assessment_depart", departIds);
         if (StringUtils.isNotBlank(dataId)) {
             // [2].编辑页面校验
             queryWrapper.ne("id", dataId);
@@ -510,6 +512,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
             smartAnswerInfo.setEndTime(smartAssessmentDepart.getDeadline());
             smartAnswerInfo.setDepart(smartAssessmentDepart.getAssessmentDepart());
             smartAnswerInfo.setTotalKeyPointAmount(count);
+            smartAnswerInfo.setIsShowScore(smartAssessmentDepart.getIsShowScore());
             smartAnswerInfo.setMarkedContent("");
             list.add(smartAnswerInfo);
         }
@@ -665,7 +668,17 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @ApiOperation(value = "考核任务被考核单位-添加", notes = "考核任务被考核单位-添加")
     @PostMapping(value = "/addSmartAssessmentDepart")
     public Result<?> addSmartAssessmentDepart(@RequestBody SmartAssessmentDepart smartAssessmentDepart) {
-        smartAssessmentDepartService.save(smartAssessmentDepart);
+        // 前端传过来的单位ID是多选
+        String[] departIds = smartAssessmentDepart.getAssessmentDepart().split(",");
+        List<SmartAssessmentDepart> departList = new ArrayList<>();
+        for (String departId : departIds) {
+            SmartAssessmentDepart depart = new SmartAssessmentDepart();
+            BeanUtils.copyProperties(smartAssessmentDepart, depart);
+            depart.setAssessmentDepart(departId);
+            departList.add(depart);
+        }
+        smartAssessmentDepartService.saveBatch(departList);
+//        smartAssessmentDepartService.save(smartAssessmentDepart);
         return Result.OK("添加成功！");
     }
 
@@ -686,11 +699,9 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
 
         // 如果还没有发布任务则不更新
         if (oConvertUtils.isNotEmpty(answerInfo)) {
-            // 如果时间不相等更新
-            if (answerInfo.getEndTime().getTime() != smartAssessmentDepart.getDeadline().getTime()) {
-                answerInfo.setEndTime(smartAssessmentDepart.getDeadline());
-                smartAnswerInfoService.updateById(answerInfo);
-            }
+            answerInfo.setEndTime(smartAssessmentDepart.getDeadline());
+            answerInfo.setIsShowScore(smartAssessmentDepart.getIsShowScore());
+            smartAnswerInfoService.updateById(answerInfo);
         }
 
         smartAssessmentDepartService.updateById(smartAssessmentDepart);
