@@ -237,6 +237,9 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
         QueryWrapper<SmartAssessmentContent> contentQueryWrapper = new QueryWrapper<>();
         contentQueryWrapper.select("distinct mission_id").like("ass_team", scoreRoleId);
         List<SmartAssessmentContent> contentList = smartAssessmentContentService.list(contentQueryWrapper);
+        if (contentList.size() == 0) {
+            return Result.error("没有找到符合条件的考核任务!");
+        }
         List<String> missionIdList = new ArrayList<>();
         contentList.forEach(smartAssessmentContent -> missionIdList.add(smartAssessmentContent.getMissionId()));
 
@@ -571,6 +574,32 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
         smartAssessmentMissionService.updateById(smartAssessmentMission);
 
         return Result.OK("发布成功");
+    }
+
+    /**
+     * 生成排名
+     *
+     * @param smartAssessmentMission
+     * @return
+     */
+    @AutoLog(value = "考核任务表-生成排名")
+    @ApiOperation(value = "考核任务表-生成排名", notes = "考核任务表-生成排名")
+    @PutMapping(value = "/generateRank")
+    public Result<?> generateRank(@RequestBody SmartAssessmentMission smartAssessmentMission) {
+        if (oConvertUtils.isEmpty(smartAssessmentMission.getId())) {
+            return Result.error("数据错误!");
+        }
+
+        QueryWrapper<SmartAnswerInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("mission_status", "未签收").eq("mission_id", smartAssessmentMission.getId());
+        long count = smartAnswerInfoService.count(queryWrapper);
+        if (count != 0) {
+            return Result.error("存在未签收的单位!");
+        }
+        // 生成排名
+        generateRank(smartAssessmentMission.getId());
+
+        return Result.OK("生成成功!");
     }
 
     private void generateRank(String missionId) {
