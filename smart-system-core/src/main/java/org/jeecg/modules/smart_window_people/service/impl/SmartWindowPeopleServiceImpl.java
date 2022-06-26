@@ -1,5 +1,6 @@
 package org.jeecg.modules.smart_window_people.service.impl;
 
+import org.jeecg.modules.smartReportingInformation.entity.SysRole;
 import org.jeecg.modules.smart_window_people.entity.SmartWindowPeople;
 import org.jeecg.modules.smart_window_people.mapper.SmartWindowPeopleMapper;
 import org.jeecg.modules.smart_window_people.service.ISmartWindowPeopleService;
@@ -8,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import java.util.List;
 
 /**
  * @Description: 窗口人员管理
@@ -28,5 +31,10 @@ public class SmartWindowPeopleServiceImpl extends ServiceImpl<SmartWindowPeopleM
     }
     public String getDepartNameById(String id) {
         return smartWindowPeopleMapper.getDepartNameById(id);
+    }
+
+    @Override
+    public List<SysRole> getUser(){
+        return smartWindowPeopleMapper.getUser();
     }
 }

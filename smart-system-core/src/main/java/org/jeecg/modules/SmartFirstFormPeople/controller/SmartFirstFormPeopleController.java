@@ -26,9 +26,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
+import org.jeecg.modules.SmartInnerPartyTalk.entity.SmartInnerPartyTalk;
 import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.constant.VerifyConstant;
 import org.jeecg.modules.smartEvaluateList.entity.MonthCount;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
 import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
@@ -138,11 +140,8 @@ public class SmartFirstFormPeopleController extends JeecgController<SmartFirstFo
 		 Result<JSONObject> result = new Result<JSONObject>();
 		 JSONObject obj = new JSONObject();
 
-		 // 先根据单位ID查询单位
-		 SysDepartModel sysDepartModel = sysBaseAPI.selectAllById(departId);
-
 		 QueryWrapper<SmartFirstFormPeople> queryWrapper = new QueryWrapper<>();
-		 queryWrapper.eq("interviewee_dept", sysDepartModel.getOrgCode()).eq("del_flag", 0);
+		 queryWrapper.eq("interviewee_dept", departId).eq("del_flag", 0);
 		 long count = smartFirstFormPeopleService.count(queryWrapper);
 
 		 obj.put("count", count);
@@ -171,25 +170,46 @@ public class SmartFirstFormPeopleController extends JeecgController<SmartFirstFo
 			return Result.error("没有找到部门！");
 		}
 		smartFirstFormPeople.setDepartId(id);
-		//smartFirstFormPeopleService.save(smartFirstFormPeople);
-		//审核
+		smartFirstFormPeopleService.save(smartFirstFormPeople);
+
 		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
-		if(isVerify){
-			smartFirstFormPeopleService.save(smartFirstFormPeople);
-			String recordId = smartFirstFormPeople.getId();
-			smartVerify.addVerifyRecord(recordId,verifyType);
-			smartFirstFormPeople.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
-			smartFirstFormPeopleService.updateById(smartFirstFormPeople);
+		if (isVerify) {
+			// 如果任务需要审核，则设置任务为待提交状态
+			smartFirstFormPeople.setVerifyStatus(VerifyConstant.VERIFY_STATUS_TOSUBMIT);
 		} else {
 			// 设置审核状态为免审
-			smartFirstFormPeople.setVerifyStatus("3");
-			// 直接添加，不走审核流程
-			smartFirstFormPeopleService.save(smartFirstFormPeople);
+			smartFirstFormPeople.setVerifyStatus(VerifyConstant.VERIFY_STATUS_FREE);
 		}
+		smartFirstFormPeopleService.updateById(smartFirstFormPeople);
+
 		return Result.OK("添加成功！");
 	}
-	
-	/**
+
+	 @AutoLog(value = "执行第一种形态人员表-提交审核")
+	 @ApiOperation(value="执行第一种形态人员表-提交审核", notes="执行第一种形态人员表-提交审核")
+	 @PostMapping(value = "/submitVerify")
+	 public Result<?> submitVerify(@RequestBody SmartFirstFormPeople smartFirstFormPeople) {
+		 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		 String orgCode = sysUser.getOrgCode();
+		 if ("".equals(orgCode)) {
+			 return Result.error("本用户没有操作权限！");
+		 }
+
+		 if(!smartVerifyTypeService.getIsVerifyStatusByType(verifyType)){
+			 return Result.error("免审任务，无需提交审核！");
+		 }
+
+		 SmartFirstFormPeople smartFirstFormPeopleEntity = smartFirstFormPeopleService.getById(smartFirstFormPeople.getId());
+
+		 String recordId = smartFirstFormPeopleEntity.getId();
+		 smartVerify.addVerifyRecord(recordId, verifyType);
+		 smartFirstFormPeopleEntity.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+		 smartFirstFormPeopleService.updateById(smartFirstFormPeopleEntity);
+
+		 return Result.OK("提交成功！");
+	 }
+
+	 /**
 	 *  编辑
 	 *
 	 * @param smartFirstFormPeople
@@ -205,6 +225,10 @@ public class SmartFirstFormPeopleController extends JeecgController<SmartFirstFo
 		}
 		smartFirstFormPeople.setDepartId(null);
 		smartFirstFormPeople.setCreateTime(null);
+
+		if(!(smartFirstFormPeopleEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_TOSUBMIT) || smartFirstFormPeopleEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_FREE))){
+			return Result.error("该任务已提交审核，不能修改！");
+		}
 		smartFirstFormPeopleService.updateById(smartFirstFormPeople);
 		return Result.OK("编辑成功!");
 	}

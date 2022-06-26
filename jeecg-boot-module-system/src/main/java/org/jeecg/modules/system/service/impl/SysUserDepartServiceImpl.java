@@ -177,20 +177,15 @@ public class SysUserDepartServiceImpl extends ServiceImpl<SysUserDepartMapper, S
 
 		LambdaQueryWrapper<SysUser> query = new LambdaQueryWrapper<>();
 		IPage<SysUser> pageList = null;
+//		System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^");
+//		System.out.println("orgCode:"+orgCode);
+//		System.out.println("childrenIdString:"+childrenIdString);
 
 		Page<SysUser> page = new Page<SysUser>(pageNo, pageSize);
 		// 部门ID不存在 直接查询用户表即可
 		if(oConvertUtils.isEmpty(departId)){
 			//只展示本单位及下级单位人员
-			query.like(SysUser::getOrgCode, orgCode);
-			if(oConvertUtils.isNotEmpty(realname)) {
-				query.like(SysUser::getRealname, realname);
-				//System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^");
-				//System.out.println(query);
-			}
-			//按人员类型过滤
-			query.eq(SysUser::getPeopleType,"1");
-			pageList = sysUserMapper.selectPage(page,query);
+			pageList = this.baseMapper.queryDepartUserPageList(page,orgCode, username, realname);
 		}
 		else{
 			// 有部门ID 需要走自定义sql

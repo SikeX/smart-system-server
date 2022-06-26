@@ -3,6 +3,7 @@ package org.jeecg.modules.smart_window_unit.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
+import org.jeecg.modules.smartReportingInformation.entity.SysRole;
 import org.jeecg.modules.smart_window_unit.entity.SmartWindowUnit;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -27,5 +28,7 @@ public interface SmartWindowUnitMapper extends BaseMapper<SmartWindowUnit> {
      * @return 部门Name
      */
     String getUserNameById(String id);
+
+    List<SysRole> getUser();
 
 }

@@ -77,7 +77,7 @@ public class InvoiceController {
 
        String imgPath = invoice.getImg();
 
-       String imgBase64 = ImageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese(fileBaseUrl + imgPath));
+       String imgBase64 = ImageUtils.getBase64ByImgUrl(UrlUtil.urlEncodeChinese( fileBaseUrl + imgPath));
 
        InvoiceResult invoiceResult = new InvoiceResult();
 

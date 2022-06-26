@@ -22,6 +22,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.modules.smart_window_unit.entity.SmartWindowUnit;
+import org.jeecg.modules.smart_window_unit.service.ISmartWindowUnitService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +55,9 @@ class BaseController {
 public class SmartWindowPeopleController extends JeecgController<SmartWindowPeople, ISmartWindowPeopleService> {
 	@Autowired
 	private ISmartWindowPeopleService smartWindowPeopleService;
+
+	@Autowired
+	private ISmartWindowUnitService smartWindowUnitService;
 
 	@Autowired
 	private ISysBaseAPI sysBaseAPI;
@@ -96,13 +101,22 @@ public class SmartWindowPeopleController extends JeecgController<SmartWindowPeop
 	@ApiOperation(value="窗口人员管理-添加", notes="窗口人员管理-添加")
 	@PostMapping(value = "/add")
 	public Object add(@RequestBody SmartWindowPeople smartWindowPeople) {
+
 		String peopleId = smartWindowPeople.getPrincipal();
 		String principalId = smartWindowPeople.getPersonId();
+
+		QueryWrapper<SmartWindowUnit> queryWrapper = new QueryWrapper<>();
+		queryWrapper.eq("id",smartWindowPeople.getDepartmentId());
+		SmartWindowUnit smartWindowUnit = smartWindowUnitService.getOne(queryWrapper);
+		smartWindowPeople.setPrincipal(smartWindowUnit.getPrincipal());
+		smartWindowPeople.setPrincipalName(smartWindowUnit.getPrincipalName());
+
 //		String windowsName = smartWindowPeople.getDepartmentId();
-////		String windowsName = smartWindowPeople.get();
+//		String windowsName = smartWindowPeople.get();
 //		smartWindowPeople.setPersonId(sysBaseAPI.getUserById(peopleId).getRealname());
-		smartWindowPeople.setPrincipal(sysBaseAPI.getUserById(principalId).getRealname());
+//		smartWindowPeople.setPrincipalName(sysBaseAPI.getUserById(principalId).getRealname());
 //		smartWindowUnitService.addSmartWindowUnit(smartWindowUnit);
+
 		String departmentId = smartWindowPeople.getDepartmentId();
 		String pid = smartWindowPeopleService.getPidByDepartmentId(departmentId);
 		String departName = smartWindowPeopleService.getDepartNameById(pid);
@@ -110,7 +124,7 @@ public class SmartWindowPeopleController extends JeecgController<SmartWindowPeop
 		// 1. 根据ID生成二维码，并存储到本地
 		//String content = "http://47.99.39.59:3000/SmartEvaluate/modules/SmartEvaluateForm?exeDept="+departName+"&windowsName="+windowName+"&personName="+smartWindowPeople.getPersonName();//exeDept主管部门名称，windowsName窗口名称，personName具体被举报人名
 
-		String content = "http://47.99.39.59:3000/SmartEvaluate/modules/SmartEvaluateForm?" +
+		String content = "https://www.dlqjjw.com/SmartEvaluate/modules/SmartEvaluateForm?" +
 				"exeDeptId="+pid+"&exeDept="+departName+
 				"&windowsId="+departmentId+"&windowsName="+windowName+
 				"&personId="+smartWindowPeople.getPersonId()+"&personName="+smartWindowPeople.getPersonName();//exeDept主管部门名称，windowsName窗口名称，personName具体被举报人名，可删除留空判断
@@ -137,7 +151,11 @@ public class SmartWindowPeopleController extends JeecgController<SmartWindowPeop
 		return response;
 
 	}
-	
+
+
+
+
+
 	/**
 	 *  编辑
 	 *

@@ -150,7 +150,7 @@ spring:
 
 #    host: 192.168.1.100
     host: 127.0.0.1
-#  host: 110.42.139.54
+#    host: 110.42.139.54
     lettuce:
       pool:
         max-active: 8   #最大连接数据库连接数,设 -1 为没有限制
@@ -200,6 +200,7 @@ jeecg :
     accessKey: ??
     secretKey: ??
     endpoint: oss-cn-beijing.aliyuncs.com
+    internalEndpoint: oss-cn-beijing-internal.aliyuncs.com
     bucketName: jeecgdev
   # ElasticSearch 6设置
   elasticsearch:

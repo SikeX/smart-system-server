@@ -19,8 +19,8 @@
     <!--按月统计八项规定任务数量-->
     <select id="countEight" resultType="org.jeecg.modules.smartEvaluateList.entity.MonthCountEight">
         select month(create_time) as month,
-            (select count(*) from smart_verify_task where year(create_time)= #{year} and month(create_time) = month and (task_type = '监督检查' or task_type = '财务收支' or task_type = '婚前报备'  or task_type = '婚后报备' or task_type = '丧事报备' or task_type = '公务接待'))as count,
-            (select count(*) from smart_verify_task where year(create_time)= #{year} and month(create_time) = month and flow_status = 0 and (task_type = '监督检查' or task_type = '财务收支' or task_type = '婚前报备'  or task_type = '婚后报备' or task_type = '丧事报备' or task_type = '公务接待'))as countNot
+            (select count(*) from smart_verify_task where year(create_time)= #{year} and month(create_time) = month and (task_type = '监督检查' or task_type = '财务收支' or task_type = '婚前报备'  or task_type = '婚后报备' or task_type = '丧事报备' or task_type = '丧事事后报备' or task_type = '公务接待'))as count,
+            (select count(*) from smart_verify_task where year(create_time)= #{year} and month(create_time) = month and flow_status = 0 and (task_type = '监督检查' or task_type = '财务收支' or task_type = '婚前报备'  or task_type = '婚后报备' or task_type = '丧事报备' or task_type = '丧事事后报备' or task_type = '公务接待'))as countNot
         from smart_verify_task
         where year(create_time)= #{year}
         group by  year(create_time), month(create_time)

@@ -15,6 +15,7 @@ import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
 //import org.jeecg.modules.smartTripleImportanceOneGreatness.service.ISmartTripleImportanceOneGreatnessDescriptionService;
+import org.jeecg.modules.constant.VerifyConstant;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
 import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
@@ -146,6 +147,38 @@ public class SmartTripleImportanceOneGreatnessController {
 			return Result.OK(pageList);
 		}
 	}
+
+	 /**
+	  * 提交审核
+	  * @param smartTripleImportanceOneGreatness
+	  * @return
+	  */
+	 @AutoLog(value = "三重一大表-提交审核")
+	 @ApiOperation(value = "三重一大表-提交审核", notes = "三重一大表-提交审核")
+	 @PostMapping(value = "/submitVerify")
+	 public Result<?> submitVerify(@RequestBody SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness) {
+		 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+		 String orgCode = sysUser.getOrgCode();
+		 if ("".equals(orgCode)) {
+			 return Result.error("本用户没有操作权限！");
+		 }
+
+		 if(!smartVerifyTypeService.getIsVerifyStatusByType(verifyType)){
+			 return Result.error("免审任务，无需提交审核！");
+		 }
+
+		 SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatnessEntity =
+				 smartTripleImportanceOneGreatnessService.getById(smartTripleImportanceOneGreatness.getId());
+
+		 String recordId = smartTripleImportanceOneGreatnessEntity.getId();
+		 smartVerify.addVerifyRecord(recordId, verifyType);
+		 smartTripleImportanceOneGreatnessEntity.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+		 smartTripleImportanceOneGreatnessService.updateById(smartTripleImportanceOneGreatnessEntity);
+
+		 return Result.OK("提交成功！");
+	 }
+
 	/**
 	 *   添加
 	 *
@@ -169,29 +202,31 @@ public class SmartTripleImportanceOneGreatnessController {
 		SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness = new SmartTripleImportanceOneGreatness();
 
 		BeanUtils.copyProperties(smartTripleImportanceOneGreatnessPage, smartTripleImportanceOneGreatness);
+
+		smartTripleImportanceOneGreatnessService.saveMain(smartTripleImportanceOneGreatness,
+				smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessPaccaList());
+
 		smartTripleImportanceOneGreatness.setDocumentid(sysUser.getDepartId());
 
 
 		//smartVerify.addVerifyRecord(smartTripleImportanceOneGreatness.getId(),verifyType);
 
 		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
-		if(isVerify){
-			smartTripleImportanceOneGreatnessService.saveMain(smartTripleImportanceOneGreatness,
-					smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessPaccaList());
-			String recordId = smartTripleImportanceOneGreatness.getId();
-		    smartVerify.addVerifyRecord(recordId,verifyType);
-		    smartTripleImportanceOneGreatness.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
-		    smartTripleImportanceOneGreatnessService.updateById(smartTripleImportanceOneGreatness); }
-		    else {
-		    	// 设置审核状态为免审
-			 smartTripleImportanceOneGreatness.setVerifyStatus("3");
-			// 直接添加，不走审核流程
-			smartTripleImportanceOneGreatnessService.saveMain(smartTripleImportanceOneGreatness,
-					smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessPaccaList());
-		    }
+		if (isVerify) {
+			// 如果任务需要审核，则设置任务为待提交状态
+			smartTripleImportanceOneGreatness.setVerifyStatus(VerifyConstant.VERIFY_STATUS_TOSUBMIT);
+		} else {
+			// 设置审核状态为免审
+			smartTripleImportanceOneGreatness.setVerifyStatus(VerifyConstant.VERIFY_STATUS_FREE);
+		}
+
+		smartTripleImportanceOneGreatnessService.updateById(smartTripleImportanceOneGreatness);
+
 
 		return Result.OK("添加成功！");
 	}
+
+
 
 	/**
 	 *  编辑
@@ -205,14 +240,17 @@ public class SmartTripleImportanceOneGreatnessController {
 	public Result<?> edit(@RequestBody SmartTripleImportanceOneGreatnessPage smartTripleImportanceOneGreatnessPage) {
 		SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatness = new SmartTripleImportanceOneGreatness();
 		BeanUtils.copyProperties(smartTripleImportanceOneGreatnessPage, smartTripleImportanceOneGreatness);
-		SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatnessEntity = smartTripleImportanceOneGreatnessService.getById(smartTripleImportanceOneGreatness.getId());
+		SmartTripleImportanceOneGreatness smartTripleImportanceOneGreatnessEntity =
+				smartTripleImportanceOneGreatnessService.getById(smartTripleImportanceOneGreatness.getId());
 		if(smartTripleImportanceOneGreatnessEntity==null) {
 			return Result.error("未找到对应数据");
 		}
-		smartTripleImportanceOneGreatness.setDocumentid(null);
-		smartTripleImportanceOneGreatness.setCreateTime(null);
+		if(!(smartTripleImportanceOneGreatnessEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_TOSUBMIT)
+				|| !smartTripleImportanceOneGreatnessEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_FREE))){
+			return Result.error("该任务已提交审核，不能修改！");
+		}
 
-		smartTripleImportanceOneGreatnessService.updateMain(smartTripleImportanceOneGreatness,
+	    smartTripleImportanceOneGreatnessService.updateMain(smartTripleImportanceOneGreatness,
 				smartTripleImportanceOneGreatnessPage.getSmartTripleImportanceOneGreatnessPaccaList());
 		return Result.OK("编辑成功!");
 	}

@@ -205,9 +205,9 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 			//update-end--Author:baihailong  Date:20191209 for：部门编码规则生成器做成公用配置
 			sysDepart.setOrgCode(codeArray[0]);
 			String orgType = codeArray[1];
-			sysDepart.setOldDepartName(sysDepart.getDepartName());
-			sysDepart.setOldParentId(sysDepart.getParentId());
-			sysDepart.setOldBusinessParentId(sysDepart.getBusinessParentId());
+//			sysDepart.setOldDepartName(sysDepart.getDepartName());
+//			sysDepart.setOldParentId(sysDepart.getParentId());
+//			sysDepart.setOldBusinessParentId(sysDepart.getBusinessParentId());
 			sysDepart.setOrgType(String.valueOf(orgType));
 			sysDepart.setCreateTime(new Date());
 			sysDepart.setDelFlag(CommonConstant.DEL_FLAG_0.toString());
@@ -303,19 +303,19 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 	public Boolean updateDepartDataById(SysDepart sysDepart, String username) {
 		if (sysDepart != null && username != null) {
 			SysDepart deptForOld = this.queryDeptByDepartId(sysDepart.getId());
-			sysDepart.setOldDepartName(deptForOld.getDepartName());
-			if (sysDepart.getOldParentId() == null) {
-				sysDepart.setOldParentId("");
-			}
-			else{
-				sysDepart.setOldParentId(deptForOld.getParentId());
-			}
-			sysDepart.setOldBusinessParentId(deptForOld.getBusinessParentId());
+//			sysDepart.setOldDepartName(deptForOld.getDepartName());
+//			if (sysDepart.getOldParentId() == null) {
+//				sysDepart.setOldParentId("");
+//			}
+//			else{
+//				sysDepart.setOldParentId(deptForOld.getParentId());
+//			}
+//			sysDepart.setOldBusinessParentId(deptForOld.getBusinessParentId());
 			sysDepart.setUpdateTime(new Date());
 			sysDepart.setUpdateBy(username);
             SysDepart naturalDept = this.queryDeptByDepartId(sysDepart.getBusinessParentId());
             //			部门名称改变且该部门的自然上级是部门类型的情况下
-        if (!sysDepart.getOldDepartName().equals(sysDepart.getDepartName()))
+        if (!deptForOld.getDepartName().equals(sysDepart.getDepartName()))
         {
             if("部门类型".equals(naturalDept.getDepartName()))
             {
@@ -331,11 +331,11 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
             }
         }
             //			更换自然上级的情况下
-        if(!sysDepart.getBusinessParentId().equals(sysDepart.getOldBusinessParentId()))
+        if(!sysDepart.getBusinessParentId().equals(deptForOld.getBusinessParentId()))
         {
             //			如果自然上级是部门类型，且部门名称没有改变
             if ("部门类型".equals(naturalDept.getDepartName())) {
-               if(sysDepart.getOldDepartName().equals(sysDepart.getDepartName()))
+               if(deptForOld.getDepartName().equals(sysDepart.getDepartName()))
                 { String newType2 = sysDepart.getDepartName();
                 List<String> idList2 = new ArrayList<>();
                 this.checkNaturalChildrenExists(sysDepart.getId(), idList2);
@@ -358,13 +358,16 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
                     this.updateById(naturalChildDept2);
                 }
             }
-            this.updateById(sysDepart);
+//            this.updateById(sysDepart);
         }
             //			更换业务上级的情况下
 			if (sysDepart.getParentId() == null) {
 				sysDepart.setParentId("");
 			}
-            if(!sysDepart.getParentId().equals(sysDepart.getOldParentId()))
+			if (deptForOld.getParentId() == null) {
+				deptForOld.setParentId("");
+			}
+            if(!sysDepart.getParentId().equals(deptForOld.getParentId()))
             {
 
                 // 先判断该对象有无父级ID,有则意味着不是最高级,否则意味着是最高级
@@ -376,10 +379,11 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
                 String[] codeArray = (String[]) FillRuleUtil.executeRule(FillRuleConstant.DEPART,formData);
                 //update-end--Author:baihailong  Date:20191209 for：部门编码规则生成器做成公用配置
                 sysDepart.setOrgCode(codeArray[0]);
+//
                 String orgType = codeArray[1];
                 sysDepart.setOrgType(String.valueOf(orgType));
 				this.updateById(sysDepart);
-				//修改相关人员的orgCode
+				//修改相关人员的orgCodeSystem.out.println(sysDepart.getOrgCode());
 				LambdaQueryWrapper<SysUser> queryPeople = new LambdaQueryWrapper<SysUser>();
 				queryPeople.eq(SysUser::getDepartId,sysDepart.getId());
 				List<SysUser> userList = sysUserMapper.selectList(queryPeople);
@@ -414,9 +418,9 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 //                            this.updateById(childDept);
 //				}
             }
-            sysDepart.setOldDepartName(sysDepart.getDepartName());
-            sysDepart.setOldParentId(sysDepart.getParentId());
-            sysDepart.setOldBusinessParentId(sysDepart.getBusinessParentId());
+//            sysDepart.setOldDepartName(sysDepart.getDepartName());
+//            sysDepart.setOldParentId(sysDepart.getParentId());
+//            sysDepart.setOldBusinessParentId(sysDepart.getBusinessParentId());
 			this.updateById(sysDepart);
 			return true;
 		} else {
@@ -443,6 +447,7 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 					nextParentDept.setOrgType(orgType);
 					String newOrgCode = YouBianCodeUtil.getSubYouBianCode(parentDept.getOrgCode(), null);
 					nextParentDept.setOrgCode(newOrgCode);
+//					System.out.println(newOrgCode);
 					this.updateById(nextParentDept);
 					//修改相关人员的orgCode
 					LambdaQueryWrapper<SysUser> queryPeople = new LambdaQueryWrapper<SysUser>();
@@ -461,6 +466,7 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 					nextParentDept.setOrgType(orgType);
 					String newOrgCode =  YouBianCodeUtil.getSubYouBianCode(parentDept.getOrgCode(), lastDepart.getOrgCode());
 					nextParentDept.setOrgCode(newOrgCode);
+//					System.out.println(newOrgCode);
 					this.updateById(nextParentDept);
 					//修改相关人员的orgCode
 					LambdaQueryWrapper<SysUser> queryPeople = new LambdaQueryWrapper<SysUser>();
@@ -894,7 +900,7 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 		String cunId = null;
 		if(cun.equals("前进村"))
 		{
-			if(zhen.equals("道里区新农镇"))
+			if(zhen.equals("新农镇"))
 			{
 				cunId = "e0ce48ecb1734d77b843d28017b95f39";
 			}else

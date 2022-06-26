@@ -18,6 +18,8 @@ import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.constant.VerifyConstant;
+import org.jeecg.modules.smartCreateAdvice.entity.SmartCreateAdvice;
 import org.jeecg.modules.smartEvaluateMeeting.entity.SmartEvaluateMeeting;
 import org.jeecg.modules.smartEvaluateMeeting.entity.SmartEvaluateMeetingAnnex;
 import org.jeecg.modules.smartEvaluateMeeting.entity.SmartEvaluateMeetingPacpa;
@@ -105,7 +107,7 @@ public class SmartFuneralReportController extends JeecgController<SmartFuneralRe
 		// 如果是普通用户，则只能看到自己创建的数据
 		if(role.contains("CommonUser")) {
 			QueryWrapper<SmartFuneralReport> queryWrapper = new QueryWrapper<>();
-			queryWrapper.eq("create_by",username);
+			queryWrapper.eq("create_by",username).or().eq("people_id",sysUser.getId());
 			IPage<SmartFuneralReport> pageList = smartFuneralReportService.page(page, queryWrapper);
 			return Result.OK(pageList);
 		} else {
@@ -152,38 +154,64 @@ public class SmartFuneralReportController extends JeecgController<SmartFuneralRe
 	 * @param smartFuneralReport
 	 * @return
 	 */
-	@AutoLog(value = "丧事口头报备表-添加")
-	@ApiOperation(value="丧事口头报备表-添加", notes="丧事口头报备表-添加")
-	@PostMapping(value = "/add")
-	public Result<?> add(@RequestBody SmartFuneralReport smartFuneralReport) {
+	@AutoLog(value = "丧事口头报备表-提交审核")
+	@ApiOperation(value="丧事口头报备表-提交审核", notes="丧事口头报备表-提交审核")
+	@PostMapping(value = "/submitVerify")
+	public Result<?> submitVerify(@RequestBody SmartFuneralReport smartFuneralReport) {
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 		String orgCode = sysUser.getOrgCode();
 		// 获取用户角色
 		if ("".equals(orgCode)) {
 			return Result.error("用户没有操作权限！");
 		}
-		String id = commonService.getDepartIdByOrgCode(orgCode);
-		if (id == null) {
-			return Result.error("未找到您所属部门，请检查部门是否存在！");
+		if(!smartVerifyTypeService.getIsVerifyStatusByType(verifyType)){
+			return Result.error("免审任务，无需提交审核！");
 		}
-		smartFuneralReport.setDepartId(id);
-		smartFuneralReport.setReportTime(new Date());
-		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
-		if(isVerify){
-			smartFuneralReportService.save(smartFuneralReport);
-			String recordId = smartFuneralReport.getId();
-			log.info("recordId is"+recordId);
-			smartVerify.addVerifyRecord(recordId,verifyType);
-			smartFuneralReport.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
-			smartFuneralReportService.updateById(smartFuneralReport);
-		} else {
-			// 设置审核状态为免审
-			smartFuneralReport.setVerifyStatus("3");
-			// 直接添加，不走审核流程
-			smartFuneralReportService.save(smartFuneralReport);
-		}
+		SmartFuneralReport smartFuneralReporteEntity = smartFuneralReportService.getById(smartFuneralReport.getId());
+
+		String recordId = smartFuneralReporteEntity.getId();
+		smartVerify.addVerifyRecord(recordId, verifyType);
+		smartFuneralReporteEntity.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+		smartFuneralReportService.updateById(smartFuneralReporteEntity);
 		return Result.OK("添加成功！");
 	}
+
+	 /**
+	  *   添加
+	  *
+	  * @param smartFuneralReport
+	  * @return
+	  */
+	 @AutoLog(value = "丧事口头报备表-添加")
+	 @ApiOperation(value="丧事口头报备表-添加", notes="丧事口头报备表-添加")
+	 @PostMapping(value = "/add")
+	 public Result<?> add(@RequestBody SmartFuneralReport smartFuneralReport) {
+		 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+		 String orgCode = sysUser.getOrgCode();
+		 // 获取用户角色
+		 if ("".equals(orgCode)) {
+			 return Result.error("用户没有操作权限！");
+		 }
+		 String id = commonService.getDepartIdByOrgCode(orgCode);
+		 if (id == null) {
+			 return Result.error("没有找到部门！");
+		 }
+		 smartFuneralReport.setDepartId(id);
+		 smartFuneralReport.setReportTime(new Date());
+		 smartFuneralReportService.save(smartFuneralReport);
+
+		 Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
+		 if(isVerify){
+			 // 如果任务需要审核，则设置任务为待提交状态
+			 smartFuneralReport.setVerifyStatus(VerifyConstant.VERIFY_STATUS_TOSUBMIT);
+		 } else {
+			 // 设置审核状态为免审
+			 smartFuneralReport.setVerifyStatus(VerifyConstant.VERIFY_STATUS_FREE);
+			 // 直接添加，不走审核流程
+		 }
+		 smartFuneralReportService.updateById(smartFuneralReport);
+		 return Result.OK("添加成功！");
+	 }
 	
 	/**
 	 *  编辑
@@ -195,6 +223,15 @@ public class SmartFuneralReportController extends JeecgController<SmartFuneralRe
 	@ApiOperation(value="丧事口头报备表-编辑", notes="丧事口头报备表-编辑")
 	@PutMapping(value = "/edit")
 	public Result<?> edit(@RequestBody SmartFuneralReport smartFuneralReport) {
+		SmartFuneralReport smartFuneralReportEntity = smartFuneralReportService.getById(smartFuneralReport.getId());
+		if (smartFuneralReportEntity == null) {
+			return Result.error("未找到对应数据");
+		}
+		log.info("审核状态：" + smartFuneralReportEntity.getVerifyStatus());
+		if(!(smartFuneralReportEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_TOSUBMIT) || smartFuneralReportEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_FREE))){
+			return Result.error("该任务已提交审核，不能修改！");
+		}
+
 		smartFuneralReportService.updateById(smartFuneralReport);
 		return Result.OK("编辑成功!");
 	}

@@ -93,6 +93,9 @@ public class SmartReception implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @ApiModelProperty(value = "更新日期")
     private java.util.Date updateTime;
+
+    private java.lang.String verifyStatus;
+
 	/**删除状态*/
     @Excel(name = "删除状态", width = 15)
     @ApiModelProperty(value = "删除状态")

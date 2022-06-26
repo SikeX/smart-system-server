@@ -54,6 +54,12 @@
 		<if test="username!=null and username!=''">
 			and username = #{username}
 		</if>
+		<if test="departIds!=null  and departIds.size()>0">
+			and depart_id in
+			<foreach collection="departIds" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+		</if>
 	</select>
 	
 	<!--  修改用户部门code -->
@@ -191,5 +197,21 @@
 	<!-- 根据homeCode查询家庭成员的家庭关系 -->
 	<select id="getRelationByHomeCode" resultType="Integer">
 		select home_relation from  smart_village_relation  where home_code = #{homeCode} and idnumber = #{idnumber}
+	</select>
+
+	<select id="sendInformation" resultType="org.jeecg.modules.system.vo.UserInfo">
+		select u.org_code as departCode,group_concat(realname) as names
+		from sys_user u
+		where u.del_flag = 0 and year(u.create_time) = year(NOW())
+		  and month(u.create_time) = MONTH(NOW())
+		   or month(u.create_time) = MONTH(date_sub(NOW(),interval 1 month))
+		   or month(u.create_time) = MONTH(date_sub(NOW(),interval 2 month))
+		group by org_code
+	</select>
+	<select id="getLeadersByOrgCode" resultType="String">
+		select username
+		from sys_user
+		where user_identity = 2
+		  and org_code = #{departCode}
 	</select>
 </mapper>

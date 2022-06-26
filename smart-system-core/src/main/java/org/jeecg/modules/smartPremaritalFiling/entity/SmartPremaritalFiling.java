@@ -221,5 +221,4 @@ public class SmartPremaritalFiling implements Serializable {
     private java.lang.String files;
 
     private java.lang.String isReport;
-
 }

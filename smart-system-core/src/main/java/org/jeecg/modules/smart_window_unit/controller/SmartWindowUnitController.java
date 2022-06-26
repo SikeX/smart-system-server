@@ -67,6 +67,7 @@ class BaseController {
 public class SmartWindowUnitController<ISysDepartService> extends JeecgController<SmartWindowUnit, ISmartWindowUnitService> {
 	@Autowired
 	private ISmartWindowUnitService smartWindowUnitService;
+
 	@Autowired
 	private ISmartWindowPeopleService smartWindowPersonService;
 	@Autowired
@@ -114,21 +115,9 @@ public class SmartWindowUnitController<ISysDepartService> extends JeecgControlle
 	@ApiOperation(value="窗口单位-添加", notes="窗口单位-添加")
 	@PostMapping(value = "/add")
 	public Object add(@RequestBody SmartWindowUnit smartWindowUnit) {
-//		String peopleId = smartWindowUnit.getPeople();
-//		smartWindowUnit.setPeople(sysBaseAPI.getUserById(peopleId).getRealname());
-
-//		String principalId = smartWindowUnit.getPrincipal();
-//		smartWindowUnit.setPrincipal(sysBaseAPI.getUserById(principalId).getRealname());
-
-//		String principalId = smartWindowUnit.getPrincipal();
-//		smartWindowUnit.setPrincipal(smartWindowUnitService.getUserNameById(principalId));
 		String pid = smartWindowUnit.getPid();
 		String departName = smartWindowUnitService.getDepartNameById(pid);
-//		String windowUnitPid = smartWindowUnitService.getById(departName).getPid();
-//		sysBaseAPI.getParentDepartId()
-		// 1. 根据ID生成二维码，并存储到本地
-		//String content = "http://47.99.39.59:3000/SmartEvaluate/modules/SmartEvaluateForm?exeDept="+departName+"&windowsName="+smartWindowUnit.getName()+"&personName=大厅";//exeDept主管部门名称，windowsName窗口名称，personName具体被举报人名，可删除留空判断
-		BaseResponse response=new BaseResponse(StatusCode.Success);
+
 		try {
 			final String fileName=LOCALDATEFORMAT.get().format(new Date());
 			//QRCodeUtil.createCodeToFile(content,new File(RootPath),fileName+FileFormat);
@@ -136,26 +125,25 @@ public class SmartWindowUnitController<ISysDepartService> extends JeecgControlle
 
 			log.info(fileName);
 			// 2. 将存储路径保存到 smartWindowsUnit
-			//smartWindowUnit.setQrcode("windows/"+fileName+FileFormat);
 			smartWindowUnitService.save(smartWindowUnit);
 			// 3. 调用  edit() 更新数据
 			edit(smartWindowUnit);
 
 			String windowsId = smartWindowUnit.getId();
 			System.out.println("##################################");
-			String content = "http://47.99.39.59:3000/SmartEvaluate/modules/SmartEvaluateForm?" +
+			String content = "https://www.dlqjjw.com/SmartEvaluate/modules/SmartEvaluateForm?" +
 												"exeDeptId="+pid+"&exeDept="+departName+
 												"&windowsId="+windowsId+"&windowsName="+smartWindowUnit.getName()+
 												"&personId="+""+"&personName=大厅";//exeDept主管部门名称，windowsName窗口名称，personName具体被举报人名，可删除留空判断
 			QRCodeUtil.createCodeToFile(content,new File(RootPath),fileName+FileFormat);
 			smartWindowUnit.setQrcode("windows/"+fileName+FileFormat);
+			smartWindowUnit.setPName(departName);
 			smartWindowUnitService.updateById(smartWindowUnit);
 
 			return Result.OK("添加成功！");
 		}catch (Exception e){
-			response=new BaseResponse(StatusCode.Fail.getCode(),e.getMessage());
+			return Result.error(e.getMessage());
 		}
-		return response;
 	}
 	
 	/**
@@ -168,7 +156,22 @@ public class SmartWindowUnitController<ISysDepartService> extends JeecgControlle
 	@ApiOperation(value="窗口单位-编辑", notes="窗口单位-编辑")
 	@PutMapping(value = "/edit")
 	public Object edit(@RequestBody SmartWindowUnit smartWindowUnit) {
+
 		smartWindowUnitService.updateById(smartWindowUnit);
+
+		QueryWrapper<SmartWindowPeople> queryWrapper = new QueryWrapper<>();
+		queryWrapper.eq("department_id",smartWindowUnit.getId());
+
+		List<SmartWindowPeople> people = smartWindowPersonService.list(queryWrapper);
+		SmartWindowPeople smartWindowPeople = new SmartWindowPeople();
+		for(SmartWindowPeople I : people){
+			I.setPrincipal(smartWindowUnit.getPrincipal());
+			I.setPrincipalName(smartWindowUnit.getPrincipalName());
+
+			smartWindowPersonService.updateById(I);
+		}
+
+
 		return Result.OK("编辑成功!");
 	}
 	

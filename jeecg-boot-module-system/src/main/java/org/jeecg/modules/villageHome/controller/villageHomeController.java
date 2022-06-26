@@ -564,7 +564,7 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 						}
 						if(sysUserService.queryByIdnumber(home.getIdnumber())!=null)
 						{
-							return Result.error("导入失败:身份证号为"+home.getIdnumber()+"的村民已存在");
+							return Result.error("导入失败:身份证号为"+home.getIdnumber()+"的户主已存在");
 						}
 						if(home.getPhone()==""||home.getPhone()==null)
 						{
@@ -574,7 +574,7 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 						{
 							return Result.error("导入失败:身份证号为"+home.getIdnumber()+"的户主的电话号系统中已存在");
 						}
-						home.setZhenId(sysDepartService.getZhenIdByName(home.getZhenId()));
+//						home.setZhenId(sysDepartService.getZhenIdByName(home.getZhenId()));
 						home.setDepartId(sysDepartService.getCunIdByNames(home.getZhenId(),home.getDepartId()));
 						list.set(i,home);
 					}
@@ -594,7 +594,6 @@ public class villageHomeController extends JeecgController<villageHome, Ivillage
 							errorLines++;
 							errorMessage.add("身份证号为 " + user.getIdnumber() + "的村民角色信息有误，请及时在村民管理页面编辑");
 						}
-						user.setZhenId(sysDepartService.getZhenIdByName(user.getZhenId()));
 						user.setDepartId(sysDepartService.getCunIdByNames(user.getZhenId(),user.getDepartId()));
 						listForUser.set(i,user);
 					}

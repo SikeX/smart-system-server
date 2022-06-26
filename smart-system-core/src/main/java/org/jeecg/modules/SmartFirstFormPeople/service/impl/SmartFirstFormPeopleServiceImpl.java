@@ -1,5 +1,6 @@
 package org.jeecg.modules.SmartFirstFormPeople.service.impl;
 
+import org.jeecg.modules.SmartFirstFormPeople.entity.FirstFormInfo;
 import org.jeecg.modules.SmartFirstFormPeople.entity.SmartFirstFormPeople;
 import org.jeecg.modules.SmartFirstFormPeople.mapper.SmartFirstFormPeopleMapper;
 import org.jeecg.modules.SmartFirstFormPeople.service.ISmartFirstFormPeopleService;
@@ -26,4 +27,16 @@ public class SmartFirstFormPeopleServiceImpl extends ServiceImpl<SmartFirstFormP
     public List<MonthCount> statistics(String year,String departCode) {
         return smartFirstFormPeopleMapper.statistics(year,departCode);
     }
+
+    @Override
+    public List<FirstFormInfo> sendInformation() {
+        return smartFirstFormPeopleMapper.sendInformation();
+    }
+
+    @Override
+    public List<String> getLeadersByDepartId(List<String> departIds) {
+        return smartFirstFormPeopleMapper.getLeadersByDepartId(departIds);
+    }
+
+
 }

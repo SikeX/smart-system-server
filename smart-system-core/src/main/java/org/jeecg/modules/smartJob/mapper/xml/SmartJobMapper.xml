@@ -10,6 +10,7 @@
             and YEAR(remove_time) = YEAR (NOW())
             and MONTH(remove_time) = MONTH(NOW())
             and DAY(remove_time) = DAY(NOW())
+            and del_flag = 0
     </select>
 
     <select id="getAnniversaryList" resultType="org.jeecg.modules.smartJob.entity.SysUser">
@@ -20,6 +21,7 @@
             and MONTH(join_party_date) = MONTH(NOW())
             and DAY(join_party_date) = DAY(NOW())
             and people_type = "1"
+            and del_flag = 0
     </select>
 
     <select id="getUsers" resultType="org.jeecg.modules.smartJob.entity.SysUser">
@@ -34,7 +36,7 @@
 
     <select id="getAllUser" resultType="org.jeecg.modules.smartJob.entity.SysUser">
         SELECT *
-        from sys_user
+        from sys_user where del_flag = 0
     </select>
 
     <select id="initGetTasks" resultType="org.jeecg.modules.smartJob.entity.SmartJob">
@@ -82,7 +84,7 @@
     <select id="selectNotReport" resultType="org.jeecg.modules.smartPremaritalFiling.entity.SmartPremaritalFiling">
         SELECT *
         from smart_premarital_filing
-        where is_report = "0" and del_flag != "1"
+        where is_report != "1" and del_flag != "1"
     </select>
 
     <select id="getPeopleInfo" resultType="org.jeecg.modules.smartJob.entity.SysUser">

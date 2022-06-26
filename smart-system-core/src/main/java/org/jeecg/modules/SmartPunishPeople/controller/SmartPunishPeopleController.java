@@ -122,6 +122,7 @@ public class SmartPunishPeopleController extends JeecgController<SmartPunishPeop
 		map.put("superQueryMatchType", params);
 		QueryWrapper<SmartPunishPeople> queryWrapper = QueryGenerator.initQueryWrapper(smartPunishPeople, map);*/
 		QueryWrapper<SmartPunishPeople> queryWrapper = QueryGenerator.initQueryWrapper(smartPunishPeople, req.getParameterMap());
+
 		Page<SmartPunishPeople> page = new Page<SmartPunishPeople>(pageNo, pageSize);
 		IPage<SmartPunishPeople> pageList = smartPunishPeopleService.page(page, queryWrapper);
 		// 请同步修改edit函数中，将departId变为null，不然会更新成名称
@@ -146,12 +147,9 @@ public class SmartPunishPeopleController extends JeecgController<SmartPunishPeop
 		Result<JSONObject> result = new Result<JSONObject>();
 		JSONObject obj = new JSONObject();
 
-		// 先根据单位ID获取单位信息
-		SysDepartModel sysDepartModel = sysBaseAPI.selectAllById(departId);
-
 		// 查询单位处分人员数目
 		QueryWrapper<SmartPunishPeople> queryWrapper = new QueryWrapper<>();
-		queryWrapper.eq("depart_code", sysDepartModel.getOrgCode()).eq("del_flag", 0);
+		queryWrapper.eq("depart_code", departId).eq("del_flag", 0);
 		long count = smartPunishPeopleService.count(queryWrapper);
 
 		// 查询单位负责人是否被处分

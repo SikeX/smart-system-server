@@ -7,9 +7,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.common.api.vo.Result;
+import org.jeecg.modules.common.service.CommonService;
+import org.jeecg.modules.constant.VerifyConstant;
 import org.jeecg.modules.smart_8_escorted_meal.controller.Smart_8EscortedMealController;
 import org.jeecg.modules.smart_8_escorted_meal.entity.Smart_8EscortedMeal;
 import org.jeecg.modules.smart_8_escorted_meal.service.ISmart_8EscortedMealService;
+import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
+import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.*;
@@ -74,6 +78,17 @@ public class SmartReceptionController extends JeecgController<SmartReception, IS
 
 	@Autowired
 	private ISmart_8EscortedMealService smart_8EscortedMealService;
+	@Autowired
+	private CommonService commonService;
+
+	@Autowired
+	private ISmartVerifyTypeService smartVerifyTypeService;
+
+	@Autowired
+	private SmartVerify smartVerify;
+
+	public String verifyType = "公务接待";
+
 
 
 
@@ -111,16 +126,57 @@ public class SmartReceptionController extends JeecgController<SmartReception, IS
     @PostMapping(value = "/add")
     public Result<?> add(@RequestBody SmartReception smartReception) {
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
 		String orgCode = sysUser.getOrgCode();
 		if ("".equals(orgCode)) {
 			return Result.error("本用户没有操作权限！");
 		}
-		String id = smartReceptionService.getDepartIdByOrgCode(orgCode);
+		String id = commonService.getDepartIdByOrgCode(orgCode);
+		if (id == null) {
+			return Result.error("没有找到部门！");
+		}
 		smartReception.setDepartmentId(id);
+		smartReceptionService.save(smartReception);
 
-        smartReceptionService.save(smartReception);
-        return Result.OK("添加成功！");
+		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
+		if (isVerify) {
+			// 如果任务需要审核，则设置任务为待提交状态
+			smartReception.setVerifyStatus(VerifyConstant.VERIFY_STATUS_TOSUBMIT);
+		} else {
+			// 设置审核状态为免审
+			smartReception.setVerifyStatus(VerifyConstant.VERIFY_STATUS_FREE);
+		}
+
+		smartReceptionService.updateById(smartReception);
+
+
+		return Result.OK("添加成功！");
     }
+
+	 @AutoLog(value = "公务接待-提交审核")
+	 @ApiOperation(value = "公务接待-提交审核", notes = "公务接待-提交审核")
+	 @PostMapping(value = "/submitVerify")
+	 public Result<?> submitVerify(@RequestBody SmartReception smartReception) {
+		 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+		 String orgCode = sysUser.getOrgCode();
+		 if ("".equals(orgCode)) {
+			 return Result.error("本用户没有操作权限！");
+		 }
+
+		 if(!smartVerifyTypeService.getIsVerifyStatusByType(verifyType)){
+			 return Result.error("免审任务，无需提交审核！");
+		 }
+
+		 SmartReception smartReceptionEntity = smartReceptionService.getById(smartReception.getId());
+
+		 String recordId = smartReceptionEntity.getId();
+		 smartVerify.addVerifyRecord(recordId, verifyType);
+		 smartReceptionEntity.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+		 smartReceptionService.updateById(smartReceptionEntity);
+
+		 return Result.OK("提交成功！");
+	 }
 
     /**
      *  编辑
@@ -131,8 +187,16 @@ public class SmartReceptionController extends JeecgController<SmartReception, IS
     @ApiOperation(value="公务接待2.0-编辑", notes="公务接待2.0-编辑")
     @PutMapping(value = "/edit")
     public Result<?> edit(@RequestBody SmartReception smartReception) {
-        smartReceptionService.updateById(smartReception);
-        return Result.OK("编辑成功!");
+		SmartReception smartReceptionEntity = smartReceptionService.getById(smartReception.getId());
+		if (smartReceptionEntity == null) {
+			return Result.error("未找到对应数据");
+		}
+		if(!(smartReceptionEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_TOSUBMIT) || smartReceptionEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_FREE))){
+			return Result.error("该任务已提交审核，不能修改！");
+		}
+
+		smartReceptionService.updateById(smartReception);
+		return Result.OK("编辑成功!");
     }
 
     /**
@@ -223,9 +287,6 @@ public class SmartReceptionController extends JeecgController<SmartReception, IS
 	 * @param smart_8Visitor
 	 * @return
 	 */
-
-
-
 	@AutoLog(value = "来访人员信息表-添加")
 	@ApiOperation(value="来访人员信息表-添加", notes="来访人员信息表-添加")
 	@PostMapping(value = "/addSmart_8Visitor")
@@ -241,9 +302,6 @@ public class SmartReceptionController extends JeecgController<SmartReception, IS
 		return Result.OK("添加成功！");
 	}
 
-
-
-
     /**
 	 * 编辑
 	 * @param smart_8Visitor
@@ -253,7 +311,6 @@ public class SmartReceptionController extends JeecgController<SmartReception, IS
 	@ApiOperation(value="来访人员信息表-编辑", notes="来访人员信息表-编辑")
 	@PutMapping(value = "/editSmart_8Visitor")
 	public Result<?> editSmart_8Visitor(@RequestBody Smart_8Visitor smart_8Visitor) {
-
 		smart_8VisitorService.updateById(smart_8Visitor);
 		return Result.OK("编辑成功!");
 	}
@@ -531,9 +588,9 @@ public class SmartReceptionController extends JeecgController<SmartReception, IS
 	@PostMapping(value = "/addSmart_8Dining")
 	public Result<?> addSmart_8Dining(@RequestBody Smart_8Dining smart_8Dining) {
 		smart_8DiningService.save(smart_8Dining);
-//		Smart_8EscortedMeal smart_8EscortedMeal = new Smart_8EscortedMeal();
-//		smart_8EscortedMeal.setMainId(smart_8Dining.getId());
-//		smart_8EscortedMealService.save(smart_8EscortedMeal);
+		Smart_8EscortedMeal smart_8EscortedMeal = new Smart_8EscortedMeal();
+		smart_8EscortedMeal.setMainId(smart_8Dining.getId());
+		smart_8EscortedMealService.save(smart_8EscortedMeal);
 
 		return Result.OK("添加成功！");
 	}

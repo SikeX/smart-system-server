@@ -14,6 +14,7 @@ import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.modules.base.service.BaseCommonService;
 import org.jeecg.modules.common.service.CommonService;
 import org.jeecg.modules.common.util.ParamsUtil;
+import org.jeecg.modules.constant.VerifyConstant;
 import org.jeecg.modules.tasks.smartVerifyTask.service.SmartVerify;
 import org.jeecg.modules.tasks.taskType.entity.SmartVerifyType;
 import org.jeecg.modules.tasks.taskType.service.ISmartVerifyTypeService;
@@ -155,35 +156,30 @@ public class SmartSupervisionController {
 	@Transactional
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody SmartSupervision smartSupervision) {
-
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-		String orgCode = sysUser.getOrgCode();
-		log.info(orgCode);
-		if("".equals(orgCode)) {
-			return Result.error("本用户没有操作权限");
-		}
 
-		String id = sysBaseAPI.getDepartIdsByOrgCode(orgCode);
-//		log.info(id);
+		String orgCode = sysUser.getOrgCode();
+		if ("".equals(orgCode)) {
+			return Result.error("本用户没有操作权限！");
+		}
+		String id = commonService.getDepartIdByOrgCode(orgCode);
+		if (id == null) {
+			return Result.error("没有找到部门！");
+		}
 		smartSupervision.setDepartId(id);
-//		SmartSupervision smartSupervision = new SmartSupervision();
-//		BeanUtils.copyProperties(smartSupervisionPage, smartSupervision);
-//		log.info(smartSupervision.getId());
+		smartSupervisionService.save(smartSupervision);
 
 		Boolean isVerify = smartVerifyTypeService.getIsVerifyStatusByType(verifyType);
-		if(isVerify){
-			smartSupervisionService.save(smartSupervision);
-			String recordId = smartSupervision.getId();
-			log.info("recordId is"+recordId);
-			smartVerify.addVerifyRecord(recordId,verifyType);
-			smartSupervision.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
-			smartSupervisionService.updateById(smartSupervision);
+		if (isVerify) {
+			// 如果任务需要审核，则设置任务为待提交状态
+			smartSupervision.setVerifyStatus(VerifyConstant.VERIFY_STATUS_TOSUBMIT);
 		} else {
 			// 设置审核状态为免审
-			smartSupervision.setVerifyStatus("3");
-			// 直接添加，不走审核流程
-			smartSupervisionService.save(smartSupervision);
+			smartSupervision.setVerifyStatus(VerifyConstant.VERIFY_STATUS_FREE);
 		}
+
+		smartSupervisionService.updateById(smartSupervision);
+
 
 		return Result.OK("添加成功！");
 	}
@@ -206,9 +202,37 @@ public class SmartSupervisionController {
 		}
 //		smartSupervision.setDepartId(null);
 //		smartSupervision.setCreateTime(null);
-		smartSupervisionService.updateById(smartSupervisionEntity);
+		if(!(smartSupervisionEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_TOSUBMIT) || smartSupervisionEntity.getVerifyStatus().equals(VerifyConstant.VERIFY_STATUS_FREE))){
+			return Result.error("该任务已提交审核，不能修改！");
+		}
+		smartSupervisionService.updateById(smartSupervision);
 		return Result.OK("编辑成功!");
 	}
+
+	 @AutoLog(value = "监督检查-提交审核")
+	 @ApiOperation(value = "监督检查-提交审核", notes = "监督检查-提交审核")
+	 @PostMapping(value = "/submitVerify")
+	 public Result<?> submitVerify(@RequestBody SmartSupervision smartSupervision) {
+		 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+		 String orgCode = sysUser.getOrgCode();
+		 if ("".equals(orgCode)) {
+			 return Result.error("本用户没有操作权限！");
+		 }
+
+		 if(!smartVerifyTypeService.getIsVerifyStatusByType(verifyType)){
+			 return Result.error("免审任务，无需提交审核！");
+		 }
+
+		 SmartSupervision smartSupervisionEntity = smartSupervisionService.getById(smartSupervision.getId());
+
+		 String recordId = smartSupervisionEntity.getId();
+		 smartVerify.addVerifyRecord(recordId, verifyType);
+		 smartSupervisionEntity.setVerifyStatus(smartVerify.getFlowStatusById(recordId).toString());
+		 smartSupervisionService.updateById(smartSupervisionEntity);
+
+		 return Result.OK("提交成功！");
+	 }
 	
 	/**
 	 *   通过id删除
