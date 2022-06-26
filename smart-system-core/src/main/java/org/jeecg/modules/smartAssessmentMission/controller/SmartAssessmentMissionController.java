@@ -338,9 +338,9 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @DeleteMapping(value = "/delete")
     public Result<?> delete(@RequestParam(name = "id", required = true) String id) {
         // 删除考核任务下的考核内容
-        QueryWrapper<SmartAnswerAssContent> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<SmartAssessmentContent> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("mission_id", id);
-        smartAnswerAssContentService.remove(queryWrapper);
+        smartAssessmentContentService.remove(queryWrapper);
         smartAssessmentMissionService.delMain(id);
         return Result.OK("删除成功!");
     }
