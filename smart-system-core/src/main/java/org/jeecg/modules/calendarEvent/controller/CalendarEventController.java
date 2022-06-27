@@ -68,32 +68,29 @@ public class CalendarEventController extends JeecgController<CalendarEvent, ICal
 	@ApiOperation(value="日历事件-分页列表查询", notes="日历事件-分页列表查询")
 	@GetMapping(value = "/list")
 	public Result<?> queryPageList(CalendarEvent calendarEvent,
+								   @RequestParam(name="startTime_b", required = false) String startTime_b,
+								   @RequestParam(name="startTime_e", required = false) String startTime_e,
+								   @RequestParam(name="today", required = false) String today,
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
-		// 1. 规则，下面是 以**开始
-		String rule = "eq";
-		// 2. 查询字段
-		String field = "creatorId";
 		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-		HashMap<String, String[]> map = new HashMap<>(req.getParameterMap());
-		// 获取请求参数中的superQueryParams
-		List<String> paramsList = ParamsUtil.getSuperQueryParams(req.getParameterMap());
 
-		// 添加额外查询条件，用于权限控制
-		paramsList.add("%5B%7B%22rule%22:%22" + rule + "%22,%22type%22:%22string%22,%22dictCode%22:%22%22,%22val%22:%22"
-				+ sysUser.getId()
-				+ "%22,%22field%22:%22" + field + "%22%7D%5D");
-		String[] params = new String[paramsList.size()];
-		paramsList.toArray(params);
-		map.put("superQueryParams", params);
-		params = new String[]{"and"};
-		map.put("superQueryMatchType", params);
+		QueryWrapper<CalendarEvent> queryWrapper = QueryGenerator.initQueryWrapper(calendarEvent, req.getParameterMap());
+		queryWrapper.eq("creator_id", sysUser.getId());
+		if (oConvertUtils.isNotEmpty(startTime_b) && oConvertUtils.isNotEmpty(startTime_e) && oConvertUtils.isNotEmpty(today)) {
+			queryWrapper.and(obj -> {
+				// 1. 事件开始时间在当前日期内
+				obj.ge("start_time", startTime_b).le("start_time", startTime_e);
+				// 2. 事件结束时间在当前日期内
+				obj.or().gt("end_time", startTime_b).le("end_time", startTime_e);
+				// 3. 当前时间在事件开始时间和结束时间之间
+				obj.or().le("start_time", today).gt("end_time", today);
+			});
+		}
 
-		QueryWrapper<CalendarEvent> queryWrapper = QueryGenerator.initQueryWrapper(calendarEvent, map);
-		Page<CalendarEvent> page = new Page<CalendarEvent>(pageNo, pageSize);
-		IPage<CalendarEvent> pageList = calendarEventService.page(page, queryWrapper);
-		return Result.OK(pageList);
+		List<CalendarEvent> list = calendarEventService.list(queryWrapper);
+		return Result.OK(list);
 	}
 
 	/**
