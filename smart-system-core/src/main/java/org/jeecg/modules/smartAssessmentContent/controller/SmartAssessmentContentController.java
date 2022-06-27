@@ -121,6 +121,9 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
                                    @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                                    @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                    HttpServletRequest req) {
+        if (oConvertUtils.isEmpty(smartAssessmentContent.getMissionId())) {
+            return Result.error("考核任务id不能为空");
+        }
         String hasQuery = req.getParameter("hasQuery");
         if (hasQuery != null && "true".equals(hasQuery)) {
             QueryWrapper<SmartAssessmentContent> queryWrapper = QueryGenerator.initQueryWrapper(smartAssessmentContent, req.getParameterMap());

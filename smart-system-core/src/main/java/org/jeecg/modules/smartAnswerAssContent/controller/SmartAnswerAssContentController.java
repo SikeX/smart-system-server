@@ -109,6 +109,58 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
+		if (oConvertUtils.isEmpty(smartAnswerAssContent.getMainId())) {
+			return Result.error("查询条件不足!");
+		}
+		String hasQuery = req.getParameter("hasQuery");
+		if(hasQuery != null && "true".equals(hasQuery)){
+			QueryWrapper<SmartAnswerAssContent> queryWrapper =  QueryGenerator.initQueryWrapper(smartAnswerAssContent, req.getParameterMap());
+			queryWrapper.select(SmartAnswerAssContent.class, i -> !i.getColumn().equals("lowest_score")
+					&& !i.getColumn().equals("highest_score")
+					&& !i.getColumn().equals("average_score")
+					&& !i.getColumn().equals("final_score"));
+			List<SmartAnswerAssContent> list = smartAnswerAssContentService.list(queryWrapper);
+			IPage<SmartAnswerAssContent> pageList = new Page<>(1, 10, list.size());
+			pageList.setRecords(list);
+			return Result.OK(pageList);
+		}else{
+			String parentId = smartAnswerAssContent.getPid();
+			if (oConvertUtils.isEmpty(parentId)) {
+				parentId = "0";
+			}
+			smartAnswerAssContent.setPid(null);
+			QueryWrapper<SmartAnswerAssContent> queryWrapper = QueryGenerator.initQueryWrapper(smartAnswerAssContent, req.getParameterMap());
+			queryWrapper.select(SmartAnswerAssContent.class, i -> !i.getColumn().equals("lowest_score")
+					&& !i.getColumn().equals("highest_score")
+					&& !i.getColumn().equals("average_score")
+					&& !i.getColumn().equals("final_score"));
+			// 使用 eq 防止模糊查询
+			queryWrapper.eq("pid", parentId);
+			Page<SmartAnswerAssContent> page = new Page<SmartAnswerAssContent>(pageNo, pageSize);
+			IPage<SmartAnswerAssContent> pageList = smartAnswerAssContentService.page(page, queryWrapper);
+			return Result.OK(pageList);
+		}
+	}
+
+	/**
+	 * 分页列表查询无字段控制
+	 *
+	 * @param smartAnswerAssContent
+	 * @param pageNo
+	 * @param pageSize
+	 * @param req
+	 * @return
+	 */
+	@AutoLog(value = "考核节点表-分页列表查询无字段控制")
+	@ApiOperation(value="考核节点表-分页列表查询无字段控制", notes="考核节点表-分页列表查询无字段控制")
+	@GetMapping(value = "/rootListWithScore")
+	public Result<?> queryRootListWithScore(SmartAnswerAssContent smartAnswerAssContent,
+								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+								   HttpServletRequest req) {
+		if (oConvertUtils.isEmpty(smartAnswerAssContent.getMainId())) {
+			return Result.error("查询条件不足!");
+		}
 		String hasQuery = req.getParameter("hasQuery");
 		if(hasQuery != null && "true".equals(hasQuery)){
 			QueryWrapper<SmartAnswerAssContent> queryWrapper =  QueryGenerator.initQueryWrapper(smartAnswerAssContent, req.getParameterMap());
@@ -187,6 +239,10 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 		try {
 			QueryWrapper<SmartAnswerAssContent> queryWrapper = new QueryWrapper<>();
 			List<String> parentIdList = Arrays.asList(parentIds.split(","));
+			queryWrapper.select(SmartAnswerAssContent.class, i -> !i.getColumn().equals("lowest_score")
+					&& !i.getColumn().equals("highest_score")
+					&& !i.getColumn().equals("average_score")
+					&& !i.getColumn().equals("final_score"));
 			queryWrapper.in("pid", parentIdList).eq("main_id", mainId);
 			List<SmartAnswerAssContent> list = smartAnswerAssContentService.list(queryWrapper);
 			IPage<SmartAnswerAssContent> pageList = new Page<>(1, 10, list.size());
@@ -283,6 +339,9 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
                                                     @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                                                     @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                                     HttpServletRequest req) {
+		if (oConvertUtils.isEmpty(smartAnswerFile.getMainId())) {
+			return Result.error("主表ID不能为空");
+		}
         QueryWrapper<SmartAnswerFile> queryWrapper = QueryGenerator.initQueryWrapper(smartAnswerFile, req.getParameterMap());
         Page<SmartAnswerFile> page = new Page<SmartAnswerFile>(pageNo, pageSize);
         IPage<SmartAnswerFile> pageList = smartAnswerFileService.page(page, queryWrapper);
@@ -499,6 +558,9 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
                                                     @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                                                     @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                                     HttpServletRequest req) {
+		if (oConvertUtils.isEmpty(smartAnswerAssScore.getMainId())) {
+			return Result.error("主表ID不能为空");
+		}
         QueryWrapper<SmartAnswerAssScore> queryWrapper = QueryGenerator.initQueryWrapper(smartAnswerAssScore, req.getParameterMap());
         Page<SmartAnswerAssScore> page = new Page<SmartAnswerAssScore>(pageNo, pageSize);
         IPage<SmartAnswerAssScore> pageList = smartAnswerAssScoreService.page(page, queryWrapper);

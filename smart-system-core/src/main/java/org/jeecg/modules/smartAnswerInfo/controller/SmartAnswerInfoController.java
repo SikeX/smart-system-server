@@ -111,7 +111,10 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
         // 查询上面所有考核任务信息
         QueryWrapper<SmartAnswerInfo> queryWrapper = QueryGenerator.initQueryWrapper(smartAnswerInfo, req.getParameterMap());
         // 包含本单位的任务
-        queryWrapper.select(SmartAnswerInfo.class,i -> !i.getColumn().equals("total_points") && !i.getColumn().equals("ranking"))
+        queryWrapper.select(SmartAnswerInfo.class,i -> !i.getColumn().equals("total_points")
+                        && !i.getColumn().equals("ranking")
+                        && !i.getColumn().equals("marked_content")
+                        && !i.getColumn().equals("is_show_score"))
                 .eq("depart", sysUser.getDepartId()).in("mission_id", missionIdList)
                 .ne("mission_status", "发布评分结果");
         Page<SmartAnswerInfo> page = new Page<SmartAnswerInfo>(pageNo, pageSize);
@@ -191,6 +194,10 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
 
 
         QueryWrapper<SmartAnswerInfo> queryWrapper = QueryGenerator.initQueryWrapper(smartAnswerInfo, req.getParameterMap());
+        queryWrapper.select(SmartAnswerInfo.class, i -> !i.getColumn().equals("total_points")
+                && !i.getColumn().equals("ranking")
+                && !i.getColumn().equals("is_show_score"));
+
         if (oConvertUtils.isNotEmpty(content)) {
             if (StringUtils.startsWith(content, "!")) {
                 queryWrapper.notLike("marked_content", content.replace("!", ""));
