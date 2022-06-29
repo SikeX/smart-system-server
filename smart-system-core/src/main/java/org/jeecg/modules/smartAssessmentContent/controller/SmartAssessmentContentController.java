@@ -121,6 +121,9 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
                                    @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                                    @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                    HttpServletRequest req) {
+        if (oConvertUtils.isEmpty(smartAssessmentContent.getMissionId())) {
+            return Result.error("考核任务id不能为空");
+        }
         String hasQuery = req.getParameter("hasQuery");
         if (hasQuery != null && "true".equals(hasQuery)) {
             QueryWrapper<SmartAssessmentContent> queryWrapper = QueryGenerator.initQueryWrapper(smartAssessmentContent, req.getParameterMap());
@@ -431,11 +434,19 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
 
         for (SmartAssessmentContent item : exportList) {
             if (oConvertUtils.isNotEmpty(item.getAssDepart())) {
-                SmartAssessmentDepartment assessmentDepartment = smartAssessmentDepartmentService.getById(item.getAssDepart());
-                SysDepartModel sysDepartModel = iSysBaseAPI.selectAllById(assessmentDepartment.getDepartId());
-                if (oConvertUtils.isNotEmpty(sysDepartModel)) {
-                    item.setAssDepart(sysDepartModel.getDepartName());
+                List<String> departList = Arrays.asList(item.getAssDepart().split(","));
+                List<String> departNameList = new ArrayList<>();
+                for (String departId : departList) {
+                    SmartAssessmentDepartment assessmentDepartment = smartAssessmentDepartmentService.getById(departId);
+                    if (oConvertUtils.isEmpty(assessmentDepartment)) {
+                        continue;
+                    }
+                    SysDepartModel sysDepartModel = iSysBaseAPI.selectAllById(assessmentDepartment.getDepartId());
+                    if (oConvertUtils.isNotEmpty(sysDepartModel)) {
+                        departNameList.add(sysDepartModel.getDepartName());
+                    }
                 }
+                item.setAssDepart(Joiner.on(",").join(departNameList));
             }
         }
 
@@ -461,6 +472,11 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
      */
     @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
+        String missionId = request.getParameter("missionId");
+        System.out.println(missionId);
+        if (oConvertUtils.isEmpty(missionId)) {
+            return Result.error("缺少上传参数：考核任务ID");
+        }
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
@@ -477,6 +493,11 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
                 List<SmartAssessmentContent> successList = new ArrayList<>();
                 List<SmartRankVisible> rankVisibleList = new ArrayList<>();
 
+                for (SmartAssessmentContent item : list) {
+                    if (!item.getMissionId().equals(missionId)) {
+                        return Result.error("文件中的考核任务与选中的考核任务不一致!");
+                    }
+                }
 
                 for (SmartAssessmentContent item : list) {
                     SmartAssessmentContent content = new SmartAssessmentContent();
@@ -505,8 +526,18 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
                         rankVisibleList.add(smartRankVisible);
                     }
                     // 考核单位
-                    String assessmentDepartmentId = smartAssessmentDepartmentService.getAssessmentDepartmentIdByDepartName(content.getAssDepart());
-                    content.setAssDepart(assessmentDepartmentId);
+                    if (oConvertUtils.isNotEmpty(content.getAssDepart())) {
+                        List<String> departList = Arrays.asList(content.getAssDepart().split(","));
+                        List<String> departIdList = new ArrayList<>();
+                        for (String departId : departList) {
+                            String assessmentDepartmentId = smartAssessmentDepartmentService.getAssessmentDepartmentIdByDepartName(departId);
+                            if (oConvertUtils.isEmpty(assessmentDepartmentId)) {
+                                continue;
+                            }
+                            departIdList.add(assessmentDepartmentId);
+                        }
+                        content.setAssDepart(Joiner.on(",").join(departIdList));
+                    }
 
                     smartAssessmentContentService.addSmartAssessmentContent(content);
                     successList.add(content);

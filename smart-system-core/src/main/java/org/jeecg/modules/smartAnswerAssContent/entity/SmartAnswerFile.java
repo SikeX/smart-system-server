@@ -58,11 +58,10 @@ public class SmartAnswerFile implements Serializable {
     @ApiModelProperty(value = "工作开始时间")
     private java.util.Date workTime;
 	/**附件*/
-	@Excel(name = "附件", width = 15)
     @ApiModelProperty(value = "附件")
     private java.lang.String attachment;
 	/**上报人*/
-	@Excel(name = "上报人", width = 15)
+	@Excel(name = "上报人", width = 15, dictTable = "sys_user", dicText = "realname", dicCode = "id")
     @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "id")
     @ApiModelProperty(value = "上报人")
     private java.lang.String uploadUser;
