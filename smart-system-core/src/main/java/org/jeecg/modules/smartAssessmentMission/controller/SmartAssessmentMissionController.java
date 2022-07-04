@@ -684,7 +684,16 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
                                                        @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                                                        @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                                        HttpServletRequest req) {
+        String signStatus = smartAssessmentDepart.getSignStatus();
+        smartAssessmentDepart.setSignStatus(null);
         QueryWrapper<SmartAssessmentDepart> queryWrapper = QueryGenerator.initQueryWrapper(smartAssessmentDepart, req.getParameterMap());
+        if (oConvertUtils.isNotEmpty(signStatus)) {
+            if (signStatus.equals("0")) {
+                queryWrapper.isNull("sign_status");
+            } else if (signStatus.equals("1")) {
+                queryWrapper.eq("sign_status", "已签收");
+            }
+        }
         Page<SmartAssessmentDepart> page = new Page<SmartAssessmentDepart>(pageNo, pageSize);
         IPage<SmartAssessmentDepart> pageList = smartAssessmentDepartService.page(page, queryWrapper);
         return Result.OK(pageList);
