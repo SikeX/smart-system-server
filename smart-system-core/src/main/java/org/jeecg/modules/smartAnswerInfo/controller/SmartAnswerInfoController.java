@@ -235,7 +235,7 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
                                          @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                                          @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
         Page<SmartDepartContentScore> page = new Page<>(pageNo, pageSize);
-        List<SmartDepartContentScore> departContentScores = smartAnswerInfoService.selectByMissionIdAndContentId(page, missionId, assContentId);
+        IPage<SmartDepartContentScore> departContentScores = smartAnswerInfoService.selectByMissionIdAndContentId(page, missionId, assContentId);
         return Result.OK(departContentScores);
     }
 

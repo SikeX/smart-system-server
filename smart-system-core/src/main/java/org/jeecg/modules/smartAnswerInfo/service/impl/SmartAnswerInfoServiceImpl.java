@@ -1,5 +1,6 @@
 package org.jeecg.modules.smartAnswerInfo.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.jeecg.modules.smartAnswerInfo.entity.SmartAnswerInfo;
 import org.jeecg.modules.smartAnswerInfo.entity.SmartDepartContentScore;
@@ -21,7 +22,7 @@ import java.util.List;
 public class SmartAnswerInfoServiceImpl extends ServiceImpl<SmartAnswerInfoMapper, SmartAnswerInfo> implements ISmartAnswerInfoService {
 
     @Override
-    public List<SmartDepartContentScore> selectByMissionIdAndContentId(Page<SmartDepartContentScore> page, String missionId, String assContentId) {
+    public IPage<SmartDepartContentScore> selectByMissionIdAndContentId(Page<SmartDepartContentScore> page, String missionId, String assContentId) {
         return baseMapper.selectByMissionIdAndContentId(page, missionId, assContentId);
     }
 
