@@ -159,19 +159,24 @@ public class SmartAssessmentTeamController extends JeecgController<SmartAssessme
 
 		log.info("----duplicate check------："+ departIds);
 		QueryWrapper<SmartAssessmentTeam> queryWrapper = new QueryWrapper<>();
-		String[] departIdList = departIds.split(",");
-		for (String departId : departIdList) {
-			queryWrapper.or().like("departs", departId);
-		}
-		queryWrapper.and(qw -> qw.eq("del_flag", "0"));
+
 		if (StringUtils.isNotBlank(dataId)) {
 			// [2].编辑页面校验
-			queryWrapper.and(qw -> qw.ne("id", dataId));
-			num = smartAssessmentTeamService.count(queryWrapper);
+			queryWrapper.ne("id", dataId);
 		} else {
 			// [1].添加页面校验
-			num = smartAssessmentTeamService.count(queryWrapper);
 		}
+
+		String[] departIdList = departIds.split(",");
+		if (departIdList.length > 0) {
+			queryWrapper.and(qw -> {
+				for (String departId : departIdList) {
+					qw.or().like("departs", departId);
+				}
+			});
+		}
+
+		num = smartAssessmentTeamService.count(queryWrapper);
 
 		if (num == null || num == 0) {
 			// 该值可用
