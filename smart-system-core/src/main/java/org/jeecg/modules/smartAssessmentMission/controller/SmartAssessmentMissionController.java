@@ -43,6 +43,7 @@ import org.jeecgframework.poi.excel.entity.ImportParams;
 import org.jeecgframework.poi.excel.view.JeecgEntityExcelView;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -292,6 +293,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @AutoLog(value = "考核任务表-添加")
     @ApiOperation(value = "考核任务表-添加", notes = "考核任务表-添加")
     @PostMapping(value = "/add")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> add(@RequestBody SmartAssessmentMission smartAssessmentMission) {
         smartAssessmentMissionService.save(smartAssessmentMission);
         // 新增每个任务排名总分、排名，去年排名字段的可见性 @author: sike
@@ -326,6 +328,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @AutoLog(value = "考核任务表-编辑")
     @ApiOperation(value = "考核任务表-编辑", notes = "考核任务表-编辑")
     @PutMapping(value = "/edit")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> edit(@RequestBody SmartAssessmentMission smartAssessmentMission) {
         SmartAssessmentMission mission = smartAssessmentMissionService.getById(smartAssessmentMission.getId());
         if (mission.getAssessmentTime().equals(smartAssessmentMission.getAssessmentTime())) {
@@ -356,6 +359,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @AutoLog(value = "考核任务表-通过id删除")
     @ApiOperation(value = "考核任务表-通过id删除", notes = "考核任务表-通过id删除")
     @DeleteMapping(value = "/delete")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> delete(@RequestParam(name = "id", required = true) String id) {
         // 删除考核任务下的考核内容
         QueryWrapper<SmartAssessmentContent> queryWrapper = new QueryWrapper<>();
@@ -374,6 +378,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @AutoLog(value = "考核任务表-更新全区完成度")
     @ApiOperation(value = "考核任务表-更新全区完成度", notes = "考核任务表-更新全区完成度")
     @PutMapping(value = "/updateCompletionDegree")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> updateCompletionDegree(@RequestBody SmartAssessmentMission smartAssessmentMission) {
         if (smartAssessmentMission.getKeyPointsAmount() == 0) {
             return Result.error("该考核任务总要点个数为0，无法计算！");
@@ -426,6 +431,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @AutoLog(value = "考核任务表-撤销任务发布")
     @ApiOperation(value = "考核任务表-撤销任务发布", notes = "考核任务表-撤销任务发布")
     @PutMapping(value = "/reset")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> reset(@RequestBody SmartAssessmentMission smartAssessmentMission) {
 
         // 查询答题信息表相关数据的ID
@@ -515,6 +521,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @AutoLog(value = "考核任务表-发布")
     @ApiOperation(value = "考核任务表-发布", notes = "考核任务表-发布")
     @PutMapping(value = "/publish")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> publish(@RequestBody SmartAssessmentMission smartAssessmentMission) {
         // 统计考核要点数目
         QueryWrapper<SmartAssessmentContent> queryWrapper = new QueryWrapper<>();
@@ -555,6 +562,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @AutoLog(value = "考核任务表-发布评分结果")
     @ApiOperation(value = "考核任务表-发布评分结果", notes = "考核任务表-发布评分结果")
     @PutMapping(value = "/publishScore")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> publishScore(@RequestBody SmartAssessmentMission smartAssessmentMission) {
         if (oConvertUtils.isEmpty(smartAssessmentMission.getId())) {
             return Result.error("数据错误!");
@@ -585,6 +593,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @AutoLog(value = "考核任务表-生成排名")
     @ApiOperation(value = "考核任务表-生成排名", notes = "考核任务表-生成排名")
     @PutMapping(value = "/generateRank")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> generateRank(@RequestBody SmartAssessmentMission smartAssessmentMission) {
         if (oConvertUtils.isEmpty(smartAssessmentMission.getId())) {
             return Result.error("数据错误!");
@@ -602,6 +611,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
         return Result.OK("生成成功!");
     }
 
+    @Transactional(rollbackFor = Exception.class)
     private void generateRank(String missionId) {
         QueryWrapper<SmartAnswerInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("mission_id", missionId).orderByDesc("total_points");
@@ -623,6 +633,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @AutoLog(value = "考核任务表-取消发布评分结果")
     @ApiOperation(value = "考核任务表-取消发布评分结果", notes = "考核任务表-取消发布评分结果")
     @PutMapping(value = "/recallScoreResult")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> recallScoreResult(@RequestBody SmartAssessmentMission smartAssessmentMission) {
         if (oConvertUtils.isEmpty(smartAssessmentMission.getId())) {
             return Result.error("数据错误!");
@@ -643,6 +654,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @AutoLog(value = "考核任务表-批量删除")
     @ApiOperation(value = "考核任务表-批量删除", notes = "考核任务表-批量删除")
     @DeleteMapping(value = "/deleteBatch")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> deleteBatch(@RequestParam(name = "ids", required = true) String ids) {
         this.smartAssessmentMissionService.delBatchMain(Arrays.asList(ids.split(",")));
         return Result.OK("批量删除成功!");
@@ -722,6 +734,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @AutoLog(value = "考核任务被考核单位-添加")
     @ApiOperation(value = "考核任务被考核单位-添加", notes = "考核任务被考核单位-添加")
     @PostMapping(value = "/addSmartAssessmentDepart")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> addSmartAssessmentDepart(@RequestBody SmartAssessmentDepart smartAssessmentDepart) {
         // 前端传过来的单位ID是多选
         String[] departIds = smartAssessmentDepart.getAssessmentDepart().split(",");
@@ -746,6 +759,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @AutoLog(value = "考核任务被考核单位-编辑")
     @ApiOperation(value = "考核任务被考核单位-编辑", notes = "考核任务被考核单位-编辑")
     @PutMapping(value = "/editSmartAssessmentDepart")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> editSmartAssessmentDepart(@RequestBody SmartAssessmentDepart smartAssessmentDepart) {
         // 更新答题信息表中的截止时间
         QueryWrapper<SmartAnswerInfo> queryWrapper = new QueryWrapper<>();
@@ -772,6 +786,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @AutoLog(value = "考核任务被考核单位-通过id删除")
     @ApiOperation(value = "考核任务被考核单位-通过id删除", notes = "考核任务被考核单位-通过id删除")
     @DeleteMapping(value = "/deleteSmartAssessmentDepart")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> deleteSmartAssessmentDepart(@RequestParam(name = "id", required = true) String id) {
         smartAssessmentDepartService.removeById(id);
         return Result.OK("删除成功!");
@@ -786,6 +801,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     @AutoLog(value = "考核任务被考核单位-批量删除")
     @ApiOperation(value = "考核任务被考核单位-批量删除", notes = "考核任务被考核单位-批量删除")
     @DeleteMapping(value = "/deleteBatchSmartAssessmentDepart")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> deleteBatchSmartAssessmentDepart(@RequestParam(name = "ids", required = true) String ids) {
         this.smartAssessmentDepartService.removeByIds(Arrays.asList(ids.split(",")));
         return Result.OK("批量删除成功!");
@@ -830,6 +846,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
      * @return
      */
     @RequestMapping(value = "/importSmartAssessmentDepart/{mainId}")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> importSmartAssessmentDepart(HttpServletRequest request, HttpServletResponse response, @PathVariable("mainId") String mainId) {
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();

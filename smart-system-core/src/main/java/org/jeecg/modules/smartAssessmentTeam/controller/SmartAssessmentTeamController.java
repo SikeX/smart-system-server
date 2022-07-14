@@ -17,6 +17,7 @@ import org.jeecg.modules.smartAssessmentMission.entity.SmartAssessmentDepart;
 import org.jeecg.modules.smartAssessmentTeam.entity.SmartAssessmentTeam;
 import org.jeecg.modules.smartAssessmentTeam.service.ISmartAssessmentTeamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -92,6 +93,7 @@ public class SmartAssessmentTeamController extends JeecgController<SmartAssessme
 	@AutoLog(value = "考核组-添加")
 	@ApiOperation(value="考核组-添加", notes="考核组-添加")
 	@PostMapping(value = "/add")
+	@Transactional(rollbackFor = Exception.class)
 	public Result<?> add(@RequestBody SmartAssessmentTeam smartAssessmentTeam) {
 		String departs = smartAssessmentTeam.getDeparts();
 		String[] departList = departs.split(",");
@@ -109,6 +111,7 @@ public class SmartAssessmentTeamController extends JeecgController<SmartAssessme
 	@AutoLog(value = "考核组-编辑")
 	@ApiOperation(value="考核组-编辑", notes="考核组-编辑")
 	@PutMapping(value = "/edit")
+	@Transactional(rollbackFor = Exception.class)
 	public Result<?> edit(@RequestBody SmartAssessmentTeam smartAssessmentTeam) {
 		String departs = smartAssessmentTeam.getDeparts();
 		String[] departList = departs.split(",");
@@ -126,6 +129,7 @@ public class SmartAssessmentTeamController extends JeecgController<SmartAssessme
 	@AutoLog(value = "考核组-通过id删除")
 	@ApiOperation(value="考核组-通过id删除", notes="考核组-通过id删除")
 	@DeleteMapping(value = "/delete")
+	@Transactional(rollbackFor = Exception.class)
 	public Result<?> delete(@RequestParam(name="id",required=true) String id) {
 		smartAssessmentTeamService.removeById(id);
 		return Result.OK("删除成功!");
@@ -140,6 +144,7 @@ public class SmartAssessmentTeamController extends JeecgController<SmartAssessme
 	@AutoLog(value = "考核组-批量删除")
 	@ApiOperation(value="考核组-批量删除", notes="考核组-批量删除")
 	@DeleteMapping(value = "/deleteBatch")
+	@Transactional(rollbackFor = Exception.class)
 	public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
 		this.smartAssessmentTeamService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.OK("批量删除成功!");
@@ -224,6 +229,7 @@ public class SmartAssessmentTeamController extends JeecgController<SmartAssessme
     * @return
     */
     @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
+	@Transactional(rollbackFor = Exception.class)
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
         return super.importExcel(request, response, SmartAssessmentTeam.class);
     }

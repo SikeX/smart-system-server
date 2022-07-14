@@ -38,6 +38,7 @@ import org.jeecgframework.poi.excel.view.JeecgEntityExcelView;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -226,6 +227,7 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
     @AutoLog(value = "考核节点表-添加")
     @ApiOperation(value = "考核节点表-添加", notes = "考核节点表-添加")
     @PostMapping(value = "/add")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> add(@RequestBody SmartAssessmentContent smartAssessmentContent) {
         smartAssessmentContentService.addSmartAssessmentContent(smartAssessmentContent);
         // 配置考核排名字段是否可见
@@ -260,6 +262,7 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
     @AutoLog(value = "考核节点表-校对分数")
     @ApiOperation(value = "考核节点表-校对分数", notes = "考核节点表-校对分数")
     @GetMapping(value = "/checkPoint")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> checkPoint(@RequestParam(name = "missionId", required = true) String missionId) {
         // 查询数据库中的数据
         QueryWrapper<SmartAssessmentContent> queryWrapper = new QueryWrapper<>();
@@ -292,6 +295,7 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
     @AutoLog(value = "考核节点表-编辑")
     @ApiOperation(value = "考核节点表-编辑", notes = "考核节点表-编辑")
     @PutMapping(value = "/edit")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> edit(@RequestBody SmartAssessmentContent smartAssessmentContent) {
         // 查询数据库中的数据
         QueryWrapper<SmartAssessmentContent> queryWrapper = new QueryWrapper<>();
@@ -325,6 +329,7 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
      * @param smartAssessmentContent
      * @param increment              分数增量
      */
+    @Transactional(rollbackFor = Exception.class)
     private void updateSuperiorPoint(SmartAssessmentContent smartAssessmentContent, int increment) {
         // 更新考核任务总分
         SmartAssessmentMission mission = smartAssessmentMissionService.getById(smartAssessmentContent.getMissionId());
@@ -354,6 +359,7 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
     @AutoLog(value = "考核节点表-通过id删除")
     @ApiOperation(value = "考核节点表-通过id删除", notes = "考核节点表-通过id删除")
     @DeleteMapping(value = "/delete")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> delete(@RequestParam(name = "id", required = true) String id) {
         // 查询数据库中的数据
         QueryWrapper<SmartAssessmentContent> queryWrapper = new QueryWrapper<>();
@@ -379,6 +385,7 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
     @AutoLog(value = "考核节点表-批量删除")
     @ApiOperation(value = "考核节点表-批量删除", notes = "考核节点表-批量删除")
     @DeleteMapping(value = "/deleteBatch")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> deleteBatch(@RequestParam(name = "ids", required = true) String ids) {
         this.smartAssessmentContentService.removeByIds(Arrays.asList(ids.split(",")));
         return Result.OK("批量删除成功！");
@@ -471,6 +478,7 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
      * @return
      */
     @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
         String missionId = request.getParameter("missionId");
         System.out.println(missionId);
