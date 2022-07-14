@@ -364,6 +364,8 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
         }
 
         smartAnswerInfo.setMissionStatus("已签收");
+        // 如果是单位主动签收则会为"NULL", 被动签收会是"未评分".评分时会无法按照评分状态进行筛选
+        smartAnswerInfo.setMarkedContent("");
         smartAnswerInfoService.updateById(smartAnswerInfo);
 
         return Result.OK("签收成功!");
