@@ -765,24 +765,26 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 
 		SmartAnswerAssContent answerAssContent = smartAnswerAssContentService.getById(smartAnswerAssScore.getMainId());
 		// 如果平均成绩和更新前的最终成绩不一样了，则更新上级节点成绩和总分
+		SmartAnswerInfo smartAnswerInfo = smartAnswerInfoService.getById(answerAssContent.getMainId());
+
 		if (!avgScore.getScore().equals(answerAssContent.getFinalScore())) {
 			double increment = avgScore.getScore() - answerAssContent.getFinalScore();
 			// 更新上级成绩
 			updateSuperiorScore(answerAssContent, increment);
 			// 更新总分
-			SmartAnswerInfo smartAnswerInfo = smartAnswerInfoService.getById(answerAssContent.getMainId());
 			smartAnswerInfo.setTotalPoints(smartAnswerInfo.getTotalPoints() + increment);
-
-			// 检查已评分内容,如果不存在则添加
-			String markedContent = smartAnswerInfo.getMarkedContent();
-			String temp = answerAssContent.getAssContentId() + "_" + smartAnswerAssScore.getRoleId();
-			int index = StringUtils.indexOf(markedContent, temp);
-			if (index == -1) {
-				smartAnswerInfo.setMarkedContent(markedContent + "," + temp);
-			}
-
-			smartAnswerInfoService.updateById(smartAnswerInfo);
 		}
+
+		// 检查已评分内容,如果不存在则添加
+		String markedContent = smartAnswerInfo.getMarkedContent();
+		String temp = answerAssContent.getAssContentId() + "_" + smartAnswerAssScore.getRoleId();
+		int index = StringUtils.indexOf(markedContent, temp);
+		if (index == -1) {
+			smartAnswerInfo.setMarkedContent(markedContent + "," + temp);
+		}
+
+		smartAnswerInfoService.updateById(smartAnswerInfo);
+
 		answerAssContent.setHighestScore(maxScore.getScore());
 		answerAssContent.setLowestScore(minScore.getScore());
 		answerAssContent.setAverageScore(avgScore.getScore());
