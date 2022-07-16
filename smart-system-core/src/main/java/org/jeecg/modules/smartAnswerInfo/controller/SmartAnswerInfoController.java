@@ -35,6 +35,7 @@ import org.jeecg.modules.smartAssessmentMission.service.ISmartAssessmentMissionS
 import org.jeecg.modules.smartAssessmentTeam.entity.SmartAssessmentTeam;
 import org.jeecg.modules.smartAssessmentTeam.service.ISmartAssessmentTeamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -270,6 +271,7 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
     @AutoLog(value = "答题信息表-添加")
     @ApiOperation(value = "答题信息表-添加", notes = "答题信息表-添加")
     @PostMapping(value = "/add")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> add(@RequestBody SmartAnswerInfo smartAnswerInfo) {
         smartAnswerInfoService.save(smartAnswerInfo);
         return Result.OK("添加成功！");
@@ -284,6 +286,7 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
     @AutoLog(value = "答题信息表-编辑")
     @ApiOperation(value = "答题信息表-编辑", notes = "答题信息表-编辑")
     @PutMapping(value = "/edit")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> edit(@RequestBody SmartAnswerInfo smartAnswerInfo) {
         smartAnswerInfoService.updateById(smartAnswerInfo);
         return Result.OK("编辑成功!");
@@ -298,6 +301,7 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
     @AutoLog(value = "答题信息表-更新完成度")
     @ApiOperation(value = "答题信息表-更新完成度", notes = "答题信息表-更新完成度")
     @PutMapping(value = "/updateCompletionDegree")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> updateCompletionDegree(@RequestBody SmartAnswerInfo smartAnswerInfo) {
         if (smartAnswerInfo.getTotalKeyPointAmount() == 0) {
             return Result.error("该考核任务总要点个数为0，无法计算！");
@@ -327,6 +331,7 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
     @AutoLog(value = "答题信息表-签收")
     @ApiOperation(value = "答题信息表-签收", notes = "答题信息表-签收")
     @PutMapping(value = "/sign")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> sign(@RequestBody SmartAnswerInfo smartAnswerInfo) {
         // 检查是否已截止
 //        int dateDiff = DateUtils.dateDiff('s', DateUtils.getCalendar(DateUtils.getMillis(smartAnswerInfo.getEndTime())), DateUtils.getCalendar());
@@ -364,6 +369,8 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
         }
 
         smartAnswerInfo.setMissionStatus("已签收");
+        // 如果是单位主动签收则会为"NULL", 被动签收会是"未评分".评分时会无法按照评分状态进行筛选
+        smartAnswerInfo.setMarkedContent("");
         smartAnswerInfoService.updateById(smartAnswerInfo);
 
         return Result.OK("签收成功!");
@@ -378,6 +385,7 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
     @AutoLog(value = "答题信息表-通过id删除")
     @ApiOperation(value = "答题信息表-通过id删除", notes = "答题信息表-通过id删除")
     @DeleteMapping(value = "/delete")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> delete(@RequestParam(name = "id", required = true) String id) {
         smartAnswerInfoService.removeById(id);
         return Result.OK("删除成功!");
@@ -392,6 +400,7 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
     @AutoLog(value = "答题信息表-批量删除")
     @ApiOperation(value = "答题信息表-批量删除", notes = "答题信息表-批量删除")
     @DeleteMapping(value = "/deleteBatch")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> deleteBatch(@RequestParam(name = "ids", required = true) String ids) {
         this.smartAnswerInfoService.removeByIds(Arrays.asList(ids.split(",")));
         return Result.OK("批量删除成功!");
@@ -433,6 +442,7 @@ public class SmartAnswerInfoController extends JeecgController<SmartAnswerInfo, 
      * @return
      */
     @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
         return super.importExcel(request, response, SmartAnswerInfo.class);
     }

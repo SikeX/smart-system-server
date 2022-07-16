@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
@@ -34,6 +35,7 @@ import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.ImportParams;
 import org.jeecgframework.poi.excel.view.JeecgEntityExcelView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -263,6 +265,7 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
     @AutoLog(value = "答题考核节点表-添加")
     @ApiOperation(value="答题考核节点表-添加", notes="答题考核节点表-添加")
     @PostMapping(value = "/add")
+	@Transactional(rollbackFor = Exception.class)
     public Result<?> add(@RequestBody SmartAnswerAssContent smartAnswerAssContent) {
         smartAnswerAssContentService.save(smartAnswerAssContent);
         return Result.OK("添加成功！");
@@ -276,6 +279,7 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
     @AutoLog(value = "答题考核节点表-编辑")
     @ApiOperation(value="答题考核节点表-编辑", notes="答题考核节点表-编辑")
     @PutMapping(value = "/edit")
+	@Transactional(rollbackFor = Exception.class)
     public Result<?> edit(@RequestBody SmartAnswerAssContent smartAnswerAssContent) {
         smartAnswerAssContentService.updateById(smartAnswerAssContent);
         return Result.OK("编辑成功!");
@@ -289,6 +293,7 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
     @AutoLog(value = "答题考核节点表-通过id删除")
     @ApiOperation(value="答题考核节点表-通过id删除", notes="答题考核节点表-通过id删除")
     @DeleteMapping(value = "/delete")
+	@Transactional(rollbackFor = Exception.class)
     public Result<?> delete(@RequestParam(name="id",required=true) String id) {
         smartAnswerAssContentService.delMain(id);
         return Result.OK("删除成功!");
@@ -302,6 +307,7 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
     @AutoLog(value = "答题考核节点表-批量删除")
     @ApiOperation(value="答题考核节点表-批量删除", notes="答题考核节点表-批量删除")
     @DeleteMapping(value = "/deleteBatch")
+	@Transactional(rollbackFor = Exception.class)
     public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
         this.smartAnswerAssContentService.delBatchMain(Arrays.asList(ids.split(",")));
         return Result.OK("批量删除成功!");
@@ -356,6 +362,7 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 	@AutoLog(value = "要点答题附件-添加")
 	@ApiOperation(value="要点答题附件-添加", notes="要点答题附件-添加")
 	@PostMapping(value = "/addSmartAnswerFile")
+	@Transactional(rollbackFor = Exception.class)
 	public Result<?> addSmartAnswerFile(@RequestBody SmartAnswerFile smartAnswerFile) {
 		Boolean isDisabled = checkIsDisabled(smartAnswerFile.getMainId());
 		if (isDisabled == null || isDisabled) {
@@ -385,6 +392,7 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 	@AutoLog(value = "要点答题附件-编辑")
 	@ApiOperation(value="要点答题附件-编辑", notes="要点答题附件-编辑")
 	@PutMapping(value = "/editSmartAnswerFile")
+	@Transactional(rollbackFor = Exception.class)
 	public Result<?> editSmartAnswerFile(@RequestBody SmartAnswerFile smartAnswerFile) {
 		Boolean isDisabled = checkIsDisabled(smartAnswerFile.getMainId());
 		if (isDisabled == null || isDisabled) {
@@ -429,6 +437,7 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 	@AutoLog(value = "要点答题附件-通过id删除")
 	@ApiOperation(value="要点答题附件-通过id删除", notes="要点答题附件-通过id删除")
 	@DeleteMapping(value = "/deleteSmartAnswerFile")
+	@Transactional(rollbackFor = Exception.class)
 	public Result<?> deleteSmartAnswerFile(@RequestParam(name="id",required=true) String id,
 										   @RequestParam(name="mainId",required=true) String mainId) {
 		Boolean isDisabled = checkIsDisabled(mainId);
@@ -456,6 +465,7 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 	@AutoLog(value = "要点答题附件-批量删除")
 	@ApiOperation(value="要点答题附件-批量删除", notes="要点答题附件-批量删除")
 	@DeleteMapping(value = "/deleteBatchSmartAnswerFile")
+	@Transactional(rollbackFor = Exception.class)
 	public Result<?> deleteBatchSmartAnswerFile(@RequestParam(name="ids",required=true) String ids,
                                                 @RequestParam(name="mainId",required=true) String mainId,
                                                 @RequestParam(name="count",required=true) Integer count) {
@@ -512,6 +522,7 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
      * @return
      */
     @RequestMapping(value = "/importSmartAnswerFile/{mainId}")
+	@Transactional(rollbackFor = Exception.class)
     public Result<?> importSmartAnswerFile(HttpServletRequest request, HttpServletResponse response, @PathVariable("mainId") String mainId) {
 		 MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 		 Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
@@ -554,6 +565,7 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 	@AutoLog(value = "答题评分表-通过主表ID查询")
 	@ApiOperation(value="答题评分表-通过主表ID查询", notes="答题评分表-通过主表ID查询")
 	@GetMapping(value = "/listSmartAnswerAssScoreByMainId")
+	@Transactional(rollbackFor = Exception.class)
     public Result<?> listSmartAnswerAssScoreByMainId(SmartAnswerAssScore smartAnswerAssScore,
                                                     @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                                                     @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
@@ -578,6 +590,7 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 	@AutoLog(value = "答题信息表-修改最终成绩得分方式")
 	@ApiOperation(value = "答题信息表-修改最终成绩得分方式", notes = "答题信息表-修改最终成绩得分方式")
 	@GetMapping(value = "/changeFinalScore")
+	@Transactional(rollbackFor = Exception.class)
 	public Result<?> changeFinalScore(@RequestParam(name="missionId",required=true) String missionId,
 									  @RequestParam(name="contentId",required=true) String contentId,
 									  @RequestParam(name="scoreType",required=true) String scoreType) {
@@ -641,6 +654,7 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 	 * @param smartAnswerAssContent
 	 * @param increment              成绩增量
 	 */
+	@Transactional(rollbackFor = Exception.class)
 	private void updateSuperiorScore(SmartAnswerAssContent smartAnswerAssContent, double increment) {
 		QueryWrapper<SmartAnswerAssContent> queryWrapper = new QueryWrapper<>();
 		while (oConvertUtils.isNotEmpty(smartAnswerAssContent.getPid())) {
@@ -664,6 +678,7 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 	@AutoLog(value = "答题评分表-添加")
 	@ApiOperation(value="答题评分表-添加", notes="答题评分表-添加")
 	@PostMapping(value = "/addSmartAnswerAssScore")
+	@Transactional(rollbackFor = Exception.class)
 	public Result<?> addSmartAnswerAssScore(@RequestBody SmartAnswerAssScore smartAnswerAssScore) {
 		Boolean isDisabled = checkIsDisabled(smartAnswerAssScore.getMainId());
 		if (isDisabled == null || !isDisabled) {
@@ -725,6 +740,7 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 	@AutoLog(value = "答题评分表-编辑")
 	@ApiOperation(value="答题评分表-编辑", notes="答题评分表-编辑")
 	@PutMapping(value = "/editSmartAnswerAssScore")
+	@Transactional(rollbackFor = Exception.class)
 	public Result<?> editSmartAnswerAssScore(@RequestBody SmartAnswerAssScore smartAnswerAssScore) {
 		Boolean isDisabled = checkIsDisabled(smartAnswerAssScore.getMainId());
 		if (isDisabled == null || !isDisabled) {
@@ -749,15 +765,26 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 
 		SmartAnswerAssContent answerAssContent = smartAnswerAssContentService.getById(smartAnswerAssScore.getMainId());
 		// 如果平均成绩和更新前的最终成绩不一样了，则更新上级节点成绩和总分
+		SmartAnswerInfo smartAnswerInfo = smartAnswerInfoService.getById(answerAssContent.getMainId());
+
 		if (!avgScore.getScore().equals(answerAssContent.getFinalScore())) {
 			double increment = avgScore.getScore() - answerAssContent.getFinalScore();
 			// 更新上级成绩
 			updateSuperiorScore(answerAssContent, increment);
 			// 更新总分
-			SmartAnswerInfo smartAnswerInfo = smartAnswerInfoService.getById(answerAssContent.getMainId());
 			smartAnswerInfo.setTotalPoints(smartAnswerInfo.getTotalPoints() + increment);
-			smartAnswerInfoService.updateById(smartAnswerInfo);
 		}
+
+		// 检查已评分内容,如果不存在则添加
+		String markedContent = smartAnswerInfo.getMarkedContent();
+		String temp = answerAssContent.getAssContentId() + "_" + smartAnswerAssScore.getRoleId();
+		int index = StringUtils.indexOf(markedContent, temp);
+		if (index == -1) {
+			smartAnswerInfo.setMarkedContent(markedContent + "," + temp);
+		}
+
+		smartAnswerInfoService.updateById(smartAnswerInfo);
+
 		answerAssContent.setHighestScore(maxScore.getScore());
 		answerAssContent.setLowestScore(minScore.getScore());
 		answerAssContent.setAverageScore(avgScore.getScore());
@@ -776,6 +803,7 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 	@AutoLog(value = "答题评分表-通过id删除")
 	@ApiOperation(value="答题评分表-通过id删除", notes="答题评分表-通过id删除")
 	@DeleteMapping(value = "/deleteSmartAnswerAssScore")
+	@Transactional(rollbackFor = Exception.class)
 	public Result<?> deleteSmartAnswerAssScore(@RequestParam(name="id",required=true) String id) {
 		smartAnswerAssScoreService.removeById(id);
 		return Result.OK("删除成功!");
@@ -789,6 +817,7 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 	@AutoLog(value = "答题评分表-批量删除")
 	@ApiOperation(value="答题评分表-批量删除", notes="答题评分表-批量删除")
 	@DeleteMapping(value = "/deleteBatchSmartAnswerAssScore")
+	@Transactional(rollbackFor = Exception.class)
 	public Result<?> deleteBatchSmartAnswerAssScore(@RequestParam(name="ids",required=true) String ids) {
 	    this.smartAnswerAssScoreService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.OK("批量删除成功!");
@@ -831,6 +860,7 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
      * @return
      */
     @RequestMapping(value = "/importSmartAnswerAssScore/{mainId}")
+	@Transactional(rollbackFor = Exception.class)
     public Result<?> importSmartAnswerAssScore(HttpServletRequest request, HttpServletResponse response, @PathVariable("mainId") String mainId) {
 		 MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 		 Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
