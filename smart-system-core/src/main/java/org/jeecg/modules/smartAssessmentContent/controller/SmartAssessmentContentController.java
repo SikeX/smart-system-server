@@ -330,7 +330,7 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
      * @param increment              分数增量
      */
     @Transactional(rollbackFor = Exception.class)
-    private void updateSuperiorPoint(SmartAssessmentContent smartAssessmentContent, int increment) {
+    void updateSuperiorPoint(SmartAssessmentContent smartAssessmentContent, int increment) {
         // 更新考核任务总分
         SmartAssessmentMission mission = smartAssessmentMissionService.getById(smartAssessmentContent.getMissionId());
         mission.setTotalPoint(mission.getTotalPoint() + increment);
