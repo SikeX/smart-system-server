@@ -655,7 +655,7 @@ public class SmartAnswerAssContentController extends JeecgController<SmartAnswer
 	 * @param increment              成绩增量
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	private void updateSuperiorScore(SmartAnswerAssContent smartAnswerAssContent, double increment) {
+	void updateSuperiorScore(SmartAnswerAssContent smartAnswerAssContent, double increment) {
 		QueryWrapper<SmartAnswerAssContent> queryWrapper = new QueryWrapper<>();
 		while (oConvertUtils.isNotEmpty(smartAnswerAssContent.getPid())) {
 			// 查找该考核要点的上级

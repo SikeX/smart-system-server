@@ -612,7 +612,7 @@ public class SmartAssessmentMissionController extends JeecgController<SmartAsses
     }
 
     @Transactional(rollbackFor = Exception.class)
-    private void generateRank(String missionId) {
+    void generateRank(String missionId) {
         QueryWrapper<SmartAnswerInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("mission_id", missionId).orderByDesc("total_points");
         List<SmartAnswerInfo> list = smartAnswerInfoService.list(queryWrapper);
