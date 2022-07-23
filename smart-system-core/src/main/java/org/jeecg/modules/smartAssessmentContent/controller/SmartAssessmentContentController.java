@@ -89,8 +89,8 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
      * @param id
      * @return
      */
-    @AutoLog(value = "答题信息表-分页列表查询")
-    @ApiOperation(value = "答题信息表-分页列表查询", notes = "答题信息表-分页列表查询")
+    @AutoLog(value = "考核节点表-根据ID分页列表查询")
+    @ApiOperation(value = "考核节点表-根据ID分页列表查询", notes = "答题信息表-根据ID分页列表查询")
     @GetMapping(value = "/list")
     public Result<?> queryPageList(@RequestParam("id") String id) {
         try {
@@ -103,6 +103,34 @@ public class SmartAssessmentContentController extends JeecgController<SmartAsses
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             return Result.error("查询节点失败：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 分页列表查询
+     *
+     * @return
+     */
+    @AutoLog(value = "考核节点表-查询负责的考核要点")
+    @ApiOperation(value = "考核节点表-查询负责的考核要点", notes = "考核节点表-查询负责的考核要点")
+    @GetMapping(value = "/listInCharge")
+    public Result<?> listInCharge(@RequestParam("missionId") String missionId,
+                                  @RequestParam(name = "roleType", defaultValue = "depart") String roleType,
+                                  @RequestParam(name = "roleId") String roleId) {
+        try {
+            QueryWrapper<SmartAssessmentContent> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("mission_id", missionId);
+            queryWrapper.eq("is_key", 1);
+            if ("depart".equals(roleType)) {
+                queryWrapper.like("ass_depart", roleId);
+            } else {
+                queryWrapper.like("ass_team", roleId);
+            }
+            List<SmartAssessmentContent> list = smartAssessmentContentService.list(queryWrapper);
+            return Result.OK(list);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return Result.error("查询节点失败");
         }
     }
 
